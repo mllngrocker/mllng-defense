@@ -4408,11 +4408,11 @@ dexPopRender=popRender;
 {const pop=()=>$('#dexPop');document.addEventListener('click',e=>{const p=pop();if(p&&e.target&&e.target.classList&&e.target.classList.contains('dpx'))closePop()},true)}
 </script>
 <script>
-/* 큰 데미지 색: 억 = 붉은 주황, 조 = 보라, 경 = 일렉트릭 시안, 해 = 흑금 */
+/* 큰 데미지 색: 억 = 붉은 주황, 조 = 보라, 경 = 에메랄드, 해 = 네온 핑크 */
 Object.assign(DSTY,{
  normE:{size:31,fill:['#fff2c0','#ff8a3a','#ff3a1a'],st:'#2a0800',sw:7},critE:{size:42,fill:['#ffffff','#ffb02a','#ff3a1a','#c00a0a'],st:'#2a0400',sw:8},
  normJ:{size:32,fill:['#ffffff','#e0a8ff','#a040ff'],st:'#1e0636',sw:7},critJ:{size:44,fill:['#ffe8ff','#ff6aff','#9a2aff','#4a0aa8'],st:'#14022a',sw:8},
- normK:{size:33,fill:['#ffffff','#9ff8ff','#1ad0e8'],st:'#021e2e',sw:7},critK:{size:46,fill:['#ffffff','#b8fcff','#2ae0ff','#0a7ab8'],st:'#011624',sw:9},
- normH:{size:34,fill:['#fffbe0','#ffd23a','#a86a00'],st:'#000000',sw:8},critH:{size:48,fill:['#ffffff','#ffe680','#ffb000','#6a3a00'],st:'#000000',sw:10}});
+ normK:{size:33,fill:['#ffffff','#b8ffd0','#2ae08a'],st:'#022414',sw:7},critK:{size:46,fill:['#ffffff','#b8ffd0','#2ae08a','#0a8a4a'],st:'#022414',sw:9},
+ normH:{size:34,fill:['#ffffff','#ffc0e8','#ff3aa8'],st:'#24021a',sw:8},critH:{size:48,fill:['#ffffff','#ffc0e8','#ff3aa8','#a00a5a'],st:'#24021a',sw:10}});
 {const _n=num;num=function(x,y,v,kind,...a){if((kind==='norm'||kind==='crit')&&v>=1e8){kind=kind+(v>=1e20?'H':v>=1e16?'K':v>=1e12?'J':'E')}return _n(x,y,v,kind,...a)}}
 </script>
