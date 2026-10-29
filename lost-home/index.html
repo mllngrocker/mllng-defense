@@ -623,7 +623,7 @@ canvas.gshine{animation:gsh2 2.2s ease-in-out infinite}@keyframes gsh2{50%{filte
 #mNo{width:100%;margin-bottom:6px;background:linear-gradient(#d8d0e0,#a8a0b8)!important;color:#2a2040!important}
 .dwarn{background:#ff4d5e;color:#fff;border-radius:8px;padding:5px 8px;font-size:12px;font-weight:700;margin:2px 0 6px}.dget{margin-top:6px;font-size:14px;color:#2a2040}.dget b{color:#8a3ad8;font-size:17px}
 .mbtns{display:flex;gap:6px}.mbtns button{flex:1;width:auto!important;font-size:16px!important;padding:6px!important}#mNo{margin:0!important}
-#field{aspect-ratio:180/200!important;max-height:58vh!important}#phead:empty{display:none!important}
+#field{aspect-ratio:180/170!important;max-height:58vh!important}#phead:empty{display:none!important}
 .pname{font-size:12px;color:#ffe066;margin-left:3px;font-weight:700}.me{cursor:pointer}
 #nameBox{position:fixed;inset:0;z-index:40;background:radial-gradient(circle at 50% 30%,rgba(70,110,230,.95),rgba(10,24,80,.97));display:flex;align-items:center;justify-content:center;padding:16px}#nameBox[hidden]{display:none}
 .nbw{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;gap:10px;animation:vin .5s cubic-bezier(.2,1.5,.4,1)}.nbs{margin:0;color:#e6e0ff;font-size:15px;text-shadow:var(--o4);text-align:center}
@@ -634,6 +634,7 @@ canvas.gshine{animation:gsh2 2.2s ease-in-out infinite}@keyframes gsh2{50%{filte
 .atop{width:260px!important;height:140px!important}#aBear{width:250px!important;height:145px!important;margin-bottom:-10px!important;animation:none!important}
 .zz.z1{left:70px!important;top:40px!important}.zz.z2{left:84px!important;top:26px!important}.zz.z3{left:98px!important;top:14px!important}.amoon{left:-10px!important}
 .asub{margin-top:2px!important}#away .vpanel{width:100%;box-sizing:border-box}
+#field{width:auto!important;max-width:100%!important;height:min(calc((100vw - 24px)*200/180),calc(100dvh - 352px))!important;max-height:none!important;aspect-ratio:180/200!important;margin:0 auto!important}
 </style>
 
 <section id="lobby" class="screen">
@@ -1836,8 +1837,8 @@ function ghostOf(cv){if(cv._g)return cv._g;const c=document.createElement('canva
 const ICONC={};function iconCanvas(id){return ICONC[id]||(ICONC[id]=raster(itemPrims(id),24,24))}
 
 /* ---------- runtime ---------- */
-const K=3,cv=$('#cv'),X=cv.getContext('2d');const lo=document.createElement('canvas');lo.width=VW;lo.height=VH+50;const L=lo.getContext('2d');L.imageSmoothingEnabled=false;
-const GY=GYv,BX=44,OY=50,OYK=OY*K;cv.height=(VH+OY)*K;
+const K=3,cv=$('#cv'),X=cv.getContext('2d');const lo=document.createElement('canvas');lo.width=VW;lo.height=VH+20;const L=lo.getContext('2d');L.imageSmoothingEnabled=false;
+const GY=GYv,BX=44,OY=20,OYK=OY*K;cv.height=(VH+OY)*K;
 function play(e,name,onEnd,onEv){e.a=e.set[name];e.name=name;e.f=0;e.t=0;e.onEnd=onEnd||null;e.onEv=onEv||null;ev0(e)}
 function ev0(e){const v=e.a.ev&&e.a.ev[e.f];if(v&&e.onEv)e.onEv(v)}
 function step(e,dt){if(!e.a)return;e.t+=dt;const fd=1/e.a.fps;while(e.t>=fd){e.t-=fd;e.f++;if(e.f>=e.a.cv.length){if(e.a.loop)e.f=0;else{e.f=e.a.cv.length-1;const cb=e.onEnd;e.onEnd=null;if(cb)cb();return}}ev0(e)}}
