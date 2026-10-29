@@ -491,6 +491,23 @@ body{background:#1c1530!important;background-image:radial-gradient(#2a2148 1.5px
 #nav button canvas{width:22px!important;height:22px!important}
 #nav .dot{top:-3px!important;right:-2px!important;width:8px!important;height:8px!important}
 html,body{height:100%;height:100dvh}body{box-sizing:border-box;overflow:hidden}
+
+/* victory: compact + dancing bear */
+#victory{overflow-y:auto;align-items:center}
+.vwrap{gap:5px!important;margin:auto 0}
+.vtop{height:104px!important}
+#vIcon{width:112px!important;height:126px!important;margin-bottom:-6px!important;transform-origin:50% 90%;animation:vdance 1.1s ease-in-out infinite}
+@keyframes vdance{0%{transform:translateY(0) rotate(-9deg)}20%{transform:translateY(-14px) rotate(-2deg) scaleY(1.04)}40%{transform:translateY(0) rotate(9deg) scaleY(.94)}50%{transform:translateY(0) rotate(9deg) scaleX(-1)}70%{transform:translateY(-14px) rotate(2deg) scaleX(-1) scaleY(1.04)}90%{transform:translateY(0) rotate(-9deg) scaleX(-1) scaleY(.94)}100%{transform:translateY(0) rotate(-9deg)}}
+.note{position:absolute;font-style:normal;font-size:22px;color:#ffe066;text-shadow:var(--o4);opacity:0;animation:vnote 2.2s ease-out infinite;font-family:sans-serif!important}
+.note.n1{left:6px;bottom:40px}.note.n2{right:4px;bottom:56px;animation-delay:.7s;color:#7ae0ff}.note.n3{left:30px;bottom:80px;animation-delay:1.4s;color:#ff8ab0}
+@keyframes vnote{0%{opacity:0;transform:translateY(0) rotate(-10deg)}20%{opacity:1}100%{opacity:0;transform:translateY(-46px) rotate(14deg)}}
+.ribbon{height:48px!important}.ribbon span{font-size:28px!important}
+.vrec{font-size:19px!important}
+.hexb{width:96px!important;height:86px!important}.hexb b{font-size:36px!important}.hexb small{font-size:13px!important}
+.vrow2{padding:3px 10px!important;font-size:16px!important}.vrow2 b{font-size:20px!important}
+.vpanel{gap:6px!important;padding:2px 6px 8px!important}
+#vOk{margin-top:2px!important;font-size:22px!important}
+@media (max-height:760px){.vtop{height:80px!important}#vIcon{width:88px!important;height:99px!important}.hexb{width:80px!important;height:72px!important}.hexb b{font-size:28px!important}.rt{max-width:64px;margin:0 auto}#vTiles{gap:6px!important}}
 /* gear categories */
 .eqline{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important}
 .slot{font:inherit;cursor:pointer;padding:2px 2px 4px!important;gap:1px!important;color:#fff!important}
@@ -571,7 +588,7 @@ html,body{height:100%;height:100dvh}body{box-sizing:border-box;overflow:hidden}
   </div>
   <div id="victory" hidden>
     <div class="vwrap">
-      <div class="vtop"><div class="vrays"></div><canvas id="vIcon" class="pix" width="84" height="104"></canvas></div>
+      <div class="vtop"><div class="vrays"></div><canvas id="vIcon" class="pix" width="64" height="72"></canvas><i class="note n1">♪</i><i class="note n2">♫</i><i class="note n3">♪</i></div>
       <div class="ribbon"><span>전투 승리</span></div>
       <div class="vrec">최고 기록</div>
       <div class="hexb"><small>제<span id="vCh">1</span>장</small><b id="vNum">10</b><small>스테이지</small></div>
@@ -2470,7 +2487,7 @@ let vLast=0;function showVictory(c0){vLast=c0;const gold=Math.floor(mobGold(S.g)
   logAdd(`${badge(ITEMS[item].g)}<span style="color:${GCOL[ITEMS[item].g]}">${ITEMS[item].n}</span> · 챕터 보상`);
   $('#victory').hidden=false;sfx('level');setTimeout(()=>sfx('drop',ITEMS[item].g),800);save();
   const vc=$('#vIcon').getContext('2d');vc.imageSmoothingEnabled=false;const B=bearSet(),A=B.win||B.idle;let t0=performance.now();
-  cancelAnimationFrame(vRAF);(function loop(now){if($('#victory').hidden)return;const f=Math.max(0,Math.floor((now-t0)/100))%A.cv.length;vc.clearRect(0,0,84,104);vc.drawImage(A.cv[f],0,0);vRAF=requestAnimationFrame(loop)})(t0)}
+  cancelAnimationFrame(vRAF);(function loop(now){if($('#victory').hidden)return;const f=Math.max(0,Math.floor((now-t0)/100))%A.cv.length;vc.clearRect(0,0,64,72);vc.drawImage(A.cv[f],10,30,64,72,0,0,64,72);vRAF=requestAnimationFrame(loop)})(t0)}
 $('#vOk').addEventListener('click',()=>{if(vLast%10===9)setTimeout(()=>modal('엔딩 · 고향의 빙하가 다시 얼어요','마왕 메가와트가 멈추자 대발전소의 불이 꺼지고, 대륙에 다시 나무가 자라기 시작했어요. 북극의 빙하도 조금씩 다시 얼어요. 그런데… 비비가 날아와 외쳐요. "다른 대륙에 또 새 마왕이 나타났대!"','','다음 회차로!'),700);$('#victory').hidden=true;cancelAnimationFrame(vRAF);sfx('ui');banner(theme().name,'#7bdc4f');if(theme().story)setTimeout(()=>toast(theme().story),600);setBgm(chBgm());renderPanel()});
 /* ================= gacha reveal: cards, rare (A+) motion ================= */
 let gTok=0,gSkip=false,gLast=null;
@@ -2654,10 +2671,10 @@ function petSim(dt){const live=mobs.filter(m=>!m.dead).sort((a,b)=>a.x-b.x),f=li
     if(d<5){const cr=Math.random()*100<stat('crit');if(s.pierce)mobs.filter(m=>!m.dead&&m.x-s.tg.x<60&&m.x>=s.tg.x-4).forEach(m=>hitTarget(m,s.mult,cr,'cleave'));else hitTarget(s.tg,s.mult,cr,'cleave');
       for(let k=0;k<5;k++)px.push({x:s.x,y:s.y,vx:rnd(-60,60),vy:rnd(-80,20),g:200,life:.3,t:0,c:s.col,s:1});return false}
     const sp=s.v*dt;s.x+=dx/d*sp-curWS*dt;s.y+=dy/d*sp;if(Math.random()<.5)px.push({x:s.x,y:s.y,vx:-10,vy:rnd(-5,5),g:0,life:.2,t:0,c:s.col,s:1});return true})}
-function bearHpBar(L2){if(bear.dead)return;const r=clamp(bear.hp/MAXHP(),0,1),x=Math.round(bear.x-15),y=GY-50,w=30;
-  L2.fillStyle='#140c0a';L2.fillRect(x-1,y-1,w+2,6);L2.fillStyle='#3a2030';L2.fillRect(x,y,w,4);
-  const c=r>.5?'#5ee05a':r>.25?'#ffc43d':'#ff4d5e';L2.fillStyle=c;L2.fillRect(x,y,Math.round(w*r),4);L2.fillStyle='rgba(255,255,255,.55)';L2.fillRect(x,y,Math.round(w*r),1);
-  if(r<.25&&Math.sin(T*12)>0){L2.fillStyle='rgba(255,77,94,.35)';L2.fillRect(x-1,y-1,w+2,6)}}
+function bearHpBar(L2){if(bear.dead)return;const r=clamp(bear.hp/MAXHP(),0,1),x=Math.round(bear.x-9),y=GY-47,w=18;
+  L2.fillStyle='#140c0a';L2.fillRect(x-1,y-1,w+2,4);L2.fillStyle='#3a2030';L2.fillRect(x,y,w,2);
+  const c=r>.5?'#5ee05a':r>.25?'#ffc43d':'#ff4d5e';L2.fillStyle=c;L2.fillRect(x,y,Math.round(w*r),2);
+  if(r<.25&&Math.sin(T*12)>0){L2.fillStyle='rgba(255,77,94,.35)';L2.fillRect(x-1,y-1,w+2,4)}}
 function drawFront(L2){bearHpBar(L2);if(S.eq.c==='aurora'&&!bear.dead){const t=auraT;for(let r=0;r<3;r++){L2.fillStyle=['rgba(90,232,200,.32)','rgba(122,184,255,.26)','rgba(200,156,255,.22)'][r];
     for(let x=0;x<26;x++){const xx=bear.x-34+x,y=GY-30-r*5+Math.sin(x*.35+t*4+r*1.7)*3,h=6+Math.sin(x*.5-t*3+r)*2.5;L2.fillRect(Math.round(xx),Math.round(y),1,Math.round(h))}}
     if(Math.sin(t*2.3)>.92){L2.fillStyle='#fff';const sx=bear.x+Math.round(Math.sin(t*7)*10),sy=GY-46;L2.fillRect(sx,sy-2,1,5);L2.fillRect(sx-2,sy,5,1)}}S.peq.forEach((id,i)=>{if(!id)return;const st=petSt[i]||{},F=petFrames(id),pp=petPos(i),fly=PET_FLY[PETS[id].sp];
