@@ -1878,7 +1878,7 @@ function hitTarget(tg,mult,crit,src){
   if(src==='cleave'||src==='tornado'||src==='beam'){tg.hp-=d;tg.fl=.06;num(hx+rnd(-8,8),hy-10,d,crit?'crit':'norm',tg);if(src!=='beam')tg.kb=Math.max(tg.kb,tg.boss?2:10);debris(hx,hy,3,MOBCOL[tg.type],60);sfx(crit?'crit':'hit');if(tg.hp<=0)killMob(tg);return}
   sfx(crit?'crit':src==='kick'?'kick':'hit');
   impact(hx,hy,crit?'#ffb21a':src==='ice'||src==='balloon'?'#a8e0ff':src==='fire'?'#ff8a1a':src==='bolt'?'#fff3a0':'#fff3c4',crit||src==='bolt');debris(hx,hy,crit?12:5,MOBCOL[tg.type],crit?110:60);
-  stop=Math.max(stop,crit?.1:src==='shot'?.015:.05);shake=Math.max(shake,crit?11:src==='shot'?1.5:4);
+  if(crit&&T-(window._lstop||-9)>.4){window._lstop=T;stop=Math.max(stop,.035)}shake=Math.max(shake,crit?7:src==='shot'?1:2.5);
   num(hx,hy-12,d,crit?'crit':'norm',tg);
   tg.hp-=d;tg.fl=.07;if(src==='ice')tg.frz=1.2;
   tg.kb=Math.max(tg.kb,tg.boss?(crit?10:3):src==='kick'?110:crit?36:src==='shot'?4:14);
@@ -1899,11 +1899,11 @@ function bearEv(ev){
       if(w.fx==='bolt'){const ts=mobs.filter(m=>!m.dead).sort((a,b)=>a.x-b.x).slice(0,3);ts.forEach((m,i)=>setTimeout(()=>{fx.push({k:'bolt',x:(m.x-2)*K,y:hitY(m)*K,t:0,life:.18});hitTarget(m,KIND_MUL.book*(i?0.6:1),Math.random()*100<stat('crit'),'bolt');flash=Math.max(flash,.18);flashC='#fff6c0'},i*70))}
       else shots.push({x:tip.x,y:tip.y,tg,k:w.fx==='ice'?'ice':w.fx==='fire'?'fire':'orb',v:w.fx==='ice'?240:170,mult:KIND_MUL.book})}
     return}
-  if(!tg||tg.x-bear.x>reach(tg)+24){sfx('whiff');dust(bear.x+40,8);debris(bear.x+40,GY-2,6,['#b8a27a','#8a7962'],60);shake=Math.max(shake,6);stop=Math.max(stop,.04);if(ev!=='kick')arc(-2.1,.5,'#fff6d8');return}
+  if(!tg||tg.x-bear.x>reach(tg)+24){sfx('whiff');dust(bear.x+40,8);debris(bear.x+40,GY-2,6,['#b8a27a','#8a7962'],60);shake=Math.max(shake,3);if(ev!=='kick')arc(-2.1,.5,'#fff6d8');return}
   const isCrit=rage||ev==='crit';
   if(ev==='kick')shake=Math.max(shake,8);else if(ev==='up')arc(-.6,1.9,'#fff6d8');else arc(-2.1,.5,isCrit?'#ffb21a':'#fff6d8');
   if(ev!=='kick'&&ev!=='up')dust(bear.x+38,isCrit?8:3);
-  if(ev==='crit'){flash=.45;flashC='#fff';slowT=.3}
+  if(ev==='crit'){flash=.3;flashC='#fff';if(T-(window._lslow||-9)>2){window._lslow=T;slowT=.15}}
   const mm=(ev==='crit'?1.5:ev==='kick'||ev==='up'?1.2:1);const others=mobs.filter(m=>!m.dead&&m!==tg&&m.x-tg.x<30&&m.x>tg.x-8);
   hitTarget(tg,mm,isCrit,ev==='kick'?'kick':ev==='up'?'up':'melee');others.forEach(m=>hitTarget(m,mm*.55,isCrit,'cleave'));
 }
