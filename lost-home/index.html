@@ -659,6 +659,15 @@ canvas.gshine{animation:gsh2 2.2s ease-in-out infinite}@keyframes gsh2{50%{filte
 .dqbar{display:inline-block;width:70px;height:7px;border-radius:9px;background:#cfd6e4;overflow:hidden;vertical-align:middle;margin-right:4px}.dqbar i{display:block;height:100%;background:#5cbc3e}
 .row.ttl .tbadge{flex:none;width:64px;padding:6px 2px;border-radius:10px;background:#2a2040;border:3px solid var(--tc);color:var(--tc);font-size:11px;font-weight:800;text-align:center;word-break:keep-all;line-height:1.15}.row.ttl.lock .tbadge{border-color:#8a8aa0;color:#8a8aa0}.row.ttl.lock{opacity:.7}
 .ptitle{font-size:10px;margin-left:4px;font-weight:800;text-shadow:0 1px 0 #000}
+body.gearpop::before{content:'';position:fixed;inset:0;z-index:28;background:rgba(6,10,40,.72)}
+body.gearpop #panel{position:fixed!important;left:10px;right:10px;top:10px;bottom:62px;z-index:29;max-width:460px;margin:0 auto;height:auto!important;max-height:none!important}
+body.gearpop #list{flex:1 1 auto;min-height:0;overflow-y:auto}
+#gptitle{display:none}body.gearpop #gptitle{display:block;text-align:center;font-family:"Jal","Jua",sans-serif;font-size:20px;color:#fff;text-shadow:var(--o4);padding:4px 0 2px}
+#gpx{display:none}body.gearpop #gpx{display:block;position:absolute;right:6px;top:4px;width:32px;height:32px;border-radius:10px;border:3px solid #140c1e;background:#ff5a6a;color:#fff;font-size:16px;font-weight:900;padding:0;line-height:1;z-index:2}
+
+#nav button{justify-content:center!important;align-items:center!important}#nav button canvas{margin:0!important;flex:none}#nav button span{flex:none}
+.advbig.six .advb b,.advbig.six .advb small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.advbig.six .advb b{font-size:13px!important}.advbig.six .advb small{font-size:9.5px!important}.advbig.six .advb{overflow:hidden}
+.setrow{padding:6px 4px!important}.tgl{flex:none;width:54px;height:30px;border-radius:999px;border:3px solid #140c1e;background:#8a8aa0;position:relative;padding:0}.tgl i{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}.tgl.on{background:#5cbc3e}.tgl.on i{left:26px}
 </style>
 
 <section id="lobby" class="screen">
@@ -4709,4 +4718,30 @@ function drawKnightk(x,t){const b=Math.sin(t)*.6,eg=.7+.3*Math.sin(t*2),sw=Math.
 Object.assign(VBOSS,{cerb:{d:drawCerb},skelk:{d:drawSkelk},lavak:{d:drawLavak},wraithk:{d:drawWraithk},crystk:{d:drawCrystk},gargk:{d:drawGargk},knightk:{d:drawKnightk}});
 for(const k of ['cerb','skelk','lavak','wraithk','crystk','gargk','knightk']){for(const key in SPR)if(key.startsWith(k)||key.startsWith('VB'+k))delete SPR[key];for(const key in SPR2)if(key.startsWith(k+'|')||key.startsWith('VB'+k))delete SPR2[key]}
 delete FLY.wraithk;
+</script>
+<script>
+/* ================= 설정 팝업 ================= */
+if(!S.set)S.set={bgm:1,sfx:1,dmg:1,shake:1};
+function applySet(){ensureAudio&&ensureAudio();if(MG)MG.gain.value=1;S.snd=true;if(BGMG)BGMG.gain.value=S.set.bgm?.16:0;if(SFXG)SFXG.gain.value=S.set.sfx?.5:0}
+{const _ea=ensureAudio;ensureAudio=function(){const had=!!AC;_ea();if(!had&&AC){S.snd=true;if(MG)MG.gain.value=1;if(BGMG)BGMG.gain.value=S.set.bgm?.16:0;if(SFXG)SFXG.gain.value=S.set.sfx?.5:0}}}
+{const _n=num;num=function(x,y,v,kind,...a){if(!S.set.dmg&&kind!=='hurt')return;return _n(x,y,v,kind,...a)}}
+{const _r=render;render=function(rdt){if(!S.set.shake)shake=0;return _r(rdt)}}
+const SETS_UI=[['bgm','배경음','챕터 음악'],['sfx','효과음','타격음, 획득음 등'],['dmg','데미지 숫자','몬스터 위에 뜨는 숫자'],['shake','화면 흔들림','타격·폭발 시 흔들림']];
+function setRender(L){SETS_UI.forEach(([k,n,d])=>{const r=document.createElement('div');r.className='row setrow';r.innerHTML=`<div class="inf"><b>${n}</b><span>${d}</span></div>`;
+  const b=document.createElement('button');b.className='tgl'+(S.set[k]?' on':'');b.innerHTML='<i></i>';b.onclick=()=>{S.set[k]=S.set[k]?0:1;applySet();sfx('ui');save();popRender()};r.appendChild(b);L.appendChild(r)});
+  const nm=document.createElement('div');nm.className='row setrow';nm.innerHTML=`<div class="inf"><b>이름 바꾸기</b><span>지금 이름: ${NM()}</span></div>`;const nb=document.createElement('button');nb.className='buy';nb.textContent='변경';nb.onclick=()=>{closePop();showNameBox(false)};nm.appendChild(nb);L.appendChild(nm);
+  L.insertAdjacentHTML('beforeend','<p class="attnote">VER 0.6 · 기록은 이 기기 브라우저에 저장돼요</p>')}
+POPS.set={t:'설정',r:setRender};
+{const old=$('#snd');if(old){const nb=old.cloneNode(false);nb.textContent='설정';nb.setAttribute('aria-label','설정');nb.classList.remove('off');old.replaceWith(nb);nb.addEventListener('click',()=>{sfx('ui');openPop('set')})}}
+{const ls=$('#lSet');if(ls){ls.disabled=false;ls.addEventListener('click',()=>openPop('set'))}}
+setTimeout(applySet,0);
+
+/* ================= 장비 탭 = 큰 팝업 ================= */
+{const _rp=renderPanel;renderPanel=function(){_rp();const on=tab==='gear';const nav=$('#nav');
+  if(on&&!document.body.classList.contains('gearpop')){const pr=$('#panel').getBoundingClientRect(),nr=nav.getBoundingClientRect();let ph=$('#gpph');if(!ph){ph=document.createElement('div');ph.id='gpph';$('#panel').before(ph)}ph.style.height=pr.height+'px';
+    nav.style.cssText=`position:fixed;left:${nr.left}px;top:${nr.top}px;width:${nr.width}px;z-index:30`;$('#panel').style.bottom=(innerHeight-nr.top+6)+'px'}
+  if(!on&&document.body.classList.contains('gearpop')){nav.style.cssText='';const ph=$('#gpph');if(ph)ph.remove();$('#panel').style.bottom=''}
+  document.body.classList.toggle('gearpop',on);
+  if(on&&!$('#gpx')){const x=document.createElement('button');x.id='gpx';x.textContent='✕';x.setAttribute('aria-label','닫기');x.onclick=()=>{sfx('ui');tab='grow';document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t==='grow'));renderPanel()};$('#panel').appendChild(x)}
+  if(on){let t=$('#gptitle');if(!t){t=document.createElement('div');t.id='gptitle';t.textContent='장비';$('#panel').prepend(t)}}}}
 </script>
