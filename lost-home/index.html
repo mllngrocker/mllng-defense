@@ -600,6 +600,8 @@ canvas.gshine{animation:gsh2 2.2s ease-in-out infinite}@keyframes gsh2{50%{filte
 .mg .arr{font-size:10px;opacity:.7}.mg small{font-size:10px;margin-top:1px}.mg:disabled{opacity:.55}.mg.can{background:linear-gradient(#fff2a0,#ffc83a);color:#3a2600;animation:bbs .8s ease-in-out infinite alternate}
 .mres{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:6px}.mr{position:relative;display:flex;flex-direction:column;align-items:center;width:76px;font-size:12px}.mr canvas{width:60px;height:60px}.mr i{position:absolute;top:0;right:4px;font-style:normal;font-weight:700;color:#fff;background:#2a86d8;border-radius:8px;padding:0 5px;font-size:11px}
 .inf b small.cnt,.inf small.cnt{margin-left:4px;font-size:12px;color:#2a86d8;font-weight:700}
+#log div{font-size:8.5px!important;opacity:.72!important;font-weight:500!important}#log .lgold{color:#fff}
+#cpbox b{color:#fff!important}#cpbox small{color:rgba(255,255,255,.8)!important}
 </style>
 
 <section id="lobby" class="screen">
@@ -1892,7 +1894,7 @@ function bearEv(ev){
   hitTarget(tg,mm,isCrit,ev==='kick'?'kick':ev==='up'?'up':'melee');others.forEach(m=>hitTarget(m,mm*.55,isCrit,'cleave'));
 }
 function killMob(m){m.dead=1;m.dt=0;deathStart(m);S.cnt.kill=(S.cnt.kill||0)+1;S.chKill=(S.chKill||0)+1;overkill=W().w.kind==='blunt'?1:0;debris(m.x,GY-10,14,MOBCOL[m.type],120);
-  const big=m.boss?(m.tier==='fin'?20:m.tier==='mid'?12:6):1;const g=mobGold(effG())*(m.boss?(m.tier==='fin'?30:m.tier==='mid'?15:6):1)*(S.buff>Date.now()?2:1)*(1+PBf('gold')/100),n=m.boss?12:3;logAdd(`<span style="color:#ffc43d">+${fmt(g)} 골드</span>`);
+  const big=m.boss?(m.tier==='fin'?20:m.tier==='mid'?12:6):1;const g=mobGold(effG())*(m.boss?(m.tier==='fin'?30:m.tier==='mid'?15:6):1)*(S.buff>Date.now()?2:1)*(1+PBf('gold')/100),n=m.boss?12:3;logAdd(`<span class="lgold">+${fmt(g)} 골드</span>`);
   for(let i=0;i<n;i++)coins.push({x:m.x*K,y:(GY-10)*K,vx:rnd(-120,240),vy:rnd(-650,-380),t:0,v:g/n,fly:0});
   gainExp(Math.pow(1.12,S.g)*big);
   const ch2=m.boss?(m.tier==='fin'?1:m.tier==='mid'?.8:.4):.035;if(Math.random()<ch2)gainItem(rollItem(m.tier==='fin'?.25:m.tier==='mid'?.1:0),m.x,GY-14);
@@ -2775,7 +2777,7 @@ function megaSim(){const m=mobs.find(q=>!q.dead&&(q.type==='mega1'||q.type==='me
 let auraT=0,auraAcc=0;const AURC=['#5ae8c8','#9cffe0','#7ab8ff','#c89cff','#ffffff'];
 function auraSim(dt){if(S.eq.c!=='aurora'||bear.dead)return;auraT+=dt;auraAcc+=dt;while(auraAcc>.05){auraAcc-=.05;
   px.push({x:bear.x+rnd(-16,8),y:GY-rnd(6,42),vx:rnd(-6,6),vy:-rnd(6,22),g:-4,life:rnd(.6,1.2),t:0,c:pick(AURC),s:Math.random()<.2?2:1,dust:1})}}
-function petPos(i){return{x:bear.x-23-i*17,y:GY}}
+function petPos(i){return{x:bear.x-20-i*11,y:GY-(i?3:0)}}
 function petSim(dt){const live=mobs.filter(m=>!m.dead).sort((a,b)=>a.x-b.x),f=live[0];
   S.peq.forEach((id,i)=>{if(!id)return;const st=petSt[i];if(st.cd==null)st.cd=1+i*.7;st.t=(st.t||0)+dt*(curWS>0?2.2:1);st.lg=Math.max(0,(st.lg||0)-dt);
     if(bear.dead)return;st.cd-=dt;if(st.cd>0||!f||f.x-bear.x>150)return;const p=PETS[id];st.cd=PCD[p.g]*(1-PB('aspd')/200);st.lg=.18;
