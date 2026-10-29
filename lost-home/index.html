@@ -638,6 +638,8 @@ canvas.gshine{animation:gsh2 2.2s ease-in-out infinite}@keyframes gsh2{50%{filte
 #nav button span{white-space:nowrap}@media (max-width:380px){#nav button{font-size:12px!important}#nav button canvas{width:26px!important;height:26px!important}}
 .me canvas{width:24px!important;height:24px!important}.me .nm{font-size:13px!important}.me .xb{height:5px!important}.wal{gap:1px!important}.wal .pill{font-size:11.5px!important;border-width:4px!important}.wal .pill b{width:12px!important;height:12px!important}.hbtn{font-size:12px!important;border-width:5px!important}
 #list .buy.on,#list .tog.on{color:#fff!important;text-shadow:0 2px 0 #14400c,1px 0 0 #14400c,-1px 0 0 #14400c,0 -1px 0 #14400c!important}
+#buff{top:auto!important;bottom:6px!important;right:6px!important;left:auto!important;border:0!important;border-image:none!important;background:rgba(10,8,24,.55)!important;border-radius:999px!important;padding:2px 7px 2px 2px!important;display:flex!important;align-items:center;gap:3px;font-size:10px!important;line-height:1;color:#fff!important;text-shadow:0 1px 0 #000!important;box-shadow:none!important;z-index:2}#buff[hidden]{display:none!important}
+#buff i{width:16px;height:16px;background:var(--ic-coin) center/100% 100% no-repeat;flex:none}#buff b{color:#ffd23a;font-size:11px;font-weight:800}#buff span{opacity:.85;font-variant-numeric:tabular-nums}
 </style>
 
 <section id="lobby" class="screen">
@@ -4363,4 +4365,9 @@ function fitField(){const G=$('#game'),F=$('#field'),P=$('#panel');if(!G||G.hidd
 addEventListener('resize',()=>setTimeout(fitField,60));
 {const _gg=goGame;goGame=function(...a){const r=_gg(...a);setTimeout(fitField,30);setTimeout(fitField,400);return r}}
 {let t=0;const _rp=renderPanel;renderPanel=function(){_rp();clearTimeout(t);t=setTimeout(fitField,20)}}
+</script>
+<script>
+/* 골드 2배: 오른쪽 아래 작은 아이콘 + 남은 시간 */
+{const _h=hud;hud=function(){_h();const bf=$('#buff');if(!bf||bf.hidden)return;const r=Math.ceil((S.buff-Date.now())/1000);const t=`${Math.floor(r/60)}:${String(r%60).padStart(2,'0')}`;
+  if(!bf.querySelector('i')){bf.innerHTML='<i></i><b>x2</b><span></span>'}bf.querySelector('span').textContent=t}}
 </script>
