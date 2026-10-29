@@ -4408,10 +4408,11 @@ dexPopRender=popRender;
 {const pop=()=>$('#dexPop');document.addEventListener('click',e=>{const p=pop();if(p&&e.target&&e.target.classList&&e.target.classList.contains('dpx'))closePop()},true)}
 </script>
 <script>
-/* 큰 데미지 색: 억 = 보라, 조 = 하늘, 경 이상 = 무지개빛 붉은 */
+/* 큰 데미지 색: 억 = 붉은 주황, 조 = 보라, 경 = 무지개, 해 = 흑금 */
 Object.assign(DSTY,{
- normE:{size:31,fill:['#ffffff','#f0c8ff','#c06aff'],st:'#24062e',sw:7},critE:{size:42,fill:['#ffe0ff','#ff6ae0','#a020d8'],st:'#2a0430',sw:8},
- normJ:{size:32,fill:['#ffffff','#c8f4ff','#3ac8ff'],st:'#06202e',sw:7},critJ:{size:44,fill:['#f0ffff','#5ff4ff','#1a7ae8'],st:'#041a30',sw:8},
- normK:{size:33,fill:['#fff6c0','#ff8a5a','#ff2a5a'],st:'#2a0410',sw:7},critK:{size:46,fill:['#ffffff','#ffe066','#ff3a3a','#c01a8a'],st:'#2a0008',sw:9}});
-{const _n=num;num=function(x,y,v,kind,...a){if((kind==='norm'||kind==='crit')&&v>=1e8){kind=kind+(v>=1e16?'K':v>=1e12?'J':'E')}return _n(x,y,v,kind,...a)}}
+ normE:{size:31,fill:['#fff2c0','#ff8a3a','#ff3a1a'],st:'#2a0800',sw:7},critE:{size:42,fill:['#ffffff','#ffb02a','#ff3a1a','#c00a0a'],st:'#2a0400',sw:8},
+ normJ:{size:32,fill:['#ffffff','#e0a8ff','#a040ff'],st:'#1e0636',sw:7},critJ:{size:44,fill:['#ffe8ff','#ff6aff','#9a2aff','#4a0aa8'],st:'#14022a',sw:8},
+ normK:{size:33,fill:['#ff5a5a','#ffd23a','#5ae05a','#3ab8ff','#b06cff'],st:'#0a0a24',sw:7},critK:{size:46,fill:['#ff3a6a','#ffb02a','#fff04a','#4aff8a','#3ac8ff','#c06aff'],st:'#06061a',sw:9},
+ normH:{size:34,fill:['#fffbe0','#ffd23a','#a86a00'],st:'#000000',sw:8},critH:{size:48,fill:['#ffffff','#ffe680','#ffb000','#6a3a00'],st:'#000000',sw:10}});
+{const _n=num;num=function(x,y,v,kind,...a){if((kind==='norm'||kind==='crit')&&v>=1e8){kind=kind+(v>=1e20?'H':v>=1e16?'K':v>=1e12?'J':'E')}return _n(x,y,v,kind,...a)}}
 </script>
