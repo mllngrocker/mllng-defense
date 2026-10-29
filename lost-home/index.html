@@ -640,6 +640,12 @@ canvas.gshine{animation:gsh2 2.2s ease-in-out infinite}@keyframes gsh2{50%{filte
 #list .buy.on,#list .tog.on{color:#fff!important;text-shadow:0 2px 0 #14400c,1px 0 0 #14400c,-1px 0 0 #14400c,0 -1px 0 #14400c!important}
 #buff{top:auto!important;bottom:6px!important;right:6px!important;left:auto!important;border:0!important;border-image:none!important;background:rgba(10,8,24,.55)!important;border-radius:999px!important;padding:2px 7px 2px 2px!important;display:flex!important;align-items:center;gap:3px;font-size:10px!important;line-height:1;color:#fff!important;text-shadow:0 1px 0 #000!important;box-shadow:none!important;z-index:2}#buff[hidden]{display:none!important}
 #buff i{width:16px;height:16px;background:var(--ic-coin) center/100% 100% no-repeat;flex:none}#buff b{color:#ffd23a;font-size:11px;font-weight:800}#buff span{opacity:.85;font-variant-numeric:tabular-nums}
+#dexPop{position:fixed;inset:0;z-index:35;background:rgba(6,10,40,.72);display:flex;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(2px)}#dexPop[hidden]{display:none}
+.dpw{width:100%;max-width:440px;height:100%;max-height:760px;display:flex;flex-direction:column;background:linear-gradient(#eaf4ff,#cfe2fa);border:4px solid #140c1e;border-radius:18px;box-shadow:0 6px 0 rgba(0,0,0,.4);overflow:hidden;animation:vin .35s cubic-bezier(.2,1.5,.4,1)}
+.dphead{display:flex;align-items:center;justify-content:center;position:relative;padding:8px;background:linear-gradient(#ffe27a,#f0a818);border-bottom:4px solid #140c1e}.dphead b{font-family:"Jal","Jua",sans-serif;font-weight:400;font-size:22px;color:#fff;text-shadow:var(--o4)}
+.dpx{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:10px;border:3px solid #140c1e;background:#ff5a6a;color:#fff;font-size:18px;font-weight:900;line-height:1;padding:0}
+.dpbody{flex:1;overflow-y:auto;padding:10px}.dpbody .dexgrid{grid-template-columns:repeat(4,1fr);gap:8px}.dpbody .dexc canvas{max-width:64px}.dpbody .dexc{font-size:11.5px;padding:6px 2px 5px}
+.dexchips .chip{border:3px solid #140c1e!important;border-radius:12px!important;border-image:none!important;background:linear-gradient(#6a8ae8,#3a5ac8)!important;color:#fff!important;text-shadow:var(--o4);font-family:"Jal","Jua",sans-serif}.dexchips .chip.on{background:linear-gradient(#ffe27a,#f0a818)!important}
 </style>
 
 <section id="lobby" class="screen">
@@ -4370,4 +4376,13 @@ addEventListener('resize',()=>setTimeout(fitField,60));
 /* 골드 2배: 오른쪽 아래 작은 아이콘 + 남은 시간 */
 {const _h=hud;hud=function(){_h();const bf=$('#buff');if(!bf||bf.hidden)return;const r=Math.ceil((S.buff-Date.now())/1000);const t=`${Math.floor(r/60)}:${String(r%60).padStart(2,'0')}`;
   if(!bf.querySelector('i')){bf.innerHTML='<i></i><b>x2</b><span></span>'}bf.querySelector('span').textContent=t}}
+</script>
+<script>
+/* 도감: 팝업으로 크게 */
+let dexOpen=false;
+function dexPopRender(){const pop=$('#dexPop');if(!pop)return;const body=pop.querySelector('.dpbody');const st=body.scrollTop;body.innerHTML='';renderDex(body);body.scrollTop=st}
+function openDex(){let pop=$('#dexPop');if(!pop){pop=document.createElement('div');pop.id='dexPop';pop.innerHTML='<div class="dpw"><div class="dphead"><b>도감</b><button class="dpx" aria-label="닫기">✕</button></div><div class="dpbody"></div></div>';document.body.appendChild(pop);
+  pop.querySelector('.dpx').onclick=()=>{dexOpen=false;pop.hidden=true;sfx('ui');renderPanel()};pop.addEventListener('click',e=>{if(e.target===pop)pop.querySelector('.dpx').click()})}
+  dexOpen=true;pop.hidden=false;dexPopRender()}
+{const _rp=renderPanel;renderPanel=function(){if(tab==='dungeon'&&advTab==='dex'){advTab='dun';_rp();openDex();return}_rp();if(dexOpen)dexPopRender()}}
 </script>
