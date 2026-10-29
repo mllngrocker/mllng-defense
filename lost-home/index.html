@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#141022">
+<meta name="theme-color" content="#2a76e8">
 <title>잃어버린 고향을 찾아서</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Black+Han+Sans&family=Jua&display=swap">
@@ -538,6 +538,19 @@ html,body{height:100%;height:100dvh}body{box-sizing:border-box;overflow:hidden}
 .row .inf span{font-size:12.5px!important}
 .buy{padding:0 4px!important;min-width:86px}
 .row canvas.upic{border:3px solid var(--olc)!important;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--sb) 55%,#fff) 0,var(--sb) 50%,color-mix(in srgb,var(--sb) 50%,#000) 100%)!important}
+
+/* fresh arctic palette */
+body{background:linear-gradient(180deg,#3fa2ff 0%,#2a76e8 45%,#1f5cc8 100%) fixed!important;background-image:radial-gradient(rgba(255,255,255,.14) 1.5px,transparent 1.7px),linear-gradient(180deg,#3fa2ff 0%,#2a76e8 45%,#1f5cc8 100%)!important;background-size:18px 18px,100% 100%!important}
+#field{box-shadow:0 4px 0 rgba(10,30,90,.45)!important}
+.vh2,.vrow2{}
+#phead .lbl{color:#1d44a0!important;text-shadow:none!important}
+.note.empty{color:#1d44a0!important;text-shadow:none!important}
+#list .row .inf span{color:#2f8a3a}
+#victory{background:radial-gradient(circle at 50% 30%,rgba(60,140,255,.92),rgba(10,30,90,.96))!important}
+#away{background:radial-gradient(circle at 50% 28%,rgba(70,110,230,.94),rgba(10,24,80,.97))!important}
+#gacha{background:radial-gradient(circle at 50% 40%,rgba(70,120,255,.93),rgba(10,24,80,.97))!important}
+.slot canvas,.sic canvas{background:radial-gradient(circle at 50% 35%,#cfeaff,#6aa8ec)!important;border-color:#13306e!important}
+.me canvas{background:#8fd0ff!important}
 /* gear categories */
 .eqline{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important}
 .slot{font:inherit;cursor:pointer;padding:2px 2px 4px!important;gap:1px!important;color:#fff!important}
@@ -2361,9 +2374,9 @@ function dmgRender(dt){DMG=DMG.filter(n=>(n.t+=dt)<1.1);
     x.globalAlpha=alpha||1;poly(0);x.fillStyle='#140c0a';x.fill();
     poly(4);x.save();x.clip();x.fillStyle=band;x.fillRect(0,0,48,48);const g=x.createLinearGradient(0,4,0,36);g.addColorStop(0,top);g.addColorStop(1,bot);x.fillStyle=g;x.fillRect(0,0,48,37);
     x.fillStyle=hi;x.fillRect(0,4,48,4);x.restore();return`url(${c.toDataURL()})`}
-  const F={yel:['#ffe866','#ffbe22','#e48a0c','rgba(255,255,240,.75)'],dark:['#3c3560','#2c2648','#1a1630','rgba(255,255,255,.14)',.92],red:['#ff7c6a','#ec4048','#b2222e','rgba(255,220,210,.6)'],
+  const F={yel:['#ffe866','#ffbe22','#e48a0c','rgba(255,255,240,.75)'],dark:['#4a86f0','#2f62d0','#1d44a0','rgba(255,255,255,.35)'],red:['#ff7c6a','#ec4048','#b2222e','rgba(255,220,210,.6)'],
     grey:['#c4c0d2','#9a96ae','#74708a','rgba(255,255,255,.5)'],green:['#9cf06a','#52c83c','#2c9426','rgba(240,255,220,.6)'],blue:['#78d2ff','#3a92f2','#2462c4','rgba(220,245,255,.6)'],
-    panel:['#9a9cf0','#7476d8','#5a5abc','rgba(255,255,255,.35)'],card:['#fffaf0','#f6e8cc','#dcc69c','rgba(255,255,255,.9)']};
+    panel:['#e4f5ff','#c2e6ff','#94cdf6','rgba(255,255,255,.9)'],card:['#fffaf0','#f6e8cc','#dcc69c','rgba(255,255,255,.9)']};
   Object.entries(F).forEach(([n,a])=>R0.setProperty('--cf-'+n,frame(...a)))})();
 
 /* ================= lobby splash: full-screen pixel scene ================= */
