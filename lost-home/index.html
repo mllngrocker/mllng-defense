@@ -4416,16 +4416,3 @@ Object.assign(DSTY,{
  normH:{size:34,fill:['#ffffff','#ffc0e8','#ff3aa8'],st:'#24021a',sw:8},critH:{size:48,fill:['#ffffff','#ffc0e8','#ff3aa8','#a00a5a'],st:'#24021a',sw:10}});
 {const _n=num;num=function(x,y,v,kind,...a){if((kind==='norm'||kind==='crit')&&v>=1e8){kind=kind+(v>=1e20?'H':v>=1e16?'K':v>=1e12?'J':'E')}return _n(x,y,v,kind,...a)}}
 </script>
-<script>
-/* 치명타 숫자 겉 이펙트: 색 후광 + 반짝이 + 퍼지는 링 */
-const CGLOW={crit:'255,170,40',critE:'255,90,20',critJ:'170,60,255',critK:'40,230,140',critH:'255,60,170'};
-{const _dr=dmgRender;dmgRender=function(dt){
-  DMG.forEach(n=>{const c=CGLOW[n.kind];if(!c)return;const d=DSTY[n.kind],t=n.t;const base=n.y-n.stack*d.size*.88-(t>.55?(t-.55)/.55*30:0),a=t>.75?Math.max(0,1-(t-.75)/.35):1,cx=n.x+n.jit;
-    const w=d.size*(n.str.length*.42+.6),pop=t<.12?.5+t/.12*.7:1.2-Math.min(.2,(t-.12));X.save();X.globalCompositeOperation='lighter';
-    X.globalAlpha=a*.8;const g=X.createRadialGradient(cx,base,2,cx,base,w*pop);g.addColorStop(0,`rgba(${c},.75)`);g.addColorStop(.55,`rgba(${c},.25)`);g.addColorStop(1,`rgba(${c},0)`);X.fillStyle=g;X.beginPath();X.ellipse(cx,base,w*pop,d.size*.95*pop,0,0,7);X.fill();
-    if(t<.4){const u=t/.4;X.globalAlpha=a*(1-u);X.strokeStyle=`rgba(${c},1)`;X.lineWidth=4*(1-u)+1;X.beginPath();X.ellipse(cx,base,w*(.6+u*.9),d.size*(.5+u*.7),0,0,7);X.stroke()}
-    X.globalAlpha=a;for(let i=0;i<6;i++){const an=i/6*Math.PI*2+(n.jit||0)+t*2.5,r=w*(.7+.35*Math.sin(t*9+i*1.7)),sx=cx+Math.cos(an)*r,sy=base+Math.sin(an)*d.size*.8,s=(3+2*Math.sin(t*14+i))*(1-t*.6);
-      X.fillStyle=i%2?'#ffffff':`rgba(${c},1)`;X.beginPath();X.moveTo(sx,sy-s*2);X.lineTo(sx+s*.5,sy-s*.5);X.lineTo(sx+s*2,sy);X.lineTo(sx+s*.5,sy+s*.5);X.lineTo(sx,sy+s*2);X.lineTo(sx-s*.5,sy+s*.5);X.lineTo(sx-s*2,sy);X.lineTo(sx-s*.5,sy-s*.5);X.closePath();X.fill()}
-    X.restore()});
-  _dr(dt)}}
-</script>
