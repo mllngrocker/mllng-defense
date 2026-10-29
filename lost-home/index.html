@@ -2523,9 +2523,9 @@ const LOGOS={
   // gloss on 찾아서
   x.save();x.font=`150px ${LHF}`;x.textAlign='center';x.textBaseline='middle';const m=document.createElement('canvas');m.width=704;m.height=400;const q=m.getContext('2d');q.font=x.font;q.textAlign='center';q.textBaseline='middle';q.fillText('찾아서',352,212);q.globalCompositeOperation='source-in';q.fillStyle='rgba(255,255,255,.55)';q.beginPath();q.ellipse(352,170,250,22,0,0,7);q.fill();x.drawImage(m,0,0);x.restore();
   // pill badge
-  const bw=250,bh=50,bx=352-bw/2,by=300;const rr=(X,Y,W,H,R)=>{x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+W,Y,X+W,Y+H,R);x.arcTo(X+W,Y+H,X,Y+H,R);x.arcTo(X,Y+H,X,Y,R);x.arcTo(X,Y,X+W,Y,R);x.closePath()};
+  const bw=330,bh=46,bx=352-bw/2,by=302;const rr=(X,Y,W,H,R)=>{x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+W,Y,X+W,Y+H,R);x.arcTo(X+W,Y+H,X,Y+H,R);x.arcTo(X,Y+H,X,Y,R);x.arcTo(X,Y,X+W,Y,R);x.closePath()};
   rr(bx-6,by-6,bw+12,bh+16,30);x.fillStyle=OL;x.fill();rr(bx,by,bw,bh,25);const g=x.createLinearGradient(0,by,0,by+bh);g.addColorStop(0,'#ffe680');g.addColorStop(1,'#ffbf2a');x.fillStyle=g;x.fill();
-  x.font=`28px ${LHF}`;x.fillStyle=OL;x.textAlign='center';x.textBaseline='middle';x.fillText('백곰 방치형 RPG',352,by+bh/2+2);
+  x.font=`22px ${LHF}`;x.fillStyle=OL;x.textAlign='center';x.textBaseline='middle';x.fillText("A POLAR BEAR'S JOURNEY",352,by+bh/2+2);
   [[118,72,14],[600,150,11],[96,236,9]].forEach(([a,b,r])=>{x.fillStyle='#fff8d0';x.beginPath();for(let i=0;i<8;i++){const an=i/8*Math.PI*2,rr2=i%2?r*.32:r;x.lineTo(a+Math.cos(an)*rr2,b+Math.sin(an)*rr2)}x.closePath();x.fill()})},
  old(x){const HF=LHF;x.save();x.translate(320,206);x.rotate(-.05);
   x.beginPath();const N=18;for(let i=0;i<N*2;i++){const a=i/(N*2)*Math.PI*2,r=i%2?150:182,rx=r*1.62;x.lineTo(Math.cos(a)*rx,Math.sin(a)*r*.82)}x.closePath();
