@@ -463,6 +463,12 @@ body{background:#1c1530!important;background-image:radial-gradient(#2a2148 1.5px
 #bossBtn span{display:flex;flex-direction:column;align-items:flex-start;color:#fff;text-shadow:var(--o4)}#bossBtn small{font-size:11px;color:#ffe066}
 @keyframes bbp{from{transform:scale(1)}to{transform:scale(1.07)}}
 .ltop{display:flex;justify-content:space-between;align-items:center;align-self:stretch}.lhome{font-size:12px;color:#fff;text-decoration:none;text-shadow:var(--o4);padding:2px 10px;border:6px solid transparent;border-image:var(--cf-dark) 16 fill / 6px stretch}
+#mission{position:relative!important;left:auto!important;bottom:auto!important;width:100%!important;flex:none;box-sizing:border-box;margin:0;padding:2px 6px!important;gap:8px!important;cursor:pointer}
+#mission .mn{font-size:14px!important;padding:2px 7px!important}
+#mission .mt b{font-size:15px!important;color:#fff;text-shadow:var(--o4)}
+#mission .mb{height:9px!important}
+#mission .mr{font-size:15px!important}
+#bossBtn{bottom:8px!important}
 /* gear categories */
 .eqline{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important}
 .slot{font:inherit;cursor:pointer;padding:2px 2px 4px!important;gap:1px!important;color:#fff!important}
@@ -525,12 +531,12 @@ body{background:#1c1530!important;background-image:radial-gradient(#2a2148 1.5px
     <div id="sbar"><div class="st"><span id="sname">1-1 쓰레기 해변</span><span id="sprog">0/10</span></div><div class="tr"><div id="sfill"></div></div><div id="sdots"></div></div>
     <div id="buff" hidden></div>
     <div id="log"></div>
-    <button id="mission"><span class="mn" id="mNum">1</span><span class="mt"><b id="mTxt">몹 10마리 처치</b><i class="mb"><em id="mFill"></em></i></span><span class="mr" id="mRew">30</span></button>
     <div id="skills"><button id="auto" class="on">AUTO</button></div>
     <button id="bossBtn" hidden>보스 도전</button>
     <div id="toast"></div>
     <div id="modal" hidden><div class="box"><h3 id="mT"></h3><p id="mP"></p><div class="big" id="mB"></div><button id="mOk">받기</button></div></div>
   </div>
+  <button id="mission"><span class="mn" id="mNum">1</span><span class="mt"><b id="mTxt">몹 10마리 처치</b><i class="mb"><em id="mFill"></em></i></span><span class="mr" id="mRew">30</span></button>
   <div id="panel"><div id="phead"></div><div id="list"></div></div>
   <div id="gacha" hidden>
     <div class="gwrap">
@@ -1829,7 +1835,7 @@ function render(rdt){
   const bi=bear.a.cv[bear.f];drawSpr(bear.fl>0?whiteOf(bi):bi,bear.x-BAX,GY-BG,bear.dead?.4+.3*Math.sin(T*20):1);
   px.forEach(p=>{if(p.smoke){const u=p.t/p.life,r=p.r0*(1+u*1.6);L.globalAlpha=(1-u)*.85;L.fillStyle=p.c;L.beginPath();L.arc(Math.round(p.x),Math.round(p.y),r,0,7);L.fill();return}L.globalAlpha=Math.min(1,(1-p.t/p.life)*1.6);L.fillStyle=p.c;L.fillRect(Math.round(p.x),Math.round(p.y),p.s,p.s)});L.globalAlpha=1;
   drawFront(L,ch(),scroll);
-  L.fillStyle='#1c1424';L.fillRect(bear.x-10,GY+5,20,4);L.fillStyle='#7bdc4f';L.fillRect(bear.x-9,GY+6,Math.round(18*clamp(bear.hp/MAXHP(),0,1)),2);
+
   mobs.forEach(m=>{if(m.dead||m.boss||m.hp>=m.max)return;const y=Math.round(GY-m.fr.ay+2-m.air);L.fillStyle='#1c1424';L.fillRect(Math.round(m.x-10),y,20,3);L.fillStyle='#ff4d5e';L.fillRect(Math.round(m.x-9),y+1,Math.round(18*clamp(m.hp/m.max,0,1)),1)});
   shake*=Math.pow(.003,rdt);flash=Math.max(0,flash-rdt*2.4);const sx=Math.round(rnd(-1,1)*shake),sy=Math.round(rnd(-1,1)*shake);
   X.setTransform(1,0,0,1,0,0);X.imageSmoothingEnabled=false;X.fillStyle='#000';X.fillRect(0,0,cv.width,cv.height);X.drawImage(lo,sx,sy,VW*K,VH*K);bgOverlay();
@@ -2626,7 +2632,11 @@ function petSim(dt){const live=mobs.filter(m=>!m.dead).sort((a,b)=>a.x-b.x),f=li
     if(d<5){const cr=Math.random()*100<stat('crit');if(s.pierce)mobs.filter(m=>!m.dead&&m.x-s.tg.x<60&&m.x>=s.tg.x-4).forEach(m=>hitTarget(m,s.mult,cr,'cleave'));else hitTarget(s.tg,s.mult,cr,'cleave');
       for(let k=0;k<5;k++)px.push({x:s.x,y:s.y,vx:rnd(-60,60),vy:rnd(-80,20),g:200,life:.3,t:0,c:s.col,s:1});return false}
     const sp=s.v*dt;s.x+=dx/d*sp-curWS*dt;s.y+=dy/d*sp;if(Math.random()<.5)px.push({x:s.x,y:s.y,vx:-10,vy:rnd(-5,5),g:0,life:.2,t:0,c:s.col,s:1});return true})}
-function drawFront(L2){if(S.eq.c==='aurora'&&!bear.dead){const t=auraT;for(let r=0;r<3;r++){L2.fillStyle=['rgba(90,232,200,.32)','rgba(122,184,255,.26)','rgba(200,156,255,.22)'][r];
+function bearHpBar(L2){if(bear.dead)return;const r=clamp(bear.hp/MAXHP(),0,1),x=Math.round(bear.x-15),y=GY-50,w=30;
+  L2.fillStyle='#140c0a';L2.fillRect(x-1,y-1,w+2,6);L2.fillStyle='#3a2030';L2.fillRect(x,y,w,4);
+  const c=r>.5?'#5ee05a':r>.25?'#ffc43d':'#ff4d5e';L2.fillStyle=c;L2.fillRect(x,y,Math.round(w*r),4);L2.fillStyle='rgba(255,255,255,.55)';L2.fillRect(x,y,Math.round(w*r),1);
+  if(r<.25&&Math.sin(T*12)>0){L2.fillStyle='rgba(255,77,94,.35)';L2.fillRect(x-1,y-1,w+2,6)}}
+function drawFront(L2){bearHpBar(L2);if(S.eq.c==='aurora'&&!bear.dead){const t=auraT;for(let r=0;r<3;r++){L2.fillStyle=['rgba(90,232,200,.32)','rgba(122,184,255,.26)','rgba(200,156,255,.22)'][r];
     for(let x=0;x<26;x++){const xx=bear.x-34+x,y=GY-30-r*5+Math.sin(x*.35+t*4+r*1.7)*3,h=6+Math.sin(x*.5-t*3+r)*2.5;L2.fillRect(Math.round(xx),Math.round(y),1,Math.round(h))}}
     if(Math.sin(t*2.3)>.92){L2.fillStyle='#fff';const sx=bear.x+Math.round(Math.sin(t*7)*10),sy=GY-46;L2.fillRect(sx,sy-2,1,5);L2.fillRect(sx-2,sy,5,1)}}S.peq.forEach((id,i)=>{if(!id)return;const st=petSt[i]||{},F=petFrames(id),pp=petPos(i),fly=PET_FLY[PETS[id].sp];
     const f=Math.floor((st.t||0)*6)%4,hop=!fly&&curWS>0?Math.round(Math.abs(Math.sin((st.t||0)*6))*-3):0,lg=st.lg>0?3:0;
