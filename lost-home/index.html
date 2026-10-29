@@ -1735,9 +1735,9 @@ const ACCI=()=>[S.eq.a1,S.eq.a2].filter(Boolean);const ACC=()=>ACCI().map(k=>ITE
 const ATK=()=>stat('atk')*GMUL[W().g]*EM(S.eq.w)*lvMul()*(1+(PBf('atk')+PBf('all'))/100),MAXHP=()=>stat('hp')*lvMul()*(1+(COS_HP[COSV()]||0)*(S.eq.c?EM(S.eq.c):1)+ACCI().reduce((a,k)=>a+(ITEMS[k].hp||0)*EM(k),0))*(1+(PBf('hp')+PBf('all'))/100);
 const ASPD=()=>stat('aspd')*(1+ACCI().reduce((a,k)=>a+(ITEMS[k].spd||0)*EM(k),0))*(1+(PBf('aspd')+PBf('all'))/100);
 const KIND_MUL={blunt:1,gun:.45,star:.8,book:1.4},RANGE={blunt:0,gun:118,star:104,book:124},KIND_TXT={blunt:'근접 타격',gun:'사격',star:'투척',book:'마법'};
-const KILLS=20;const QUOTA=g=>24+Math.floor(g/10)*3;let eShots=[];
+const KILLS=20;const QUOTA=g=>40+Math.floor(g/10)*6;let eShots=[];
 const RANGED={bottle:'#5ac8ff',gull:'#ffffff',ember:'#ff8a1a',vulture:'#d8b070',cactus:'#8ad870',drone:'#ffd23a',eel:'#c88aff',cctv:'#ff3040',smog:'#9a9aa4',canary:'#d8ff5a',flame:'#ff8a1a',zapbird:'#fff05a',acidcloud:'#9aff3a',acidfrog:'#b06ad8',mosquito:'#ff5a7a',fuse:'#ffe066',moth:'#e0d0a0'};
-const mobHp=g=>110*Math.pow(1.305,g),mobAtk=g=>18*Math.pow(1.225,g),mobGold=g=>6*Math.pow(1.145,g),needExp=l=>12*Math.pow(1.22,l);
+const mobHp=g=>120*Math.pow(1.36,g),mobAtk=g=>18*Math.pow(1.245,g),mobGold=g=>6*Math.pow(1.145,g),needExp=l=>12*Math.pow(1.22,l);
 const ch=()=>Math.floor(S.g/10),theme=()=>THEMES[ch()%THEMES.length],stageName=g=>`${Math.floor(g/10)+1}-${g%10+1}`;
 const chBgm=()=>['beach','forest','desert','oil','city','mine','fire','acid','swamp','final'][ch()%10];
 const stageBoss=g=>{const s=g%10;return s===4?'mid0':s===8?'mid1':s===9?'fin':(s===2||s===6)?'elite':'none'};const effG=()=>S.g%10===9&&mode!=='boss'?S.g-1:S.g;
@@ -1770,7 +1770,7 @@ function spawnWave(){const th=theme();
   const t=stageBoss(S.g),q=QUOTA(S.g),bs=S.g%10===9;
   if(!bs&&t!=='none'&&S.kills>=q){const m=t==='elite'?mkMob(pick(th.mobs),1.5,7,true,'elite'):mkMob(th.mids[t==='mid0'?0:1],1.8,22,true,'mid');m.guard=1;m.x=214;mobs.push(m);
     for(let i=0;i<2;i++){const e=mkMob(pick(th.mobs),1,.9,false);e.x=196+i*18;mobs.push(e)}banner(t==='elite'?'정예 출현!':'중간 보스 출현!','#ff8a3a');sfx('boss');return}
-  const n=S.kills>=q-3&&!bs?4:6;for(let i=0;i<n;i++){const m=mkMob(pick(th.mobs),1,.85,false);m.x=192+i*19;mobs.push(m)}}
+  const n=S.kills>=q-3&&!bs?5:7;for(let i=0;i<n;i++){const m=mkMob(pick(th.mobs),1,.85,false);m.x=192+i*19;mobs.push(m)}}
 function bossName(m){return(m.tier==='elite'?'정예 ':'')+MOBNAME[m.type]}
 function enterBoss(){mode='boss';sfx('boss');setBgm(ch()%10===9?'final':'boss');bossMax=bossT=60;eShots=[];mobs.forEach(m=>{if(!m.dead){m.dead=1;m.dt=0;m.noLoot=1}});$('#bossBtn').hidden=true;
   banner('챕터 보스!','#ff4d5e');shake=8;if(bear.name!==runName()){UP()?play(bear,'walk2'):play(bear,'drop',()=>play(bear,'run'))}runT=0}
