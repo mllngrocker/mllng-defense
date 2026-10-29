@@ -634,7 +634,9 @@ canvas.gshine{animation:gsh2 2.2s ease-in-out infinite}@keyframes gsh2{50%{filte
 .atop{width:260px!important;height:140px!important}#aBear{width:250px!important;height:145px!important;margin-bottom:-10px!important;animation:none!important}
 .zz.z1{left:70px!important;top:40px!important}.zz.z2{left:84px!important;top:26px!important}.zz.z3{left:98px!important;top:14px!important}.amoon{left:-10px!important}
 .asub{margin-top:2px!important}#away .vpanel{width:100%;box-sizing:border-box}
-#field{width:auto!important;max-width:100%!important;height:min(calc((100vw - 24px)*200/180),calc(100dvh - 352px))!important;max-height:none!important;aspect-ratio:180/200!important;margin:0 auto!important}
+#field{aspect-ratio:auto!important;max-height:none!important;width:100%!important}
+#nav button span{white-space:nowrap}@media (max-width:380px){#nav button{font-size:12px!important}#nav button canvas{width:26px!important;height:26px!important}}
+.me canvas{width:24px!important;height:24px!important}.me .nm{font-size:13px!important}.me .xb{height:5px!important}.wal{gap:1px!important}.wal .pill{font-size:11.5px!important;border-width:4px!important}.wal .pill b{width:12px!important;height:12px!important}.hbtn{font-size:12px!important;border-width:5px!important}
 </style>
 
 <section id="lobby" class="screen">
@@ -1838,7 +1840,7 @@ const ICONC={};function iconCanvas(id){return ICONC[id]||(ICONC[id]=raster(itemP
 
 /* ---------- runtime ---------- */
 const K=3,cv=$('#cv'),X=cv.getContext('2d');const lo=document.createElement('canvas');lo.width=VW;lo.height=VH+20;const L=lo.getContext('2d');L.imageSmoothingEnabled=false;
-const GY=GYv,BX=44,OY=20,OYK=OY*K;cv.height=(VH+OY)*K;
+const GY=GYv,BX=44;let OY=20,OYK=OY*K;cv.height=(VH+OY)*K;
 function play(e,name,onEnd,onEv){e.a=e.set[name];e.name=name;e.f=0;e.t=0;e.onEnd=onEnd||null;e.onEv=onEv||null;ev0(e)}
 function ev0(e){const v=e.a.ev&&e.a.ev[e.f];if(v&&e.onEv)e.onEv(v)}
 function step(e,dt){if(!e.a)return;e.t+=dt;const fd=1/e.a.fps;while(e.t>=fd){e.t-=fd;e.f++;if(e.f>=e.a.cv.length){if(e.a.loop)e.f=0;else{e.f=e.a.cv.length-1;const cb=e.onEnd;e.onEnd=null;if(cb)cb();return}}ev0(e)}}
@@ -4342,4 +4344,22 @@ function showNameBox(first){let box=$('#nameBox');if(!box){box=document.createEl
 {const _gg=goGame;goGame=function(...a){const r=_gg(...a);if(!S.named)setTimeout(()=>showNameBox(!S.name),400);return r}}
 /* 레벨 칸 누르면 이름 바꾸기 */
 document.querySelector('.me')&&document.querySelector('.me').addEventListener('click',()=>{if(screen==='game')showNameBox(false)});
+</script>
+<script>
+/* ================= 화면 맞춤: 전투 화면은 가로 꽉, 아래 강화 목록은 딱 2칸 ================= */
+function fitField(){const G=$('#game'),F=$('#field'),P=$('#panel');if(!G||G.hidden||!F||!P||tab!=='grow')return;
+  const kids=[...G.children].filter(e=>e!==F&&e!==P&&getComputedStyle(e).display!=='none'&&getComputedStyle(e).position!=='absolute'&&getComputedStyle(e).position!=='fixed');
+  const gs=getComputedStyle(G),gap=parseFloat(gs.rowGap||gs.gap)||4;
+  const other=kids.reduce((a,e)=>a+e.getBoundingClientRect().height,0)+gap*(kids.length+1)+parseFloat(gs.paddingTop||0)+parseFloat(gs.paddingBottom||0);
+  const row=document.querySelector('#list .row');const rh=row?row.getBoundingClientRect().height:58;const ph=$('#phead');const phH=ph&&ph.offsetHeight?ph.offsetHeight+4:0;
+  const panelH=Math.ceil(rh*2+4+14+phH);
+  const W=F.clientWidth||G.clientWidth;let H=Math.floor(G.clientHeight-other-panelH-6);
+  let oy=Math.round(H/W*VW-VH);oy=Math.max(0,Math.min(110,oy));const fh=Math.round(W*(VH+oy)/VW);
+  if(oy!==OY){OY=oy;OYK=OY*K;lo.height=VH+OY;cv.height=(VH+OY)*K;L.imageSmoothingEnabled=false}
+  F.style.height=fh+'px';P.style.flex='1 1 auto';P.style.minHeight='0';
+  /* 2차 보정: 목록이 2칸보다 많이 보이면 그만큼 전투 화면을 키움 */
+  if(!fitField._r){const rows=[...document.querySelectorAll('#list .row')],Lb=$('#list').getBoundingClientRect().bottom;if(rows[1]){const extra=Lb-rows[1].getBoundingClientRect().bottom-8;if(Math.abs(extra)>3){fitField._r=1;const W2=F.clientWidth;let oy2=Math.round((fh+extra)/W2*VW-VH);oy2=Math.max(0,Math.min(130,oy2));if(oy2!==OY){OY=oy2;OYK=OY*K;lo.height=VH+OY;cv.height=(VH+OY)*K}F.style.height=Math.round(W2*(VH+OY)/VW)+'px';fitField._r=0}}}}
+addEventListener('resize',()=>setTimeout(fitField,60));
+{const _gg=goGame;goGame=function(...a){const r=_gg(...a);setTimeout(fitField,30);setTimeout(fitField,400);return r}}
+{let t=0;const _rp=renderPanel;renderPanel=function(){_rp();clearTimeout(t);t=setTimeout(fitField,20)}}
 </script>
