@@ -63,11 +63,12 @@ function step(dt){
   m.y=m.fly?GY-(70+Math.sin(performance.now()/600+m.seed)*10)*K:GY;
   if(m.atk>=0){m.atk+=dt/.45;if(!m.done&&m.atk>=.5){m.done=true;if(m.ranged){shots.push({x:m.x-20*K,y:m.y-ART_H[m.arch]*.45*K*m.size,vx:-300*K,col:m.a,dmg:m.dmg});sfx('shot');}else if(!bear.dead)hurtBear(m.dmg);}if(m.atk>=1)m.atk=-1;}
   m.cd-=dt;if(!moving&&m.x<=stop+6*K&&m.cd<=0&&m.atk<0&&!bear.dead){m.atk=0;m.done=false;m.cd=m.tier===2?1.6:1.4;}}
- for(let i=shots.length-1;i>=0;i--){const s=shots[i];s.x+=s.vx*dt;if(s.x<BX+18*K){if(!bear.dead)hurtBear(s.dmg);sparks(s.x,s.y,6,s.col,200);shots.splice(i,1);}}
+ for(let i=shots.length-1;i>=0;i--){const s=shots[i];s.x+=s.vx*dt;if(s.pet){if(petShotHit(s))shots.splice(i,1);continue;}if(s.x<BX+18*K){if(!bear.dead)hurtBear(s.dmg);sparks(s.x,s.y,6,s.col,200);shots.splice(i,1);}}
+ stepSkills(dt);stepPet(dt);
  stepFx(dt);
 }
 /* ---------- render ---------- */
-const bearWithSwing=(c,m)=>{drawBear(c,m);drawSwing(c,m);};
+const bearWithSwing=(c,m)=>{const h=HERO();h.draw(c,m);h.swing(c,m);};
 function shadow(x,w){fc.fillStyle='rgba(10,20,40,.28)';fc.beginPath();fc.ellipse(x,GY+2*K,w,w*.22,0,0,TAU);fc.fill();}
 const stageEl=$('#stage');
 function render(t){
@@ -81,14 +82,16 @@ function render(t){
  for(const m of sorted){const dd=m.dead?m.dt/.35:0;const s=K*m.size*(1+dd*.3);
   drawEnt(fc,ART[m.arch],{t,ph:m.ph,atk:m.atk,a:m.a,b:m.b,sub:m.sub,seed:m.seed,id:m.id},m.x,m.y,s,m.dead?1:m.hit,1-dd);
   if(!m.dead&&m.tier!==2&&m.hp<m.max){const w=44*K*m.size,y=m.y-(ART_H[m.arch]+14)*K*m.size;fc.fillStyle='rgba(10,15,30,.6)';rr(fc,m.x-w/2-1,y-1,w+2,7,3.5);fc.fill();fc.fillStyle=m.tier?'#ffb03a':'#ff5b6e';rr(fc,m.x-w/2,y,w*clamp(m.hp/m.max,0,1),5,2.5);fc.fill();}}
+drawPet(fc,t);
  if(!bear.dead||Math.floor(t*10)%2)drawEnt(fc,bearWithSwing,{t,ph:bear.ph,walk:bear.walk,atk:bear.atk},BX,GY,K*.95,bear.hit*.7,bear.dead?.5:1);
  fc.globalCompositeOperation='lighter';for(const s of shots){const g=fc.createRadialGradient(s.x,s.y,0,s.x,s.y,12*K);g.addColorStop(0,'#fff');g.addColorStop(.4,s.col);g.addColorStop(1,'rgba(0,0,0,0)');fc.fillStyle=g;fc.beginPath();fc.arc(s.x,s.y,12*K,0,TAU);fc.fill();}
  fc.globalCompositeOperation='source-over';
+ drawSkills(fc,t);
  drawFx(fc,K);
  // bear hp bar
  const bw=60*K,by=GY+12*K;fc.fillStyle='rgba(10,15,30,.55)';rr(fc,BX-bw/2-1,by-1,bw+2,8,4);fc.fill();const hpk=clamp(bear.hp/MAXHP(),0,1);
  const hg=fc.createLinearGradient(BX-bw/2,0,BX+bw/2,0);hg.addColorStop(0,'#5fd35a');hg.addColorStop(1,'#c3ff79');fc.fillStyle=hpk<.3?'#ff5b6e':hg;rr(fc,BX-bw/2,by,bw*hpk,6,3);fc.fill();
  // boss bar
- if(boss&&!boss.dead){const w=W*.7,x=(W-w)/2,y=H-34*K;fc.font=`${15*K}px Jal, sans-serif`;fc.textAlign='center';fc.lineWidth=4;fc.strokeStyle='#1a1028';fc.strokeText(boss.name,W/2,y-8);fc.fillStyle='#ffd0d6';fc.fillText(boss.name,W/2,y-8);
+ if(boss&&!boss.dead){const w=W*.7,x=(W-w)/2,y=Math.max(120,H*.3);fc.font=`${15*K}px Jal, sans-serif`;fc.textAlign='center';fc.lineWidth=4;fc.strokeStyle='#1a1028';fc.strokeText(boss.name,W/2,y-8);fc.fillStyle='#ffd0d6';fc.fillText(boss.name,W/2,y-8);
   fc.fillStyle='rgba(10,10,25,.7)';rr(fc,x-2,y-2,w+4,14,7);fc.fill();const bg2=fc.createLinearGradient(x,0,x+w,0);bg2.addColorStop(0,'#ff3d5a');bg2.addColorStop(1,'#ff9a6a');fc.fillStyle=bg2;rr(fc,x,y,w*clamp(boss.hp/boss.max,0,1),10,5);fc.fill();}
 }

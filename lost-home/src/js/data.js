@@ -9,7 +9,8 @@ function fmt(n){n=Math.floor(n);if(n<1e4)return n.toLocaleString('en-US');
 
 /* ---------- save ---------- */
 const KEY='lost-home-v3';
-const S0={gold:0,gem:0,lv:1,exp:0,g:0,kills:0,best:0,up:{atk:0,hp:0,regen:0,crit:0,critd:0,aspd:0},farm:false,snd:true,mult:1,started:false,t:0,stats:{kills:0,bosses:0,gold:0,play:0}};
+const S0={gold:0,gem:300,lv:1,exp:0,g:0,kills:0,best:0,up:{atk:0,hp:0,regen:0,crit:0,critd:0,aspd:0},farm:false,snd:true,mult:1,started:false,t:0,stats:{kills:0,bosses:0,gold:0,play:0},
+ inv:{plank:{n:1,lv:0}},eq:{w:'plank',a:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear'};
 let S=JSON.parse(JSON.stringify(S0));
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S=Object.assign(S,s,{up:Object.assign(S.up,s.up||{}),stats:Object.assign(S.stats,s.stats||{})});}catch(e){}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -26,7 +27,7 @@ const UPS=[
 ];
 const stat=k=>UPS.find(u=>u.k===k).val(S.up[k]);
 const lvMul=()=>1+.03*(S.lv-1);
-const ATK=()=>stat('atk')*lvMul(), MAXHP=()=>stat('hp')*lvMul(), REGEN=()=>stat('regen')*lvMul();
+const ATK=()=>stat('atk')*lvMul()*gearMul('w'), MAXHP=()=>stat('hp')*lvMul()*gearMul('a'), REGEN=()=>stat('regen')*lvMul();
 const KILLS=20;
 const mobHp=g=>36*Math.pow(1.36,g), mobAtk=g=>9*Math.pow(1.245,g), mobGold=g=>6*Math.pow(1.145,g), mobExp=g=>3*Math.pow(1.14,g), needExp=l=>12*Math.pow(1.22,l);
 

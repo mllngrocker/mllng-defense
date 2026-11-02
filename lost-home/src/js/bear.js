@@ -23,12 +23,6 @@ function bearPose(m){const t=m.t||0,k=BEAR_KEY;let a,w,lean=0;
   else{const e=ease((p-.52)/.48);a=lerp(k.hit.a,k.rest.a,e);w=lerp(k.hit.w,k.rest.w,e);lean=.16*(1-e);}}
  else{a=k.rest.a+Math.sin(t*2)*.04;w=k.rest.w+Math.sin(t*2)*.03;}
  return{a,w,lean};}
-function drawPlank(c,len){ // grip at origin, blade toward -y
- rr(c,-5,-len,10,len+6,2.5);const g=c.createLinearGradient(-5,0,5,0);g.addColorStop(0,'#8a5a30');g.addColorStop(.45,'#c99060');g.addColorStop(1,'#7a4a24');c.fillStyle=g;c.fill();
- c.lineWidth=1.6;c.strokeStyle=FUR.line;c.stroke();c.strokeStyle='rgba(70,40,15,.45)';c.lineWidth=.9;
- for(const x of[-2,1.5]){c.beginPath();c.moveTo(x,-len+3);c.bezierCurveTo(x+1.5,-len*.6,x-1.5,-len*.3,x,4);c.stroke();}
- for(const y of[-len+7,-len*.5]){ell(c,0,y,1.4,1.4);c.fillStyle='#9aa0a8';c.fill();}
- rr(c,-6,-7,12,13,2);c.fillStyle='#3e4a5e';c.fill();c.strokeStyle='rgba(255,255,255,.18)';for(let i=0;i<3;i++){c.beginPath();c.moveTo(-6,-5+i*4);c.lineTo(6,-3+i*4);c.stroke();}}
 function drawBear(c,m){
  const t=m.t||0,ph=m.ph||0,walk=m.walk||0,br=Math.sin(t*2)*.8,{a,w,lean}=bearPose(m);
  const bob=Math.abs(Math.cos(ph))*2.5*walk,sw=Math.sin(ph)*.5*walk;
@@ -50,7 +44,7 @@ function drawBear(c,m){
  c.lineJoin='round';for(const q of parts){q.p();c.lineWidth=2.4;c.strokeStyle=FUR.line;c.stroke();}
  // 2) fills
  for(const q of parts){
-  if(q.arm){c.save();c.translate(paw[0],paw[1]);c.rotate(-(w-Math.PI));drawPlank(c,58);c.restore();}
+  if(q.arm){c.save();c.translate(paw[0],paw[1]);c.rotate(-(w-Math.PI));drawWeapon(c,curWeapon(),t);c.restore();}
   q.p();c.save();if(q.head){c.shadowColor='rgba(90,100,125,.3)';c.shadowBlur=6;c.shadowOffsetY=2;}
   c.fillStyle=furGrad(c,q.y[0],q.y[1],q.d);c.fill();c.restore();
   c.save();q.p();c.clip();furStrokes(c,-40,q.y[0],46,q.y[1],q.torso?150:q.head?40:26,q.y[0]*13+q.d*99,q.torso?1.2:q.head?.25:1.5);
@@ -80,8 +74,14 @@ function drawSwing(c,m){if(!(m.atk>=.32&&m.atk<.8))return;
  const p1=Math.min(m.atk,.52),p0=Math.max(.3,p1-.2),fade=m.atk<.52?1:1-(m.atk-.52)/.28;if(p1-p0<.01)return;
  const N=16,out=[],inn=[];for(let i=0;i<=N;i++){const k=i/N,[o,n]=swingPts(p0+(p1-p0)*k,m.t);out.push(o);inn.push([lerp(o[0],n[0],Math.pow(k,.7)),lerp(o[1],n[1],Math.pow(k,.7))]);}
  const poly=(A,B)=>{c.beginPath();c.moveTo(A[0][0],A[0][1]);for(const q of A)c.lineTo(q[0],q[1]);for(let i=B.length-1;i>=0;i--)c.lineTo(B[i][0],B[i][1]);c.closePath();};
+ // trail colour follows the weapon grade (C keeps the warm orange)
+ const g=curWeapon().g,[r,gg,bb]=g?hexRGB(GCOL[g]).map(v=>Math.round(v*255)):[255,130,35];
  c.save();c.globalCompositeOperation='lighter';
- poly(out,inn);c.shadowColor='rgba(255,120,30,.9)';c.shadowBlur=18;c.fillStyle=`rgba(255,130,35,${.55*fade})`;c.fill();c.shadowBlur=0;
- const mid=out.map((o,i)=>[lerp(o[0],inn[i][0],.45),lerp(o[1],inn[i][1],.45)]);poly(out,mid);c.fillStyle=`rgba(255,225,150,${.8*fade})`;c.fill();
+ poly(out,inn);c.shadowColor=`rgb(${r},${gg},${bb})`;c.shadowBlur=18;c.fillStyle=`rgba(${r},${gg},${bb},${.55*fade})`;c.fill();c.shadowBlur=0;
+ const mid=out.map((o,i)=>[lerp(o[0],inn[i][0],.45),lerp(o[1],inn[i][1],.45)]);poly(out,mid);c.fillStyle=`rgba(${Math.min(255,r+90)},${Math.min(255,gg+90)},${Math.min(255,bb+90)},${.8*fade})`;c.fill();
  const core=out.map((o,i)=>[lerp(o[0],inn[i][0],.18),lerp(o[1],inn[i][1],.18)]);poly(out,core);c.fillStyle=`rgba(255,255,255,${.95*fade})`;c.fill();
  c.restore();}
+
+/* playable characters: add new heroes here (draw + swing trail); S.hero picks one */
+const HEROES={bear:{name:'백곰',draw:drawBear,swing:drawSwing}};
+const HERO=()=>HEROES[S.hero]||HEROES.bear;
