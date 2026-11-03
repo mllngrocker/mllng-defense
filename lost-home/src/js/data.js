@@ -10,7 +10,7 @@ function fmt(n){n=Math.floor(n);if(n<1e4)return n.toLocaleString('en-US');
 /* ---------- save ---------- */
 const KEY='lost-home-v3';
 const S0={gold:0,gem:300,lv:1,exp:0,g:0,kills:0,best:0,up:{atk:0,hp:0,regen:0,crit:0,critd:0,aspd:0},farm:false,snd:true,mult:1,started:false,t:0,stats:{kills:0,bosses:0,gold:0,play:0},
- inv:{plank:{n:1,lv:0}},eq:{w:'plank',a:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear'};
+ inv:{plank:{n:1,lv:0}},eq:{w:'plank',a:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear',dun:{},stone:0};
 let S=JSON.parse(JSON.stringify(S0));
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S=Object.assign(S,s,{up:Object.assign(S.up,s.up||{}),stats:Object.assign(S.stats,s.stats||{})});}catch(e){}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}

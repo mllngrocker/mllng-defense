@@ -107,6 +107,29 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 #mbox.wide{max-width:420px}.res{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:6px}
 .res .ibox{width:auto;height:auto;aspect-ratio:1;animation:flip .45s backwards}.res .ibox .new{position:absolute;right:-3px;top:-4px;padding:0 4px;border-radius:6px;background:#ff4a6a;color:#fff;font:9px var(--f-title)}
 @keyframes flip{from{transform:rotateY(90deg) scale(.6);opacity:0}}
+#dunbtn{position:absolute;right:52px;bottom:28px;z-index:6;height:34px;padding:0 12px;border-radius:12px;font:13px var(--f-title);color:#4a2c00;background:linear-gradient(#ffe57a,#ffbf2a);box-shadow:0 3px 0 #c88a0e}
+#dunpanel{display:none;flex:1;padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
+body[data-dun] #tabs,body[data-dun] #ptools,body[data-dun] #plist,body[data-dun] #stagebox,body[data-dun] #dunbtn,body[data-dun] #bossbtn{display:none!important}
+body[data-dun] #dunpanel{display:block}
+#dunhud{height:100%;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;color:#fff}
+#dunhud .dname{font:26px var(--f-title);letter-spacing:1px;text-shadow:0 2px 0 rgba(0,0,0,.3),0 0 20px var(--dc)}#dunhud .dsub{font-size:12px;opacity:.85}
+#dunhud .dtime{font:58px var(--f-title);line-height:1;margin-top:6px;text-shadow:0 0 24px var(--dc)}#dunhud .dtime small{font-size:18px;margin-left:3px}
+#dunhud .dbar{width:80%;height:10px;flex:none}#dunhud .dbar b{background:var(--dc);box-shadow:0 0 12px var(--dc)}
+#dunhud .dearn{font:20px var(--f-title);margin-top:4px}#dunhud .ghost{margin-top:auto}
+body[data-dun="gold"]{--dc:#ffcf3d}body[data-dun="gem"]{--dc:#b98aff}body[data-dun="stone"]{--dc:#ff7a2a}
+body[data-dun="gold"] #panel{background:radial-gradient(120% 100% at 50% 0%,#6a4a10,#2a1a04)}
+body[data-dun="gem"] #panel{background:radial-gradient(120% 100% at 50% 0%,#3a2a8a,#0e0a2a)}
+body[data-dun="stone"] #panel{background:radial-gradient(120% 100% at 50% 0%,#6a2408,#1a0804)}
+body[data-dun] .pill{border-color:var(--dc);box-shadow:0 0 12px color-mix(in srgb,var(--dc) 50%,transparent)}
+#wipe{position:absolute;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;background:linear-gradient(110deg,transparent 0%,var(--dc) 20%,#140a04 40%,#140a04 60%,var(--dc) 80%,transparent 100%);background-size:300% 100%;background-position:100% 0}
+#wipe.go{animation:wipe 1.4s ease-in-out forwards}#wipe div{text-align:center;color:#fff;opacity:0}#wipe.go div{animation:wipet 1.4s forwards}
+#wipe b{display:block;font:34px var(--f-title);text-shadow:0 0 24px var(--dc)}#wipe small{font-size:13px;opacity:.85}
+@keyframes wipe{0%{background-position:100% 0}45%,55%{background-position:50% 0}100%{background-position:0% 0}}
+@keyframes wipet{0%,25%{opacity:0;transform:scale(1.3)}40%,65%{opacity:1;transform:scale(1)}85%,100%{opacity:0}}
+.dunlist{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.dcard{display:grid;grid-template-columns:1fr auto;align-items:center;text-align:left;padding:12px 14px;border-radius:14px;color:#fff;background:linear-gradient(120deg,color-mix(in srgb,var(--dc) 70%,#000),#1a1430);box-shadow:0 0 14px color-mix(in srgb,var(--dc) 40%,transparent)}
+.dcard b{font:17px var(--f-title)}.dcard small{grid-column:1;font-size:11px;opacity:.85}.dcard span{grid-row:1/3;grid-column:2;font:13px var(--f-title);padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.2)}
+.dcard.done{filter:grayscale(.85);opacity:.6}
 #setbtn{position:absolute;right:10px;bottom:28px;z-index:6;width:34px;height:34px;border-radius:12px;background:rgba(10,20,45,.55);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
 #setbtn svg{width:20px;height:20px}
 </style>
@@ -128,18 +151,21 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   </div>
   <div id="banner"></div><div id="toast"></div>
   <div id="skillbar"></div>
+  <button id="dunbtn">⛏ 던전</button>
   <button id="setbtn" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
  </div>
  <div id="panel">
   <div id="tabs"><button class="tab on" data-tab="up">강화</button><button class="tab" data-tab="gear">장비</button><button class="tab" data-tab="skill">스킬</button><button class="tab" data-tab="pet">펫</button><button class="tab" data-tab="gacha">뽑기</button><button class="tab" data-tab="info">기록</button></div>
   <div id="ptools"><span id="phint">길게 누르면 연속 강화</span><span class="sp"></span><div class="seg" id="mult"><button data-m="1" class="on">x1</button><button data-m="10">x10</button><button data-m="0">MAX</button></div></div>
   <div id="plist"></div>
+  <div id="dunpanel"></div>
  </div>
  <div id="lobby" class="screen">
   <canvas id="lbg"></canvas><canvas id="lfg"></canvas>
   <div id="ltitle"><div class="t1">잃어버린 고향을</div><div class="t2">찾아서</div><div class="t3">A POLAR BEAR'S JOURNEY</div></div>
   <div id="lbtns"><div id="lsub">처음 시작하는 모험</div><button class="big" id="startbtn">모험 시작</button><button class="ghost" id="backarc">← 오락실로</button></div>
  </div>
+ <div id="wipe" hidden><div><b></b><small></small></div></div>
  <div id="modal" hidden><div id="mbox"><h2 id="mtitle"></h2><p id="mtext"></p><div id="mbtns"></div></div></div>
 </div>
 <script>
@@ -155,7 +181,7 @@ function fmt(n){n=Math.floor(n);if(n<1e4)return n.toLocaleString('en-US');
 /* ---------- save ---------- */
 const KEY='lost-home-v3';
 const S0={gold:0,gem:300,lv:1,exp:0,g:0,kills:0,best:0,up:{atk:0,hp:0,regen:0,crit:0,critd:0,aspd:0},farm:false,snd:true,mult:1,started:false,t:0,stats:{kills:0,bosses:0,gold:0,play:0},
- inv:{plank:{n:1,lv:0}},eq:{w:'plank',a:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear'};
+ inv:{plank:{n:1,lv:0}},eq:{w:'plank',a:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear',dun:{},stone:0};
 let S=JSON.parse(JSON.stringify(S0));
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S=Object.assign(S,s,{up:Object.assign(S.up,s.up||{}),stats:Object.assign(S.stats,s.stats||{})});}catch(e){}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -293,6 +319,7 @@ float farH(float x){
  if(is(8.))return .06+.05*fbm1(x*2.5);
  if(is(9.)){float c=floor(x*8.),f=fract(x*8.);return .06+.1*h1(c)+((f<.18&&h1(c+3.)>.55)?.13:0.);}
  if(is(11.)){float c=floor(x*6.),f=fract(x*6.);float hh=.07+.17*h1(c);return h1(c+2.)>.35?hh+max(0.,.1*(1.-abs(f-.5)*5.)):.05+.03*fbm1(x*4.);}
+  if(is(13.)||is(14.)||is(15.))return .26+.12*fbm1(x*2.);
  if(is(12.))return .1+.12*fbm1(x*1.2)+.05*max(0.,1.-abs(fract(x*3.)-.5)*6.)*step(.5,h1(floor(x*3.)));
  return .02+.13*pow(max(0.,sin(x*1.3)*.5+.5),3.)*(.6+.4*vn1(x*6.))+.03*vn1(x*9.);
 }
@@ -325,6 +352,9 @@ float nearMask(vec2 q,out float s,out float g){
   float rk=step(y,.02+.02*vn1(x*9.));g=exp(-length(vec2(f,y-hh))*45.)*sp*.6;return max(sp,rk);}
  if(is(12.)){float c=floor(x*1.3),f=fract(x*1.3)-.5;float rib=step(abs(length(vec2(f*2.4,y*4.2))-1.),.07)*step(0.,y)*step(.4,h1(c));
   float sk=step(length(vec2(f-.3,y-.03)*vec2(1.,1.3)),.035)*step(.6,h1(c+3.));return max(max(rib,sk),step(y,.015+.015*vn1(x*12.)));}
+ if(is(13.)){float h=.05*pow(vn1(x*2.4),1.5)+.02*vn1(x*11.);g=step(.93,h2(floor(vec2(x*90.,y*90.))))*step(y,h)*(.6+.4*sin(uT*5.+x*40.));s=vn1(x*30.+y*20.);return step(y,h);}
+ if(is(14.)){float c=floor(x*4.),f=fract(x*4.)-.5;float hh=.06+.14*h1(c);float cr=step(abs(f-.1*(h1(c+2.)-.5)),.06*(1.-y/hh))*step(y,hh);g=cr*(.4+.3*sin(uT*2.+c));s=cr;return max(cr,step(y,.012));}
+ if(is(15.)){float c=floor(x*1.4),f=fract(x*1.4)-.5;float an=step(abs(f),.12)*step(.05,y)*step(y,.08)+step(abs(f),.05)*step(y,.05);float ch=step(abs(f-.3),.006)*step(.06,y);g=exp(-length(vec2(f,y-.09))*30.)*.6;return max(an,ch);}
  return 0.;
 }
 vec3 weather(vec2 p,vec3 col){
@@ -332,6 +362,7 @@ vec3 weather(vec2 p,vec3 col){
  for(int L=0;L<3;L++){
   float fl=float(L),sc=16.-fl*4.;vec2 vel=vec2(0.);float sz=.06;vec3 pc=vec3(1.);float sh=0.,ga=.8,add=0.;
   if(abs(uWx-1.)<.5){vel=vec2(-.06,-.05);sz=.09;pc=mix(vec3(.95,.6,.2),vec3(.5,.75,.3),h1(fl));sh=2.;}
+  else if(abs(uWx-12.)<.5){vel=vec2(0.,.04);sz=.04;pc=vec3(1.,.85,.35);ga=1.;add=1.;}
   else if(abs(uWx-11.)<.5){vel=vec2(-.08,-.06);sz=.08;pc=mix(vec3(1.,.2,.35),vec3(1.,.6,.7),h1(fl+2.));sh=2.;}
   else if(abs(uWx-2.)<.5){vel=vec2(-.5,-.02);sz=.04;pc=vec3(1.,.88,.65);sh=1.;ga=.5;}
   else if(abs(uWx-3.)<.5){vel=vec2(-.02,.03);sz=.05;pc=vec3(.9,.6,1.);ga=.35;add=1.;}
@@ -374,7 +405,7 @@ void main(){
   if(is(4.)){vec2 w=vec2(fx*80.,uv.y*120.);fc+=vec3(1.,.85,.5)*step(.85,h2(floor(w)))*.25;}
   if(is(10.))fc=mix(fc,vec3(.9,.97,1.),smoothstep(0.,.03,d)*.5);
   col=mix(col,fc,smoothstep(0.,.004,d));}
- if(is(5.)){float c=floor(p.x*6.+uScroll*.3),f=fract(p.x*6.+uScroll*.3)-.5;float top=1.-(.06+.14*pow(h2(vec2(c,1.)),2.)*(1.-abs(f)*2.));col=mix(col,uNear*.8,step(top,uv.y));}
+ if(is(5.)||is(13.)||is(14.)||is(15.)){float c=floor(p.x*6.+uScroll*.3),f=fract(p.x*6.+uScroll*.3)-.5;float top=1.-(.06+.14*pow(h2(vec2(c,1.)),2.)*(1.-abs(f)*2.));col=mix(col,uNear*.8,step(top,uv.y));}
  col=mix(col,uFog,exp(-abs(uv.y-hz)*14.)*.35);
  // sea
  if(uSeaOn>.5&&uv.y<hz&&uv.y>=gy-.02){float k=(hz-uv.y)/(hz-gy+.001);float persp=1./(k+.08);
@@ -1244,6 +1275,52 @@ function kingWings(c,t){const f=Math.sin(t*3)*.15;for(const s of[1,.85]){c.save(
  const g=c.createLinearGradient(-86,0,0,0);g.addColorStop(0,'#3a0612');g.addColorStop(1,'#140408');c.fillStyle=g;c.fill();c.lineWidth=2;c.strokeStyle='rgba(18,12,20,.9)';c.stroke();
  c.strokeStyle='rgba(255,60,80,.5)';c.lineWidth=1.2;c.beginPath();c.moveTo(0,0);c.lineTo(-80,-46);c.moveTo(-30,-40);c.lineTo(-86,-8);c.moveTo(-30,-40);c.lineTo(-70,14);c.stroke();c.restore();}}
 
+/* ---------- daily dungeons: gold / gem / stone. Each can be cleared once per day ----------
+ Entering swaps the background theme, weather, HUD colours and the whole bottom panel (body[data-dun]). */
+const DUNS={
+ gold:{n:'황금 보물 동굴',sub:'골드 던전',d:'45초 동안 몰려오는 보물 도깨비를 잡아 골드를 왕창 모아요',limit:45,col:'#ffcf3d',reward:'골드',
+  th:{name:'황금 보물 동굴',sky:['#1a1006','#3a2408','#8a5a10'],sun:['#ffd060',.5,.18,.06],far:'#3a2a10',near:'#c8901a',gnd:['#6a4a14','#3a280a'],sea:null,sil:13,wx:12,fog:'#c8901a',rays:.8}},
+ gem:{n:'수정 광맥',sub:'보석 던전',d:'30초 안에 거대 수정 골렘을 최대한 때려 보석을 캐요',limit:30,col:'#b98aff',reward:'보석',
+  th:{name:'수정 광맥',sky:['#06061a','#14143a','#2a2a6a'],sun:['#a8f0ff',.5,.2,.05],far:'#141030',near:'#3a2a7a',gnd:['#2a2450','#140f2a'],sea:null,sil:14,wx:9,fog:'#6a4aff',rays:.9}},
+ stone:{n:'대장간 용광로',sub:'강화석 던전',d:'40초 동안 버티며 몬스터를 쓰러뜨려 강화석을 모아요',limit:40,col:'#ff7a2a',reward:'강화석',
+  th:{name:'대장간 용광로',sky:['#120604','#3a1206','#a03a0a'],sun:['#ffb050',.5,.35,.08],far:'#2a0e06',near:'#1a0a06',gnd:['#3a2016','#1e100a'],sea:'#ff5a10',sil:15,wx:6,fog:'#ff6a2a',rays:.5}},
+};
+Object.assign(MOBS,{goldgob:['보물 도깨비','walker','goblin','#e8b830','#fff2a0',''],crystgiant:['거대 수정 골렘','golem','crystal','#3a2a6a','#9af0ff','']});
+const today=()=>{const d=new Date();return`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;};
+const dunDone=k=>S.dun[k]===today();
+let dun=null; // {k,t,earn,dmg}
+function enterDungeon(k){if(dunDone(k)||dun)return;const D=DUNS[k];$('#modal').hidden=true;
+ const w=$('#wipe');w.querySelector('b').textContent=D.n;w.querySelector('small').textContent=D.sub;w.style.setProperty('--dc',D.col);w.hidden=false;w.classList.remove('go');void w.offsetWidth;w.classList.add('go');
+ setTimeout(()=>{dun={k,t:D.limit,earn:0,dmg:0,spawn:0};document.body.dataset.dun=k;for(const m of mobs)m.dead=true,m.dt=.3;mobs.length=0;boss=null;shots.length=0;pshots.length=0;
+  bear.dead=false;bear.hp=MAXHP();curTheme=-1;bgStage.theme(D.th);if(k==='gem'){const g=mkMob('crystgiant',BX+170*K,2);g.hp=g.max=1e300;g.dmg=mobAtk(S.best)*.6;mobs.push(g);}
+  renderDunPanel();sfx('boss');},450);
+ setTimeout(()=>{w.hidden=true;},1400);}
+function stepDungeon(dt){const D=DUNS[dun.k];dun.t-=dt;
+ if(dun.k!=='gem'){dun.spawn-=dt;const live=mobs.filter(m=>!m.dead).length;
+  if(dun.spawn<=0&&live<(dun.k==='gold'?7:5)){dun.spawn=dun.k==='gold'?.45:.9;const id=dun.k==='gold'?'goldgob':pick(['flame','boiler','charstump','lslime','transformer']);
+   const m=mkMob(id,W+30*K+rnd(0,60)*K,dun.k==='stone'&&Math.random()<.15?1:0);const g=Math.max(0,S.best-2);m.hp=m.max=mobHp(g)*(dun.k==='gold'?.6:1.4);m.dmg=mobAtk(g)*(dun.k==='gold'?.3:1);if(dun.k==='gold')m.spd*=1.4;mobs.push(m);}}
+ if(dun.t<=0)endDungeon(true);
+ renderDunHud();}
+// called from killMob/hitMob/hurtBear while a dungeon is running
+function dunKill(m){const g=Math.max(0,S.best-2);
+ if(dun.k==='gold'){const v=mobGold(g)*6*(1+PB('gold')/100);dun.earn+=v;num(m.x,m.y-60*K,'+'+fmt(v),'gold');for(let i=0;i<6;i++)part({x:m.x,y:m.y-30*K,vx:rnd(-160,160),vy:rnd(-420,-200),g:1100,life:1,ml:1,size:5.5*K,type:'coin',rot:rnd(0,6),vr:9,tx:GOLDX,ty:GOLDY,drag:.99});}
+ if(dun.k==='stone'){const b=Math.floor(dun.earn);dun.earn+=m.tier?1:1/3;if(Math.floor(dun.earn)>b)num(m.x,m.y-60*K,'+1 강화석','gold');}}
+function dunHit(m,d){if(dun&&dun.k==='gem'){dun.dmg+=d;dun.earn=Math.min(400,Math.floor(dun.dmg/(mobHp(Math.max(0,S.best-2))*3)));}}
+function endDungeon(ok){const D=DUNS[dun.k],k=dun.k,earn=Math.floor(dun.earn);S.dun[k]=today();
+ if(k==='gold')S.gold+=earn;else if(k==='gem')S.gem+=earn;else S.stone=(S.stone||0)+earn+(ok?5:0);
+ dun=null;delete document.body.dataset.dun;for(const m of mobs)m.dead=true,m.dt=.3;curTheme=-1;applyTheme();bear.hp=MAXHP();save();
+ tab='up';document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.tab==='up'));renderPanel();updateHud();
+ modal(ok?`${D.sub} 클리어!`:`${D.sub} 종료`,`<b style="font-size:20px;color:${shade(D.col,-.3)}">+${fmt(k==='stone'&&ok?earn+5:earn)} ${D.reward}</b><br><br>내일 다시 도전할 수 있어요.`,[['확인',null,1]]);sfx('clear');}
+function renderDunHud(){const e=$('#dunhud');if(!e||!dun)return;const D=DUNS[dun.k];e.querySelector('.dt').textContent=Math.ceil(dun.t);e.querySelector('.dbar b').style.width=(dun.t/D.limit*100)+'%';
+ e.querySelector('.de').textContent=`${fmt(Math.floor(dun.earn))} ${D.reward}`;}
+function renderDunPanel(){const D=DUNS[dun.k];$('#dunpanel').innerHTML=`<div id="dunhud"><div class="dname">${D.n}</div><div class="dsub">${D.sub} · ${D.d}</div>
+  <div class="dtime"><span class="dt">${D.limit}</span><small>초</small></div><div class="bar dbar"><b></b></div><div class="dearn">획득 <span class="de">0</span></div>
+  <button class="ghost" id="dunquit">포기하고 나가기</button></div>`;$('#dunquit').onclick=()=>modal('던전을 나갈까요?','지금까지 모은 보상을 받고 나가요. 오늘은 다시 들어올 수 없어요.',[['계속하기'],['나가기',()=>endDungeon(false),1]]);}
+function dungeonMenu(){const t=today();
+ modal('던전',`<div class="dunlist">${Object.keys(DUNS).map(k=>{const D=DUNS[k],done=S.dun[k]===t;return`<button class="dcard${done?' done':''}" data-dun="${k}" style="--dc:${D.col}"><b>${D.n}</b><small>${D.sub} · 보상: ${D.reward}</small><span>${done?'오늘 완료':'입장하기'}</span></button>`;}).join('')}</div>
+  <p style="font-size:11px;margin-top:8px">던전마다 하루에 한 번씩 들어갈 수 있어요. 강화석 ${fmt(S.stone||0)}개 보유</p>`,[['닫기']],1);
+ document.querySelectorAll('.dcard').forEach(b=>b.onclick=()=>{if(b.classList.contains('done')){toast('내일 다시 열려요');return;}enterDungeon(b.dataset.dun);});}
+
 /* ---------- effects: particles, damage numbers, hit flash, sound ---------- */
 let DPR=Math.min(window.devicePixelRatio||1,2);
 const parts=[],nums=[];
@@ -1340,10 +1417,10 @@ function bossFail(){if(!boss)return;boss=null;for(const m of mobs)m.dead=true,m.
 function stageClear(){S.g++;S.kills=0;S.best=Math.max(S.best,S.g);S.gem+=3;save();sfx('clear');
  if(S.g%200===0)modal('마왕 녹스를 쓰러뜨렸어요!','오염의 근원이 사라지고, 북극의 빙하가 다시 얼기 시작했어요.<br>백곰은 마침내 고향으로 돌아갑니다.<br><br><b>더 강해진 세계에서 여정이 다시 시작돼요.</b>',[['계속하기',null,1]]);
  const th=theme();banner(S.g%10===0?th.name:`STAGE ${stageName(S.g)}`,S.g%10===0?'#9fdcff':'#ffe27a');if(S.g%10===9)toast('다음은 챕터 보스 스테이지예요!');applyTheme();updateHud();}
-function applyTheme(){const i=Math.floor(S.g/10)%THEMES.length;if(i!==curTheme){curTheme=i;bgStage.theme(THEMES[i]);}}
+function applyTheme(){if(dun)return;const i=Math.floor(S.g/10)%THEMES.length;if(i!==curTheme){curTheme=i;bgStage.theme(THEMES[i]);}}
 function gainExp(v){S.exp+=v;let up=false;while(S.exp>=needExp(S.lv)){S.exp-=needExp(S.lv);S.lv++;S.gem+=10;up=true;}
  if(up){banner('LEVEL UP!','#8ae86a');sfx('level');bear.hp=MAXHP();ring(BX,GY,'#8ae86a',60*K,.6);sparks(BX,GY-60*K,20,'#b8ff8a',300);}}
-function killMob(m){m.dead=true;m.dt=0;const g=S.g,gold=mobGold(g)*(m.tier===2?25:m.tier===1?4:1)*(1+PB('gold')/100);S.gold+=gold;S.stats.gold+=gold;S.stats.kills++;gainExp(mobExp(g)*(m.tier===2?20:m.tier===1?3:1));
+function killMob(m){if(dun){m.dead=true;m.dt=0;debris(m.x,m.y-30*K,9,m.b,K);sparks(m.x,m.y-30*K,12,m.a,320);sfx('kill');dunKill(m);return;}m.dead=true;m.dt=0;const g=S.g,gold=mobGold(g)*(m.tier===2?25:m.tier===1?4:1)*(1+PB('gold')/100);S.gold+=gold;S.stats.gold+=gold;S.stats.kills++;gainExp(mobExp(g)*(m.tier===2?20:m.tier===1?3:1));
  const cx=m.x,cy=m.y-ART_H[m.arch]*.4*K*m.size;debris(cx,cy,m.tier?16:9,m.b,K);sparks(cx,cy,12,m.a,320);ring(cx,m.fly?cy:GY,'rgba(255,255,255,.8)',40*K*m.size);sfx('kill');
  for(let i=0,n=m.tier?8:3;i<n;i++)part({x:cx,y:cy,vx:rnd(-140,140),vy:rnd(-380,-180),g:1100,life:1,ml:1,size:5.5*K,type:'coin',rot:rnd(0,6),vr:9,tx:GOLDX,ty:GOLDY,drag:.99});
  num(cx,cy-20*K,'+'+fmt(gold),'gold');
@@ -1351,7 +1428,7 @@ function killMob(m){m.dead=true;m.dt=0;const g=S.g,gold=mobGold(g)*(m.tier===2?2
  if(!S.farm&&S.g%10!==9){S.kills++;if(S.kills>=KILLS)stageClear();}
  else if(!S.farm&&S.g%10===9){S.kills=Math.min(KILLS,S.kills+1);}
  updateHud();}
-function hitMob(m,dmg,crit){m.hp-=dmg;m.hit=1;m.kb+=(m.tier===2?3:14)*K*(crit?1.6:1);const cy=m.y-ART_H[m.arch]*.45*K*m.size;
+function hitMob(m,dmg,crit){m.hp-=dmg;dunHit(m,dmg);m.hit=1;m.kb+=(m.tier===2?3:14)*K*(crit?1.6:1);const cy=m.y-ART_H[m.arch]*.45*K*m.size;
  num(m.x,cy-ART_H[m.arch]*.3*K*m.size,dmg,crit?'crit':'');sparks(m.x-ART_W[m.arch]*K*m.size*.5,cy,crit?14:7,crit?'#ffe27a':'#ffffff',crit?380:260);
  if(crit){shake=Math.max(shake,6);hitstop=Math.max(hitstop,.05);sfx('crit');}else sfx('hit');if(m.hp<=0)killMob(m);}
 function front(){let best=null;for(const m of mobs)if(!m.dead&&(!best||m.x<best.x))best=m;return best;}
@@ -1362,7 +1439,7 @@ function bearHit(t,mul){const crit=Math.random()*100<stat('crit');const dmg=ATK(
 function fireProj(t){const w=curWeapon(),k=w.k,sp=k==='gun'?900:k==='throw'?520:420;
  pshots.push({kind:k,it:w,col:w.col,x:BX+(k==='gun'?50:30)*K,y:GY-(k==='gun'?72:k==='magic'?96:105)*K,tx:t.x,ty:t.y-ART_H[t.arch]*.45*K*t.size,sp:sp*K,spin:0,tg:t});sfx(k==='gun'?'shot':'buy');}
 function hurtBear(d,src){if(bear.dead)return;d*=1-Math.min(60,PB('def'))/100;if(src&&!src.dead&&PB('thorn'))hitMob(src,d*PB('thorn')/10,false);bear.hp-=d;bear.hit=1;num(BX,GY-110*K,d,'hurt');sfx('hurt');shake=Math.max(shake,3);
- if(bear.hp<=0){bear.dead=true;bear.deadT=1.6;bear.hp=0;dust(BX,GY,10,K);if(boss)bossFail();}}
+ if(bear.hp<=0){bear.dead=true;bear.deadT=1.6;bear.hp=0;dust(BX,GY,10,K);if(boss)bossFail();if(dun)endDungeon(false);}}
 function step(dt){
  S.stats.play+=dt;applyTheme();
  // bear
@@ -1388,8 +1465,9 @@ function step(dt){
    else if(p.kind==='throw'&&p.it.shape==='balloon'){ring(p.tx,p.ty,'#bfe8ff',30*K);sparks(p.tx,p.ty,12,'#bfe8ff',260);}continue;}
   p.x+=dx/d*st;p.y+=dy/d*st-(p.kind==='throw'?Math.sin(Math.min(1,(p.x-BX)/(p.tx-BX+1))*Math.PI)*60*K*dt:0);}
  // mobs
- if(!boss&&S.g%10===9&&!S.farm&&S.kills>=KILLS&&!mobs.some(m=>!m.dead))startBoss();
- if(!mobs.some(m=>!m.dead)&&!(S.g%10===9&&!S.farm&&S.kills>=KILLS))spawnWave();
+ if(dun)stepDungeon(dt);
+ else{if(!boss&&S.g%10===9&&!S.farm&&S.kills>=KILLS&&!mobs.some(m=>!m.dead))startBoss();
+ if(!mobs.some(m=>!m.dead)&&!(S.g%10===9&&!S.farm&&S.kills>=KILLS))spawnWave();}
  if(boss){bossT-=dt;if(bossT<=0)bossFail();stepBoss(boss,dt);}
  for(let i=mobs.length-1;i>=0;i--){const m=mobs[i];m.hit=Math.max(0,m.hit-dt*6);
   if(m.dead){m.dt+=dt;if(m.dt>.35)mobs.splice(i,1);continue;}
@@ -1462,6 +1540,7 @@ function updateHud(){
  $('#stsub').textContent=boss?'보스를 쓰러뜨리세요!':S.farm?'사냥 중 · 강해지면 다시 도전':bossStage?`보스까지 ${KILLS-S.kills}마리`:`${S.kills} / ${KILLS}`;
  $('#bossbtn').hidden=!(S.farm&&bossStage&&!boss);
  updateSkillbar();refreshPanel();}
+$('#dunbtn').onclick=()=>dungeonMenu();
 $('#bossbtn').onclick=()=>{S.farm=false;S.kills=KILLS;for(const m of mobs)m.dead=true,m.dt=.01;updateHud();};
 /* upgrade panel */
 let tab='up';
@@ -1528,6 +1607,7 @@ function itemPopup(k){const[id,g]=gsplit(k),it=ITEMS[id],o=S.inv[k];if(!o)return
   <p style="margin-top:10px;font-size:12px">같은 장비 ${MERGE_N}개를 합성하면 <b>${it.n} ${GRADES[Math.min(6,g+1)]}등급</b> 1개가 돼요.</p>`;
  const btns=[];if(!eq)btns.push(['장착',()=>{const hp=bear.hp/MAXHP();S.eq[it.s]=k;bear.hp=hp*MAXHP();save();renderPanel();},1]);
  btns.push([`강화 ${fmt(c)}`,()=>{if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;o.lv++;sfx('level');save();updateHud();renderPanel();itemPopup(k);}]);
+ if(S.stone>0)btns.push([`강화석 1개로 강화`,()=>{S.stone--;o.lv++;sfx('level');save();renderPanel();itemPopup(k);}]);
  if(canMerge(k))btns.push(['합성',()=>{const nk=merge(k);sfx('clear');banner(`${GRADES[g+1]}등급 ${it.n}!`,GCOL[g+1]);save();updateHud();renderPanel();itemPopup(nk);},1]);
  btns.push(['닫기']);modal(it.n,info,btns);}
 const PANEL={
@@ -1558,6 +1638,7 @@ function petPopup(k){const[id,g]=gsplit(k),P=PETS[id],o=S.pets[k];if(!o)return;c
   <p style="margin-top:10px;font-size:12px">같은 펫 ${MERGE_N}마리를 합성하면 <b>${P.n} ${GRADES[Math.min(6,g+1)]}등급</b>이 돼요.${g<3?' S등급부터 5번째 공격마다 펫 스킬이 나가요.':''}</p>`;
  const btns=[];if(S.pet!==k)btns.push(['함께하기',()=>{const hp=bear.hp/MAXHP();S.pet=k;pet.x=0;bear.hp=hp*MAXHP();save();renderPanel();},1]);
  btns.push([`강화 ${fmt(c)}`,()=>{if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;o.lv++;sfx('level');save();updateHud();renderPanel();petPopup(k);}]);
+ if(S.stone>0)btns.push([`강화석 1개로 강화`,()=>{S.stone--;o.lv++;sfx('level');save();renderPanel();petPopup(k);}]);
  if(canMergePet(k))btns.push(['합성',()=>{const nk=mergePet(k);sfx('clear');banner(`${GRADES[g+1]}등급 ${P.n}!`,GCOL[g+1]);renderPanel();petPopup(nk);},1]);
  btns.push(['닫기']);modal(`${P.n}`,info,btns);}
 

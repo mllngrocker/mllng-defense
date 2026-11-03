@@ -17,10 +17,10 @@ function bossFail(){if(!boss)return;boss=null;for(const m of mobs)m.dead=true,m.
 function stageClear(){S.g++;S.kills=0;S.best=Math.max(S.best,S.g);S.gem+=3;save();sfx('clear');
  if(S.g%200===0)modal('마왕 녹스를 쓰러뜨렸어요!','오염의 근원이 사라지고, 북극의 빙하가 다시 얼기 시작했어요.<br>백곰은 마침내 고향으로 돌아갑니다.<br><br><b>더 강해진 세계에서 여정이 다시 시작돼요.</b>',[['계속하기',null,1]]);
  const th=theme();banner(S.g%10===0?th.name:`STAGE ${stageName(S.g)}`,S.g%10===0?'#9fdcff':'#ffe27a');if(S.g%10===9)toast('다음은 챕터 보스 스테이지예요!');applyTheme();updateHud();}
-function applyTheme(){const i=Math.floor(S.g/10)%THEMES.length;if(i!==curTheme){curTheme=i;bgStage.theme(THEMES[i]);}}
+function applyTheme(){if(dun)return;const i=Math.floor(S.g/10)%THEMES.length;if(i!==curTheme){curTheme=i;bgStage.theme(THEMES[i]);}}
 function gainExp(v){S.exp+=v;let up=false;while(S.exp>=needExp(S.lv)){S.exp-=needExp(S.lv);S.lv++;S.gem+=10;up=true;}
  if(up){banner('LEVEL UP!','#8ae86a');sfx('level');bear.hp=MAXHP();ring(BX,GY,'#8ae86a',60*K,.6);sparks(BX,GY-60*K,20,'#b8ff8a',300);}}
-function killMob(m){m.dead=true;m.dt=0;const g=S.g,gold=mobGold(g)*(m.tier===2?25:m.tier===1?4:1)*(1+PB('gold')/100);S.gold+=gold;S.stats.gold+=gold;S.stats.kills++;gainExp(mobExp(g)*(m.tier===2?20:m.tier===1?3:1));
+function killMob(m){if(dun){m.dead=true;m.dt=0;debris(m.x,m.y-30*K,9,m.b,K);sparks(m.x,m.y-30*K,12,m.a,320);sfx('kill');dunKill(m);return;}m.dead=true;m.dt=0;const g=S.g,gold=mobGold(g)*(m.tier===2?25:m.tier===1?4:1)*(1+PB('gold')/100);S.gold+=gold;S.stats.gold+=gold;S.stats.kills++;gainExp(mobExp(g)*(m.tier===2?20:m.tier===1?3:1));
  const cx=m.x,cy=m.y-ART_H[m.arch]*.4*K*m.size;debris(cx,cy,m.tier?16:9,m.b,K);sparks(cx,cy,12,m.a,320);ring(cx,m.fly?cy:GY,'rgba(255,255,255,.8)',40*K*m.size);sfx('kill');
  for(let i=0,n=m.tier?8:3;i<n;i++)part({x:cx,y:cy,vx:rnd(-140,140),vy:rnd(-380,-180),g:1100,life:1,ml:1,size:5.5*K,type:'coin',rot:rnd(0,6),vr:9,tx:GOLDX,ty:GOLDY,drag:.99});
  num(cx,cy-20*K,'+'+fmt(gold),'gold');
@@ -28,7 +28,7 @@ function killMob(m){m.dead=true;m.dt=0;const g=S.g,gold=mobGold(g)*(m.tier===2?2
  if(!S.farm&&S.g%10!==9){S.kills++;if(S.kills>=KILLS)stageClear();}
  else if(!S.farm&&S.g%10===9){S.kills=Math.min(KILLS,S.kills+1);}
  updateHud();}
-function hitMob(m,dmg,crit){m.hp-=dmg;m.hit=1;m.kb+=(m.tier===2?3:14)*K*(crit?1.6:1);const cy=m.y-ART_H[m.arch]*.45*K*m.size;
+function hitMob(m,dmg,crit){m.hp-=dmg;dunHit(m,dmg);m.hit=1;m.kb+=(m.tier===2?3:14)*K*(crit?1.6:1);const cy=m.y-ART_H[m.arch]*.45*K*m.size;
  num(m.x,cy-ART_H[m.arch]*.3*K*m.size,dmg,crit?'crit':'');sparks(m.x-ART_W[m.arch]*K*m.size*.5,cy,crit?14:7,crit?'#ffe27a':'#ffffff',crit?380:260);
  if(crit){shake=Math.max(shake,6);hitstop=Math.max(hitstop,.05);sfx('crit');}else sfx('hit');if(m.hp<=0)killMob(m);}
 function front(){let best=null;for(const m of mobs)if(!m.dead&&(!best||m.x<best.x))best=m;return best;}
@@ -39,7 +39,7 @@ function bearHit(t,mul){const crit=Math.random()*100<stat('crit');const dmg=ATK(
 function fireProj(t){const w=curWeapon(),k=w.k,sp=k==='gun'?900:k==='throw'?520:420;
  pshots.push({kind:k,it:w,col:w.col,x:BX+(k==='gun'?50:30)*K,y:GY-(k==='gun'?72:k==='magic'?96:105)*K,tx:t.x,ty:t.y-ART_H[t.arch]*.45*K*t.size,sp:sp*K,spin:0,tg:t});sfx(k==='gun'?'shot':'buy');}
 function hurtBear(d,src){if(bear.dead)return;d*=1-Math.min(60,PB('def'))/100;if(src&&!src.dead&&PB('thorn'))hitMob(src,d*PB('thorn')/10,false);bear.hp-=d;bear.hit=1;num(BX,GY-110*K,d,'hurt');sfx('hurt');shake=Math.max(shake,3);
- if(bear.hp<=0){bear.dead=true;bear.deadT=1.6;bear.hp=0;dust(BX,GY,10,K);if(boss)bossFail();}}
+ if(bear.hp<=0){bear.dead=true;bear.deadT=1.6;bear.hp=0;dust(BX,GY,10,K);if(boss)bossFail();if(dun)endDungeon(false);}}
 function step(dt){
  S.stats.play+=dt;applyTheme();
  // bear
@@ -65,8 +65,9 @@ function step(dt){
    else if(p.kind==='throw'&&p.it.shape==='balloon'){ring(p.tx,p.ty,'#bfe8ff',30*K);sparks(p.tx,p.ty,12,'#bfe8ff',260);}continue;}
   p.x+=dx/d*st;p.y+=dy/d*st-(p.kind==='throw'?Math.sin(Math.min(1,(p.x-BX)/(p.tx-BX+1))*Math.PI)*60*K*dt:0);}
  // mobs
- if(!boss&&S.g%10===9&&!S.farm&&S.kills>=KILLS&&!mobs.some(m=>!m.dead))startBoss();
- if(!mobs.some(m=>!m.dead)&&!(S.g%10===9&&!S.farm&&S.kills>=KILLS))spawnWave();
+ if(dun)stepDungeon(dt);
+ else{if(!boss&&S.g%10===9&&!S.farm&&S.kills>=KILLS&&!mobs.some(m=>!m.dead))startBoss();
+ if(!mobs.some(m=>!m.dead)&&!(S.g%10===9&&!S.farm&&S.kills>=KILLS))spawnWave();}
  if(boss){bossT-=dt;if(bossT<=0)bossFail();stepBoss(boss,dt);}
  for(let i=mobs.length-1;i>=0;i--){const m=mobs[i];m.hit=Math.max(0,m.hit-dt*6);
   if(m.dead){m.dt+=dt;if(m.dt>.35)mobs.splice(i,1);continue;}

@@ -100,6 +100,29 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 #mbox.wide{max-width:420px}.res{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:6px}
 .res .ibox{width:auto;height:auto;aspect-ratio:1;animation:flip .45s backwards}.res .ibox .new{position:absolute;right:-3px;top:-4px;padding:0 4px;border-radius:6px;background:#ff4a6a;color:#fff;font:9px var(--f-title)}
 @keyframes flip{from{transform:rotateY(90deg) scale(.6);opacity:0}}
+#dunbtn{position:absolute;right:52px;bottom:28px;z-index:6;height:34px;padding:0 12px;border-radius:12px;font:13px var(--f-title);color:#4a2c00;background:linear-gradient(#ffe57a,#ffbf2a);box-shadow:0 3px 0 #c88a0e}
+#dunpanel{display:none;flex:1;padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
+body[data-dun] #tabs,body[data-dun] #ptools,body[data-dun] #plist,body[data-dun] #stagebox,body[data-dun] #dunbtn,body[data-dun] #bossbtn{display:none!important}
+body[data-dun] #dunpanel{display:block}
+#dunhud{height:100%;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;color:#fff}
+#dunhud .dname{font:26px var(--f-title);letter-spacing:1px;text-shadow:0 2px 0 rgba(0,0,0,.3),0 0 20px var(--dc)}#dunhud .dsub{font-size:12px;opacity:.85}
+#dunhud .dtime{font:58px var(--f-title);line-height:1;margin-top:6px;text-shadow:0 0 24px var(--dc)}#dunhud .dtime small{font-size:18px;margin-left:3px}
+#dunhud .dbar{width:80%;height:10px;flex:none}#dunhud .dbar b{background:var(--dc);box-shadow:0 0 12px var(--dc)}
+#dunhud .dearn{font:20px var(--f-title);margin-top:4px}#dunhud .ghost{margin-top:auto}
+body[data-dun="gold"]{--dc:#ffcf3d}body[data-dun="gem"]{--dc:#b98aff}body[data-dun="stone"]{--dc:#ff7a2a}
+body[data-dun="gold"] #panel{background:radial-gradient(120% 100% at 50% 0%,#6a4a10,#2a1a04)}
+body[data-dun="gem"] #panel{background:radial-gradient(120% 100% at 50% 0%,#3a2a8a,#0e0a2a)}
+body[data-dun="stone"] #panel{background:radial-gradient(120% 100% at 50% 0%,#6a2408,#1a0804)}
+body[data-dun] .pill{border-color:var(--dc);box-shadow:0 0 12px color-mix(in srgb,var(--dc) 50%,transparent)}
+#wipe{position:absolute;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;background:linear-gradient(110deg,transparent 0%,var(--dc) 20%,#140a04 40%,#140a04 60%,var(--dc) 80%,transparent 100%);background-size:300% 100%;background-position:100% 0}
+#wipe.go{animation:wipe 1.4s ease-in-out forwards}#wipe div{text-align:center;color:#fff;opacity:0}#wipe.go div{animation:wipet 1.4s forwards}
+#wipe b{display:block;font:34px var(--f-title);text-shadow:0 0 24px var(--dc)}#wipe small{font-size:13px;opacity:.85}
+@keyframes wipe{0%{background-position:100% 0}45%,55%{background-position:50% 0}100%{background-position:0% 0}}
+@keyframes wipet{0%,25%{opacity:0;transform:scale(1.3)}40%,65%{opacity:1;transform:scale(1)}85%,100%{opacity:0}}
+.dunlist{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.dcard{display:grid;grid-template-columns:1fr auto;align-items:center;text-align:left;padding:12px 14px;border-radius:14px;color:#fff;background:linear-gradient(120deg,color-mix(in srgb,var(--dc) 70%,#000),#1a1430);box-shadow:0 0 14px color-mix(in srgb,var(--dc) 40%,transparent)}
+.dcard b{font:17px var(--f-title)}.dcard small{grid-column:1;font-size:11px;opacity:.85}.dcard span{grid-row:1/3;grid-column:2;font:13px var(--f-title);padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.2)}
+.dcard.done{filter:grayscale(.85);opacity:.6}
 #setbtn{position:absolute;right:10px;bottom:28px;z-index:6;width:34px;height:34px;border-radius:12px;background:rgba(10,20,45,.55);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
 #setbtn svg{width:20px;height:20px}
 </style>
@@ -121,18 +144,21 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
   </div>
   <div id="banner"></div><div id="toast"></div>
   <div id="skillbar"></div>
+  <button id="dunbtn">⛏ 던전</button>
   <button id="setbtn" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
  </div>
  <div id="panel">
   <div id="tabs"><button class="tab on" data-tab="up">강화</button><button class="tab" data-tab="gear">장비</button><button class="tab" data-tab="skill">스킬</button><button class="tab" data-tab="pet">펫</button><button class="tab" data-tab="gacha">뽑기</button><button class="tab" data-tab="info">기록</button></div>
   <div id="ptools"><span id="phint">길게 누르면 연속 강화</span><span class="sp"></span><div class="seg" id="mult"><button data-m="1" class="on">x1</button><button data-m="10">x10</button><button data-m="0">MAX</button></div></div>
   <div id="plist"></div>
+  <div id="dunpanel"></div>
  </div>
  <div id="lobby" class="screen">
   <canvas id="lbg"></canvas><canvas id="lfg"></canvas>
   <div id="ltitle"><div class="t1">잃어버린 고향을</div><div class="t2">찾아서</div><div class="t3">A POLAR BEAR'S JOURNEY</div></div>
   <div id="lbtns"><div id="lsub">처음 시작하는 모험</div><button class="big" id="startbtn">모험 시작</button><button class="ghost" id="backarc">← 오락실로</button></div>
  </div>
+ <div id="wipe" hidden><div><b></b><small></small></div></div>
  <div id="modal" hidden><div id="mbox"><h2 id="mtitle"></h2><p id="mtext"></p><div id="mbtns"></div></div></div>
 </div>
 <!--SCRIPTS-->

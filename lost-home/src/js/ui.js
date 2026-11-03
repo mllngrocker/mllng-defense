@@ -24,6 +24,7 @@ function updateHud(){
  $('#stsub').textContent=boss?'보스를 쓰러뜨리세요!':S.farm?'사냥 중 · 강해지면 다시 도전':bossStage?`보스까지 ${KILLS-S.kills}마리`:`${S.kills} / ${KILLS}`;
  $('#bossbtn').hidden=!(S.farm&&bossStage&&!boss);
  updateSkillbar();refreshPanel();}
+$('#dunbtn').onclick=()=>dungeonMenu();
 $('#bossbtn').onclick=()=>{S.farm=false;S.kills=KILLS;for(const m of mobs)m.dead=true,m.dt=.01;updateHud();};
 /* upgrade panel */
 let tab='up';
@@ -90,6 +91,7 @@ function itemPopup(k){const[id,g]=gsplit(k),it=ITEMS[id],o=S.inv[k];if(!o)return
   <p style="margin-top:10px;font-size:12px">같은 장비 ${MERGE_N}개를 합성하면 <b>${it.n} ${GRADES[Math.min(6,g+1)]}등급</b> 1개가 돼요.</p>`;
  const btns=[];if(!eq)btns.push(['장착',()=>{const hp=bear.hp/MAXHP();S.eq[it.s]=k;bear.hp=hp*MAXHP();save();renderPanel();},1]);
  btns.push([`강화 ${fmt(c)}`,()=>{if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;o.lv++;sfx('level');save();updateHud();renderPanel();itemPopup(k);}]);
+ if(S.stone>0)btns.push([`강화석 1개로 강화`,()=>{S.stone--;o.lv++;sfx('level');save();renderPanel();itemPopup(k);}]);
  if(canMerge(k))btns.push(['합성',()=>{const nk=merge(k);sfx('clear');banner(`${GRADES[g+1]}등급 ${it.n}!`,GCOL[g+1]);save();updateHud();renderPanel();itemPopup(nk);},1]);
  btns.push(['닫기']);modal(it.n,info,btns);}
 const PANEL={
@@ -120,5 +122,6 @@ function petPopup(k){const[id,g]=gsplit(k),P=PETS[id],o=S.pets[k];if(!o)return;c
   <p style="margin-top:10px;font-size:12px">같은 펫 ${MERGE_N}마리를 합성하면 <b>${P.n} ${GRADES[Math.min(6,g+1)]}등급</b>이 돼요.${g<3?' S등급부터 5번째 공격마다 펫 스킬이 나가요.':''}</p>`;
  const btns=[];if(S.pet!==k)btns.push(['함께하기',()=>{const hp=bear.hp/MAXHP();S.pet=k;pet.x=0;bear.hp=hp*MAXHP();save();renderPanel();},1]);
  btns.push([`강화 ${fmt(c)}`,()=>{if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;o.lv++;sfx('level');save();updateHud();renderPanel();petPopup(k);}]);
+ if(S.stone>0)btns.push([`강화석 1개로 강화`,()=>{S.stone--;o.lv++;sfx('level');save();renderPanel();petPopup(k);}]);
  if(canMergePet(k))btns.push(['합성',()=>{const nk=mergePet(k);sfx('clear');banner(`${GRADES[g+1]}등급 ${P.n}!`,GCOL[g+1]);renderPanel();petPopup(nk);},1]);
  btns.push(['닫기']);modal(`${P.n}`,info,btns);}

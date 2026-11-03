@@ -21,6 +21,7 @@ float farH(float x){
  if(is(8.))return .06+.05*fbm1(x*2.5);
  if(is(9.)){float c=floor(x*8.),f=fract(x*8.);return .06+.1*h1(c)+((f<.18&&h1(c+3.)>.55)?.13:0.);}
  if(is(11.)){float c=floor(x*6.),f=fract(x*6.);float hh=.07+.17*h1(c);return h1(c+2.)>.35?hh+max(0.,.1*(1.-abs(f-.5)*5.)):.05+.03*fbm1(x*4.);}
+  if(is(13.)||is(14.)||is(15.))return .26+.12*fbm1(x*2.);
  if(is(12.))return .1+.12*fbm1(x*1.2)+.05*max(0.,1.-abs(fract(x*3.)-.5)*6.)*step(.5,h1(floor(x*3.)));
  return .02+.13*pow(max(0.,sin(x*1.3)*.5+.5),3.)*(.6+.4*vn1(x*6.))+.03*vn1(x*9.);
 }
@@ -53,6 +54,9 @@ float nearMask(vec2 q,out float s,out float g){
   float rk=step(y,.02+.02*vn1(x*9.));g=exp(-length(vec2(f,y-hh))*45.)*sp*.6;return max(sp,rk);}
  if(is(12.)){float c=floor(x*1.3),f=fract(x*1.3)-.5;float rib=step(abs(length(vec2(f*2.4,y*4.2))-1.),.07)*step(0.,y)*step(.4,h1(c));
   float sk=step(length(vec2(f-.3,y-.03)*vec2(1.,1.3)),.035)*step(.6,h1(c+3.));return max(max(rib,sk),step(y,.015+.015*vn1(x*12.)));}
+ if(is(13.)){float h=.05*pow(vn1(x*2.4),1.5)+.02*vn1(x*11.);g=step(.93,h2(floor(vec2(x*90.,y*90.))))*step(y,h)*(.6+.4*sin(uT*5.+x*40.));s=vn1(x*30.+y*20.);return step(y,h);}
+ if(is(14.)){float c=floor(x*4.),f=fract(x*4.)-.5;float hh=.06+.14*h1(c);float cr=step(abs(f-.1*(h1(c+2.)-.5)),.06*(1.-y/hh))*step(y,hh);g=cr*(.4+.3*sin(uT*2.+c));s=cr;return max(cr,step(y,.012));}
+ if(is(15.)){float c=floor(x*1.4),f=fract(x*1.4)-.5;float an=step(abs(f),.12)*step(.05,y)*step(y,.08)+step(abs(f),.05)*step(y,.05);float ch=step(abs(f-.3),.006)*step(.06,y);g=exp(-length(vec2(f,y-.09))*30.)*.6;return max(an,ch);}
  return 0.;
 }
 vec3 weather(vec2 p,vec3 col){
@@ -60,6 +64,7 @@ vec3 weather(vec2 p,vec3 col){
  for(int L=0;L<3;L++){
   float fl=float(L),sc=16.-fl*4.;vec2 vel=vec2(0.);float sz=.06;vec3 pc=vec3(1.);float sh=0.,ga=.8,add=0.;
   if(abs(uWx-1.)<.5){vel=vec2(-.06,-.05);sz=.09;pc=mix(vec3(.95,.6,.2),vec3(.5,.75,.3),h1(fl));sh=2.;}
+  else if(abs(uWx-12.)<.5){vel=vec2(0.,.04);sz=.04;pc=vec3(1.,.85,.35);ga=1.;add=1.;}
   else if(abs(uWx-11.)<.5){vel=vec2(-.08,-.06);sz=.08;pc=mix(vec3(1.,.2,.35),vec3(1.,.6,.7),h1(fl+2.));sh=2.;}
   else if(abs(uWx-2.)<.5){vel=vec2(-.5,-.02);sz=.04;pc=vec3(1.,.88,.65);sh=1.;ga=.5;}
   else if(abs(uWx-3.)<.5){vel=vec2(-.02,.03);sz=.05;pc=vec3(.9,.6,1.);ga=.35;add=1.;}
@@ -102,7 +107,7 @@ void main(){
   if(is(4.)){vec2 w=vec2(fx*80.,uv.y*120.);fc+=vec3(1.,.85,.5)*step(.85,h2(floor(w)))*.25;}
   if(is(10.))fc=mix(fc,vec3(.9,.97,1.),smoothstep(0.,.03,d)*.5);
   col=mix(col,fc,smoothstep(0.,.004,d));}
- if(is(5.)){float c=floor(p.x*6.+uScroll*.3),f=fract(p.x*6.+uScroll*.3)-.5;float top=1.-(.06+.14*pow(h2(vec2(c,1.)),2.)*(1.-abs(f)*2.));col=mix(col,uNear*.8,step(top,uv.y));}
+ if(is(5.)||is(13.)||is(14.)||is(15.)){float c=floor(p.x*6.+uScroll*.3),f=fract(p.x*6.+uScroll*.3)-.5;float top=1.-(.06+.14*pow(h2(vec2(c,1.)),2.)*(1.-abs(f)*2.));col=mix(col,uNear*.8,step(top,uv.y));}
  col=mix(col,uFog,exp(-abs(uv.y-hz)*14.)*.35);
  // sea
  if(uSeaOn>.5&&uv.y<hz&&uv.y>=gy-.02){float k=(hz-uv.y)/(hz-gy+.001);float persp=1./(k+.08);
