@@ -24,7 +24,7 @@ function killMob(m){if(dun){m.dead=true;m.dt=0;debris(m.x,m.y-30*K,9,m.b,K);spar
  const cx=m.x,cy=m.y-ART_H[m.arch]*.4*K*m.size;debris(cx,cy,m.tier?16:9,m.b,K);sparks(cx,cy,12,m.a,320);ring(cx,m.fly?cy:GY,'rgba(255,255,255,.8)',40*K*m.size);sfx('kill');
  for(let i=0,n=m.tier?8:3;i<n;i++)part({x:cx,y:cy,vx:rnd(-140,140),vy:rnd(-380,-180),g:1100,life:1,ml:1,size:5.5*K,type:'coin',rot:rnd(0,6),vr:9,tx:GOLDX,ty:GOLDY,drag:.99});
  num(cx,cy-20*K,'+'+fmt(gold),'gold');track('kill');track('gold',gold);
- if(m===boss){track('boss');boss=null;S.stats.bosses++;S.gem+=30;hitstop=.25;shake=14;banner('BOSS CLEAR!','#ffd23a');stageClear();return;}
+ if(m===boss){track('boss');const bn=boss.name;boss=null;S.stats.bosses++;S.gem+=30;hitstop=.25;shake=14;victory(bn,gold,30);stageClear();return;}
  if(!S.farm&&S.g%10!==9){S.kills++;if(S.kills>=KILLS)stageClear();}
  else if(!S.farm&&S.g%10===9){S.kills=Math.min(KILLS,S.kills+1);}
  updateHud();}

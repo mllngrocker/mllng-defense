@@ -16,7 +16,7 @@ function pulseGold(){const e=$('#goldtxt').parentElement;e.animate([{transform:'
 let banT;function banner(txt,col){const b=$('#banner');b.textContent=txt;b.style.color=col||'#fff';b.classList.remove('show');void b.offsetWidth;b.classList.add('show');clearTimeout(banT);banT=setTimeout(()=>b.classList.remove('show'),1900);}
 let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);}
 function updateHud(){
- $('#lvtxt').textContent=`Lv.${S.lv}`;$('#expbar b').style.width=(S.exp/needExp(S.lv)*100).toFixed(1)+'%';
+ $('#lvtxt').textContent=`Lv.${S.lv} ${S.name||''}`;$('#expbar b').style.width=(S.exp/needExp(S.lv)*100).toFixed(1)+'%';
  $('#goldtxt').textContent=fmt(S.gold);$('#gemtxt').textContent=fmt(S.gem);
  const bossStage=S.g%10===9;$('#stname').textContent=`${stageName(S.g)} ${theme().name}`;
  $('#killbar').hidden=!!boss;$('#bosstimer').hidden=!boss;
@@ -53,7 +53,7 @@ document.querySelectorAll('#mult button').forEach(b=>{b.classList.toggle('on',+b
 /* modal */
 function modal(title,text,btns,wide){$('#mbox').classList.toggle('wide',!!wide);$('#mtitle').textContent=title;$('#mtext').innerHTML=text;const B=$('#mbtns');B.innerHTML='';
  for(const[label,fn,ok]of btns){const b=document.createElement('button');b.textContent=label;if(ok)b.className='ok';b.onclick=()=>{$('#modal').hidden=true;fn&&fn();};B.appendChild(b);}$('#modal').hidden=false;}
-$('#setbtn').onclick=()=>modal('설정',`소리: <b>${S.snd?'켜짐':'꺼짐'}</b>`,[[S.snd?'소리 끄기':'소리 켜기',()=>{S.snd=!S.snd;save();}],['처음부터',()=>modal('정말 처음부터?','모든 진행 상황이 지워져요.',[['취소'],['지우기',resetSave,1]])],['닫기',null,1]]);
+$('#setbtn').onclick=()=>modal('설정',`소리: <b>${S.snd?'켜짐':'꺼짐'}</b>`,[[S.snd?'소리 끄기':'소리 켜기',()=>{S.snd=!S.snd;save();}],['이름 바꾸기',()=>askName()],['처음부터',()=>modal('정말 처음부터?','모든 진행 상황이 지워져요.',[['취소'],['지우기',resetSave,1]])],['닫기',null,1]]);
 /* lobby */
 const bgLobby=new BG($('#lbg')),lfg=$('#lfg'),lc=lfg.getContext('2d');let screen='lobby';
 bgLobby.theme(LOBBY_THEME);bgLobby.ground=.16;bgLobby.horizon=.36;
@@ -65,11 +65,12 @@ function drawLobby(t){const r=$('#lobby').getBoundingClientRect();if(!r.width)re
  lc.save();lc.translate(bx,gy+bob);lc.beginPath();lc.ellipse(0,6*s,90*s,16*s,0,0,TAU);const ig=lc.createLinearGradient(0,-10*s,0,22*s);ig.addColorStop(0,'#ffffff');ig.addColorStop(1,'#9cc8ea');lc.fillStyle=ig;lc.fill();
  lc.strokeStyle='rgba(255,255,255,.6)';lc.lineWidth=2;lc.stroke();lc.scale(s,s);HERO().draw(lc,{t,ph:0,walk:0,atk:-1,kind:curWeapon().k});lc.restore();
  lc.strokeStyle='rgba(255,255,255,.35)';lc.lineWidth=1.5;for(let i=0;i<3;i++){const k=(t*.4+i/3)%1;lc.globalAlpha=1-k;lc.beginPath();lc.ellipse(bx,gy+bob+8*s,(90+k*60)*s,(16+k*10)*s,0,0,TAU);lc.stroke();}lc.globalAlpha=1;}
-$('#startbtn').onclick=()=>{renderSkillbar();audioInit();$('#lobby').hidden=true;screen='game';if(!S.started){S.started=true;banner(theme().name,'#9fdcff');toast('백곰이 잃어버린 고향을 찾아 떠나요!');save();}resizeStage();measureHud();updateHud();};
+function beginGame(){renderSkillbar();screen='game';if(!S.started){S.started=true;banner(theme().name,'#9fdcff');toast(`${S.name}(이)가 잃어버린 고향을 찾아 떠나요!`);save();}resizeStage();measureHud();updateHud();}
+$('#startbtn').onclick=()=>{audioInit();$('#lobby').hidden=true;if(S.started){beginGame();return;}screen='pro';startPrologue(()=>askName(beginGame));};
 $('#backarc').onclick=()=>{save();location.href='../';};
 function offlineReward(){if(!S.started||!S.t)return;const sec=Math.min(8*3600,(Date.now()-S.t)/1000);if(sec<60)return;
  const gold=Math.floor(mobGold(S.g)*.5*sec*.6),exp=mobExp(S.g)*.5*sec*.3;S.gold+=gold;gainExp(exp);save();
- const h=Math.floor(sec/3600),m=Math.floor(sec/60)%60;modal('자리 비운 사이',`${h?h+'시간 ':''}${m}분 동안 백곰이 사냥했어요.<br><b style="color:#d48a10">+${fmt(gold)} 골드</b>`,[['받기',null,1]]);}
+ const h=Math.floor(sec/3600),m=Math.floor(sec/60)%60;modal('자리 비운 사이',`${h?h+'시간 ':''}${m}분 동안 ${S.name||'백곰'}(이)가 사냥하다 잠들었어요.<br><b style="color:#d48a10">+${fmt(gold)} 골드</b>`,[['받기',null,1]]);$('#mtext').prepend(sleepCanvas());}
 
 /* ---------- gear / skills / pets / gacha panels ---------- */
 const SKICON={glacier:'<svg viewBox="0 0 32 32"><path d="M16 2v28M4 9l24 14M4 23L28 9" stroke="#bff4ff" stroke-width="3" stroke-linecap="round"/><circle cx="16" cy="16" r="4" fill="#fff"/></svg>',
