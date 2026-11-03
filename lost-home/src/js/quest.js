@@ -21,7 +21,7 @@ function claimDaily(i){if(!dailyDone(i)||S.daily.got.includes(i))return;S.daily.
 function questReady(){dailyReset();const q=curQuest();return canAttend()||q.have>=q.n||DAILY.some((_,i)=>dailyDone(i)&&!S.daily.got.includes(i));}
 function questDot(){const b=$('#qbtn');if(b)b.classList.toggle('dot',questReady());}
 function questMenu(){dailyReset();const q=curQuest(),day=S.att.n%7;
- const att=ATTEND.map((r,i)=>{const isToday=i===day&&canAttend();return`<div class="att${i<day?' got':''}${isToday?' now':''}"><small>${i+1}일</small><b>${r.gem}</b>${r.stone?`<i>+석${r.stone}</i>`:''}</div>`;}).join('');
+ const att=ATTEND.map((r,i)=>{const isToday=i===day&&canAttend();return`<div class="att${i<day?' got':''}${isToday?' now':''}"><small>${i+1}일</small><b>${r.gem}</b>${r.stone?`<i>+강화석 ${r.stone}</i>`:''}</div>`;}).join('');
  const dl=DAILY.map((d,i)=>{const have=Math.min(d.n,S.daily.c[d.ev]||0),got=S.daily.got.includes(i);return`<div class="qrow"><span>${d.d}</span><div class="bar"><b style="width:${have/d.n*100}%"></b></div><button class="qbtn2${got?' got':have>=d.n?' ok':''}" data-di="${i}">${got?'완료':have>=d.n?'받기':`${fmt(have)}/${fmt(d.n)}`}</button></div>`;}).join('');
  modal('퀘스트',`<div class="qsec">출석 보상 <small>${canAttend()?'오늘 받을 수 있어요':'내일 다시 와요'}</small></div><div class="attrow">${att}</div>${canAttend()?'<button class="btn2" id="attbtn" style="width:100%;margin-top:6px">출석하기</button>':''}
   <div class="qsec">퀘스트 <small>보석 ${q.reward}</small></div><div class="qrow"><span>${q.text}</span><div class="bar"><b style="width:${q.have/q.n*100}%"></b></div><button class="qbtn2${q.have>=q.n?' ok':''}" id="mqbtn">${q.have>=q.n?'받기':`${fmt(q.have)}/${fmt(q.n)}`}</button></div>
