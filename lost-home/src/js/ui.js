@@ -128,3 +128,13 @@ function petPopup(k){const[id,g]=gsplit(k),P=PETS[id],o=S.pets[k];if(!o)return;c
  if(S.stone>0)btns.push([['강화석으로 강화',`1개 사용 · 보유 ${S.stone}`],()=>{S.stone--;o.lv++;track('enh');sfx('level');save();renderPanel();petPopup(k);}]);
  if(canMergePet(k))btns.push(['합성',()=>{const nk=mergePet(k);track('merge');sfx('clear');banner(`${GRADES[g+1]}등급 ${P.n}!`,GCOL[g+1]);renderPanel();petPopup(nk);},1]);
  modal(`${P.n}`,info,btns);}
+
+/* chapter / stage select: tap the stage name. Only stages already reached can be picked */
+function stageMenu(){if(dun||boss){toast(boss?'보스전 중에는 이동할 수 없어요':'던전 중에는 이동할 수 없어요');return;}const base=Math.floor(S.best/200)*200;
+ modal('챕터 이동',`<div class="chlist">${THEMES.map((th,i)=>{const g0=base+i*10,open=g0<=S.best,here=Math.floor(S.g/10)*10===g0;
+  return`<div class="chcard${open?'':' lock'}${here?' here':''}" style="background:linear-gradient(135deg,${th.sky[0]},${th.sky[1]} 60%,${th.sky[2]})"><b>${i+1}. ${th.name}</b>
+  <div class="stg">${Array.from({length:10},(_,j)=>{const g=g0+j;return`<button data-g="${g}"${g>S.best?' disabled':''} class="${j===9?'boss':''}${g===S.g?' cur':''}">${j+1}</button>`;}).join('')}</div></div>`;}).join('')}</div>`,[],1);
+ document.querySelectorAll('.stg button[data-g]').forEach(b=>b.onclick=()=>{const g=+b.dataset.g;$('#modal').hidden=true;if(g===S.g)return;
+  S.g=g;S.kills=0;S.farm=false;for(const m of mobs)m.dead=true,m.dt=.3;shots.length=0;pshots.length=0;applyTheme();save();updateHud();banner(`${stageName(g)} ${theme().name}`,'#9fdcff');});
+ const here=document.querySelector('.chcard.here');if(here)here.scrollIntoView({block:'center'});}
+$('#stagebox').onclick=stageMenu;
