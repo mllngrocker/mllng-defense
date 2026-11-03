@@ -14,7 +14,7 @@ for(const k in PETS){PETS[k].g=0;PETS[k].max=PETS[k].common?5:6;}
 const petStage=(id,g)=>PETS[id].common?(g>=3?1:0):(g>=6?2:g>=3?1:0);
 // how big each stage is drawn (the art itself grows a lot between stages)
 const PET_SC=[1.1,.66,.52],PET_SC_COMMON=[1.05,.8];
-function drawBeast(c,id,g,m){const st=petStage(id,g),k=(PETS[id].common?PET_SC_COMMON:PET_SC)[st];c.save();if(m.act){c.rotate(.1);c.scale(1.08,.94);}c.scale(k,k);BEAST[id][st](c,m);c.restore();}
+function drawBeast(c,id,g,m){const st=petStage(id,g),k=(PETS[id].common?PET_SC_COMMON:PET_SC)[st];c.save();if(m.act){c.rotate(.06);c.scale(1.04,.97);}c.scale(k,k);BEAST[id][st](c,m);c.restore();}
 // old 12-pet saves → the 4 beasts by fighting style, keeping count and best enhance level
 const OLD_PET={mongsil:'seal',dwittung:'penguin',somsom:'fox',kkiruk:'gull',uni:'tiger',beoreok:'tiger',rudol:'tiger',ttoreu:'phoenix',jogae:'qilin',ppojjak:'qilin',turtank:'dragon',orca:'dragon'};
 for(const k of Object.keys(S.pets)){const[id,g0]=gsplit(k);const to=OLD_PET[id];if(!to)continue;const g=Math.min(g0,PETS[to].max),nk=gkey(to,g),o=S.pets[k],cur=S.pets[nk];S.pets[nk]={n:(cur?.n||0)+o.n,lv:Math.max(cur?.lv||0,o.lv||0)};delete S.pets[k];if(S.pet===k)S.pet=nk;}
@@ -54,7 +54,7 @@ function drawPet(c,t){if(!S.pet||!S.pets[S.pet])return;const[id]=gsplit(S.pet),P
   else if(f.kind==='line'){const k=f.t/.6,a=1-k;c.save();c.globalCompositeOperation='lighter';const g=c.createLinearGradient(pet.x,0,W,0);g.addColorStop(0,`rgba(255,255,255,${a})`);g.addColorStop(1,'rgba(160,220,255,0)');c.fillStyle=g;c.fillRect(pet.x,f.y-5*K*a,W*Math.min(1,f.t*5),10*K*a);c.restore();}
   else{c.save();c.globalCompositeOperation='lighter';const g=c.createLinearGradient(f.x-50*K,0,f.x+10*K,0);g.addColorStop(0,'rgba(90,180,240,0)');g.addColorStop(1,'rgba(150,220,255,.8)');c.fillStyle=g;c.beginPath();c.moveTo(f.x-60*K,GY);c.quadraticCurveTo(f.x-10*K,GY-70*K,f.x+12*K,GY-40*K);c.quadraticCurveTo(f.x,GY-10*K,f.x+10*K,GY);c.closePath();c.fill();c.restore();}}
  const g0=gsplit(S.pet)[1];if(!(P.fly&&petStage(id,g0)>0)){c.fillStyle='rgba(10,20,40,.25)';c.beginPath();c.ellipse(pet.x,GY+2*K,16*K,3.5*K,0,0,TAU);c.fill();}
- const g=gsplit(S.pet)[1],sc=K*Math.min(1.2,.95+.04*g);const lg=Math.sin(Math.min(1,(.25-(pet.lunge||0))/.25)*Math.PI)*(pet.lunge>0?8*K:0);c.save();c.translate(pet.x+lg,pet.y);c.scale(sc,sc);petAura(c,g,t,'back');drawBeast(c,id,g,{t,ph:pet.ph,act:pet.lunge>0});petAura(c,g,t,'front');c.restore();}
+ const g=gsplit(S.pet)[1],sc=K*Math.min(1.2,.95+.04*g);c.save();c.translate(pet.x,pet.y);c.scale(sc,sc);petAura(c,g,t,'back');drawBeast(c,id,g,{t,ph:pet.ph,act:pet.lunge>0});petAura(c,g,t,'front');c.restore();}
 /* grade aura: the stronger the pet, the more mystical it looks. layer 'back' = behind the art, 'front' = over it */
 function petAura(c,g,t,layer,h=44){if(g<2)return;const col=GCOL[g],[r,gg,b]=hexRGB(col).map(v=>Math.round(v*255));c.save();c.globalCompositeOperation='lighter';
  if(layer==='back'){
