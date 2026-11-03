@@ -106,10 +106,10 @@ const PANEL={
   <div class="rinfo"><div class="rname">${sk.n}<small>${open?'Lv.'+skLv(k):'잠김'}</small></div><div class="rval">${open?`피해 ${fmt(skDmg(k))} · 재사용 ${sk.cd}초`:`${stageName(sk.unlock)} 도달 시 열려요`}</div><div class="rval">${sk.d}</div></div>
   ${open?`<button class="buy${S.gold<c?' no':''}" data-sk="${k}"><span>레벨업</span><small>${fmt(c)} 골드</small></button>`:''}</div>`;}).join('');
   L.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>{const k=b.dataset.sk,c=skCost(k);if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;S.skl[k]=skLv(k)+1;sfx('level');save();updateHud();renderPanel();});},
- pet(L){const own=Object.keys(S.pets).sort((x,y)=>gsplit(y)[1]-gsplit(x)[1]);if(!own.length){L.innerHTML='<div class="info"><h3>아직 펫이 없어요</h3>뽑기에서 12종의 펫을 만날 수 있어요. 함께하는 펫 1마리가 백곰과 같이 싸우고 능력치 보너스를 줘요.</div>';return;}
+ pet(L){const own=Object.keys(S.pets).sort((x,y)=>gsplit(y)[1]-gsplit(x)[1]);if(!own.length){L.innerHTML='<div class="info"><h3>아직 펫이 없어요</h3>뽑기에서 백호·주작·기린·청룡 4종의 신수를 만날 수 있어요. 등급이 오르면 아기 → 젊은 모습 → 신수로 진화해요.</div>';return;}
   const mc=own.filter(canMergePet).length;
   L.innerHTML=(mc?`<button class="btn2" id="pmergeall" style="width:100%">모두 합성 (${mc}종)</button>`:'')+own.map(k=>{const[id,g]=gsplit(k),P=PETS[id],o=S.pets[k];return `<div class="row" data-pk="${k}" style="cursor:pointer">${gbox(itemIcon(id,1,g),g,`<span class="cnt">x${o.n}</span>${canMergePet(k)?'<span class="new" style="background:#2fb84a">합성</span>':''}`)}
-  <div class="rinfo"><div class="rname">${P.n}<small>${P.an} · +${o.lv}</small></div><div class="rval">${P.at} · 공격력의 <b>${Math.round(petMul(k)*100)}%</b></div><div class="rval">${PB_N[P.bk]} +${Math.round(petBonusOf(k)*10)/10}${P.bk==='crit'?'%p':'%'}${g>=3?' · <b style="color:#b07a00">펫 스킬</b>':''}</div></div>
+  <div class="rinfo"><div class="rname">${P.n}<small>${P.an[petStage(g)]} · +${o.lv}</small></div><div class="rval">${P.at} · 공격력의 <b>${Math.round(petMul(k)*100)}%</b></div><div class="rval">${PB_N[P.bk]} +${Math.round(petBonusOf(k)*10)/10}${P.bk==='crit'?'%p':'%'}${g>=3?' · <b style="color:#b07a00">펫 스킬</b>':''}</div></div>
   ${S.pet===k?'<span class="btn2" style="height:30px;line-height:30px;font-size:11px;background:#8a96b8;box-shadow:none">함께</span>':''}</div>`;}).join('');
   L.querySelectorAll('[data-pk]').forEach(e=>e.onclick=()=>petPopup(e.dataset.pk));
   const ma=$('#pmergeall');if(ma)ma.onclick=()=>{let n=0;for(let p=0;p<7;p++)for(const k of Object.keys(S.pets))while(canMergePet(k)){mergePet(k);n++;}sfx('clear');toast(`${n}번 합성했어요!`);renderPanel();};},
@@ -122,8 +122,8 @@ const PANEL={
 };
 
 function petPopup(k){const[id,g]=gsplit(k),P=PETS[id],o=S.pets[k];if(!o)return;const c=enhCost(g,o.lv);
- const info=`<div style="display:flex;gap:12px;align-items:center;text-align:left">${gbox(itemIcon(id,1,g),g)}<div><b style="color:${shade(GCOL[g],-.35)}">${GRADES[g]}등급 ${P.an}</b><br>보유 ${o.n}마리 · +${o.lv}<br>${P.at} (${P.cd}초마다)</div></div>
-  <p style="margin-top:10px;font-size:12px">같은 펫 ${MERGE_N}마리를 합성하면 <b>${P.n} ${GRADES[Math.min(6,g+1)]}등급</b>이 돼요.${g<3?' S등급부터 5번째 공격마다 펫 스킬이 나가요.':''}</p><p style="margin-top:8px;font-size:12px;line-height:1.5"><b>강화</b>: 한 번에 펫 효과 +15% (지금 +${o.lv}). 골드 ${fmt(c)} 또는 <b>강화석</b> 1개가 들어요.<br><small>강화석은 던전에서 얻는 재료예요 · 보유 ${fmt(S.stone||0)}개</small></p>`;
+ const info=`<div style="display:flex;gap:12px;align-items:center;text-align:left">${gbox(itemIcon(id,1,g),g)}<div><b style="color:${shade(GCOL[g],-.35)}">${GRADES[g]}등급 ${P.an[petStage(g)]}</b><br>보유 ${o.n}마리 · +${o.lv}<br>${P.at} (${P.cd}초마다)</div></div>
+  <p style="margin-top:10px;font-size:12px">같은 펫 ${MERGE_N}마리를 합성하면 <b>${P.n} ${GRADES[Math.min(6,g+1)]}등급</b>이 돼요.${g<3?' S등급이 되면 젊은 모습으로 진화하고 5번째 공격마다 펫 스킬이 나가요.':g<6?' H등급이 되면 신수로 진화해요.':''}</p><p style="margin-top:8px;font-size:12px;line-height:1.5"><b>강화</b>: 한 번에 펫 효과 +15% (지금 +${o.lv}). 골드 ${fmt(c)} 또는 <b>강화석</b> 1개가 들어요.<br><small>강화석은 던전에서 얻는 재료예요 · 보유 ${fmt(S.stone||0)}개</small></p>`;
  const btns=[];if(S.pet!==k)btns.push(['함께하기',()=>{const hp=bear.hp/MAXHP();S.pet=k;pet.x=0;bear.hp=hp*MAXHP();save();renderPanel();},1]);
  btns.push([['골드로 강화',`${fmt(c)} 골드`],()=>{if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;o.lv++;track('enh');sfx('level');save();updateHud();renderPanel();petPopup(k);}]);
  if(S.stone>0)btns.push([['강화석으로 강화',`1개 사용 · 보유 ${S.stone}`],()=>{S.stone--;o.lv++;track('enh');sfx('level');save();renderPanel();petPopup(k);}]);

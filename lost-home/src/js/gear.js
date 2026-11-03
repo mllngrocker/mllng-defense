@@ -48,7 +48,7 @@ function equipItem(k){const s=ITEMS[gsplit(k)[0]].s,sl=SLOTS[s];if(sl.some(x=>S.
 function addItem(id,g){const k=gkey(id,g),own=S.inv[k];S.inv[k]={n:(own?.n||0)+1,lv:own?.lv||0};const sl=SLOTS[ITEMS[id].s];if(sl.some(x=>!S.eq[x])||sl.some(x=>gsplit(S.eq[x])[1]<g&&S.eq[x]!==k))equipItem(k);return!own;}
 function gacha(n){const cost=n>=10?450:100;if(S.gem<cost)return null;S.gem-=cost;const out=[];
  for(let i=0;i<n;i++){const g=rollGrade();
-  if(Math.random()<.12){const pg=Math.min(g,4),pool=Object.keys(PETS).filter(k=>PETS[k].g===pg);const id=pick(pool.length?pool:Object.keys(PETS).filter(k=>PETS[k].g===0));out.push({pet:1,id,g:PETS[id].g,isNew:addPet(id,PETS[id].g)});continue;}
+  if(Math.random()<.12){const pg=Math.min(g,4),id=pick(Object.keys(PETS));out.push({pet:1,id,g:pg,isNew:addPet(id,pg)});continue;}
   const id=pick(Object.keys(ITEMS).filter(k=>ITEMS[k].g===g));out.push({id,g,isNew:addItem(id,g)});}
  save();return out;}
 // merge: 3 of the same item+grade -> 1 of the same item, next grade

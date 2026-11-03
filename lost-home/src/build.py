@@ -1,7 +1,7 @@
 # lost-home/src 에서 실행: page.html + js/*.js + 폰트(서브셋) → ../index.html
 import base64, os, subprocess
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-JS = ['data', 'bg', 'art', 'art2', 'gross', 'bear', 'humans', 'gear', 'costume', 'weapons', 'skills', 'pets', 'ult', 'bossfx', 'dungeon', 'quest', 'story', 'meta', 'fx', 'game', 'ui', 'main']  # 순서 중요
+JS = ['data', 'bg', 'art', 'art2', 'gross', 'bear', 'humans', 'gear', 'costume', 'weapons', 'skills', 'beasts', 'pets', 'ult', 'bossfx', 'dungeon', 'quest', 'story', 'meta', 'fx', 'game', 'ui', 'main']  # 순서 중요
 page = open('page.html', encoding='utf8').read()
 code = ''.join(open(f'js/{n}.js', encoding='utf8').read() + '\n' for n in JS)
 # keep only the glyphs the game uses (plus all common Hangul) so the fonts stay small

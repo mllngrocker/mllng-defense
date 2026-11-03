@@ -8,7 +8,7 @@ const PRO=[
 let proI=0,proT=0,proBG=null,proOn=false,proShots=[],proNext=null;
 function proScene(){const P=PRO[proI];proBG.theme(P.th);proBG.ground=P.gr||.16;proBG.horizon=P.hz||.4;}
 function startPrologue(done){const el=$('#prologue');el.hidden=false;proOn=true;proI=0;proT=0;proShots=[];if(!proBG)proBG=new BG($('#pbg'));proScene();
- const next=()=>{if(proT<.4)return;proShots[proI]=panelShot();proI++;proT=0;if(proI>=PRO.length){end();return;}proScene();sfx('buy');};
+ const next=()=>{if(proT<.4||$('#prologue').getBoundingClientRect().width<10)return;proShots[proI]=panelShot();proI++;proT=0;if(proI>=PRO.length){end();return;}proScene();sfx('buy');};
  proNext=next;const end=()=>{proOn=false;el.hidden=true;el.onclick=null;done();};
  el.onclick=e=>{if(e.target.id==='pskip'){end();return;}next();};}
 /* floating trash: PET bottle, can, plastic bag, tyre, styrofoam — bobbing on the water with a ripple */
@@ -64,7 +64,7 @@ function caption(c,txt,r,n){c.save();c.font=`${Math.round(clamp(r[2]/17,12,16))}
   c.fillStyle='#14182a';c.textBaseline='top';lines.forEach((l,i)=>c.fillText(l,r[0]+14,r[1]+11+i*lh));}c.restore();}
 function panelShot(){const r=$('#prologue').getBoundingClientRect(),R=proPanels(r.width,r.height)[proI],cv=document.createElement('canvas');cv.width=R[2]*DPR;cv.height=R[3]*DPR;
  const c=cv.getContext('2d');c.scale(DPR,DPR);const P=PRO[proI],r0=[0,0,R[2],R[3]];panelBlit(c,P,r0,r.width,r.height);caption(c,P.txt,r0,P.txt.length);return cv;}
-function drawPrologue(t,dt){if(!proOn)return;proT+=dt;drawScene(t);
+function drawPrologue(t,dt){if(!proOn)return;const rc=$('#prologue').getBoundingClientRect();if(rc.width<10||rc.height<10)return;proT+=dt;drawScene(t);
  const cm=$('#pcm'),r=$('#prologue').getBoundingClientRect(),w=r.width,h=r.height;if(cm.width!==Math.round(w*DPR)||cm.height!==Math.round(h*DPR)){cm.width=w*DPR;cm.height=h*DPR;}
  const c=cm.getContext('2d');c.setTransform(DPR,0,0,DPR,0,0);
  // paper with halftone dots
