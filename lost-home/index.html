@@ -1066,7 +1066,7 @@ function curWeapon(){const[id,g]=gsplit(S.eq.w||'plank#0');return Object.assign(
 function rollGrade(){let r=Math.random()*GACHAW.reduce((a,b)=>a+b,0);for(let g=0;g<GACHAW.length;g++){r-=GACHAW[g];if(r<=0)return g;}return 0;}
 function equipItem(k){const s=ITEMS[gsplit(k)[0]].s,sl=SLOTS[s];if(sl.some(x=>S.eq[x]===k))return;const free=sl.find(x=>!S.eq[x]);S.eq[free||sl.reduce((a,b)=>slotMul(S.eq[a])<=slotMul(S.eq[b])?a:b)]=k;}
 function addItem(id,g){const k=gkey(id,g),own=S.inv[k];S.inv[k]={n:(own?.n||0)+1,lv:own?.lv||0};const sl=SLOTS[ITEMS[id].s];if(sl.some(x=>!S.eq[x])||sl.some(x=>gsplit(S.eq[x])[1]<g&&S.eq[x]!==k))equipItem(k);return!own;}
-function gacha(n){const cost=n>=10?900:100;if(S.gem<cost)return null;S.gem-=cost;const out=[];
+function gacha(n){const cost=n>=10?450:100;if(S.gem<cost)return null;S.gem-=cost;const out=[];
  for(let i=0;i<n;i++){const g=rollGrade();
   if(Math.random()<.12){const pg=Math.min(g,4),pool=Object.keys(PETS).filter(k=>PETS[k].g===pg);const id=pick(pool.length?pool:Object.keys(PETS).filter(k=>PETS[k].g===0));out.push({pet:1,id,g:PETS[id].g,isNew:addPet(id,PETS[id].g)});continue;}
   const id=pick(Object.keys(ITEMS).filter(k=>ITEMS[k].g===g));out.push({id,g,isNew:addItem(id,g)});}
@@ -2075,7 +2075,7 @@ const PANEL={
   L.querySelectorAll('[data-pk]').forEach(e=>e.onclick=()=>petPopup(e.dataset.pk));
   const ma=$('#pmergeall');if(ma)ma.onclick=()=>{let n=0;for(let p=0;p<7;p++)for(const k of Object.keys(S.pets))while(canMergePet(k)){mergePet(k);n++;}sfx('clear');toast(`${n}번 합성했어요!`);renderPanel();};},
  gacha(L){const tot=GACHAW.reduce((a,b)=>a+b,0);L.innerHTML=`<div class="gacha"><h3>북극 보물 뽑기</h3><p>무기 · 장신구 · 코스튬 · 펫이 나와요. 더 좋은 장비는 자동으로 장착돼요.</p>
-  <div class="row2"><button data-n="1">1회<br><small>보석 100</small></button><button data-n="10">10회<br><small>보석 900</small></button></div>
+  <div class="row2"><button data-n="1">1회<br><small>보석 100</small></button><button data-n="10">10회<br><small>보석 450</small></button></div>
   <div class="odds">${GRADES.map((g,i)=>`<span style="color:${GCOL[i]}"><b>${g}</b> ${(GACHAW[i]/tot*100).toFixed(GACHAW[i]/tot<.01?2:1)}%</span>`).join('')}</div></div>
   <div class="info">보석은 스테이지 클리어(+3), 레벨 업(+10), 보스 처치(+30)로 모을 수 있어요.</div>`;
   L.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const r=gacha(+b.dataset.n);if(!r){toast('보석이 부족해요');return;}track('gacha',r.length);sfx('clear');updateHud();

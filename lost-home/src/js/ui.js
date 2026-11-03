@@ -114,7 +114,7 @@ const PANEL={
   L.querySelectorAll('[data-pk]').forEach(e=>e.onclick=()=>petPopup(e.dataset.pk));
   const ma=$('#pmergeall');if(ma)ma.onclick=()=>{let n=0;for(let p=0;p<7;p++)for(const k of Object.keys(S.pets))while(canMergePet(k)){mergePet(k);n++;}sfx('clear');toast(`${n}번 합성했어요!`);renderPanel();};},
  gacha(L){const tot=GACHAW.reduce((a,b)=>a+b,0);L.innerHTML=`<div class="gacha"><h3>북극 보물 뽑기</h3><p>무기 · 장신구 · 코스튬 · 펫이 나와요. 더 좋은 장비는 자동으로 장착돼요.</p>
-  <div class="row2"><button data-n="1">1회<br><small>보석 100</small></button><button data-n="10">10회<br><small>보석 900</small></button></div>
+  <div class="row2"><button data-n="1">1회<br><small>보석 100</small></button><button data-n="10">10회<br><small>보석 450</small></button></div>
   <div class="odds">${GRADES.map((g,i)=>`<span style="color:${GCOL[i]}"><b>${g}</b> ${(GACHAW[i]/tot*100).toFixed(GACHAW[i]/tot<.01?2:1)}%</span>`).join('')}</div></div>
   <div class="info">보석은 스테이지 클리어(+3), 레벨 업(+10), 보스 처치(+30)로 모을 수 있어요.</div>`;
   L.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const r=gacha(+b.dataset.n);if(!r){toast('보석이 부족해요');return;}track('gacha',r.length);sfx('clear');updateHud();
