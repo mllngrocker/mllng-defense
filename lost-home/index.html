@@ -932,28 +932,6 @@ function drawSwing(c,m){if((m.kind&&m.kind!=='melee')||!(m.atk>=.32&&m.atk<.8))r
 const HEROES={bear:{name:'백곰',draw:drawBear,swing:drawSwing}};
 const HERO=()=>HEROES[S.hero]||HEROES.bear;
 
-/* title-screen bear: a cute polar bear standing on all fours, three-quarter view toward the viewer, feet at y=0 */
-function drawLobbyBear(c,t){const br=Math.sin(t*1.6)*.8,L=FUR.line;c.lineJoin='round';c.lineCap='round';
- const parts=[
-  [()=>{c.beginPath();rr(c,-26,-28,13,28,6);},()=>furGrad(c,-28,0,.12)],                 // far hind leg
-  [()=>{c.beginPath();rr(c,10,-28,13,28,6);},()=>furGrad(c,-28,0,.12)],                  // far front leg
-  [()=>{c.beginPath();c.ellipse(-4,-36+br*.4,37,24,-.04,0,TAU);},()=>furGrad(c,-60,-12)],  // body
-  [()=>{c.beginPath();c.arc(-40,-46+br*.4,5,0,TAU);},()=>furGrad(c,-51,-41)],             // tail
-  [()=>{c.beginPath();rr(c,-38,-30,16,30,7);},()=>furGrad(c,-30,0)],                      // near hind leg
-  [()=>{c.beginPath();rr(c,15,-32,16,32,7);},()=>furGrad(c,-32,0)],                       // near front leg
-  [()=>{c.beginPath();c.arc(13,-72+br,5.4,0,TAU);c.moveTo(42.4,-73+br);c.arc(37,-73+br,5.4,0,TAU);},()=>furGrad(c,-79,-67)], // ears
-  [()=>{c.beginPath();c.ellipse(25,-58+br,18,16,0,0,TAU);},()=>furGrad(c,-74,-42)],       // head
- ];
- for(const[p]of parts){p();c.lineWidth=3;c.strokeStyle=L;c.stroke();}for(const[p,f]of parts){p();c.fillStyle=f();c.fill();}
- // toes
- c.lineWidth=1;c.strokeStyle='rgba(74,62,50,.6)';for(const x of[-34,-29,19,24,29]){c.beginPath();c.moveTo(x,-3.4);c.lineTo(x,-.4);c.stroke();}
- // inner ears, muzzle, nose, eyes, smile
- for(const x of[13,37]){ell(c,x,-72+br,2.6,2.6);c.fillStyle='#c9b8a8';c.fill();}
- ell(c,27,-50+br,9.5,7);c.fillStyle='#fffaf0';c.fill();c.lineWidth=1.1;c.strokeStyle='rgba(74,62,50,.35)';c.stroke();
- ell(c,27,-54+br,3.6,2.6);c.fillStyle='#1a1614';c.fill();ell(c,26,-55+br,1.1,.7);c.fillStyle='rgba(255,255,255,.7)';c.fill();
- c.beginPath();c.moveTo(27,-51.4+br);c.lineTo(27,-49.4+br);c.moveTo(23.6,-48.4+br);c.quadraticCurveTo(27,-45.6+br,30.4,-48.4+br);c.lineWidth=1.3;c.strokeStyle='#2a2220';c.stroke();
- const blink=(t%4.2)<.12;for(const x of[18.5,33.5]){if(blink){c.beginPath();c.moveTo(x-1.8,-61+br);c.lineTo(x+1.8,-61+br);c.lineWidth=1.3;c.stroke();}else{ell(c,x,-61+br,2,2.3);c.fillStyle='#1a1614';c.fill();ell(c,x-.6,-61.9+br,.7,.7);c.fillStyle='#fff';c.fill();}}
- for(const x of[14,38]){ell(c,x,-53+br,3,1.6);c.fillStyle='rgba(255,170,170,.3)';c.fill();}}
 
 /* ---------- human bosses: 마왕군 간부 (바르카스 · 릴리스 · 제노스) + 마왕 녹스 ----------
  Authored facing right, ART.human mirrors them to face the bear. Feet at y=0, ~175 units tall (8 heads).
@@ -2515,14 +2493,14 @@ function modal(title,text,btns,wide,noX){$('#mbox').classList.toggle('wide',!!wi
 $('#setbtn').onclick=()=>settingsMenu();
 /* lobby */
 const bgLobby=new BG($('#lbg')),lfg=$('#lfg'),lc=lfg.getContext('2d');let screen='lobby';
-bgLobby.theme(LOBBY_THEME);bgLobby.ground=.005;bgLobby.horizon=.36;
+bgLobby.theme(LOBBY_THEME);bgLobby.ground=.16;bgLobby.horizon=.36;
 function lobbyText(){$('#lsub').textContent=S.started?`이어하기 · ${stageName(S.g)} ${theme().name}`:'처음 시작하는 모험';$('#startbtn').textContent=S.started?'이어하기':'모험 시작';}
 function drawLobby(t){const r=$('#lobby').getBoundingClientRect();if(!r.width)return;const w=r.width,h=r.height,q=Math.min(DPR,1.5);
  if(lfg.width!==Math.round(w*DPR)||lfg.height!==Math.round(h*DPR)){lfg.width=w*DPR;lfg.height=h*DPR;bgLobby.resize(Math.round(w*q),Math.round(h*q));}
  bgLobby.draw(t,t*.01);lc.setTransform(DPR,0,0,DPR,0,0);lc.clearRect(0,0,w,h);
  const s=Math.min(w/380,h/700)*1.25,gy=Math.min(h*(1-bgLobby.ground)-h*.02,$('#lsub').getBoundingClientRect().top-r.top-30*s),bx=w*.5,bob=Math.sin(t*1.2)*3;
  lc.save();lc.translate(bx,gy+bob);lc.beginPath();lc.ellipse(0,6*s,90*s,16*s,0,0,TAU);const ig=lc.createLinearGradient(0,-10*s,0,22*s);ig.addColorStop(0,'#ffffff');ig.addColorStop(1,'#9cc8ea');lc.fillStyle=ig;lc.fill();
- lc.strokeStyle='rgba(255,255,255,.6)';lc.lineWidth=2;lc.stroke();lc.scale(s*1.25,s*1.25);lc.translate(-4,2);drawLobbyBear(lc,t);lc.restore();
+ lc.strokeStyle='rgba(255,255,255,.6)';lc.lineWidth=2;lc.stroke();lc.scale(s,s);HERO().draw(lc,{t,ph:0,walk:0,atk:-1,kind:curWeapon().k});lc.restore();
  lc.strokeStyle='rgba(255,255,255,.35)';lc.lineWidth=1.5;for(let i=0;i<3;i++){const k=(t*.4+i/3)%1;lc.globalAlpha=1-k;lc.beginPath();lc.ellipse(bx,gy+bob+8*s,(90+k*60)*s,(16+k*10)*s,0,0,TAU);lc.stroke();}lc.globalAlpha=1;}
 function beginGame(){renderSkillbar();screen='game';if(!S.started){S.started=true;banner(theme().name,'#9fdcff');toast(`${S.name}(이)가 잃어버린 고향을 찾아 떠나요!`);save();}resizeStage();measureHud();updateHud();}
 $('#startbtn').onclick=()=>{audioInit();$('#lobby').hidden=true;if(S.started){beginGame();return;}screen='pro';startPrologue(()=>askName(beginGame));};
