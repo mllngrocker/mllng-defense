@@ -1,10 +1,9 @@
-# 말랑 오락실 (mllng-defense)
+# 잃어버린 고향을 찾아서 (mllng-defense 저장소)
 
-GitHub Pages로 배포되는 미니게임 모음. 사용자와는 항상 **한국어**로 대화한다.
+GitHub Pages로 배포되는 백곰 방치형 RPG. 사용자와는 항상 **한국어**로 대화한다.
 
-- `index.html` : 오락실 첫 화면 (게임 목록은 파일 안 `GAMES` 배열)
-- `mallang-defense/` : 말랑말랑 수비대
-- `lost-home/` : 잃어버린 고향을 찾아서 (백곰 방치형 RPG)
+- `index.html` : 사이트 첫 주소 → `lost-home/`으로 바로 이동
+- `lost-home/` : 게임 (빌드 결과물 `index.html` + 원본 `src/`)
 
 ## 잃어버린 고향을 찾아서 — 작업 방법
 

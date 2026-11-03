@@ -68,7 +68,6 @@ function drawLobby(t){const r=$('#lobby').getBoundingClientRect();if(!r.width)re
  lc.strokeStyle='rgba(255,255,255,.35)';lc.lineWidth=1.5;for(let i=0;i<3;i++){const k=(t*.4+i/3)%1;lc.globalAlpha=1-k;lc.beginPath();lc.ellipse(bx,gy+bob+8*s,(90+k*60)*s,(16+k*10)*s,0,0,TAU);lc.stroke();}lc.globalAlpha=1;}
 function beginGame(){renderSkillbar();screen='game';if(!S.started){S.started=true;banner(theme().name,'#9fdcff');toast(`${S.name}(이)가 잃어버린 고향을 찾아 떠나요!`);save();}resizeStage();measureHud();updateHud();}
 $('#startbtn').onclick=()=>{audioInit();$('#lobby').hidden=true;if(S.started){beginGame();return;}screen='pro';startPrologue(()=>askName(beginGame));};
-$('#backarc').onclick=()=>{save();location.href='../';};
 function offlineReward(){if(!S.started||!S.t)return;const sec=Math.min(8*3600,(Date.now()-S.t)/1000);if(sec<60)return;
  const gold=Math.floor(mobGold(S.g)*.5*sec*.6),exp=mobExp(S.g)*.5*sec*.3;S.gold+=gold;gainExp(exp);save();
  const h=Math.floor(sec/3600),m=Math.floor(sec/60)%60;modal('자리 비운 사이',`${h?h+'시간 ':''}${m}분 동안 ${S.name||'백곰'}(이)가 사냥하다 잠들었어요.<br><b style="color:#d48a10">+${fmt(gold)} 골드</b>`,[['받기',null,1]]);$('#mtext').prepend(sleepCanvas());}
