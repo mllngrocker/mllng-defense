@@ -46,19 +46,19 @@ function drawBear(c,m){
  ];
  costume('back',c,m);
  // 1) one outline under everything
- c.lineJoin='round';for(const q of parts){q.p();c.lineWidth=2.4;c.strokeStyle=FUR.line;c.stroke();}
+ if(!m.cosOnly){c.lineJoin='round';for(const q of parts){q.p();c.lineWidth=2.4;c.strokeStyle=FUR.line;c.stroke();}}
  // 2) fills
  for(const q of parts){
-  if(q.arm&&!m.noWeapon&&!(m.kind==='throw'&&m.atk>.45&&m.atk<.95)){c.save();c.translate(paw[0],paw[1]);c.rotate(-(w-Math.PI));drawWeapon(c,curWeapon(),t);c.restore();}
+  if(!m.cosOnly){if(q.arm&&!m.noWeapon&&!(m.kind==='throw'&&m.atk>.45&&m.atk<.95)){c.save();c.translate(paw[0],paw[1]);c.rotate(-(w-Math.PI));drawWeapon(c,curWeapon(),t);c.restore();}
   q.p();c.save();if(q.head){c.shadowColor='rgba(90,100,125,.3)';c.shadowBlur=6;c.shadowOffsetY=2;}
   c.fillStyle=furGrad(c,q.y[0],q.y[1],q.d);c.fill();c.restore();
   c.save();q.p();c.clip();furStrokes(c,-40,q.y[0],46,q.y[1],q.torso?150:q.head?40:26,q.y[0]*13+q.d*99,q.torso?1.2:q.head?.25:1.5);
   if(q.torso){const g=c.createLinearGradient(0,-60,0,-24);g.addColorStop(0,'rgba(120,132,156,0)');g.addColorStop(1,'rgba(110,122,150,.4)');c.fillStyle=g;c.fillRect(-40,-60,80,40);
    const r=c.createLinearGradient(-36,0,-18,0);r.addColorStop(0,'rgba(255,255,255,.75)');r.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=r;c.fillRect(-40,-110,22,85);}
   if(q.head){const g=c.createRadialGradient(HD[0]+27,HD[1]+2,1,HD[0]+24,HD[1]+2,11);g.addColorStop(0,'rgba(120,100,80,.35)');g.addColorStop(1,'rgba(120,100,80,0)');c.fillStyle=g;c.fillRect(HD[0]+15,HD[1]-12,30,24);}
-  c.restore();
+  c.restore();}
   if(q.torso)costume('body',c,m);
-  if(q.head){c.save();c.translate(HD[0],HD[1]+br*.3);c.scale(1.15,1.15);face(c,0,0,m);costume('head',c,m);c.restore();}
+  if(q.head){c.save();c.translate(HD[0],HD[1]+br*.3);c.scale(1.15,1.15);if(!m.cosOnly)face(c,0,0,m);costume('head',c,m);c.restore();}
  }
  // gun muzzle flash / magic circle at the paw
  if(m.kind==='gun'&&m.atk>=0&&m.atk<.16){const tx=paw[0]+Math.sin(w)*50,ty=paw[1]+Math.cos(w)*50,k=1-m.atk/.16;c.save();c.globalCompositeOperation='lighter';c.translate(tx,ty);c.rotate(Math.PI/2-w);

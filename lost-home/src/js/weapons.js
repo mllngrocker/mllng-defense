@@ -68,7 +68,9 @@ function drawProj(c,p,t){c.save();c.translate(p.x,p.y);
 const _icon={};
 function itemIcon(id,pet,g=0){const k=(pet?'p'+g+':':'')+id;if(_icon[k])return _icon[k];const cv=document.createElement('canvas');cv.width=cv.height=96;const c=cv.getContext('2d');
  if(pet){c.translate(48,80);c.scale(1.05,1.05);petAura(c,g,1.3,'back');drawBeast(c,id,g,{t:1,ph:0});petAura(c,g,1.3,'front');}
- else{const it=ITEMS[id];if(it.s==='c'){c.translate(40,150);c.scale(.82,.82);drawBear(c,{t:1,cos:id,atk:-1,kind:'magic'});}
+ else{const it=ITEMS[id];if(it.s==='c'){const T=document.createElement('canvas');T.width=T.height=320;const x=T.getContext('2d');x.translate(160,290);drawBear(x,{t:1,cos:id,atk:-1,kind:'magic',cosOnly:1,noWeapon:1});
+   const d=x.getImageData(0,0,320,320).data;let x0=320,y0=320,x1=0,y1=0;for(let i=3;i<d.length;i+=4)if(d[i]>16){const p=i>>2,px=p%320,py=(p/320)|0;if(px<x0)x0=px;if(px>x1)x1=px;if(py<y0)y0=py;if(py>y1)y1=py;}
+   if(x1>x0){const w=x1-x0+1,h=y1-y0+1,s=Math.min(80/w,80/h,1.6);c.drawImage(T,x0,y0,w,h,48-w*s/2,48-h*s/2,w*s,h*s);}}
   else if(it.s==='w'){const small=it.k==='throw'||it.k==='magic';if(small){c.translate(48,62);c.scale(2.4,2.4);}else if(it.k==='gun'){c.translate(30,74);c.rotate(.9);c.scale(1.35,1.35);}else{c.translate(28,76);c.rotate(.75);c.scale(1.25,1.25);}drawWeapon(c,it,1);}
   else{c.translate(48,48);const g=c.createRadialGradient(-6,-8,2,0,0,22);g.addColorStop(0,'#fff');g.addColorStop(.45,it.col);g.addColorStop(1,shade(it.col,-.45));
    c.beginPath();c.arc(0,4,20,0,TAU);c.fillStyle=g;c.fill();c.lineWidth=2.5;c.strokeStyle=FUR.line;c.stroke();c.beginPath();c.arc(0,-6,24,Math.PI*1.15,Math.PI*1.85);c.lineWidth=2;c.strokeStyle='#8a7a6a';c.stroke();

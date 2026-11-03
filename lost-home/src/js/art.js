@@ -21,6 +21,22 @@ function mouth(c,x,y,w,open=0){if(G){grossMouth(c,x,y,w,open,performance.now()/1
  else{c.moveTo(x-w*.5,y);c.quadraticCurveTo(x,y+w*.35,x+w*.5,y);c.lineWidth=2.2;c.lineCap='round';c.strokeStyle=OL;c.stroke();}}
 function fang(c,x,y,s=1){c.beginPath();c.moveTo(x-3*s,y);c.lineTo(x,y+5*s);c.lineTo(x+3*s,y);c.fillStyle=G?'#d8c87a':'#fff';c.fill();}
 const ease=t=>1-Math.pow(1-t,3);
+/* one silhouette, like the bear: run `fn` twice. Pass 1 shows only the outlines of filled shapes (everything else is
+ invisible); pass 2 draws everything except those outlines, so overlapping body parts share a single outer outline.
+ Thin strokes (< 1.4, e.g. eyes, teeth, stitches) and stroke-only lines are kept as drawn. */
+const _GA=Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype,'globalAlpha');
+function oneSil(c,fn){const P=CanvasRenderingContext2D.prototype;let filled=false;
+ const body=()=>filled&&c.lineWidth>=1.4;
+ c.beginPath=function(){filled=false;return P.beginPath.call(this);};
+ try{
+  c.save();_GA.set.call(c,0);Object.defineProperty(c,'globalAlpha',{configurable:true,get(){return 1;},set(){}});
+  c.fill=function(...a){filled=true;};
+  c.stroke=function(...a){if(!body())return;const op=this.globalCompositeOperation;_GA.set.call(this,1);this.globalCompositeOperation='source-over';P.stroke.apply(this,a);this.globalCompositeOperation=op;_GA.set.call(this,0);};
+  try{fn();}finally{delete c.globalAlpha;c.restore();}
+  c.fill=function(...a){filled=true;return P.fill.apply(this,a);};
+  c.stroke=function(...a){if(body())return;return P.stroke.apply(this,a);};
+  fn();
+ }finally{delete c.beginPath;delete c.fill;delete c.stroke;}}
 
 /* ---------- monsters (face left) ---------- */
 const ART={};

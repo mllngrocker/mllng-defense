@@ -307,7 +307,7 @@ function tail(c,t,w){const p=[[-44,-46],[-60,-44],[-66,-24],[-58,-12+Math.sin(t*
  c.lineCap='round';path();c.lineWidth=w+3;c.strokeStyle=K;c.stroke();path();c.lineWidth=w;c.strokeStyle=W;c.stroke();c.save();path();c.lineCap='butt';c.setLineDash([3,4]);c.lineWidth=w;c.strokeStyle=K;c.stroke();c.restore();}
 // fill a path, add a lower shade band and stripes clipped inside it, then outline
 let GLOWS=0;
-function fillShaded(c,pathFn,shadeY,stripes,fill=W){pathFn();c.fillStyle=fill;c.fill();c.save();pathFn();c.clip();c.fillStyle=L;c.fillRect(-90,shadeY,200,80);for(const s of stripes){stripe(c,...s);if(GLOWS){const[x,y,l,a,w]=s;stripe(c,x+Math.cos(a)*1,y+Math.sin(a)*1,l*.75,a,w*.38,.25,'#6ae4ff');}}c.restore();pathFn();out(c,1.7);}
+function fillShaded(c,pathFn,shadeY,stripes,fill=W){pathFn();c.fillStyle=fill;c.fill();c.save();pathFn();c.clip();c.fillStyle=L;c.fillRect(-90,shadeY,200,80);for(const s of stripes){stripe(c,...s);if(GLOWS){const[x,y,l,a,w]=s;stripe(c,x+Math.cos(a)*1,y+Math.sin(a)*1,l*.75,a,w*.38,.25,'#6ae4ff');}}c.restore();pathFn();c.fillStyle='rgba(0,0,0,0)';c.fill();out(c,1.7);}
 // head, side view facing right; open 0 closed snarl .. 1 roar
 function head(c,x,y,s,open,t,glowEye){c.save();c.translate(x,y);c.scale(s,s);
  // ear

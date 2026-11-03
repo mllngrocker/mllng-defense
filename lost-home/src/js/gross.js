@@ -130,5 +130,5 @@ const grossDraw=k=>(c,m)=>{GV=VARS[m.vari||CH_VAR[Math.floor(S.g/10)%CH_VAR.leng
  const T=c.getTransform(),N=Math.ceil((ART_H[k]+90)*Math.hypot(T.a,T.b)*1.25);
  if(!_gc){_gc=document.createElement('canvas');_gx=_gc.getContext('2d');}
  if(_gc.width<N){_gc.width=_gc.height=N;}const ox=_gc.width/2,oy=_gc.width*.8;G=1;
- try{_gx.setTransform(1,0,0,1,0,0);_gx.clearRect(0,0,_gc.width,_gc.width);_gx.setTransform(T.a,T.b,T.c,T.d,ox,oy);ART[k](_gx,m);const w=ART_W[k],h=ART_H[k];if(GV.rot){grossSkin(_gx,k,R);grossFlesh(_gx,k,R,m.t);}if(GV.skin){_gx.globalCompositeOperation='source-atop';GV.skin(_gx,w,h,R,m.t);_gx.globalCompositeOperation='source-over';}
+ try{_gx.setTransform(1,0,0,1,0,0);_gx.clearRect(0,0,_gc.width,_gc.width);_gx.setTransform(T.a,T.b,T.c,T.d,ox,oy);oneSil(_gx,()=>ART[k](_gx,m));const w=ART_W[k],h=ART_H[k];if(GV.rot){grossSkin(_gx,k,R);grossFlesh(_gx,k,R,m.t);}if(GV.skin){_gx.globalCompositeOperation='source-atop';GV.skin(_gx,w,h,R,m.t);_gx.globalCompositeOperation='source-over';}
   c.save();c.setTransform(1,0,0,1,0,0);c.drawImage(_gc,T.e-ox,T.f-oy);c.restore();if(GV.rot)grossOverlay(c,m,k,R);if(GV.over)GV.over(c,w,h,R,m.t);}finally{G=0;}};

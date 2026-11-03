@@ -522,6 +522,22 @@ function mouth(c,x,y,w,open=0){if(G){grossMouth(c,x,y,w,open,performance.now()/1
  else{c.moveTo(x-w*.5,y);c.quadraticCurveTo(x,y+w*.35,x+w*.5,y);c.lineWidth=2.2;c.lineCap='round';c.strokeStyle=OL;c.stroke();}}
 function fang(c,x,y,s=1){c.beginPath();c.moveTo(x-3*s,y);c.lineTo(x,y+5*s);c.lineTo(x+3*s,y);c.fillStyle=G?'#d8c87a':'#fff';c.fill();}
 const ease=t=>1-Math.pow(1-t,3);
+/* one silhouette, like the bear: run `fn` twice. Pass 1 shows only the outlines of filled shapes (everything else is
+ invisible); pass 2 draws everything except those outlines, so overlapping body parts share a single outer outline.
+ Thin strokes (< 1.4, e.g. eyes, teeth, stitches) and stroke-only lines are kept as drawn. */
+const _GA=Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype,'globalAlpha');
+function oneSil(c,fn){const P=CanvasRenderingContext2D.prototype;let filled=false;
+ const body=()=>filled&&c.lineWidth>=1.4;
+ c.beginPath=function(){filled=false;return P.beginPath.call(this);};
+ try{
+  c.save();_GA.set.call(c,0);Object.defineProperty(c,'globalAlpha',{configurable:true,get(){return 1;},set(){}});
+  c.fill=function(...a){filled=true;};
+  c.stroke=function(...a){if(!body())return;const op=this.globalCompositeOperation;_GA.set.call(this,1);this.globalCompositeOperation='source-over';P.stroke.apply(this,a);this.globalCompositeOperation=op;_GA.set.call(this,0);};
+  try{fn();}finally{delete c.globalAlpha;c.restore();}
+  c.fill=function(...a){filled=true;return P.fill.apply(this,a);};
+  c.stroke=function(...a){if(body())return;return P.stroke.apply(this,a);};
+  fn();
+ }finally{delete c.beginPath;delete c.fill;delete c.stroke;}}
 
 /* ---------- monsters (face left) ---------- */
 const ART={};
@@ -829,7 +845,7 @@ const grossDraw=k=>(c,m)=>{GV=VARS[m.vari||CH_VAR[Math.floor(S.g/10)%CH_VAR.leng
  const T=c.getTransform(),N=Math.ceil((ART_H[k]+90)*Math.hypot(T.a,T.b)*1.25);
  if(!_gc){_gc=document.createElement('canvas');_gx=_gc.getContext('2d');}
  if(_gc.width<N){_gc.width=_gc.height=N;}const ox=_gc.width/2,oy=_gc.width*.8;G=1;
- try{_gx.setTransform(1,0,0,1,0,0);_gx.clearRect(0,0,_gc.width,_gc.width);_gx.setTransform(T.a,T.b,T.c,T.d,ox,oy);ART[k](_gx,m);const w=ART_W[k],h=ART_H[k];if(GV.rot){grossSkin(_gx,k,R);grossFlesh(_gx,k,R,m.t);}if(GV.skin){_gx.globalCompositeOperation='source-atop';GV.skin(_gx,w,h,R,m.t);_gx.globalCompositeOperation='source-over';}
+ try{_gx.setTransform(1,0,0,1,0,0);_gx.clearRect(0,0,_gc.width,_gc.width);_gx.setTransform(T.a,T.b,T.c,T.d,ox,oy);oneSil(_gx,()=>ART[k](_gx,m));const w=ART_W[k],h=ART_H[k];if(GV.rot){grossSkin(_gx,k,R);grossFlesh(_gx,k,R,m.t);}if(GV.skin){_gx.globalCompositeOperation='source-atop';GV.skin(_gx,w,h,R,m.t);_gx.globalCompositeOperation='source-over';}
   c.save();c.setTransform(1,0,0,1,0,0);c.drawImage(_gc,T.e-ox,T.f-oy);c.restore();if(GV.rot)grossOverlay(c,m,k,R);if(GV.over)GV.over(c,w,h,R,m.t);}finally{G=0;}};
 
 /* ---------- realistic upright polar bear (faces right, feet at y=0, ~130 units tall) ----------
@@ -880,19 +896,19 @@ function drawBear(c,m){
  ];
  costume('back',c,m);
  // 1) one outline under everything
- c.lineJoin='round';for(const q of parts){q.p();c.lineWidth=2.4;c.strokeStyle=FUR.line;c.stroke();}
+ if(!m.cosOnly){c.lineJoin='round';for(const q of parts){q.p();c.lineWidth=2.4;c.strokeStyle=FUR.line;c.stroke();}}
  // 2) fills
  for(const q of parts){
-  if(q.arm&&!m.noWeapon&&!(m.kind==='throw'&&m.atk>.45&&m.atk<.95)){c.save();c.translate(paw[0],paw[1]);c.rotate(-(w-Math.PI));drawWeapon(c,curWeapon(),t);c.restore();}
+  if(!m.cosOnly){if(q.arm&&!m.noWeapon&&!(m.kind==='throw'&&m.atk>.45&&m.atk<.95)){c.save();c.translate(paw[0],paw[1]);c.rotate(-(w-Math.PI));drawWeapon(c,curWeapon(),t);c.restore();}
   q.p();c.save();if(q.head){c.shadowColor='rgba(90,100,125,.3)';c.shadowBlur=6;c.shadowOffsetY=2;}
   c.fillStyle=furGrad(c,q.y[0],q.y[1],q.d);c.fill();c.restore();
   c.save();q.p();c.clip();furStrokes(c,-40,q.y[0],46,q.y[1],q.torso?150:q.head?40:26,q.y[0]*13+q.d*99,q.torso?1.2:q.head?.25:1.5);
   if(q.torso){const g=c.createLinearGradient(0,-60,0,-24);g.addColorStop(0,'rgba(120,132,156,0)');g.addColorStop(1,'rgba(110,122,150,.4)');c.fillStyle=g;c.fillRect(-40,-60,80,40);
    const r=c.createLinearGradient(-36,0,-18,0);r.addColorStop(0,'rgba(255,255,255,.75)');r.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=r;c.fillRect(-40,-110,22,85);}
   if(q.head){const g=c.createRadialGradient(HD[0]+27,HD[1]+2,1,HD[0]+24,HD[1]+2,11);g.addColorStop(0,'rgba(120,100,80,.35)');g.addColorStop(1,'rgba(120,100,80,0)');c.fillStyle=g;c.fillRect(HD[0]+15,HD[1]-12,30,24);}
-  c.restore();
+  c.restore();}
   if(q.torso)costume('body',c,m);
-  if(q.head){c.save();c.translate(HD[0],HD[1]+br*.3);c.scale(1.15,1.15);face(c,0,0,m);costume('head',c,m);c.restore();}
+  if(q.head){c.save();c.translate(HD[0],HD[1]+br*.3);c.scale(1.15,1.15);if(!m.cosOnly)face(c,0,0,m);costume('head',c,m);c.restore();}
  }
  // gun muzzle flash / magic circle at the paw
  if(m.kind==='gun'&&m.atk>=0&&m.atk<.16){const tx=paw[0]+Math.sin(w)*50,ty=paw[1]+Math.cos(w)*50,k=1-m.atk/.16;c.save();c.globalCompositeOperation='lighter';c.translate(tx,ty);c.rotate(Math.PI/2-w);
@@ -1262,7 +1278,9 @@ function drawProj(c,p,t){c.save();c.translate(p.x,p.y);
 const _icon={};
 function itemIcon(id,pet,g=0){const k=(pet?'p'+g+':':'')+id;if(_icon[k])return _icon[k];const cv=document.createElement('canvas');cv.width=cv.height=96;const c=cv.getContext('2d');
  if(pet){c.translate(48,80);c.scale(1.05,1.05);petAura(c,g,1.3,'back');drawBeast(c,id,g,{t:1,ph:0});petAura(c,g,1.3,'front');}
- else{const it=ITEMS[id];if(it.s==='c'){c.translate(40,150);c.scale(.82,.82);drawBear(c,{t:1,cos:id,atk:-1,kind:'magic'});}
+ else{const it=ITEMS[id];if(it.s==='c'){const T=document.createElement('canvas');T.width=T.height=320;const x=T.getContext('2d');x.translate(160,290);drawBear(x,{t:1,cos:id,atk:-1,kind:'magic',cosOnly:1,noWeapon:1});
+   const d=x.getImageData(0,0,320,320).data;let x0=320,y0=320,x1=0,y1=0;for(let i=3;i<d.length;i+=4)if(d[i]>16){const p=i>>2,px=p%320,py=(p/320)|0;if(px<x0)x0=px;if(px>x1)x1=px;if(py<y0)y0=py;if(py>y1)y1=py;}
+   if(x1>x0){const w=x1-x0+1,h=y1-y0+1,s=Math.min(80/w,80/h,1.6);c.drawImage(T,x0,y0,w,h,48-w*s/2,48-h*s/2,w*s,h*s);}}
   else if(it.s==='w'){const small=it.k==='throw'||it.k==='magic';if(small){c.translate(48,62);c.scale(2.4,2.4);}else if(it.k==='gun'){c.translate(30,74);c.rotate(.9);c.scale(1.35,1.35);}else{c.translate(28,76);c.rotate(.75);c.scale(1.25,1.25);}drawWeapon(c,it,1);}
   else{c.translate(48,48);const g=c.createRadialGradient(-6,-8,2,0,0,22);g.addColorStop(0,'#fff');g.addColorStop(.45,it.col);g.addColorStop(1,shade(it.col,-.45));
    c.beginPath();c.arc(0,4,20,0,TAU);c.fillStyle=g;c.fill();c.lineWidth=2.5;c.strokeStyle=FUR.line;c.stroke();c.beginPath();c.arc(0,-6,24,Math.PI*1.15,Math.PI*1.85);c.lineWidth=2;c.strokeStyle='#8a7a6a';c.stroke();
@@ -1616,7 +1634,7 @@ function tail(c,t,w){const p=[[-44,-46],[-60,-44],[-66,-24],[-58,-12+Math.sin(t*
  c.lineCap='round';path();c.lineWidth=w+3;c.strokeStyle=K;c.stroke();path();c.lineWidth=w;c.strokeStyle=W;c.stroke();c.save();path();c.lineCap='butt';c.setLineDash([3,4]);c.lineWidth=w;c.strokeStyle=K;c.stroke();c.restore();}
 // fill a path, add a lower shade band and stripes clipped inside it, then outline
 let GLOWS=0;
-function fillShaded(c,pathFn,shadeY,stripes,fill=W){pathFn();c.fillStyle=fill;c.fill();c.save();pathFn();c.clip();c.fillStyle=L;c.fillRect(-90,shadeY,200,80);for(const s of stripes){stripe(c,...s);if(GLOWS){const[x,y,l,a,w]=s;stripe(c,x+Math.cos(a)*1,y+Math.sin(a)*1,l*.75,a,w*.38,.25,'#6ae4ff');}}c.restore();pathFn();out(c,1.7);}
+function fillShaded(c,pathFn,shadeY,stripes,fill=W){pathFn();c.fillStyle=fill;c.fill();c.save();pathFn();c.clip();c.fillStyle=L;c.fillRect(-90,shadeY,200,80);for(const s of stripes){stripe(c,...s);if(GLOWS){const[x,y,l,a,w]=s;stripe(c,x+Math.cos(a)*1,y+Math.sin(a)*1,l*.75,a,w*.38,.25,'#6ae4ff');}}c.restore();pathFn();c.fillStyle='rgba(0,0,0,0)';c.fill();out(c,1.7);}
 // head, side view facing right; open 0 closed snarl .. 1 roar
 function head(c,x,y,s,open,t,glowEye){c.save();c.translate(x,y);c.scale(s,s);
  // ear
@@ -1794,7 +1812,7 @@ for(const k in PETS){PETS[k].g=0;PETS[k].max=PETS[k].common?5:6;}
 const petStage=(id,g)=>PETS[id].common?(g>=3?1:0):(g>=6?2:g>=3?1:0);
 // how big each stage is drawn (the art itself grows a lot between stages)
 const PET_SC=[1.1,.66,.52],PET_SC_COMMON=[1.05,.8];
-function drawBeast(c,id,g,m){const st=petStage(id,g),k=(PETS[id].common?PET_SC_COMMON:PET_SC)[st];c.save();if(m.act){c.rotate(.06);c.scale(1.04,.97);}c.scale(k,k);BEAST[id][st](c,m);c.restore();}
+function drawBeast(c,id,g,m){const st=petStage(id,g),k=(PETS[id].common?PET_SC_COMMON:PET_SC)[st];c.save();if(m.act){c.rotate(.06);c.scale(1.04,.97);}c.scale(k,k);oneSil(c,()=>BEAST[id][st](c,m));c.restore();}
 // old 12-pet saves → the 4 beasts by fighting style, keeping count and best enhance level
 const OLD_PET={mongsil:'seal',dwittung:'penguin',somsom:'fox',kkiruk:'gull',uni:'tiger',beoreok:'tiger',rudol:'tiger',ttoreu:'phoenix',jogae:'qilin',ppojjak:'qilin',turtank:'dragon',orca:'dragon'};
 for(const k of Object.keys(S.pets)){const[id,g0]=gsplit(k);const to=OLD_PET[id];if(!to)continue;const g=Math.min(g0,PETS[to].max),nk=gkey(to,g),o=S.pets[k],cur=S.pets[nk];S.pets[nk]={n:(cur?.n||0)+o.n,lv:Math.max(cur?.lv||0,o.lv||0)};delete S.pets[k];if(S.pet===k)S.pet=nk;}
@@ -2411,7 +2429,7 @@ function render(t){
  for(const m of mobs)if(!m.dead)shadow(m.x,ART_W[m.arch]*K*m.size*(m.fly?.6:1));if(!bear.dead)shadow(BX,30*K);
  const sorted=mobs.slice().sort((a,b)=>b.x-a.x);
  for(const m of sorted){const dd=m.dead?m.dt/.35:0;const s=K*m.size*(1+dd*.3);
-  drawEnt(fc,(dun?ART:MART)[m.arch],{t,ph:m.ph,atk:m.cast&&m.cast.t>.5?Math.min(.99,(m.cast.t-.5)/.6):m.atk,a:m.a,b:m.b,sub:m.sub,seed:m.seed,id:m.id,phase:m.phase},m.x,m.y,s,m.dead?1:m.hit,1-dd);
+  drawEnt(fc,dun&&m.arch!=='human'?(c,mm)=>oneSil(c,()=>ART[m.arch](c,mm)):MART[m.arch],{t,ph:m.ph,atk:m.cast&&m.cast.t>.5?Math.min(.99,(m.cast.t-.5)/.6):m.atk,a:m.a,b:m.b,sub:m.sub,seed:m.seed,id:m.id,phase:m.phase},m.x,m.y,s,m.dead?1:m.hit,1-dd);
   if(!m.dead&&m.tier!==2&&m.hp<m.max){const w=44*K*m.size,y=m.y-(ART_H[m.arch]+14)*K*m.size;fc.fillStyle='rgba(10,15,30,.6)';rr(fc,m.x-w/2-1,y-1,w+2,7,3.5);fc.fill();fc.fillStyle=m.tier?'#ffb03a':'#ff5b6e';rr(fc,m.x-w/2,y,w*clamp(m.hp/m.max,0,1),5,2.5);fc.fill();}}
 drawBossFx(fc,t);drawPet(fc,t);
  if(!bear.dead||Math.floor(t*10)%2)drawEnt(fc,bearWithSwing,{t,ph:bear.ph,walk:bear.walk,atk:bear.atk,kind:curWeapon().k},BX,GY,K*.95,bear.hit*.7,bear.dead?.5:1);

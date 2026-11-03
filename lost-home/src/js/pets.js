@@ -14,7 +14,7 @@ for(const k in PETS){PETS[k].g=0;PETS[k].max=PETS[k].common?5:6;}
 const petStage=(id,g)=>PETS[id].common?(g>=3?1:0):(g>=6?2:g>=3?1:0);
 // how big each stage is drawn (the art itself grows a lot between stages)
 const PET_SC=[1.1,.66,.52],PET_SC_COMMON=[1.05,.8];
-function drawBeast(c,id,g,m){const st=petStage(id,g),k=(PETS[id].common?PET_SC_COMMON:PET_SC)[st];c.save();if(m.act){c.rotate(.06);c.scale(1.04,.97);}c.scale(k,k);BEAST[id][st](c,m);c.restore();}
+function drawBeast(c,id,g,m){const st=petStage(id,g),k=(PETS[id].common?PET_SC_COMMON:PET_SC)[st];c.save();if(m.act){c.rotate(.06);c.scale(1.04,.97);}c.scale(k,k);oneSil(c,()=>BEAST[id][st](c,m));c.restore();}
 // old 12-pet saves → the 4 beasts by fighting style, keeping count and best enhance level
 const OLD_PET={mongsil:'seal',dwittung:'penguin',somsom:'fox',kkiruk:'gull',uni:'tiger',beoreok:'tiger',rudol:'tiger',ttoreu:'phoenix',jogae:'qilin',ppojjak:'qilin',turtank:'dragon',orca:'dragon'};
 for(const k of Object.keys(S.pets)){const[id,g0]=gsplit(k);const to=OLD_PET[id];if(!to)continue;const g=Math.min(g0,PETS[to].max),nk=gkey(to,g),o=S.pets[k],cur=S.pets[nk];S.pets[nk]={n:(cur?.n||0)+o.n,lv:Math.max(cur?.lv||0,o.lv||0)};delete S.pets[k];if(S.pet===k)S.pet=nk;}
