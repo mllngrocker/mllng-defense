@@ -59,7 +59,8 @@ function drawHuman(c,m,H,acc){
  const st=Math.sin(ph)*.32*walk,kn=k=>.12+Math.max(0,Math.sin(ph+k))*.5*walk;
  const HP=[0,-90],HD=[4,-160+br*.3],hand=handPos(a),flow=Math.sin(t*2.2)*6+walk*4;
  c.save();c.rotate(lean);
- if(H===HUM.king||H===HUM.xenos){c.save();c.globalCompositeOperation='lighter';for(let i=0;i<12;i++){const k=(t*.45+i/12)%1;ell(c,-24+Math.sin(i*7)*30,-6-k*160,5+i%3*3,9+i%3*4);c.fillStyle=acc;c.globalAlpha=(1-k)*.13;c.fill();}c.restore();}
+ if(H===HUM.king&&m.phase>=3)kingWings(c,t);
+ if(H===HUM.king||H===HUM.xenos){const amp=H===HUM.king&&m.phase>1?2.2:1;c.save();c.globalCompositeOperation='lighter';for(let i=0;i<12;i++){const k=(t*.45+i/12)%1;ell(c,-24+Math.sin(i*7)*30,-6-k*160,5+i%3*3,9+i%3*4);c.fillStyle=acc;c.globalAlpha=Math.min(1,(1-k)*.13*amp);c.fill();}c.restore();}
  const parts=[],armorG=()=>metalX(c,-20*b,22*b,H.armor);
  if(H.cape)parts.push({p:()=>{c.beginPath();c.moveTo(-12*b,-142);c.bezierCurveTo(-30*b-flow,-104,-38*b-flow*1.4,-52,-44*b-flow*2,-3);
    for(let i=0;i<7;i++)c.lineTo(-44*b-flow*2+i*7*b,(i%2?-12:-2)+Math.sin(t*4+i)*2);c.bezierCurveTo(-8*b,-46,-4*b,-96,10*b,-140);c.closePath();},f:()=>cloth(c,-145,0,H.cape)});

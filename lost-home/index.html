@@ -780,7 +780,8 @@ function drawHuman(c,m,H,acc){
  const st=Math.sin(ph)*.32*walk,kn=k=>.12+Math.max(0,Math.sin(ph+k))*.5*walk;
  const HP=[0,-90],HD=[4,-160+br*.3],hand=handPos(a),flow=Math.sin(t*2.2)*6+walk*4;
  c.save();c.rotate(lean);
- if(H===HUM.king||H===HUM.xenos){c.save();c.globalCompositeOperation='lighter';for(let i=0;i<12;i++){const k=(t*.45+i/12)%1;ell(c,-24+Math.sin(i*7)*30,-6-k*160,5+i%3*3,9+i%3*4);c.fillStyle=acc;c.globalAlpha=(1-k)*.13;c.fill();}c.restore();}
+ if(H===HUM.king&&m.phase>=3)kingWings(c,t);
+ if(H===HUM.king||H===HUM.xenos){const amp=H===HUM.king&&m.phase>1?2.2:1;c.save();c.globalCompositeOperation='lighter';for(let i=0;i<12;i++){const k=(t*.45+i/12)%1;ell(c,-24+Math.sin(i*7)*30,-6-k*160,5+i%3*3,9+i%3*4);c.fillStyle=acc;c.globalAlpha=Math.min(1,(1-k)*.13*amp);c.fill();}c.restore();}
  const parts=[],armorG=()=>metalX(c,-20*b,22*b,H.armor);
  if(H.cape)parts.push({p:()=>{c.beginPath();c.moveTo(-12*b,-142);c.bezierCurveTo(-30*b-flow,-104,-38*b-flow*1.4,-52,-44*b-flow*2,-3);
    for(let i=0;i<7;i++)c.lineTo(-44*b-flow*2+i*7*b,(i%2?-12:-2)+Math.sin(t*4+i)*2);c.bezierCurveTo(-8*b,-46,-4*b,-96,10*b,-140);c.closePath();},f:()=>cloth(c,-145,0,H.cape)});
@@ -1201,6 +1202,48 @@ function drawUlt(c,t){if(!ultFx)return;const f=ultFx,U=ULTS[f.k],p=f.t/U.dur,col
    if(f.t>.7){const h=Math.min(1,(f.t-.7)/.2)*120*K;const g=c.createLinearGradient(0,GY,0,GY-h);g.addColorStop(0,`rgba(176,74,255,${.8*fade})`);g.addColorStop(1,'rgba(176,74,255,0)');c.fillStyle=g;c.fillRect(m.x-14*K,GY-h,28*K,h);}}}
  c.restore();}
 
+/* ---------- boss skills, enrage, demon king phases ----------
+ Every few seconds a boss telegraphs a skill (red warning under the bear for 0.8s), then it lands.
+ Non-human bosses enrage below 50% HP. 마왕 녹스 transforms at 66% and 33% HP. */
+const BSK={
+ barkas:[{n:'대지 분쇄',col:'#ff7a3a',kind:'slam',mul:4},{n:'강철 돌진',col:'#c8ccd6',kind:'charge',mul:3}],
+ lilith:[{n:'가시 장미 폭풍',col:'#ff4a7a',kind:'rain',mul:3.5},{n:'흡혈 장미',col:'#c8103a',kind:'drain',mul:2.5}],
+ xenos:[{n:'흑염 일섬',col:'#b05aff',kind:'slash',mul:4.5},{n:'흑염 기둥',col:'#8a3aff',kind:'pillar',mul:4}],
+ king:[{n:'어둠의 대검',col:'#ff2a3a',kind:'slash',mul:5},{n:'마왕의 낙인',col:'#ff3a6a',kind:'pillar',mul:5},{n:'멸망의 별',col:'#ff6a2a',kind:'rain',mul:4,ph:3}],
+ _:[{n:'분노의 일격',col:'#ff5a3a',kind:'slam',mul:3}],
+};
+const TELE=.8,CAST=1.5;
+function stepBoss(m,dt){if(!m||m.dead)return;if(m.skT==null){m.skT=4;m.phase=1;}
+ if(m.id==='king'){const ph=m.hp<m.max*.33?3:m.hp<m.max*.66?2:1;if(ph>m.phase){m.phase=ph;m.size*=1.1;m.skT=1.2;hitstop=.4;shake=16;banner(ph===2?'마왕 각성!':'진정한 마왕 녹스!','#ff2a3a');sfx('boss');sparks(m.x,m.y-90*K,40,'#ff2a3a',500);}}
+ else if(!m.enraged&&m.hp<m.max*.5){m.enraged=true;banner('분노!','#ff5a3a');sfx('boss');}
+ if(m.frozen>0)return;
+ if(!m.cast){m.skT-=dt;if(m.skT<=0&&!bear.dead&&m.x<W){const list=(BSK[m.id]||BSK._).filter(s=>!s.ph||s.ph<=m.phase);m.cast={s:pick(list),t:0,done:false,x0:m.x};num(m.x,m.y-ART_H[m.arch]*K*m.size-24*K,m.cast.s.n,'hurt');}return;}
+ const c=m.cast,s=c.s;c.t+=dt;
+ if(s.kind==='charge'){const k=c.t<TELE?0:c.t<TELE+.25?(c.t-TELE)/.25:Math.max(0,1-(c.t-TELE-.25)/.4);m.x=lerp(c.x0,BX+40*K,k);}
+ if(!c.done&&c.t>=TELE){c.done=true;const d=m.dmg*s.mul;
+  if(!bear.dead)hurtBear(d);shake=Math.max(shake,12);hitstop=Math.max(hitstop,.08);sfx('crit');
+  if(s.kind==='drain'){const h=m.max*.04;m.hp=Math.min(m.max,m.hp+h);num(m.x,m.y-120*K,'+'+fmt(h),'heal');}
+  if(s.kind==='slam'){ring(BX,GY,s.col,70*K,.6);debris(BX,GY-5*K,14,'#8a7a6a',K);}
+  if(s.kind==='rain')for(let i=0;i<24;i++)part({x:BX+rnd(-60,60)*K,y:-10,vx:rnd(-40,40),vy:rnd(500,800),g:400,life:.6,ml:.6,size:rnd(3,6),col:s.col,type:'spark'});
+  if(s.kind==='pillar'||s.kind==='slash')sparks(BX,GY-60*K,30,s.col,420);}
+ if(c.t>=CAST){m.cast=null;m.skT=rnd(6,8)/(m.enraged||m.phase>1?1.5:1);}}
+function drawBossFx(c,t){const m=boss;if(!m||m.dead)return;c.save();
+ if(m.enraged||m.phase>1){c.globalCompositeOperation='lighter';const cy=m.y-ART_H[m.arch]*.5*K*m.size,r=ART_H[m.arch]*.7*K*m.size;const g=c.createRadialGradient(m.x,cy,r*.2,m.x,cy,r);g.addColorStop(0,`rgba(255,40,60,${.18+.08*Math.sin(t*6)})`);g.addColorStop(1,'rgba(255,40,60,0)');c.fillStyle=g;c.fillRect(m.x-r,cy-r,r*2,r*2);c.globalCompositeOperation='source-over';}
+ const cs=m.cast;if(cs){const s=cs.s;
+  if(cs.t<TELE){const k=cs.t/TELE;c.fillStyle=`rgba(255,40,60,${.15+.25*k})`;c.beginPath();c.ellipse(BX,GY,(50+30*k)*K,(10+5*k)*K,0,0,TAU);c.fill();c.strokeStyle=`rgba(255,80,90,${.6+.4*Math.sin(t*30)})`;c.lineWidth=2;c.stroke();
+   c.font=`${26*K}px Jal, sans-serif`;c.textAlign='center';c.fillStyle='#ff3a4a';c.strokeStyle='#200';c.lineWidth=4;c.strokeText('!',BX,GY-140*K);c.fillText('!',BX,GY-140*K);}
+  else{const k=(cs.t-TELE)/(CAST-TELE),a=1-k;c.globalCompositeOperation='lighter';
+   if(s.kind==='slash'){c.save();c.translate(BX+10*K,GY-60*K);c.rotate(-.5);const r=90*K;c.beginPath();c.arc(-r*.4,0,r,-1.1,1.1);c.arc(-r*.4-r*.3,0,r*.9,1,-1,true);c.closePath();c.fillStyle=s.col;c.globalAlpha=a;c.shadowColor=s.col;c.shadowBlur=24;c.fill();c.restore();}
+   else if(s.kind==='pillar'){const g=c.createLinearGradient(0,GY,0,0);g.addColorStop(0,s.col);g.addColorStop(1,'rgba(0,0,0,0)');c.globalAlpha=a;c.fillStyle=g;c.fillRect(BX-26*K,0,52*K,GY);c.fillStyle='rgba(255,255,255,.6)';c.fillRect(BX-6*K,0,12*K,GY);}
+   else if(s.kind==='slam'){for(let i=0;i<3;i++){c.beginPath();c.ellipse(BX,GY,(40+k*120+i*20)*K,(8+k*20)*K,0,0,TAU);c.strokeStyle=s.col;c.globalAlpha=a*(1-i*.25);c.lineWidth=4;c.stroke();}}
+   else if(s.kind==='drain'){c.globalAlpha=a;for(let i=0;i<5;i++){const q=(k*2+i/5)%1;ell(c,lerp(BX,m.x,q),lerp(GY-60*K,m.y-80*K,q)+Math.sin(q*9+i)*10*K,4*K,4*K);c.fillStyle=s.col;c.fill();}}
+   else if(s.kind==='charge'){c.globalAlpha=a*.7;c.strokeStyle='#fff';c.lineWidth=2;for(let i=0;i<6;i++){const y=m.y-(20+i*18)*K;c.beginPath();c.moveTo(m.x+20*K,y);c.lineTo(m.x+(70+i*8)*K,y);c.stroke();}}}}
+ c.restore();}
+// demon king wings (phase 3), drawn behind the body in humans.js
+function kingWings(c,t){const f=Math.sin(t*3)*.15;for(const s of[1,.85]){c.save();c.translate(-6,-130);c.rotate(-.3-f);c.scale(s,s);c.beginPath();c.moveTo(0,0);c.lineTo(-30,-40);c.lineTo(-80,-46);c.quadraticCurveTo(-70,-20,-86,-8);c.quadraticCurveTo(-64,-6,-70,14);c.quadraticCurveTo(-46,4,-44,26);c.quadraticCurveTo(-26,10,0,10);c.closePath();
+ const g=c.createLinearGradient(-86,0,0,0);g.addColorStop(0,'#3a0612');g.addColorStop(1,'#140408');c.fillStyle=g;c.fill();c.lineWidth=2;c.strokeStyle='rgba(18,12,20,.9)';c.stroke();
+ c.strokeStyle='rgba(255,60,80,.5)';c.lineWidth=1.2;c.beginPath();c.moveTo(0,0);c.lineTo(-80,-46);c.moveTo(-30,-40);c.lineTo(-86,-8);c.moveTo(-30,-40);c.lineTo(-70,14);c.stroke();c.restore();}}
+
 /* ---------- effects: particles, damage numbers, hit flash, sound ---------- */
 let DPR=Math.min(window.devicePixelRatio||1,2);
 const parts=[],nums=[];
@@ -1347,7 +1390,7 @@ function step(dt){
  // mobs
  if(!boss&&S.g%10===9&&!S.farm&&S.kills>=KILLS&&!mobs.some(m=>!m.dead))startBoss();
  if(!mobs.some(m=>!m.dead)&&!(S.g%10===9&&!S.farm&&S.kills>=KILLS))spawnWave();
- if(boss){bossT-=dt;if(bossT<=0)bossFail();}
+ if(boss){bossT-=dt;if(bossT<=0)bossFail();stepBoss(boss,dt);}
  for(let i=mobs.length-1;i>=0;i--){const m=mobs[i];m.hit=Math.max(0,m.hit-dt*6);
   if(m.dead){m.dt+=dt;if(m.dt>.35)mobs.splice(i,1);continue;}
   m.x+=m.kb*dt*8;m.kb*=Math.pow(.02,dt);
@@ -1356,7 +1399,7 @@ function step(dt){
   const moving=m.x>stop&&!ahead;if(moving){m.x-=(m.spd*K+spd)*dt;m.ph+=dt*8;}else if(bear.walk>.1)m.x-=spd*dt;
   m.y=m.fly?GY-(70+Math.sin(performance.now()/600+m.seed)*10)*K:GY;
   if(m.atk>=0){m.atk+=dt/.45;if(!m.done&&m.atk>=.5){m.done=true;if(m.ranged){shots.push({x:m.x-20*K,y:m.y-ART_H[m.arch]*.45*K*m.size,vx:-300*K,col:m.a,dmg:m.dmg});sfx('shot');}else if(!bear.dead)hurtBear(m.dmg,m);}if(m.atk>=1)m.atk=-1;}
-  m.cd-=dt;if(!moving&&m.x<=stop+6*K&&m.cd<=0&&m.atk<0&&!bear.dead){m.atk=0;m.done=false;m.cd=m.tier===2?1.6:1.4;}}
+  m.cd-=dt;if(!moving&&m.x<=stop+6*K&&m.cd<=0&&m.atk<0&&!bear.dead&&!m.cast){m.atk=0;m.done=false;m.cd=(m.tier===2?1.6:1.4)/(m.enraged||m.phase>1?1.4:1);}}
  for(let i=shots.length-1;i>=0;i--){const s=shots[i];s.x+=s.vx*dt;if(s.pet){if(petShotHit(s))shots.splice(i,1);continue;}if(s.x<BX+18*K){if(!bear.dead)hurtBear(s.dmg);sparks(s.x,s.y,6,s.col,200);shots.splice(i,1);}}
  stepSkills(dt);stepPet(dt);stepUlt(dt);
  stepFx(dt);
@@ -1374,9 +1417,9 @@ function render(t){
  for(const m of mobs)if(!m.dead)shadow(m.x,ART_W[m.arch]*K*m.size*(m.fly?.6:1));if(!bear.dead)shadow(BX,30*K);
  const sorted=mobs.slice().sort((a,b)=>b.x-a.x);
  for(const m of sorted){const dd=m.dead?m.dt/.35:0;const s=K*m.size*(1+dd*.3);
-  drawEnt(fc,ART[m.arch],{t,ph:m.ph,atk:m.atk,a:m.a,b:m.b,sub:m.sub,seed:m.seed,id:m.id},m.x,m.y,s,m.dead?1:m.hit,1-dd);
+  drawEnt(fc,ART[m.arch],{t,ph:m.ph,atk:m.cast&&m.cast.t>.5?Math.min(.99,(m.cast.t-.5)/.6):m.atk,a:m.a,b:m.b,sub:m.sub,seed:m.seed,id:m.id,phase:m.phase},m.x,m.y,s,m.dead?1:m.hit,1-dd);
   if(!m.dead&&m.tier!==2&&m.hp<m.max){const w=44*K*m.size,y=m.y-(ART_H[m.arch]+14)*K*m.size;fc.fillStyle='rgba(10,15,30,.6)';rr(fc,m.x-w/2-1,y-1,w+2,7,3.5);fc.fill();fc.fillStyle=m.tier?'#ffb03a':'#ff5b6e';rr(fc,m.x-w/2,y,w*clamp(m.hp/m.max,0,1),5,2.5);fc.fill();}}
-drawPet(fc,t);
+drawBossFx(fc,t);drawPet(fc,t);
  if(!bear.dead||Math.floor(t*10)%2)drawEnt(fc,bearWithSwing,{t,ph:bear.ph,walk:bear.walk,atk:bear.atk,kind:curWeapon().k},BX,GY,K*.95,bear.hit*.7,bear.dead?.5:1);
  fc.globalCompositeOperation='lighter';for(const s of shots){const g=fc.createRadialGradient(s.x,s.y,0,s.x,s.y,12*K);g.addColorStop(0,'#fff');g.addColorStop(.4,s.col);g.addColorStop(1,'rgba(0,0,0,0)');fc.fillStyle=g;fc.beginPath();fc.arc(s.x,s.y,12*K,0,TAU);fc.fill();}
  fc.globalCompositeOperation='source-over';
