@@ -1590,11 +1590,11 @@ const PRO=[
  {txt:'떠다니는 쓰레기 사이로, 낯선 땅이 보였다.',th:THEMES[0],gr:.005,hz:.44,trash:1,land:1,fx:.55,fy:.68},
  {txt:'고향을 되찾기 위해, 백곰은 판자 하나를 쥐었다.',th:{...THEMES[0],sky:['#34405e','#7a7486','#e0a888'],sun:['#ffd0a0',.8,.3,.05],rays:.3,sea:'#2a6a98',fog:'#c8a8a0'},gr:.005,hz:.44,trash:1,pick:1,fx:.55,fy:.72},
 ];
-let proI=0,proT=0,proBG=null,proOn=false,proShots=[];
+let proI=0,proT=0,proBG=null,proOn=false,proShots=[],proNext=null;
 function proScene(){const P=PRO[proI];proBG.theme(P.th);proBG.ground=P.gr||.16;proBG.horizon=P.hz||.4;}
 function startPrologue(done){const el=$('#prologue');el.hidden=false;proOn=true;proI=0;proT=0;proShots=[];if(!proBG)proBG=new BG($('#pbg'));proScene();
  const next=()=>{if(proT<.4)return;proShots[proI]=panelShot();proI++;proT=0;if(proI>=PRO.length){end();return;}proScene();sfx('buy');};
- const end=()=>{proOn=false;el.hidden=true;el.onclick=null;done();};
+ proNext=next;const end=()=>{proOn=false;el.hidden=true;el.onclick=null;done();};
  el.onclick=e=>{if(e.target.id==='pskip'){end();return;}next();};}
 /* floating trash: PET bottle, can, plastic bag, tyre, styrofoam — bobbing on the water with a ripple */
 function drawJunk(c,type,x,y,s,t,i,rot=0){const b=Math.sin(t*1.6+i*1.7)*2*s,r=rot+Math.sin(t*1.1+i)*.15;c.save();c.translate(x,y+b);
@@ -1656,12 +1656,16 @@ function drawPrologue(t,dt){if(!proOn)return;proT+=dt;drawScene(t);
  c.fillStyle='#f3ead6';c.fillRect(0,0,w,h);c.fillStyle='rgba(120,100,70,.12)';for(let y=0;y<h;y+=9)for(let x=(y/9%2)*4.5;x<w;x+=9){c.beginPath();c.arc(x,y,1.3,0,TAU);c.fill();}
  const R=proPanels(w,h),P=PRO[proI],frame=r=>{c.lineWidth=3.5;c.strokeStyle='#14182a';c.strokeRect(r[0],r[1],r[2],r[3]);};
  for(let i=0;i<proI;i++){c.drawImage(proShots[i],R[i][0],R[i][1],R[i][2],R[i][3]);frame(R[i]);}
- // newest panel slams in: drops from a little bigger and tilted, with a white flash
- const r0=R[proI],k=Math.min(1,proT/.35),e=1-Math.pow(1-k,3),sc=1.18-.18*e,rot=(proI%2?.06:-.06)*(1-e),rl=[0,0,r0[2],r0[3]];
- c.save();c.translate(r0[0]+r0[2]/2,r0[1]+r0[3]/2);c.rotate(rot);c.scale(sc,sc);c.translate(-r0[2]/2,-r0[3]/2);c.globalAlpha=Math.min(1,k*2);
+ // newest panel falls from above the screen into its slot with a small bounce, then the page shakes once
+ const r0=R[proI],D=.55,k=Math.min(1,proT/D),e=k<1?1+2.2*Math.pow(k-1,3)+1.2*Math.pow(k-1,2):1,rl=[0,0,r0[2],r0[3]];
+ const dy=-(r0[1]+r0[3]+30)*(1-e),rot=(proI%2?.05:-.05)*(1-k),jolt=proT>D&&proT<D+.15?Math.sin((proT-D)*80)*3*(1-(proT-D)/.15):0;
+ if(jolt)c.translate(0,jolt);
+ c.save();c.translate(r0[0]+r0[2]/2,r0[1]+r0[3]/2+dy);c.rotate(rot);c.translate(-r0[2]/2,-r0[3]/2);
  c.fillStyle='rgba(0,0,0,.25)';c.fillRect(5,6,r0[2],r0[3]);c.save();c.beginPath();c.rect(0,0,r0[2],r0[3]);c.clip();panelBlit(c,P,rl,w,h);
- if(k<1){c.fillStyle=`rgba(255,255,255,${.8*(1-k)})`;c.fillRect(0,0,r0[2],r0[3]);}c.restore();
- caption(c,P.txt,rl,Math.floor(Math.max(0,proT-.3)*14));frame(rl);c.restore();
+ c.restore();
+ caption(c,P.txt,rl,Math.floor(Math.max(0,proT-D)*14));frame(rl);c.restore();if(jolt)c.translate(0,-jolt);
+ // the next cut comes down on its own once the caption has been up for a moment; a tap skips ahead
+ if(proI<PRO.length-1&&proT>D+P.txt.length/14+1.3)proNext();
  $('#pphint').textContent=proI<PRO.length-1?'화면을 누르면 다음 컷':'화면을 누르면 모험 시작';}
 /* naming */
 const cleanName=v=>(v||'').replace(/<[^>]*>/g,'').replace(/[<>&"'`]/g,'').trim().slice(0,8);
