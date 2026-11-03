@@ -2,6 +2,7 @@
 const ICON={
  gold:'<svg viewBox="0 0 24 24"><defs><radialGradient id="gc" cx=".35" cy=".3"><stop offset="0" stop-color="#fff6c0"/><stop offset=".5" stop-color="#ffcf3d"/><stop offset="1" stop-color="#d48a10"/></radialGradient></defs><circle cx="12" cy="12" r="10" fill="url(#gc)" stroke="#8a5a00" stroke-width="1.5"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#b47a10" stroke-width="1.2"/></svg>',
  gem:'<svg viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 12L2 9z" fill="#7fe3ff" stroke="#1a6a9a" stroke-width="1.4" stroke-linejoin="round"/><path d="M2 9h20M8 3l4 18M16 3l-4 18" stroke="#c8f4ff" stroke-width="1" opacity=".8"/></svg>',
+ stone:'<svg viewBox="0 0 24 24"><path d="M4 15l3-8 7-3 6 6-2 9-9 1z" fill="#ff8a3a" stroke="#7a3008" stroke-width="1.4" stroke-linejoin="round"/><path d="M7 7l5 5 8-2M12 12l-3 8" stroke="#ffd0a0" stroke-width="1" opacity=".8" fill="none"/></svg>',
  atk:'<svg viewBox="0 0 32 32"><path d="M24 3l5 0 0 5-13 13-5-5z" fill="#e8eef8" stroke="#3a4a6a" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 17l7 7M5 27l6-6" stroke="#8a5a30" stroke-width="3.4" stroke-linecap="round"/><path d="M6 15l11 11" stroke="#ffcf3d" stroke-width="3" stroke-linecap="round"/></svg>',
  hp:'<svg viewBox="0 0 32 32"><path d="M16 28S3 20 3 11.5A6.5 6.5 0 0 1 16 8a6.5 6.5 0 0 1 13 3.5C29 20 16 28 16 28z" fill="#ff5b6e" stroke="#9c1d33" stroke-width="1.6"/><ellipse cx="10" cy="11" rx="3" ry="2" fill="#fff" opacity=".6"/></svg>',
  regen:'<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="#8ae86a" stroke="#2a7a2a" stroke-width="1.6"/><path d="M16 9v14M9 16h14" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>',
@@ -18,7 +19,7 @@ let banT;function banner(txt,col){const b=$('#banner');b.textContent=txt;b.style
 let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);}
 function updateHud(){
  {const t=TITLES.find(x=>x.id===S.title);$('#lvtxt').innerHTML=`Lv.${S.lv} ${S.name||''}${t?` <small style="font:10px var(--f-body);opacity:.8">${t.n}</small>`:''}`;}$('#expbar b').style.width=(S.exp/needExp(S.lv)*100).toFixed(1)+'%';
- $('#goldtxt').textContent=fmt(S.gold);{const cp=CP(),up=$('#cpup');$('#cptxt').textContent=fmt(cp);if(window._cp&&cp>_cp*1.0005){up.textContent='+'+fmt(cp-_cp);up.classList.remove('go');void up.offsetWidth;up.classList.add('go');}window._cp=cp;}$('#gemtxt').textContent=fmt(S.gem);
+ $('#goldtxt').textContent=fmt(S.gold);$('#stonetxt').textContent=fmt(S.stone||0);{const cp=CP(),up=$('#cpup');$('#cptxt').textContent=fmt(cp);if(window._cp&&cp>_cp*1.0005){up.textContent='+'+fmt(cp-_cp);up.classList.remove('go');void up.offsetWidth;up.classList.add('go');}window._cp=cp;}$('#gemtxt').textContent=fmt(S.gem);
  const bossStage=S.g%10===9;$('#stname').textContent=`${stageName(S.g)} ${theme().name}`;
  $('#killbar').hidden=!!boss;$('#bosstimer').hidden=!boss;
  $('#killbar b').style.width=(S.farm?100:S.kills/KILLS*100)+'%';if(boss)$('#bosstimer b').style.width=(bossT/30*100)+'%';
