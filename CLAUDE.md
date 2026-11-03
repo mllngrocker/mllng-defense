@@ -40,12 +40,12 @@ pip install fonttools brotli   # 처음 한 번
 | js/quest.js | 퀘스트 12종 순환, 일일 퀘스트, 출석 (`track(이벤트)`로 진행) |
 | js/story.js | 프롤로그, 곰 이름, 보스 승리 화면, 자는 곰 |
 | js/meta.js | 세트 효과, 칭호, 도감, 설정 (`BONUS(stat)`) |
-
-플레이어 캐릭터는 bear.js 맨 아래 `HEROES`에 등록한다 (`draw`, `swing`). 새 등장인물은 그림 함수를 만들어 여기에 추가하고 `S.hero`로 고른다.
 | js/fx.js | 파티클, 데미지 숫자(단위별 색), 피격 번쩍임, 효과음(합성) |
 | js/game.js | 전투, 스테이지·보스 흐름, 렌더링 |
-| js/ui.js | HUD, 강화/기록 패널, 설정, 로비, 자리 비운 사이 보상 |
+| js/ui.js | HUD, 탭 패널(강화·장비·스킬·펫·뽑기·도감), 로비, 자리 비운 사이 보상 |
 | js/main.js | 시작 + 메인 루프 |
+
+플레이어 캐릭터는 bear.js 맨 아래 `HEROES`에 등록한다 (`draw`, `swing`). 새 등장인물은 그림 함수를 만들어 여기에 추가하고 `S.hero`로 고른다.
 
 세이브는 브라우저 localStorage(`lost-home-v3`)의 전역 객체 `S`.
 
