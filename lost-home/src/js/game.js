@@ -35,7 +35,7 @@ function front(){let best=null;for(const m of mobs)if(!m.dead&&(!best||m.x<best.
 function reachX(m){return BX+(40+ART_W[m.arch]*m.size)*K;}
 // how far the bear can hit with the current weapon kind
 function bearReach(m){const r=curWeapon().kind.range;return r?BX+r*K:reachX(m);}
-function bearHit(t,mul){const crit=Math.random()*100<stat('crit');const dmg=ATK()*curWeapon().kind.mul*mul*(crit?stat('critd')/100:1)*rnd(.92,1.08);hitMob(t,dmg,crit);ultCharge();return[dmg,crit];}
+function bearHit(t,mul){const wg=curWeapon().g;gradeImpact(t.x,t.y-ART_H[t.arch]*.45*K*t.size,wg,K);const crit=Math.random()*100<stat('crit');const dmg=ATK()*curWeapon().kind.mul*mul*(crit?stat('critd')/100:1)*rnd(.92,1.08);hitMob(t,dmg,crit);ultCharge();return[dmg,crit];}
 function fireProj(t){const w=curWeapon(),k=w.k,sp=k==='gun'?900:k==='throw'?520:420;
  pshots.push({kind:k,it:w,col:w.col,x:BX+(k==='gun'?50:30)*K,y:GY-(k==='gun'?72:k==='magic'?96:105)*K,tx:t.x,ty:t.y-ART_H[t.arch]*.45*K*t.size,sp:sp*K,spin:0,tg:t});sfx(k==='gun'?'shot':'buy');}
 function hurtBear(d,src){if(bear.dead)return;d*=1-Math.min(60,PB('def'))/100;if(src&&!src.dead&&PB('thorn'))hitMob(src,d*PB('thorn')/10,false);bear.hp-=d;bear.hit=1;num(BX,GY-110*K,d,'hurt');sfx('hurt');shake=Math.max(shake,3);
@@ -95,7 +95,7 @@ function render(t){
  for(const m of mobs)if(!m.dead)shadow(m.x,ART_W[m.arch]*K*m.size*(m.fly?.6:1));if(!bear.dead)shadow(BX,30*K);
  const sorted=mobs.slice().sort((a,b)=>b.x-a.x);
  for(const m of sorted){const dd=m.dead?m.dt/.35:0;const s=K*m.size*(1+dd*.3);
-  drawEnt(fc,ART[m.arch],{t,ph:m.ph,atk:m.cast&&m.cast.t>.5?Math.min(.99,(m.cast.t-.5)/.6):m.atk,a:m.a,b:m.b,sub:m.sub,seed:m.seed,id:m.id,phase:m.phase},m.x,m.y,s,m.dead?1:m.hit,1-dd);
+  drawEnt(fc,MART[m.arch],{t,ph:m.ph,atk:m.cast&&m.cast.t>.5?Math.min(.99,(m.cast.t-.5)/.6):m.atk,a:m.a,b:m.b,sub:m.sub,seed:m.seed,id:m.id,phase:m.phase},m.x,m.y,s,m.dead?1:m.hit,1-dd);
   if(!m.dead&&m.tier!==2&&m.hp<m.max){const w=44*K*m.size,y=m.y-(ART_H[m.arch]+14)*K*m.size;fc.fillStyle='rgba(10,15,30,.6)';rr(fc,m.x-w/2-1,y-1,w+2,7,3.5);fc.fill();fc.fillStyle=m.tier?'#ffb03a':'#ff5b6e';rr(fc,m.x-w/2,y,w*clamp(m.hp/m.max,0,1),5,2.5);fc.fill();}}
 drawBossFx(fc,t);drawPet(fc,t);
  if(!bear.dead||Math.floor(t*10)%2)drawEnt(fc,bearWithSwing,{t,ph:bear.ph,walk:bear.walk,atk:bear.atk,kind:curWeapon().k},BX,GY,K*.95,bear.hit*.7,bear.dead?.5:1);
@@ -106,6 +106,7 @@ drawBossFx(fc,t);drawPet(fc,t);
  drawUlt(fc,t);
  drawLevelUp(fc,K);
  drawFx(fc,K);
+ drawCutin(fc,t);
  // bear hp bar
  const bw=60*K,by=GY+12*K;fc.fillStyle='rgba(10,15,30,.55)';rr(fc,BX-bw/2-1,by-1,bw+2,8,4);fc.fill();const hpk=clamp(bear.hp/MAXHP(),0,1);
  const hg=fc.createLinearGradient(BX-bw/2,0,BX+bw/2,0);hg.addColorStop(0,'#5fd35a');hg.addColorStop(1,'#c3ff79');fc.fillStyle=hpk<.3?'#ff5b6e':hg;rr(fc,BX-bw/2,by,bw*hpk,6,3);fc.fill();

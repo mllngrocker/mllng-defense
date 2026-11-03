@@ -55,6 +55,10 @@ const WSHAPE={
 function drawWeapon(c,it,t=0){(WSHAPE[it.shape]||WSHAPE.plank)(c,it,t);}
 // projectile art (bear-side): bullets, thrown items, magic orbs
 function drawProj(c,p,t){c.save();c.translate(p.x,p.y);
+ if(p.it.g>=3){const col=GCOL[p.it.g],r=(10+p.it.g*2)*K;c.save();c.globalCompositeOperation='lighter';const a=Math.atan2(p.ty-p.y,p.tx-p.x);c.rotate(a);
+  const tg=c.createLinearGradient(-r*5,0,0,0);tg.addColorStop(0,'rgba(0,0,0,0)');tg.addColorStop(1,col);c.fillStyle=tg;c.beginPath();c.moveTo(-r*5,0);c.lineTo(0,-r*.6);c.lineTo(0,r*.6);c.closePath();c.fill();
+  const g=c.createRadialGradient(0,0,0,0,0,r);g.addColorStop(0,'rgba(255,255,255,.95)');g.addColorStop(.35,col);g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.beginPath();c.arc(0,0,r,0,TAU);c.fill();c.restore();
+  if(p.kind==='throw')c.scale(1.35,1.35);}
  if(p.kind==='gun'){c.globalCompositeOperation='lighter';const g=c.createLinearGradient(-26*K,0,4*K,0);g.addColorStop(0,'rgba(255,220,120,0)');g.addColorStop(1,p.col==='#5af0ff'?'rgba(150,250,255,1)':'rgba(255,240,180,1)');c.fillStyle=g;c.fillRect(-26*K,-1.6*K,30*K,3.2*K);}
  else if(p.kind==='magic'){c.globalCompositeOperation='lighter';const r=8*K;for(let i=0;i<4;i++){ell(c,-i*7*K,Math.sin(t*20+i)*2*K,r*(1-i*.2),r*(1-i*.2));c.fillStyle=p.col;c.globalAlpha=.35-i*.07;c.fill();}c.globalAlpha=1;
   const g=c.createRadialGradient(0,0,0,0,0,r);g.addColorStop(0,'#fff');g.addColorStop(.4,shade(p.col,.4));g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.beginPath();c.arc(0,0,r*1.3,0,TAU);c.fill();}

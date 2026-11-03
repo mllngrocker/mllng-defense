@@ -14,14 +14,38 @@ const ULTS={
 };
 const ULT_HITS=12;let ultG=0,ultFx=null;
 function ultCharge(){const w=curWeapon();if(!w.ult||ultFx)return;ultG=Math.min(1,ultG+1/ULT_HITS);}
-function stepUlt(dt){const w=curWeapon();
- if(!ultFx&&w.ult&&ultG>=1&&!bear.dead&&mobs.some(m=>!m.dead&&m.x<W)){const U=ULTS[w.ult];ultG=0;ultFx={k:w.ult,t:0,i:0,g:w.g};banner(U.n,U.col);sfx('boss');hitstop=.12;shake=8;
-  if(w.ult==='zero')for(const m of mobs)if(!m.dead)m.frozen=1.5;}
+// cut-in before the ult: slow motion, a slanted band in the ult colour with the bear's face close-up and the skill name
+const CUT=.95;let cutin=null;
+function stepUlt(dt){const w=curWeapon(),now=performance.now();
+ if(!ultFx&&!cutin&&w.ult&&ultG>=1&&!bear.dead&&mobs.some(m=>!m.dead&&m.x<W)){ultG=0;cutin={t0:now,k:w.ult,g:w.g,n:w.n};hitstop=CUT;sfx('boss');}
+ if(cutin&&now-cutin.t0>CUT*1000){ultFx={k:cutin.k,t:0,i:0,g:cutin.g};cutin=null;shake=10;
+  if(ultFx.k==='zero')for(const m of mobs)if(!m.dead)m.frozen=1.5;}
  if(!ultFx)return;const U=ULTS[ultFx.k];ultFx.t+=dt;
  while(ultFx.i<U.ticks.length&&ultFx.t>=U.ticks[ultFx.i]){ultFx.i++;const dmg=ATK()*U.dmg*(1+.3*(ultFx.g-3));
   for(const m of mobs)if(!m.dead&&m.x<W+20){const crit=Math.random()*100<stat('crit');hitMob(m,dmg*(crit?stat('critd')/100:1),crit);sparks(m.x,m.y-50*K*m.size,10,U.col,360);}shake=Math.max(shake,ultFx.k==='neon'||ultFx.k==='zero'?14:6);}
  if(ultFx.t>=U.dur)ultFx=null;}
 function liveMobs(){return mobs.filter(m=>!m.dead&&m.x<W+20);}
+function drawCutin(c,t){if(!cutin)return;const U=ULTS[cutin.k],p=Math.min(1,(performance.now()-cutin.t0)/1000/CUT),e=x=>1-Math.pow(1-Math.min(1,Math.max(0,x)),3);
+ const sin=e(p/.18),sout=p>.8?e((p-.8)/.2):0,cy=H*.44,bh=H*.36,off=(1-sin)*-W+sout*W*1.2,[r,g,b]=hexRGB(U.col).map(v=>Math.round(v*255));
+ c.save();c.fillStyle=`rgba(5,6,15,${.6*(1-sout)})`;c.fillRect(0,0,W,H);
+ c.translate(off,cy);c.transform(1,-.16,0,1,0,0);
+ c.beginPath();c.rect(-20,-bh/2,W+40,bh);c.save();c.clip();
+ const bg=c.createLinearGradient(0,0,W,0);bg.addColorStop(0,`rgb(${r*.35|0},${g*.35|0},${b*.35|0})`);bg.addColorStop(.55,'#0a0a14');bg.addColorStop(1,`rgb(${r*.5|0},${g*.5|0},${b*.5|0})`);c.fillStyle=bg;c.fillRect(-20,-bh/2,W+40,bh);
+ c.globalCompositeOperation='lighter';for(let i=0;i<26;i++){const y=((i*37)%100)/100*bh-bh/2,len=40+((i*53)%120),x=(((i*91)%100)/100*W*1.4-(t*1400*(.6+(i%3)*.3))%(W*1.4))+W*.2;c.fillStyle=`rgba(${r},${g},${b},${.15+(i%4)*.08})`;c.fillRect(x,y,len*K,1.6);}
+ c.globalCompositeOperation='source-over';
+ // the bear's face close-up on the left of the band
+ const sc=bh/62,hx=W*.26,hy=bh*.02;c.save();c.translate(hx-30*sc,hy+112*sc);c.scale(sc,sc);HERO().draw(c,{t,atk:.32,kind:'melee'});c.restore();
+ if(p>.25&&p<.6){const k=Math.sin((p-.25)/.35*Math.PI);c.save();c.globalCompositeOperation='lighter';c.translate(hx-30*sc+31*sc,hy+112*sc-114*sc);c.rotate(t*3);c.fillStyle=`rgba(255,255,255,${k})`;
+  for(let i=0;i<4;i++){c.rotate(Math.PI/2);c.beginPath();c.moveTo(0,0);c.lineTo(3*K,-3*K);c.lineTo(0,-22*K*k);c.lineTo(-3*K,-3*K);c.fill();}c.restore();}
+ c.restore();
+ c.strokeStyle='rgba(255,255,255,.85)';c.lineWidth=2;c.beginPath();c.moveTo(-20,-bh/2);c.lineTo(W+40,-bh/2);c.moveTo(-20,bh/2);c.lineTo(W+40,bh/2);c.stroke();
+ c.fillStyle=U.col;c.fillRect(-20,-bh/2-6,W+40,3);c.fillRect(-20,bh/2+3,W+40,3);
+ // skill name slides in from the right
+ const tx=W*.68+(1-e((p-.08)/.2))*W*.6;c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';
+ c.font=`${12*K}px Jal, sans-serif`;c.lineWidth=3;c.strokeStyle='#05060f';c.strokeText(`${GRADES[cutin.g]}급 ${cutin.n}`,tx,-bh*.2);c.fillStyle='#dfe8ff';c.fillText(`${GRADES[cutin.g]}급 ${cutin.n}`,tx,-bh*.2);
+ const fs=Math.min(30*K,W*.6/Math.max(4,U.n.length)*1.6);c.font=`${fs}px Jal, sans-serif`;c.lineWidth=fs*.22;c.strokeStyle='#05060f';c.strokeText(U.n,tx,bh*.06);
+ const tg=c.createLinearGradient(0,bh*.06-fs*.5,0,bh*.06+fs*.5);tg.addColorStop(0,'#ffffff');tg.addColorStop(.5,U.col);tg.addColorStop(1,shade(U.col,-.3));c.shadowColor=U.col;c.shadowBlur=18;c.fillStyle=tg;c.fillText(U.n,tx,bh*.06);c.shadowBlur=0;
+ c.restore();}
 function drawUlt(c,t){if(!ultFx)return;const f=ultFx,U=ULTS[f.k],p=f.t/U.dur,col=U.col,M=liveMobs(),fade=p>.85?1-(p-.85)/.15:1;c.save();
  const flash=(a)=>{c.globalCompositeOperation='source-over';c.fillStyle=`rgba(255,255,255,${a})`;c.fillRect(0,0,W,H);};
  const near=k=>U.ticks.reduce((m,x)=>Math.min(m,Math.abs(f.t-x)),9)<k;

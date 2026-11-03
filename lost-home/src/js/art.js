@@ -4,22 +4,22 @@
 const OL='rgba(24,34,62,.92)';
 const _shc={};
 function shade(h,a){const k=h+a;if(_shc[k])return _shc[k];const[r,g,b]=hexRGB(h);const f=v=>Math.round(clamp(a<0?v*(1+a):v+(1-v)*a,0,1)*255);return _shc[k]=`rgb(${f(r)},${f(g)},${f(b)})`;}
-function rgrad(c,x,y,r,base){const g=c.createRadialGradient(x-r*.35,y-r*.45,r*.05,x,y,r*1.15);g.addColorStop(0,shade(base,.45));g.addColorStop(.45,base);g.addColorStop(1,shade(base,-.35));return g;}
-function lgrad(c,y0,y1,base){const g=c.createLinearGradient(0,y0,0,y1);g.addColorStop(0,shade(base,.3));g.addColorStop(1,shade(base,-.3));return g;}
+function rgrad(c,x,y,r,base){if(G)base=sick(base);const g=c.createRadialGradient(x-r*.35,y-r*.45,r*.05,x,y,r*1.15);g.addColorStop(0,shade(base,.45));g.addColorStop(.45,base);g.addColorStop(1,shade(base,-.35));return g;}
+function lgrad(c,y0,y1,base){if(G)base=sick(base);const g=c.createLinearGradient(0,y0,0,y1);g.addColorStop(0,shade(base,.3));g.addColorStop(1,shade(base,-.3));return g;}
 function ell(c,x,y,rx,ry,rot=0){c.beginPath();c.ellipse(x,y,Math.abs(rx),Math.abs(ry),rot,0,TAU);}
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
-function fs(c,fill,lw=2.6){c.fillStyle=fill;c.fill();if(lw){c.lineWidth=lw;c.strokeStyle=OL;c.lineJoin='round';c.stroke();}}
-function gloss(c,x,y,rx,ry,a=.55){ell(c,x,y,rx,ry,-.5);c.fillStyle=`rgba(255,255,255,${a})`;c.fill();}
+function fs(c,fill,lw=2.6){c.fillStyle=typeof fill==='string'&&G&&fill[0]==='#'?sick(fill):fill;c.fill();if(lw){c.lineWidth=G?lw*.65:lw;c.strokeStyle=G?'rgba(28,22,14,.92)':OL;c.lineJoin='round';c.stroke();}}
+function gloss(c,x,y,rx,ry,a=.55){ell(c,x,y,rx,ry,-.5);c.fillStyle=G?`rgba(230,240,180,${a*.6})`:`rgba(255,255,255,${a})`;c.fill();}
 // cute eye; look = x direction of pupil; angry adds a brow
-function eye(c,x,y,r,look=-1,angry=0,blink=0){
+function eye(c,x,y,r,look=-1,angry=0,blink=0){if(G){grossEye(c,x,y,r,look);return;}
  if(blink>.5){c.beginPath();c.moveTo(x-r,y);c.quadraticCurveTo(x,y+r*.5,x+r,y);c.lineWidth=2.2;c.strokeStyle=OL;c.stroke();return;}
  ell(c,x,y,r,r*1.1);fs(c,'#fff',2);ell(c,x+look*r*.3,y+r*.1,r*.62,r*.72);c.fillStyle='#1a2140';c.fill();
  ell(c,x+look*r*.3-r*.22,y-r*.18,r*.22,r*.22);c.fillStyle='#fff';c.fill();
  if(angry){c.beginPath();c.moveTo(x-r*1.1*-look,y-r*1.25);c.lineTo(x+r*1.1*-look,y-r*.75);c.lineWidth=3;c.lineCap='round';c.strokeStyle=OL;c.stroke();}
 }
-function mouth(c,x,y,w,open=0){c.beginPath();if(open>0){ell(c,x,y,w*.6,w*.45*open);c.fillStyle='#4a1a2a';c.fill();c.lineWidth=2;c.strokeStyle=OL;c.stroke();}
+function mouth(c,x,y,w,open=0){if(G){grossMouth(c,x,y,w,open,performance.now()/1000);return;}c.beginPath();if(open>0){ell(c,x,y,w*.6,w*.45*open);c.fillStyle='#4a1a2a';c.fill();c.lineWidth=2;c.strokeStyle=OL;c.stroke();}
  else{c.moveTo(x-w*.5,y);c.quadraticCurveTo(x,y+w*.35,x+w*.5,y);c.lineWidth=2.2;c.lineCap='round';c.strokeStyle=OL;c.stroke();}}
-function fang(c,x,y,s=1){c.beginPath();c.moveTo(x-3*s,y);c.lineTo(x,y+5*s);c.lineTo(x+3*s,y);c.fillStyle='#fff';c.fill();}
+function fang(c,x,y,s=1){c.beginPath();c.moveTo(x-3*s,y);c.lineTo(x,y+5*s);c.lineTo(x+3*s,y);c.fillStyle=G?'#d8c87a':'#fff';c.fill();}
 const ease=t=>1-Math.pow(1-t,3);
 
 /* ---------- monsters (face left) ---------- */

@@ -83,13 +83,13 @@ function swingPts(p,t){const ps=bearPose({atk:p,t,kind:'melee'}),r=ps.lean+.12,c
  const ax=10+Math.sin(ps.a)*34,ay=-90+Math.cos(ps.a)*34,dx=Math.sin(ps.w),dy=Math.cos(ps.w);
  const rot=(x,y)=>[x*cr-y*sr,x*sr+y*cr];return[rot(ax+dx*64,ay+dy*64),rot(ax+dx*18,ay+dy*18)];}
 function drawSwing(c,m){if((m.kind&&m.kind!=='melee')||!(m.atk>=.32&&m.atk<.8))return;
- const p1=Math.min(m.atk,.52),p0=Math.max(.3,p1-.2),fade=m.atk<.52?1:1-(m.atk-.52)/.28;if(p1-p0<.01)return;
+ const sg=curWeapon().g>=3,p1=Math.min(m.atk,.52),p0=Math.max(sg?.24:.3,p1-(sg?.3:.2)),fade=m.atk<.52?1:1-(m.atk-.52)/.28;if(p1-p0<.01)return;
  const N=16,out=[],inn=[];for(let i=0;i<=N;i++){const k=i/N,[o,n]=swingPts(p0+(p1-p0)*k,m.t);out.push(o);inn.push([lerp(o[0],n[0],Math.pow(k,.7)),lerp(o[1],n[1],Math.pow(k,.7))]);}
  const poly=(A,B)=>{c.beginPath();c.moveTo(A[0][0],A[0][1]);for(const q of A)c.lineTo(q[0],q[1]);for(let i=B.length-1;i>=0;i--)c.lineTo(B[i][0],B[i][1]);c.closePath();};
  // trail colour follows the weapon grade (C keeps the warm orange)
  const g=curWeapon().g,[r,gg,bb]=g?hexRGB(GCOL[g]).map(v=>Math.round(v*255)):[255,130,35];
  c.save();c.globalCompositeOperation='lighter';
- poly(out,inn);c.shadowColor=`rgb(${r},${gg},${bb})`;c.shadowBlur=18;c.fillStyle=`rgba(${r},${gg},${bb},${.55*fade})`;c.fill();c.shadowBlur=0;
+ poly(out,inn);c.shadowColor=`rgb(${r},${gg},${bb})`;c.shadowBlur=sg?34:18;c.fillStyle=`rgba(${r},${gg},${bb},${.55*fade})`;c.fill();c.shadowBlur=0;
  const mid=out.map((o,i)=>[lerp(o[0],inn[i][0],.45),lerp(o[1],inn[i][1],.45)]);poly(out,mid);c.fillStyle=`rgba(${Math.min(255,r+90)},${Math.min(255,gg+90)},${Math.min(255,bb+90)},${.8*fade})`;c.fill();
  const core=out.map((o,i)=>[lerp(o[0],inn[i][0],.18),lerp(o[1],inn[i][1],.18)]);poly(out,core);c.fillStyle=`rgba(255,255,255,${.95*fade})`;c.fill();
  c.restore();}

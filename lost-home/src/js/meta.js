@@ -32,7 +32,7 @@ function codexKill(id){if(!S.codex[id]){S.codex[id]=0;toast(`도감 등록: ${MO
 /* mob thumbnails for the codex (cached) */
 const _mobIcon={};
 function mobIcon(id){if(_mobIcon[id])return _mobIcon[id];const d=MOBS[id],cv=document.createElement('canvas');cv.width=cv.height=72;const c=cv.getContext('2d'),h=ART_H[d[1]]||90,s=Math.min(.6,58/h);
- c.translate(36,66);c.scale(s,s);try{ART[d[1]](c,{t:1,ph:0,atk:-1,a:d[4],b:d[3],sub:d[2],seed:1,id});}catch(e){}return _mobIcon[id]=cv.toDataURL();}
+ c.translate(36,66);c.scale(s,s);try{MART[d[1]](c,{t:1,ph:0,atk:-1,a:d[4],b:d[3],sub:d[2],seed:1,id});}catch(e){}return _mobIcon[id]=cv.toDataURL();}
 function metaPanel(L){const sets=activeSets(),f=codexFound(),h=Math.floor(S.stats.play/3600),mi=Math.floor(S.stats.play/60)%60;
  const bon=b=>Object.entries(b).map(([k,v])=>`${B_N[k]} +${v}${k==='crit'?'%p':'%'}`).join(', ');
  L.innerHTML=`<div class="sec">칭호 <small style="font:11px var(--f-body);color:var(--ink2)">하나를 달면 보너스</small></div><div class="titles">${TITLES.map(t=>{const ok=t.ok();return`<button class="ttl${ok?'':' lock'}${S.title===t.id?' on':''}" data-t="${t.id}"><b>${t.n}</b><small>${ok?bon(t.b):t.d}</small></button>`;}).join('')}</div>
@@ -42,14 +42,6 @@ function metaPanel(L){const sets=activeSets(),f=codexFound(),h=Math.floor(S.stat
  <div class="info"><h3>${S.name||'백곰'}의 기록</h3><div class="grid2"><span>최고 스테이지 <b>${stageName(S.best)}</b></span><span>레벨 <b>${S.lv}</b></span><span>처치한 몬스터 <b>${fmt(S.stats.kills)}</b></span><span>쓰러뜨린 보스 <b>${fmt(S.stats.bosses)}</b></span><span>모은 골드 <b>${fmt(S.stats.gold)}</b></span><span>플레이 시간 <b>${h}시간 ${mi}분</b></span><span>전투력 <b>${fmt(CP())}</b></span><span>공격력 <b>${fmt(ATK())}</b></span><span>체력 <b>${fmt(MAXHP())}</b></span></div></div>`;
  L.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const t=TITLES.find(x=>x.id===b.dataset.t);if(!t.ok()){toast(t.d+' 하면 얻어요');return;}S.title=S.title===t.id?null:t.id;save();updateHud();renderPanel();});}
 function settingsMenu(){const row=(k,label)=>`<label class="setrow"><span>${label}</span><input type="checkbox" data-set="${k}" ${S.set[k]?'checked':''}></label>`;
- modal('설정'+(ADMIN?' · 운영자':''),`${row('sfx','효과음')}${row('dmg','데미지 숫자')}${row('shake','화면 흔들림')}<p style="font-size:11px;margin-top:6px">배경음악은 곧 추가될 예정이에요.</p>`,[...(ADMIN?[['운영자 도구',()=>adminMenu(),1]]:[]),['이름 바꾸기',()=>askName()],['처음부터',()=>modal('정말 처음부터?','모든 진행 상황이 지워져요.',[['취소'],['지우기',resetSave,1]])],['닫기',null,1]]);
+ modal('설정',`${row('sfx','효과음')}${row('dmg','데미지 숫자')}${row('shake','화면 흔들림')}<p style="font-size:11px;margin-top:6px">배경음악은 곧 추가될 예정이에요.</p>`,[['이름 바꾸기',()=>askName()],['처음부터',()=>modal('정말 처음부터?','모든 진행 상황이 지워져요.',[['취소'],['지우기',resetSave,1]])],['닫기',null,1]]);
  document.querySelectorAll('[data-set]').forEach(i=>i.onchange=()=>{S.set[i.dataset.set]=i.checked?1:0;S.snd=!!S.set.sfx;save();});}
 
-/* operator mode: open the site once with ?admin=mllng-op on a device; that browser keeps the flag (not a security boundary) */
-const ADMIN_KEY='lost-home-admin';
-function adminGrant(){S.started=true;if(!S.name)S.name='운영자';S.best=Math.max(S.best,199);S.gold=Math.max(S.gold,1e15);S.gem=Math.max(S.gem,1e6);S.stone=Math.max(S.stone||0,999);
- for(const id in ITEMS){const k=gkey(id,ITEMS[id].g);S.inv[k]={n:Math.max(3,S.inv[k]?.n||0),lv:S.inv[k]?.lv||0};const hk=gkey(id,6);if(!S.inv[hk])S.inv[hk]={n:1,lv:0};}
- for(const id in PETS){const k=gkey(id,PETS[id].g);S.pets[k]={n:Math.max(3,S.pets[k]?.n||0),lv:S.pets[k]?.lv||0};const hk=gkey(id,6);if(!S.pets[hk])S.pets[hk]={n:1,lv:0};}
- if(!S.pet)S.pet=gkey('orca',6);for(const id of ALL_MOBS)if(!S.codex[id])S.codex[id]=1;S.dun={};save();}
-const ADMIN=(()=>{let on=false;try{if(new URLSearchParams(location.search).get('admin')==='mllng-op'){localStorage.setItem(ADMIN_KEY,'1');history.replaceState(null,'',location.pathname);adminGrant();}on=localStorage.getItem(ADMIN_KEY)==='1';}catch(e){}return on;})();
-function adminMenu(){modal('운영자',`<p style="font-size:12px">이 브라우저에서만 켜져 있어요.</p>`,[['모두 지급',()=>{adminGrant();renderPanel();updateHud();toast('지급 완료');}],['던전 초기화',()=>{S.dun={};save();toast('오늘 던전을 다시 할 수 있어요');}],['레벨 +10',()=>{for(let i=0;i<10;i++)gainExp(needExp(S.lv));updateHud();}],['운영자 끄기',()=>{try{localStorage.removeItem(ADMIN_KEY);}catch(e){}location.reload();}]]);}

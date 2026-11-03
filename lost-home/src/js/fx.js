@@ -6,6 +6,10 @@ function sparks(x,y,n,col,spd=260){for(let i=0;i<n;i++){const a=rnd(-Math.PI,Mat
 function debris(x,y,n,col,k){for(let i=0;i<n;i++){const a=rnd(-2.8,-.3),v=rnd(120,320);part({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,g:900,life:rnd(.5,.9),size:rnd(3,7)*k,col,type:'chunk',rot:rnd(0,6),vr:rnd(-12,12),drag:.98});}}
 function dust(x,y,n,k){for(let i=0;i<n;i++)part({x:x+rnd(-12,12)*k,y,vx:rnd(-50,50),vy:rnd(-40,-10),life:rnd(.4,.8),size:rnd(6,12)*k,col:'rgba(255,255,255,.5)',type:'puff',drag:.94});}
 function ring(x,y,col,size,life=.35){part({x,y,life,ml:life,size,col,type:'ring'});}
+// S grade and up: a flash star + double ring + big sparks on every hit; H adds a light pillar
+function gradeImpact(x,y,g,k){if(g<3)return;const col=GCOL[g],s=1+(g-3)*.25;
+ part({x,y,life:.22,ml:.22,size:46*k*s,col,type:'flash'});ring(x,y,col,44*k*s,.4);ring(x,y,'#ffffff',26*k*s,.25);sparks(x,y,8+g*3,col,320+g*50);
+ if(g>=6)part({x,y,life:.45,ml:.45,size:30*k,col,type:'pillar'});shake=Math.max(shake,2+g);}
 function slash(x,y,k,crit){part({x,y,life:.18,ml:.18,size:60*k,col:crit?'#ffe27a':'#ffffff',type:'slash',rot:rnd(-.3,.3)});}
 // new numbers near the same spot stack upward instead of piling on top of each other
 function num(x,y,v,kind){if(S.set&&!S.set.dmg&&(kind===''||kind==='crit'||kind==='hurt'))return;
@@ -39,6 +43,9 @@ function drawFx(c,k){
   else if(p.type==='ring'){c.strokeStyle=p.col;c.lineWidth=3*a+1;c.beginPath();c.ellipse(p.x,p.y,p.size*(1.3-a),p.size*(1.3-a)*.35,0,0,TAU);c.stroke();}
   else if(p.type==='slash'){c.save();c.translate(p.x,p.y);c.rotate(p.rot);c.globalCompositeOperation='lighter';const r=p.size*(1.15-a*.15);
    c.beginPath();c.arc(-r*.55,0,r,-1.1,1.1);c.arc(-r*.55-r*.28,0,r*.92,1.0,-1.0,true);c.closePath();c.fillStyle=p.col;c.fill();c.globalCompositeOperation='source-over';c.restore();}
+  else if(p.type==='flash')burst(c,p.x,p.y,p.size*(1.4-a*.4),p.col,a);
+  else if(p.type==='pillar'){c.save();c.globalCompositeOperation='lighter';const w=p.size*a,g=c.createLinearGradient(p.x-w,0,p.x+w,0);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(.5,'rgba(255,250,220,.95)');g.addColorStop(1,'rgba(0,0,0,0)');
+   c.fillStyle=g;c.fillRect(p.x-w,0,w*2,p.y+10);c.fillStyle=p.col;c.globalAlpha=a*.5;c.fillRect(p.x-w*2,0,w*4,p.y+10);c.restore();}
   else if(p.type==='coin'){c.globalAlpha=1;c.save();c.translate(p.x,p.y);c.scale(Math.abs(Math.cos(p.rot*2))*.8+.2,1);c.beginPath();c.arc(0,0,p.size,0,TAU);
    const g=c.createRadialGradient(-2,-2,1,0,0,p.size);g.addColorStop(0,'#fff6c0');g.addColorStop(.5,'#ffcf3d');g.addColorStop(1,'#d48a10');c.fillStyle=g;c.fill();c.lineWidth=1.4;c.strokeStyle='#8a5a00';c.stroke();c.restore();}
  }

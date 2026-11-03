@@ -30,28 +30,27 @@ function petHit(m,mul,col){const crit=Math.random()*100<stat('crit');const d=ATK
 function stepPet(dt){if(!S.pet||!S.pets[S.pet])return;const[id,g]=gsplit(S.pet),P=PETS[id],home=Math.max(BX-56*K,40*K),tg=front();pet.ph+=dt*9*Math.max(bear.walk,.2);
  if(!pet.x)pet.x=home;pet.cd-=dt;const air=P.fly?GY-(150+Math.sin(performance.now()/500)*6)*K:GY;
  for(let i=pet.fx.length-1;i>=0;i--){const f=pet.fx[i];f.t+=dt;if(f.kind==='wave'){f.x+=380*K*dt;for(const m of mobs)if(!m.dead&&!f.hit.has(m)&&Math.abs(m.x-f.x)<20*K){f.hit.add(m);petHit(m,f.mul,P.col);}if(f.x>W+40)pet.fx.splice(i,1);}else if(f.t>.6)pet.fx.splice(i,1);}
- if(pet.mode==='idle'){pet.x=lerp(pet.x,home,dt*4);pet.y=air;
+ {pet.x=lerp(pet.x,home,dt*4);pet.y=air;
   if(pet.cd<=0&&tg&&tg.x<W*.95&&!bear.dead){pet.cd=P.cd;pet.t=0;pet.n++;const sk=g>=3&&pet.n%5===0,mul=sk?3:1;pet.sk=sk;if(sk)num(pet.x,pet.y-60*K,'★'+P.at,'gold');
    if(P.kind==='proj'||P.kind==='heal')shots.push({x:pet.x+12*K,y:pet.y-24*K,vx:440*K,col:P.col,dmg:0,pet:1,mul,heal:P.kind==='heal'});
    else if(P.kind==='spines')for(let i=-1;i<=1;i++)shots.push({x:pet.x+12*K,y:pet.y-20*K+i*10*K,vx:460*K,col:P.col,dmg:0,pet:1,mul});
    else if(P.kind==='stun'){pet.fx.push({kind:'ring',t:0});for(const m of mobs)if(!m.dead&&m.x<W){m.frozen=Math.max(m.frozen||0,sk?2:.9);petHit(m,mul,P.col);}sfx('hurt');}
    else if(P.kind==='aoe')pet.fx.push({kind:'wave',t:0,x:pet.x,hit:new Set(),mul});
-   else if(P.kind==='pierce'){pet.mode='slide';pet.hits=new Set();pet.mul=mul;}
-   else{pet.mode='go';pet.tx=tg.x;pet.hitDone=false;pet.mul=mul;}}}
- else if(pet.mode==='slide'){pet.t+=dt;pet.x+=520*K*dt;pet.y=P.fly?air:GY;for(const m of mobs)if(!m.dead&&!pet.hits.has(m)&&Math.abs(m.x-pet.x)<22*K){pet.hits.add(m);petHit(m,pet.mul,P.col);}
-  if(pet.x>W+40){pet.mode='idle';pet.x=-30*K;}}
- else{pet.t+=dt;const k=pet.mode==='go'?Math.min(1,pet.t/.35):1-Math.min(1,pet.t/.4);
-  pet.x=lerp(home,pet.tx-24*K,k);pet.y=P.fly?lerp(air,GY-30*K,k):GY-Math.sin(k*Math.PI)*14*K*(pet.mode==='go'?1:0);
-  if(pet.mode==='go'&&k>=1){if(!pet.hitDone){pet.hitDone=true;const m=mobs.find(o=>!o.dead&&Math.abs(o.x-pet.tx)<40*K)||front();
-    if(m){const hits=P.kind==='multi'?3:1;for(let i=0;i<hits;i++)petHit(m,pet.mul,P.col);if(P.push)for(const o of mobs)if(!o.dead&&o.x<pet.tx+60*K)o.kb+=40*K;}}pet.mode='back';pet.t=0;}
-  else if(pet.mode==='back'&&k<=0)pet.mode='idle';}}
+   // melee pets stay home: a short lunge in place, the hit lands on the target as claw marks / a piercing streak
+   else if(P.kind==='pierce'){pet.lunge=.25;pet.fx.push({kind:'line',t:0,y:(P.fly?air+10*K:GY-18*K)});for(const m of mobs)if(!m.dead&&m.x>pet.x&&m.x<W+20)petHit(m,mul,P.col);}
+   else{pet.lunge=.25;const hits=P.kind==='multi'?3:1;for(let i=0;i<hits;i++)petHit(tg,mul,P.col);pet.fx.push({kind:'claw',t:0,x:tg.x,y:tg.y-ART_H[tg.arch]*.45*K*tg.size,s:tg.size});
+    if(P.push)for(const o of mobs)if(!o.dead&&o.x<tg.x+60*K)o.kb+=40*K;}}}
+ pet.lunge=Math.max(0,(pet.lunge||0)-dt);}
 // pet projectiles travel right on the shared shots list
 function petShotHit(s){const tg=mobs.find(m=>!m.dead&&Math.abs(m.x-s.x)<20*K);if(tg){const d=petHit(tg,s.mul||1,s.col);if(s.heal){const h=MAXHP()*.03*(s.mul||1);bear.hp=Math.min(MAXHP(),bear.hp+h);num(BX,GY-120*K,'+'+fmt(h),'heal');}return true;}return s.x>W+20;}
 function drawPet(c,t){if(!S.pet||!S.pets[S.pet])return;const[id]=gsplit(S.pet),P=PETS[id];
  for(const f of pet.fx){if(f.kind==='ring'){const k=f.t/.6;c.save();c.strokeStyle=`rgba(255,220,150,${1-k})`;c.lineWidth=4*K*(1-k)+1;c.beginPath();c.arc(pet.x,pet.y-25*K,k*W*.8,-.6,.6);c.stroke();c.restore();}
+  else if(f.kind==='claw'){const k=f.t/.6,a=1-k,r=22*K*f.s;c.save();c.globalCompositeOperation='lighter';c.translate(f.x,f.y);c.rotate(-.6);
+   for(let i=-1;i<=1;i++){const len=r*Math.min(1,f.t*8);c.lineCap='round';c.strokeStyle=`rgba(${hexRGB(P.col).map(v=>Math.round(v*255)).join(',')},${a*.8})`;c.lineWidth=6*K*a;c.beginPath();c.moveTo(i*8*K,-len);c.lineTo(i*8*K,len);c.stroke();c.strokeStyle=`rgba(255,255,255,${a})`;c.lineWidth=2*K*a;c.stroke();}c.restore();}
+  else if(f.kind==='line'){const k=f.t/.6,a=1-k;c.save();c.globalCompositeOperation='lighter';const g=c.createLinearGradient(pet.x,0,W,0);g.addColorStop(0,`rgba(255,255,255,${a})`);g.addColorStop(1,'rgba(160,220,255,0)');c.fillStyle=g;c.fillRect(pet.x,f.y-5*K*a,W*Math.min(1,f.t*5),10*K*a);c.restore();}
   else{c.save();c.globalCompositeOperation='lighter';const g=c.createLinearGradient(f.x-50*K,0,f.x+10*K,0);g.addColorStop(0,'rgba(90,180,240,0)');g.addColorStop(1,'rgba(150,220,255,.8)');c.fillStyle=g;c.beginPath();c.moveTo(f.x-60*K,GY);c.quadraticCurveTo(f.x-10*K,GY-70*K,f.x+12*K,GY-40*K);c.quadraticCurveTo(f.x,GY-10*K,f.x+10*K,GY);c.closePath();c.fill();c.restore();}}
  if(!P.fly){c.fillStyle='rgba(10,20,40,.25)';c.beginPath();c.ellipse(pet.x,GY+2*K,16*K,3.5*K,0,0,TAU);c.fill();}
- const g=gsplit(S.pet)[1],sc=K*Math.min(1.2,.95+.04*g);c.save();c.translate(pet.x,pet.y);c.scale(sc,sc);petAura(c,g,t,'back');PET_ART[id](c,{t,ph:pet.ph,act:pet.mode!=='idle'});petAura(c,g,t,'front');c.restore();}
+ const g=gsplit(S.pet)[1],sc=K*Math.min(1.2,.95+.04*g);const lg=Math.sin(Math.min(1,(.25-(pet.lunge||0))/.25)*Math.PI)*(pet.lunge>0?8*K:0);c.save();c.translate(pet.x+lg,pet.y);c.scale(sc,sc);petAura(c,g,t,'back');PET_ART[id](c,{t,ph:pet.ph,act:pet.lunge>0});petAura(c,g,t,'front');c.restore();}
 /* grade aura: the stronger the pet, the more mystical it looks. layer 'back' = behind the art, 'front' = over it */
 function petAura(c,g,t,layer,h=44){if(g<2)return;const col=GCOL[g],[r,gg,b]=hexRGB(col).map(v=>Math.round(v*255));c.save();c.globalCompositeOperation='lighter';
  if(layer==='back'){
