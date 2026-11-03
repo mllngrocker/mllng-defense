@@ -25,11 +25,11 @@ function stepDungeon(dt){const D=DUNS[dun.k];dun.t-=dt;
  if(dun.t<=0)endDungeon(true);
  renderDunHud();}
 // called from killMob/hitMob/hurtBear while a dungeon is running
-function dunKill(m){const g=Math.max(0,S.best-2);
- if(dun.k==='gold'){const v=mobGold(g)*6*(1+PB('gold')/100);dun.earn+=v;num(m.x,m.y-60*K,'+'+fmt(v),'gold');for(let i=0;i<6;i++)part({x:m.x,y:m.y-30*K,vx:rnd(-160,160),vy:rnd(-420,-200),g:1100,life:1,ml:1,size:5.5*K,type:'coin',rot:rnd(0,6),vr:9,tx:GOLDX,ty:GOLDY,drag:.99});}
+function dunKill(m){const g=Math.max(0,S.best-2);track('kill');
+ if(dun.k==='gold'){const v=mobGold(g)*6*(1+PB('gold')/100);dun.earn+=v;track('gold',v);num(m.x,m.y-60*K,'+'+fmt(v),'gold');for(let i=0;i<6;i++)part({x:m.x,y:m.y-30*K,vx:rnd(-160,160),vy:rnd(-420,-200),g:1100,life:1,ml:1,size:5.5*K,type:'coin',rot:rnd(0,6),vr:9,tx:GOLDX,ty:GOLDY,drag:.99});}
  if(dun.k==='stone'){const b=Math.floor(dun.earn);dun.earn+=m.tier?1:1/3;if(Math.floor(dun.earn)>b)num(m.x,m.y-60*K,'+1 강화석','gold');}}
 function dunHit(m,d){if(dun&&dun.k==='gem'){dun.dmg+=d;dun.earn=Math.min(400,Math.floor(dun.dmg/(mobHp(Math.max(0,S.best-2))*3)));}}
-function endDungeon(ok){const D=DUNS[dun.k],k=dun.k,earn=Math.floor(dun.earn);S.dun[k]=today();
+function endDungeon(ok){const D=DUNS[dun.k],k=dun.k,earn=Math.floor(dun.earn);S.dun[k]=today();if(ok)track('dun');
  if(k==='gold')S.gold+=earn;else if(k==='gem')S.gem+=earn;else S.stone=(S.stone||0)+earn+(ok?5:0);
  dun=null;delete document.body.dataset.dun;for(const m of mobs)m.dead=true,m.dt=.3;curTheme=-1;applyTheme();bear.hp=MAXHP();save();
  tab='up';document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.tab==='up'));renderPanel();updateHud();

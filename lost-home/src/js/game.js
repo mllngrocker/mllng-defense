@@ -14,7 +14,7 @@ function spawnWave(){const th=theme(),n=3+Math.floor(Math.random()*3);
  for(let i=0;i<n;i++){const mid=Math.random()<.12&&i===n-1;mobs.push(mkMob(mid?pick(th.mids):pick(th.mobs),W+40*K+i*rnd(55,80)*K,mid?1:0));}}
 function startBoss(){const th=theme();boss=mkMob(th.boss,W+80*K,2);mobs.push(boss);bossT=30;S.farm=false;banner('BOSS!','#ff5a6a');sfx('boss');shake=10;updateHud();}
 function bossFail(){if(!boss)return;boss=null;for(const m of mobs)m.dead=true,m.dt=.01;S.farm=true;S.kills=0;toast('보스를 물리치지 못했어요. 더 강해져서 다시 도전해요!');save();updateHud();}
-function stageClear(){S.g++;S.kills=0;S.best=Math.max(S.best,S.g);S.gem+=3;save();sfx('clear');
+function stageClear(){track('stage');S.g++;S.kills=0;S.best=Math.max(S.best,S.g);S.gem+=3;save();sfx('clear');
  if(S.g%200===0)modal('마왕 녹스를 쓰러뜨렸어요!','오염의 근원이 사라지고, 북극의 빙하가 다시 얼기 시작했어요.<br>백곰은 마침내 고향으로 돌아갑니다.<br><br><b>더 강해진 세계에서 여정이 다시 시작돼요.</b>',[['계속하기',null,1]]);
  const th=theme();banner(S.g%10===0?th.name:`STAGE ${stageName(S.g)}`,S.g%10===0?'#9fdcff':'#ffe27a');if(S.g%10===9)toast('다음은 챕터 보스 스테이지예요!');applyTheme();updateHud();}
 function applyTheme(){if(dun)return;const i=Math.floor(S.g/10)%THEMES.length;if(i!==curTheme){curTheme=i;bgStage.theme(THEMES[i]);}}
@@ -23,8 +23,8 @@ function gainExp(v){S.exp+=v;let up=false;while(S.exp>=needExp(S.lv)){S.exp-=nee
 function killMob(m){if(dun){m.dead=true;m.dt=0;debris(m.x,m.y-30*K,9,m.b,K);sparks(m.x,m.y-30*K,12,m.a,320);sfx('kill');dunKill(m);return;}m.dead=true;m.dt=0;const g=S.g,gold=mobGold(g)*(m.tier===2?25:m.tier===1?4:1)*(1+PB('gold')/100);S.gold+=gold;S.stats.gold+=gold;S.stats.kills++;gainExp(mobExp(g)*(m.tier===2?20:m.tier===1?3:1));
  const cx=m.x,cy=m.y-ART_H[m.arch]*.4*K*m.size;debris(cx,cy,m.tier?16:9,m.b,K);sparks(cx,cy,12,m.a,320);ring(cx,m.fly?cy:GY,'rgba(255,255,255,.8)',40*K*m.size);sfx('kill');
  for(let i=0,n=m.tier?8:3;i<n;i++)part({x:cx,y:cy,vx:rnd(-140,140),vy:rnd(-380,-180),g:1100,life:1,ml:1,size:5.5*K,type:'coin',rot:rnd(0,6),vr:9,tx:GOLDX,ty:GOLDY,drag:.99});
- num(cx,cy-20*K,'+'+fmt(gold),'gold');
- if(m===boss){boss=null;S.stats.bosses++;S.gem+=30;hitstop=.25;shake=14;banner('BOSS CLEAR!','#ffd23a');stageClear();return;}
+ num(cx,cy-20*K,'+'+fmt(gold),'gold');track('kill');track('gold',gold);
+ if(m===boss){track('boss');boss=null;S.stats.bosses++;S.gem+=30;hitstop=.25;shake=14;banner('BOSS CLEAR!','#ffd23a');stageClear();return;}
  if(!S.farm&&S.g%10!==9){S.kills++;if(S.kills>=KILLS)stageClear();}
  else if(!S.farm&&S.g%10===9){S.kills=Math.min(KILLS,S.kills+1);}
  updateHud();}

@@ -6,7 +6,7 @@ const SKILLS={
 };
 const skLv=k=>S.skl[k]||1, skDmg=k=>ATK()*SKILLS[k].mul*(1+.25*(skLv(k)-1)), skCost=k=>Math.floor(400*Math.pow(1.6,skLv(k))), skOpen=k=>S.best>=SKILLS[k].unlock;
 const skCd={glacier:2,tornado:5,beam:9},skFx=[];
-function castSkill(k){if(!skOpen(k)||skCd[k]>0||bear.dead)return false;skCd[k]=SKILLS[k].cd;const live=mobs.filter(m=>!m.dead).sort((a,b)=>a.x-b.x);sfx('crit');
+function castSkill(k){if(!skOpen(k)||skCd[k]>0||bear.dead)return false;skCd[k]=SKILLS[k].cd;track('skill');const live=mobs.filter(m=>!m.dead).sort((a,b)=>a.x-b.x);sfx('crit');
  if(k==='glacier'){const tg=live.slice(0,4);if(!tg.length)tg.push({x:BX+150*K});tg.forEach((m,i)=>skFx.push({k,x:m.x,t:-i*.12,hit:false}));}
  if(k==='tornado')skFx.push({k,x:BX+30*K,t:0,tick:0});
  if(k==='beam'){skFx.push({k,t:0,tick:0});shake=Math.max(shake,6);}

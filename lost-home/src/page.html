@@ -73,7 +73,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .big:active{transform:translateY(3px);box-shadow:0 2px 0 #c88a0e}
 .ghost{padding:8px 16px;border-radius:999px;font-size:13px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3)}
 #modal{position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:rgba(5,10,25,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:24px}
-#mbox{width:100%;max-width:340px;padding:20px 18px 16px;border-radius:22px;background:linear-gradient(#f4f8ff,#dfe9fb);color:var(--ink);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:pop .3s cubic-bezier(.2,1.6,.4,1)}
+#mbox{width:100%;max-width:340px;max-height:calc(100% - 16px);overflow-y:auto;padding:20px 18px 16px;border-radius:22px;background:linear-gradient(#f4f8ff,#dfe9fb);color:var(--ink);text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:pop .3s cubic-bezier(.2,1.6,.4,1)}
 @keyframes pop{from{transform:scale(.7);opacity:0}}
 #mbox h2{font-family:var(--f-title);font-size:22px;margin-bottom:8px}
 #mbox p{font-size:14px;line-height:1.6;color:var(--ink2)}
@@ -123,6 +123,15 @@ body[data-dun] .pill{border-color:var(--dc);box-shadow:0 0 12px color-mix(in srg
 .dcard{display:grid;grid-template-columns:1fr auto;align-items:center;text-align:left;padding:12px 14px;border-radius:14px;color:#fff;background:linear-gradient(120deg,color-mix(in srgb,var(--dc) 70%,#000),#1a1430);box-shadow:0 0 14px color-mix(in srgb,var(--dc) 40%,transparent)}
 .dcard b{font:17px var(--f-title)}.dcard small{grid-column:1;font-size:11px;opacity:.85}.dcard span{grid-row:1/3;grid-column:2;font:13px var(--f-title);padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.2)}
 .dcard.done{filter:grayscale(.85);opacity:.6}
+#qbtn{position:absolute;right:52px;bottom:68px;z-index:6;height:30px;padding:0 10px;border-radius:12px;font:12px var(--f-title);color:#fff;background:rgba(10,20,45,.6);border:1px solid rgba(255,255,255,.3)}
+#qbtn.dot::after{content:'';position:absolute;right:-3px;top:-3px;width:10px;height:10px;border-radius:50%;background:#ff4a5a;box-shadow:0 0 6px #ff4a5a}
+body[data-dun] #qbtn{display:none}
+.qsec{font:15px var(--f-title);color:var(--ink);text-align:left;margin:12px 0 6px}.qsec small{font:11px var(--f-body);color:var(--ink2);margin-left:6px}
+.attrow{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.att{padding:5px 0;border-radius:9px;background:#dfe8f8;font-size:10px;color:var(--ink2);text-align:center}.att b{display:block;font:13px var(--f-title);color:#1a6a9a}.att i{font-style:normal;font-size:9px;color:#b06a1a}
+.att.got{background:#b8c4d8;opacity:.6}.att.now{background:linear-gradient(#ffe57a,#ffbf2a);color:#4a2c00;box-shadow:0 0 10px rgba(255,190,40,.6)}
+.qrow{display:grid;grid-template-columns:1fr 64px;grid-template-rows:auto 6px;gap:3px 8px;align-items:center;text-align:left;font-size:12.5px;color:var(--ink);padding:8px 10px;border-radius:12px;background:#fff;margin-bottom:5px}
+.qrow .bar{grid-column:1;height:6px;min-width:0}.qrow .bar b{background:linear-gradient(90deg,#4f9bff,#7fd0ff);box-shadow:none}
+.qbtn2{grid-row:1/3;grid-column:2;height:34px;border-radius:10px;font:12px var(--f-title);background:#cfdcf3;color:var(--ink2)}.qbtn2.ok{background:linear-gradient(#ffe57a,#ffbf2a);color:#4a2c00;box-shadow:0 2px 0 #c88a0e}.qbtn2.got{opacity:.5}
 #setbtn{position:absolute;right:10px;bottom:28px;z-index:6;width:34px;height:34px;border-radius:12px;background:rgba(10,20,45,.55);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
 #setbtn svg{width:20px;height:20px}
 </style>
@@ -145,6 +154,7 @@ body[data-dun] .pill{border-color:var(--dc);box-shadow:0 0 12px color-mix(in srg
   <div id="banner"></div><div id="toast"></div>
   <div id="skillbar"></div>
   <button id="dunbtn">⛏ 던전</button>
+  <button id="qbtn">📜 퀘스트</button>
   <button id="setbtn" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
  </div>
  <div id="panel">

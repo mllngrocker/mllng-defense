@@ -25,6 +25,7 @@ function updateHud(){
  $('#bossbtn').hidden=!(S.farm&&bossStage&&!boss);
  updateSkillbar();refreshPanel();}
 $('#dunbtn').onclick=()=>dungeonMenu();
+$('#qbtn').onclick=()=>questMenu();
 $('#bossbtn').onclick=()=>{S.farm=false;S.kills=KILLS;for(const m of mobs)m.dead=true,m.dt=.01;updateHud();};
 /* upgrade panel */
 let tab='up';
@@ -44,7 +45,7 @@ function refreshPanel(){if(tab!=='up')return;
   r.querySelector('.lv').textContent=l;r.querySelector('.rval').innerHTML=max?`${u.show(u.val(l))} · 최대`:`${u.show(u.val(l))} <i class="ar">→</i> <b>${u.show(u.val(l+n))}</b>`;
   const b=r.querySelector('.buy');b.classList.toggle('max',max);b.classList.toggle('no',!max&&S.gold<c);
   r.querySelector('.bt').textContent=max?'MAX':`+${n} 강화`;r.querySelector('.bc').textContent=max?'':fmt(c)+' 골드';}}
-function buy(u){const n=buyCount(u),c=costN(u,n);if(S.up[u.k]>=u.max||S.gold<c)return false;S.gold-=c;const hpK=bear.hp/MAXHP();S.up[u.k]+=n;if(u.k==='hp')bear.hp=hpK*MAXHP();sfx('buy');updateHud();return true;}
+function buy(u){const n=buyCount(u),c=costN(u,n);if(S.up[u.k]>=u.max||S.gold<c)return false;S.gold-=c;const hpK=bear.hp/MAXHP();S.up[u.k]+=n;track('up',n);if(u.k==='hp')bear.hp=hpK*MAXHP();sfx('buy');updateHud();return true;}
 function holdBuy(btn,u){let tm=null,rep=0;const go=()=>{if(!buy(u)){stop();return;}rep++;tm=setTimeout(go,Math.max(45,220-rep*25));};const stop=()=>{clearTimeout(tm);tm=null;rep=0;save();};
  btn.addEventListener('pointerdown',e=>{e.preventDefault();if(!buy(u))return;tm=setTimeout(go,380);});['pointerup','pointerleave','pointercancel'].forEach(ev=>btn.addEventListener(ev,()=>tm&&stop()));}
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{tab=t.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));renderPanel();});
@@ -90,14 +91,14 @@ function itemPopup(k){const[id,g]=gsplit(k),it=ITEMS[id],o=S.inv[k];if(!o)return
  const info=`<div style="display:flex;gap:12px;align-items:center;text-align:left">${gbox(itemIcon(id),g)}<div><b style="color:${shade(GCOL[g],-.35)}">${GRADES[g]}등급</b> · 보유 ${o.n}개 · +${o.lv}<br>${it.s==='w'?KIND[it.k].n+' 무기':'장신구 (체력)'}${it.ult?`<br><span style="color:#9a3ad8">필살기 · ${ULTS[it.ult].n}</span>`:''}</div></div>
   <p style="margin-top:10px;font-size:12px">같은 장비 ${MERGE_N}개를 합성하면 <b>${it.n} ${GRADES[Math.min(6,g+1)]}등급</b> 1개가 돼요.</p>`;
  const btns=[];if(!eq)btns.push(['장착',()=>{const hp=bear.hp/MAXHP();S.eq[it.s]=k;bear.hp=hp*MAXHP();save();renderPanel();},1]);
- btns.push([`강화 ${fmt(c)}`,()=>{if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;o.lv++;sfx('level');save();updateHud();renderPanel();itemPopup(k);}]);
- if(S.stone>0)btns.push([`강화석 1개로 강화`,()=>{S.stone--;o.lv++;sfx('level');save();renderPanel();itemPopup(k);}]);
- if(canMerge(k))btns.push(['합성',()=>{const nk=merge(k);sfx('clear');banner(`${GRADES[g+1]}등급 ${it.n}!`,GCOL[g+1]);save();updateHud();renderPanel();itemPopup(nk);},1]);
+ btns.push([`강화 ${fmt(c)}`,()=>{if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;o.lv++;track('enh');sfx('level');save();updateHud();renderPanel();itemPopup(k);}]);
+ if(S.stone>0)btns.push([`강화석 1개로 강화`,()=>{S.stone--;o.lv++;track('enh');sfx('level');save();renderPanel();itemPopup(k);}]);
+ if(canMerge(k))btns.push(['합성',()=>{const nk=merge(k);track('merge');sfx('clear');banner(`${GRADES[g+1]}등급 ${it.n}!`,GCOL[g+1]);save();updateHud();renderPanel();itemPopup(nk);},1]);
  btns.push(['닫기']);modal(it.n,info,btns);}
 const PANEL={
  gear(L){const mc=Object.keys(S.inv).filter(canMerge).length;L.innerHTML=(mc?`<button class="btn2" id="mergeall" style="width:100%">모두 합성 (${mc}종)</button>`:'')+eqSection('w','무기')+eqSection('a','장신구');
   L.querySelectorAll('[data-item]').forEach(e=>e.onclick=()=>itemPopup(e.dataset.item));
-  const ma=$('#mergeall');if(ma)ma.onclick=()=>{const n=mergeAll();sfx('clear');toast(`${n}번 합성했어요!`);updateHud();renderPanel();};},
+  const ma=$('#mergeall');if(ma)ma.onclick=()=>{const n=mergeAll();track('merge',n);sfx('clear');toast(`${n}번 합성했어요!`);updateHud();renderPanel();};},
  skill(L){L.innerHTML=Object.keys(SKILLS).map(k=>{const sk=SKILLS[k],open=skOpen(k),c=skCost(k);return `<div class="row"><div class="ric" style="background:linear-gradient(145deg,#2a3a5e,#141e36)">${SKICON[k]}</div>
   <div class="rinfo"><div class="rname">${sk.n}<small>${open?'Lv.'+skLv(k):'잠김'}</small></div><div class="rval">${open?`피해 ${fmt(skDmg(k))} · 재사용 ${sk.cd}초`:`${stageName(sk.unlock)} 도달 시 열려요`}</div><div class="rval">${sk.d}</div></div>
   ${open?`<button class="buy${S.gold<c?' no':''}" data-sk="${k}"><span>레벨업</span><small>${fmt(c)} 골드</small></button>`:''}</div>`;}).join('');
@@ -113,7 +114,7 @@ const PANEL={
   <div class="row2"><button data-n="1">1회<br><small>보석 100</small></button><button data-n="10">10회<br><small>보석 900</small></button></div>
   <div class="odds">${GRADES.map((g,i)=>`<span style="color:${GCOL[i]}"><b>${g}</b> ${(GACHAW[i]/tot*100).toFixed(GACHAW[i]/tot<.01?2:1)}%</span>`).join('')}</div></div>
   <div class="info">보석은 스테이지 클리어(+3), 레벨 업(+10), 보스 처치(+30)로 모을 수 있어요.</div>`;
-  L.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const r=gacha(+b.dataset.n);if(!r){toast('보석이 부족해요');return;}sfx('clear');updateHud();
+  L.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const r=gacha(+b.dataset.n);if(!r){toast('보석이 부족해요');return;}track('gacha',r.length);sfx('clear');updateHud();
    modal(`뽑기 결과`,`<div class="res">${r.map((x,i)=>{const g=x.g;return gbox(itemIcon(x.id,x.pet),g,x.isNew?'<span class="new">NEW</span>':'','',`animation-delay:${i*.08}s`);}).join('')}</div>`,[['확인',()=>renderPanel(),1]],1);});},
 };
 
@@ -121,7 +122,7 @@ function petPopup(k){const[id,g]=gsplit(k),P=PETS[id],o=S.pets[k];if(!o)return;c
  const info=`<div style="display:flex;gap:12px;align-items:center;text-align:left">${gbox(itemIcon(id,1),g)}<div><b style="color:${shade(GCOL[g],-.35)}">${GRADES[g]}등급 ${P.an}</b><br>보유 ${o.n}마리 · +${o.lv}<br>${P.at} (${P.cd}초마다)</div></div>
   <p style="margin-top:10px;font-size:12px">같은 펫 ${MERGE_N}마리를 합성하면 <b>${P.n} ${GRADES[Math.min(6,g+1)]}등급</b>이 돼요.${g<3?' S등급부터 5번째 공격마다 펫 스킬이 나가요.':''}</p>`;
  const btns=[];if(S.pet!==k)btns.push(['함께하기',()=>{const hp=bear.hp/MAXHP();S.pet=k;pet.x=0;bear.hp=hp*MAXHP();save();renderPanel();},1]);
- btns.push([`강화 ${fmt(c)}`,()=>{if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;o.lv++;sfx('level');save();updateHud();renderPanel();petPopup(k);}]);
- if(S.stone>0)btns.push([`강화석 1개로 강화`,()=>{S.stone--;o.lv++;sfx('level');save();renderPanel();petPopup(k);}]);
- if(canMergePet(k))btns.push(['합성',()=>{const nk=mergePet(k);sfx('clear');banner(`${GRADES[g+1]}등급 ${P.n}!`,GCOL[g+1]);renderPanel();petPopup(nk);},1]);
+ btns.push([`강화 ${fmt(c)}`,()=>{if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;o.lv++;track('enh');sfx('level');save();updateHud();renderPanel();petPopup(k);}]);
+ if(S.stone>0)btns.push([`강화석 1개로 강화`,()=>{S.stone--;o.lv++;track('enh');sfx('level');save();renderPanel();petPopup(k);}]);
+ if(canMergePet(k))btns.push(['합성',()=>{const nk=mergePet(k);track('merge');sfx('clear');banner(`${GRADES[g+1]}등급 ${P.n}!`,GCOL[g+1]);renderPanel();petPopup(nk);},1]);
  btns.push(['닫기']);modal(`${P.n}`,info,btns);}
