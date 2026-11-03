@@ -77,15 +77,17 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 @keyframes pop{from{transform:scale(.7);opacity:0}}
 #mbox h2{font-family:var(--f-title);font-size:22px;margin-bottom:8px}
 #mbox p{font-size:14px;line-height:1.6;color:var(--ink2)}
-#mbtns{display:flex;gap:8px;margin-top:16px}
-#mbtns button{flex:1;height:46px;border-radius:14px;font-family:var(--f-title);font-size:16px;background:#cfdcf3;color:var(--ink2)}
+#mbtns{display:flex;gap:8px;margin-top:16px}#mbtns:empty{display:none}
+#mbox{position:relative}#mx{position:absolute;right:10px;top:10px;width:30px;height:30px;border-radius:50%;font:15px var(--f-title);color:var(--ink2);background:#dfe8f8}
+#mbtns{flex-wrap:wrap}#mbtns button small{display:block;font:11px var(--f-body);opacity:.8;margin-top:1px}
+#mbtns button{flex:1 1 40%;min-height:46px;padding:6px 4px;line-height:1.15;border-radius:14px;font-family:var(--f-title);font-size:16px;background:#cfdcf3;color:var(--ink2)}
 #mbtns button.ok{background:linear-gradient(#4f9bff,#2f6fe0);color:#fff;box-shadow:0 3px 0 #1f4fa8}
 .tab{font-size:13px;padding:0 2px}
 #skillbar{position:absolute;left:10px;bottom:26px;z-index:6;display:flex;gap:7px;align-items:flex-end}
-.sk{position:relative;width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.55);background:rgba(10,20,45,.6);display:grid;place-items:center;overflow:hidden;box-shadow:0 0 12px rgba(120,220,255,.35)}
+.sk{position:relative;width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.55);background:rgba(10,20,45,.6);display:grid;place-items:center;overflow:hidden;box-shadow:0 0 12px rgba(120,220,255,.35)}
 .sk svg{width:28px;height:28px;position:relative;z-index:1}.sk i{position:absolute;inset:0;background:conic-gradient(rgba(5,10,25,.72) var(--p,0%),transparent 0);z-index:2}
 .sk.lock{opacity:.35}.sk b{position:absolute;z-index:3;font:13px var(--f-title);text-shadow:0 1px 2px #000}
-#sauto{height:24px;padding:0 9px;border-radius:999px;font:11px var(--f-title);background:rgba(10,20,45,.6);border:1px solid rgba(255,255,255,.35)}#sauto.on{background:linear-gradient(#5ad0ff,#2f8ae0);border-color:#aee8ff}
+#sauto{position:absolute;left:0;bottom:46px;height:22px;padding:0 9px;border-radius:999px;font:11px var(--f-title);background:rgba(10,20,45,.6);border:1px solid rgba(255,255,255,.35)}#sauto.on{background:linear-gradient(#5ad0ff,#2f8ae0);border-color:#aee8ff}
 .sec{font-family:var(--f-title);font-size:14px;margin:4px 2px 0;color:var(--ink)}
 .eqcard{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:#fff;box-shadow:0 4px 14px rgba(30,60,120,.08)}
 .ibox{width:64px;height:64px;flex:none;border-radius:14px;background:linear-gradient(145deg,#2a3a5e,#141e36);border:2.5px solid var(--gc,#b8c2d0);box-shadow:0 0 12px var(--gc,transparent);position:relative}
@@ -100,7 +102,8 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 #mbox.wide{max-width:420px}.res{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:6px}
 .res .ibox{width:auto;height:auto;aspect-ratio:1;animation:flip .45s backwards}.res .ibox .new{position:absolute;right:-3px;top:-4px;padding:0 4px;border-radius:6px;background:#ff4a6a;color:#fff;font:9px var(--f-title)}
 @keyframes flip{from{transform:rotateY(90deg) scale(.6);opacity:0}}
-#dunbtn{position:absolute;right:52px;bottom:28px;z-index:6;height:34px;padding:0 12px;border-radius:12px;font:13px var(--f-title);color:#4a2c00;background:linear-gradient(#ffe57a,#ffbf2a);box-shadow:0 3px 0 #c88a0e}
+#acts{position:absolute;right:10px;bottom:26px;z-index:6;display:flex;gap:6px;align-items:center}
+#dunbtn{height:34px;padding:0 12px;border-radius:12px;font:13px var(--f-title);color:#4a2c00;background:linear-gradient(#ffe57a,#ffbf2a);box-shadow:0 3px 0 #c88a0e}
 #dunpanel{display:none;flex:1;padding:14px 16px calc(14px + env(safe-area-inset-bottom))}
 body[data-dun] #tabs,body[data-dun] #ptools,body[data-dun] #plist,body[data-dun] #stagebox,body[data-dun] #dunbtn,body[data-dun] #bossbtn{display:none!important}
 body[data-dun] #dunpanel{display:block}
@@ -123,7 +126,7 @@ body[data-dun] .pill{border-color:var(--dc);box-shadow:0 0 12px color-mix(in srg
 .dcard{display:grid;grid-template-columns:1fr auto;align-items:center;text-align:left;padding:12px 14px;border-radius:14px;color:#fff;background:linear-gradient(120deg,color-mix(in srgb,var(--dc) 70%,#000),#1a1430);box-shadow:0 0 14px color-mix(in srgb,var(--dc) 40%,transparent)}
 .dcard b{font:17px var(--f-title)}.dcard small{grid-column:1;font-size:11px;opacity:.85}.dcard span{grid-row:1/3;grid-column:2;font:13px var(--f-title);padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.2)}
 .dcard.done{filter:grayscale(.85);opacity:.6}
-#qbtn{position:absolute;right:52px;bottom:68px;z-index:6;height:30px;padding:0 10px;border-radius:12px;font:12px var(--f-title);color:#fff;background:rgba(10,20,45,.6);border:1px solid rgba(255,255,255,.3)}
+#qbtn{position:relative;height:34px;padding:0 10px;border-radius:12px;font:12px var(--f-title);color:#fff;background:rgba(10,20,45,.6);border:1px solid rgba(255,255,255,.3)}
 #qbtn.dot::after{content:'';position:absolute;right:-3px;top:-3px;width:10px;height:10px;border-radius:50%;background:#ff4a5a;box-shadow:0 0 6px #ff4a5a}
 body[data-dun] #qbtn{display:none}
 .qsec{font:15px var(--f-title);color:var(--ink);text-align:left;margin:12px 0 6px}.qsec small{font:11px var(--f-body);color:var(--ink2);margin-left:6px}
@@ -146,7 +149,7 @@ body[data-dun] #qbtn{display:none}
 .codex{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:6px}.codex div{border-radius:10px;background:linear-gradient(145deg,#2a3a5e,#141e36);text-align:center;padding:2px 2px 4px}
 .codex img{width:100%;aspect-ratio:1;display:block}.codex small{display:block;font-size:9px;color:#dfe8ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.codex .unk b{display:grid;place-items:center;aspect-ratio:1;font:22px var(--f-title);color:#5a6a8a}
 .setrow{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid #d0daf0;font:15px var(--f-title);color:var(--ink)}.setrow input{width:22px;height:22px}
-#setbtn{position:absolute;right:10px;bottom:28px;z-index:6;width:34px;height:34px;border-radius:12px;background:rgba(10,20,45,.55);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
+#setbtn{width:34px;height:34px;border-radius:12px;background:rgba(10,20,45,.55);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
 #setbtn svg{width:20px;height:20px}
 </style>
 </head>
@@ -167,9 +170,7 @@ body[data-dun] #qbtn{display:none}
   </div>
   <div id="banner"></div><div id="toast"></div>
   <div id="skillbar"></div>
-  <button id="dunbtn">⛏ 던전</button>
-  <button id="qbtn">📜 퀘스트</button>
-  <button id="setbtn" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
+  <div id="acts"><button id="qbtn">📜 퀘스트</button><button id="dunbtn">⛏ 던전</button><button id="setbtn" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button></div>
  </div>
  <div id="panel">
   <div id="tabs"><button class="tab on" data-tab="up">강화</button><button class="tab" data-tab="gear">장비</button><button class="tab" data-tab="skill">스킬</button><button class="tab" data-tab="pet">펫</button><button class="tab" data-tab="gacha">뽑기</button><button class="tab" data-tab="info">도감</button></div>
@@ -185,7 +186,7 @@ body[data-dun] #qbtn{display:none}
  <div id="prologue" class="screen" hidden><canvas id="pbg"></canvas><canvas id="pfg"></canvas><div id="ptxt"></div><div id="pphint"></div><button id="pskip" class="ghost">건너뛰기</button></div>
  <div id="victory" hidden><div><small>BOSS CLEAR</small><b class="vn"></b><div class="vr"></div></div></div>
  <div id="wipe" hidden><div><b></b><small></small></div></div>
- <div id="modal" hidden><div id="mbox"><h2 id="mtitle"></h2><p id="mtext"></p><div id="mbtns"></div></div></div>
+ <div id="modal" hidden><div id="mbox"><button id="mx" aria-label="닫기">✕</button><h2 id="mtitle"></h2><p id="mtext"></p><div id="mbtns"></div></div></div>
 </div>
 <!--SCRIPTS-->
 </body>

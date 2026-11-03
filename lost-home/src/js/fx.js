@@ -7,17 +7,23 @@ function debris(x,y,n,col,k){for(let i=0;i<n;i++){const a=rnd(-2.8,-.3),v=rnd(12
 function dust(x,y,n,k){for(let i=0;i<n;i++)part({x:x+rnd(-12,12)*k,y,vx:rnd(-50,50),vy:rnd(-40,-10),life:rnd(.4,.8),size:rnd(6,12)*k,col:'rgba(255,255,255,.5)',type:'puff',drag:.94});}
 function ring(x,y,col,size,life=.35){part({x,y,life,ml:life,size,col,type:'ring'});}
 function slash(x,y,k,crit){part({x,y,life:.18,ml:.18,size:60*k,col:crit?'#ffe27a':'#ffffff',type:'slash',rot:rnd(-.3,.3)});}
-function num(x,y,v,kind){if(S.set&&!S.set.dmg&&(kind===''||kind==='crit'||kind==='hurt'))return;nums.push({x:x+rnd(-8,8),y,vy:-90,life:1,txt:typeof v==='string'?v:fmt(v),v:typeof v==='number'?v:0,kind});}
-// damage colour by unit: [min value, top colour, bottom colour] — 만 yellow, 억 orange, 조 purple, 경 green, 해 pink
-const DMG_TIER=[[1e20,'#ffe0ec','#ff2e63'],[1e16,'#e2ffd8','#22c55e'],[1e12,'#f3dcff','#9b3dff'],[1e8,'#fff0b0','#ff5a1f'],[1e4,'#ffffff','#ffc93d'],[0,'#ffffff','#d6e2ff']];
-function drawDmg(c,x,y,txt,v,crit,size,alpha){const[,top,bot]=DMG_TIER.find(t=>v>=t[0]);const sz=size*(crit?1.45:1);
- c.font=`${sz}px Jal, sans-serif`;c.textAlign='center';c.textBaseline='alphabetic';c.lineJoin='round';c.globalAlpha=alpha;
- if(crit){c.shadowColor=bot;c.shadowBlur=sz*.5;}
- c.lineWidth=sz*(crit?.34:.26);c.strokeStyle='#160c1c';c.strokeText(txt,x,y);c.shadowBlur=0;
- c.lineWidth=sz*(crit?.12:.08);c.strokeStyle=crit?'rgba(255,255,255,.85)':'rgba(255,255,255,.35)';c.strokeText(txt,x,y);
- const g=c.createLinearGradient(0,y-sz*.85,0,y);g.addColorStop(0,top);g.addColorStop(crit?.45:.55,crit?shade(bot,.25):bot);g.addColorStop(1,shade(bot,-.25));c.fillStyle=g;c.fillText(txt,x,y);
- if(crit){c.save();c.beginPath();c.rect(x-sz*4,y-sz*.85,sz*8,sz*.32);c.clip();c.fillStyle='rgba(255,255,255,.45)';c.fillText(txt,x,y);c.restore();}
- c.globalAlpha=1;}
+// new numbers near the same spot stack upward instead of piling on top of each other
+function num(x,y,v,kind){if(S.set&&!S.set.dmg&&(kind===''||kind==='crit'||kind==='hurt'))return;
+ const near=nums.filter(n=>n.life>.55&&Math.abs(n.x-x)<46&&Math.abs(n.y0-y)<40).length;
+ nums.push({x:x+rnd(-10,10),y:y-near*18,y0:y,vy:-70,life:1,txt:typeof v==='string'?v:fmt(v),v:typeof v==='number'?v:0,kind,rot:rnd(-.06,.06)});}
+// damage colour by unit: [min value, light, main] — 만 yellow, 억 orange, 조 purple, 경 green, 해 pink
+const DMG_TIER=[[1e20,'#ffe3ee','#ff4a7d'],[1e16,'#e4ffe0','#3fd36a'],[1e12,'#f1e2ff','#a96bff'],[1e8,'#fff1c8','#ff8a3d'],[1e4,'#fffbe8','#ffcf4a'],[0,'#ffffff','#cfdcff']];
+const NAVY='#121a36';
+function burst(c,x,y,r,col,a){c.save();c.globalCompositeOperation='lighter';c.translate(x,y);c.rotate(performance.now()/900);c.globalAlpha=a*.85;c.beginPath();
+ for(let i=0;i<16;i++){const rr=i%2?r*.42:r;c.lineTo(Math.cos(i*Math.PI/8)*rr,Math.sin(i*Math.PI/8)*rr*.62);}c.closePath();
+ const g=c.createRadialGradient(0,0,0,0,0,r);g.addColorStop(0,'rgba(255,255,255,.9)');g.addColorStop(.35,col);g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fill();c.restore();}
+function drawDmg(c,x,y,txt,v,crit,size,alpha,rot=0){const[,hi,main]=DMG_TIER.find(t=>v>=t[0]);const sz=size*(crit?1.3:1);
+ c.save();c.translate(x,y);c.rotate(rot);c.globalAlpha=alpha;c.font=`${sz}px Jal, sans-serif`;c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';
+ if(crit){burst(c,0,-sz*.05,sz*1.15,main,alpha);c.font=`${sz*.36}px Jal, sans-serif`;c.lineWidth=sz*.1;c.strokeStyle=NAVY;c.strokeText('CRITICAL',0,-sz*.78);c.fillStyle=hi;c.fillText('CRITICAL',0,-sz*.78);c.font=`${sz}px Jal, sans-serif`;}
+ c.shadowColor='rgba(8,12,30,.45)';c.shadowOffsetY=sz*.08;c.shadowBlur=0;c.lineWidth=sz*(crit?.2:.16);c.strokeStyle=NAVY;c.strokeText(txt,0,0);c.shadowColor='transparent';
+ const g=c.createLinearGradient(0,-sz*.45,0,sz*.45);g.addColorStop(0,hi);g.addColorStop(.55,main);g.addColorStop(1,shade(main,-.18));c.fillStyle=g;c.fillText(txt,0,0);
+ if(v>=1e4||crit){c.globalCompositeOperation='lighter';c.globalAlpha=alpha*.35;c.shadowColor=main;c.shadowBlur=sz*.6;c.fillText(txt,0,0);}
+ c.restore();}
 function stepFx(dt){
  for(let i=parts.length-1;i>=0;i--){const p=parts[i];p.life-=dt;if(p.life<=0){parts.splice(i,1);continue;}
   if(p.type==='coin'){p.t=(p.t||0)+dt;if(p.t>.45){const k=Math.min(1,(p.t-.45)/.35);p.x=lerp(p.x,p.tx,k*.35);p.y=lerp(p.y,p.ty,k*.35);if(Math.hypot(p.x-p.tx,p.y-p.ty)<12){parts.splice(i,1);sfx('coin');pulseGold();continue;}p.life=1;continue;}}
@@ -36,11 +42,11 @@ function drawFx(c,k){
   else if(p.type==='coin'){c.globalAlpha=1;c.save();c.translate(p.x,p.y);c.scale(Math.abs(Math.cos(p.rot*2))*.8+.2,1);c.beginPath();c.arc(0,0,p.size,0,TAU);
    const g=c.createRadialGradient(-2,-2,1,0,0,p.size);g.addColorStop(0,'#fff6c0');g.addColorStop(.5,'#ffcf3d');g.addColorStop(1,'#d48a10');c.fillStyle=g;c.fill();c.lineWidth=1.4;c.strokeStyle='#8a5a00';c.stroke();c.restore();}
  }
- c.globalAlpha=1;c.textAlign='center';c.lineJoin='round';
- for(const n of nums){const a=clamp(n.life*2.5,0,1),pop=n.life>.85?1+(n.life-.85)*4:1;
-  if(n.kind===''||n.kind==='crit'){drawDmg(c,n.x,n.y,n.txt,n.v,n.kind==='crit',22*k*pop,a);continue;}
-  const sz=(n.kind==='hurt'?19:18)*k*pop;c.font=`${sz}px Jal, sans-serif`;c.globalAlpha=a;c.lineWidth=sz*.24;c.strokeStyle='#1a1430';c.strokeText(n.txt,n.x,n.y);
-  c.fillStyle=n.kind==='hurt'?'#ff6a7a':n.kind==='gold'?'#ffe680':'#8aff8a';c.fillText(n.txt,n.x,n.y);}
+ for(const n of nums){const age=1-n.life,a=n.life<.3?n.life/.3:1,pop=age<.12?1.35-age/.12*.35:1;
+  if(n.kind===''||n.kind==='crit'){drawDmg(c,n.x,n.y,n.txt,n.v,n.kind==='crit',19*k*pop,a,n.rot);continue;}
+  const sz=(n.kind==='hurt'?17:14)*k*pop,col=n.kind==='hurt'?['#ffd6dc','#ff5b6e']:n.kind==='gold'?['#fff6cc','#ffc93d']:['#e2ffd8','#5fd35a'];
+  c.save();c.globalAlpha=a;c.font=`${sz}px Jal, sans-serif`;c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';c.lineWidth=sz*.18;c.strokeStyle=NAVY;c.strokeText(n.txt,n.x,n.y);
+  const g=c.createLinearGradient(0,n.y-sz*.45,0,n.y+sz*.45);g.addColorStop(0,col[0]);g.addColorStop(1,col[1]);c.fillStyle=g;c.fillText(n.txt,n.x,n.y);c.restore();}
  c.globalAlpha=1;
 }
 // draws an entity; when flashing, renders into a scratch canvas so the white tint only covers the sprite

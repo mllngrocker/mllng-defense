@@ -27,8 +27,8 @@ function PB(stat){if(!S.pet||!S.pets[S.pet])return 0;const[id]=gsplit(S.pet);ret
 /* ---------- runtime ---------- */
 const pet={x:0,y:0,cd:1,mode:'idle',t:0,tx:0,ph:0,hits:null,n:0,fx:[]};
 function petHit(m,mul,col){const crit=Math.random()*100<stat('crit');const d=ATK()*petMul(S.pet)*mul*(crit?stat('critd')/100:1);hitMob(m,d,crit);sparks(m.x,m.y-35*K*m.size,8,col,280);return d;}
-function stepPet(dt){if(!S.pet||!S.pets[S.pet])return;const[id,g]=gsplit(S.pet),P=PETS[id],home=BX-52*K,tg=front();pet.ph+=dt*9*Math.max(bear.walk,.2);
- if(!pet.x)pet.x=home;pet.cd-=dt;const air=P.fly?GY-(85+Math.sin(performance.now()/500)*6)*K:GY;
+function stepPet(dt){if(!S.pet||!S.pets[S.pet])return;const[id,g]=gsplit(S.pet),P=PETS[id],home=Math.max(BX-56*K,40*K),tg=front();pet.ph+=dt*9*Math.max(bear.walk,.2);
+ if(!pet.x)pet.x=home;pet.cd-=dt;const air=P.fly?GY-(150+Math.sin(performance.now()/500)*6)*K:GY;
  for(let i=pet.fx.length-1;i>=0;i--){const f=pet.fx[i];f.t+=dt;if(f.kind==='wave'){f.x+=380*K*dt;for(const m of mobs)if(!m.dead&&!f.hit.has(m)&&Math.abs(m.x-f.x)<20*K){f.hit.add(m);petHit(m,f.mul,P.col);}if(f.x>W+40)pet.fx.splice(i,1);}else if(f.t>.6)pet.fx.splice(i,1);}
  if(pet.mode==='idle'){pet.x=lerp(pet.x,home,dt*4);pet.y=air;
   if(pet.cd<=0&&tg&&tg.x<W*.95&&!bear.dead){pet.cd=P.cd;pet.t=0;pet.n++;const sk=g>=3&&pet.n%5===0,mul=sk?3:1;pet.sk=sk;if(sk)num(pet.x,pet.y-60*K,'★'+P.at,'gold');
@@ -51,7 +51,21 @@ function drawPet(c,t){if(!S.pet||!S.pets[S.pet])return;const[id]=gsplit(S.pet),P
  for(const f of pet.fx){if(f.kind==='ring'){const k=f.t/.6;c.save();c.strokeStyle=`rgba(255,220,150,${1-k})`;c.lineWidth=4*K*(1-k)+1;c.beginPath();c.arc(pet.x,pet.y-25*K,k*W*.8,-.6,.6);c.stroke();c.restore();}
   else{c.save();c.globalCompositeOperation='lighter';const g=c.createLinearGradient(f.x-50*K,0,f.x+10*K,0);g.addColorStop(0,'rgba(90,180,240,0)');g.addColorStop(1,'rgba(150,220,255,.8)');c.fillStyle=g;c.beginPath();c.moveTo(f.x-60*K,GY);c.quadraticCurveTo(f.x-10*K,GY-70*K,f.x+12*K,GY-40*K);c.quadraticCurveTo(f.x,GY-10*K,f.x+10*K,GY);c.closePath();c.fill();c.restore();}}
  if(!P.fly){c.fillStyle='rgba(10,20,40,.25)';c.beginPath();c.ellipse(pet.x,GY+2*K,16*K,3.5*K,0,0,TAU);c.fill();}
- c.save();c.translate(pet.x,pet.y);c.scale(K*.95,K*.95);PET_ART[id](c,{t,ph:pet.ph,act:pet.mode!=='idle'});c.restore();}
+ const g=gsplit(S.pet)[1],sc=K*Math.min(1.2,.95+.04*g);c.save();c.translate(pet.x,pet.y);c.scale(sc,sc);petAura(c,g,t,'back');PET_ART[id](c,{t,ph:pet.ph,act:pet.mode!=='idle'});petAura(c,g,t,'front');c.restore();}
+/* grade aura: the stronger the pet, the more mystical it looks. layer 'back' = behind the art, 'front' = over it */
+function petAura(c,g,t,layer,h=44){if(g<2)return;const col=GCOL[g],[r,gg,b]=hexRGB(col).map(v=>Math.round(v*255));c.save();c.globalCompositeOperation='lighter';
+ if(layer==='back'){
+  const hue=g>=5?`hsla(${(t*90)%360},95%,65%,`:`rgba(${r},${gg},${b},`;const R=h*(.85+.1*Math.sin(t*2));
+  const gr=c.createRadialGradient(0,-h*.5,2,0,-h*.5,R);gr.addColorStop(0,hue+(.18+.06*g)+')');gr.addColorStop(1,hue+'0)');c.fillStyle=gr;c.fillRect(-R,-h*.5-R,R*2,R*2);
+  if(g>=4){c.save();c.scale(1,.3);c.rotate(t*1.2);c.strokeStyle=hue+'.75)';c.lineWidth=2;c.beginPath();c.arc(0,0,h*.7,0,TAU);c.stroke();c.beginPath();c.arc(0,0,h*.52,0,TAU);c.stroke();
+   for(let i=0;i<8;i++){const a=i*TAU/8;c.beginPath();c.moveTo(Math.cos(a)*h*.52,Math.sin(a)*h*.52);c.lineTo(Math.cos(a+.4)*h*.7,Math.sin(a+.4)*h*.7);c.stroke();}c.restore();}
+  if(g>=6)for(const s of[-1,1]){c.save();c.translate(-4,-h*.6);c.scale(s,1);c.rotate(-.5+Math.sin(t*3)*.12);c.beginPath();c.moveTo(0,0);c.quadraticCurveTo(-h*.5,-h*.8,-h*1.1,-h*.5);c.quadraticCurveTo(-h*.7,-h*.2,-h*.9,h*.05);c.quadraticCurveTo(-h*.4,0,0,0);
+   const wg=c.createLinearGradient(-h,0,0,0);wg.addColorStop(0,'rgba(255,240,170,0)');wg.addColorStop(1,'rgba(255,250,220,.65)');c.fillStyle=wg;c.fill();c.restore();}}
+ else{
+  if(g>=3)for(let i=0;i<g+1;i++){const a=t*1.6+i*TAU/(g+1),x=Math.cos(a)*h*.75,y=-h*.5+Math.sin(a)*h*.3,s=(1.6+Math.sin(t*6+i))*1.2;
+   c.fillStyle=g>=5?`hsl(${(t*120+i*50)%360},95%,75%)`:col;c.beginPath();c.moveTo(x,y-s*2);c.lineTo(x+s*.5,y-s*.5);c.lineTo(x+s*2,y);c.lineTo(x+s*.5,y+s*.5);c.lineTo(x,y+s*2);c.lineTo(x-s*.5,y+s*.5);c.lineTo(x-s*2,y);c.lineTo(x-s*.5,y-s*.5);c.closePath();c.fill();}
+  if(g>=6){c.strokeStyle='rgba(255,240,170,.9)';c.lineWidth=2.4;c.shadowColor='#fff2a0';c.shadowBlur=10;c.beginPath();c.ellipse(2,-h-8,h*.32,h*.09,0,0,TAU);c.stroke();}}
+ c.restore();}
 /* ---------- pet art: realistic-ish, facing right, feet at y=0 (one outline, gradient shading) ---------- */
 function outlined(c,paths){c.lineJoin='round';for(const[p]of paths){p();c.lineWidth=2;c.strokeStyle=FUR.line;c.stroke();}for(const[p,f]of paths){p();c.fillStyle=f();c.fill();}}
 const eyeDot=(c,x,y,r=1.8)=>{ell(c,x,y,r,r);c.fillStyle='#14100e';c.fill();ell(c,x-r*.35,y-r*.35,r*.35,r*.35);c.fillStyle='#fff';c.fill();};

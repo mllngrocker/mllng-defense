@@ -41,5 +41,5 @@ function renderDunPanel(){const D=DUNS[dun.k];$('#dunpanel').innerHTML=`<div id=
   <button class="ghost" id="dunquit">포기하고 나가기</button></div>`;$('#dunquit').onclick=()=>modal('던전을 나갈까요?','지금까지 모은 보상을 받고 나가요. 오늘은 다시 들어올 수 없어요.',[['계속하기'],['나가기',()=>endDungeon(false),1]]);}
 function dungeonMenu(){const t=today();
  modal('던전',`<div class="dunlist">${Object.keys(DUNS).map(k=>{const D=DUNS[k],done=S.dun[k]===t;return`<button class="dcard${done?' done':''}" data-dun="${k}" style="--dc:${D.col}"><b>${D.n}</b><small>${D.sub} · 보상: ${D.reward}</small><span>${done?'오늘 완료':'입장하기'}</span></button>`;}).join('')}</div>
-  <p style="font-size:11px;margin-top:8px">던전마다 하루에 한 번씩 들어갈 수 있어요. 강화석 ${fmt(S.stone||0)}개 보유</p>`,[['닫기']],1);
+  <p style="font-size:11px;margin-top:8px">던전마다 하루에 한 번씩 들어갈 수 있어요. 강화석 ${fmt(S.stone||0)}개 보유</p>`,[],1);
  document.querySelectorAll('.dcard').forEach(b=>b.onclick=()=>{if(b.classList.contains('done')){toast('내일 다시 열려요');return;}enterDungeon(b.dataset.dun);});}

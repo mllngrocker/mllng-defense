@@ -25,7 +25,7 @@ function questMenu(){dailyReset();const q=curQuest(),day=S.att.n%7;
  const dl=DAILY.map((d,i)=>{const have=Math.min(d.n,S.daily.c[d.ev]||0),got=S.daily.got.includes(i);return`<div class="qrow"><span>${d.d}</span><div class="bar"><b style="width:${have/d.n*100}%"></b></div><button class="qbtn2${got?' got':have>=d.n?' ok':''}" data-di="${i}">${got?'완료':have>=d.n?'받기':`${fmt(have)}/${fmt(d.n)}`}</button></div>`;}).join('');
  modal('퀘스트',`<div class="qsec">출석 보상 <small>${canAttend()?'오늘 받을 수 있어요':'내일 다시 와요'}</small></div><div class="attrow">${att}</div>${canAttend()?'<button class="btn2" id="attbtn" style="width:100%;margin-top:6px">출석하기</button>':''}
   <div class="qsec">퀘스트 <small>보석 ${q.reward}</small></div><div class="qrow"><span>${q.text}</span><div class="bar"><b style="width:${q.have/q.n*100}%"></b></div><button class="qbtn2${q.have>=q.n?' ok':''}" id="mqbtn">${q.have>=q.n?'받기':`${fmt(q.have)}/${fmt(q.n)}`}</button></div>
-  <div class="qsec">일일 퀘스트 <small>각 보석 30 · 모두 완료 시 보석 100 + 강화석 3</small></div>${dl}`,[['닫기']],1);
+  <div class="qsec">일일 퀘스트 <small>각 보석 30 · 모두 완료 시 보석 100 + 강화석 3</small></div>${dl}`,[],1);
  const ab=$('#attbtn');if(ab)ab.onclick=()=>{const r=attend();if(r)toast(`출석 ${S.att.n%7||7}일차! 보석 +${r.gem}${r.stone?`, 강화석 +${r.stone}`:''}`);updateHud();questMenu();};
  $('#mqbtn').onclick=()=>{claimQuest();updateHud();questMenu();};
  document.querySelectorAll('[data-di]').forEach(b=>b.onclick=()=>{claimDaily(+b.dataset.di);updateHud();questMenu();});questDot();}

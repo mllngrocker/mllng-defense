@@ -22,7 +22,7 @@ function drawPrologue(t,dt){if(!proOn)return;proT+=dt;const cv=$('#pfg'),r=$('#p
  $('#pphint').textContent=proI<PRO.length-1?'화면을 누르면 다음 장면':'화면을 누르면 모험 시작';}
 /* naming */
 const cleanName=v=>(v||'').replace(/<[^>]*>/g,'').replace(/[<>&"'`]/g,'').trim().slice(0,8);
-function askName(cb){modal('백곰의 이름을 지어 주세요',`<input id="nameinp" maxlength="8" value="${S.name||'북실이'}" style="width:100%;height:46px;border-radius:12px;border:2px solid #b8c8e8;padding:0 12px;font:18px var(--f-title);text-align:center;margin-top:6px"><br><small>최대 8글자</small>`,[['결정',()=>{S.name=cleanName($('#nameinp').value)||'북실이';save();updateHud();cb&&cb();},1]]);
+function askName(cb){modal('백곰의 이름을 지어 주세요',`<input id="nameinp" maxlength="8" value="${S.name||'북실이'}" style="width:100%;height:46px;border-radius:12px;border:2px solid #b8c8e8;padding:0 12px;font:18px var(--f-title);text-align:center;margin-top:6px"><br><small>최대 8글자</small>`,[['결정',()=>{S.name=cleanName($('#nameinp').value)||'북실이';save();updateHud();cb&&cb();},1]],0,1);
  setTimeout(()=>{const i=$('#nameinp');if(i){i.focus();i.select();}},50);}
 /* boss victory */
 function victory(name,gold,gem){const v=$('#victory');v.querySelector('.vn').textContent=name;v.querySelector('.vr').innerHTML=`<span>+${fmt(gold)} 골드</span><span>+${gem} 보석</span>`;v.hidden=false;v.classList.remove('go');void v.offsetWidth;v.classList.add('go');
