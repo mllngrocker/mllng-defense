@@ -139,3 +139,9 @@ function stageMenu(){if(dun||boss){toast(boss?'보스전 중에는 이동할 수
   S.g=g;S.kills=0;S.farm=false;for(const m of mobs)m.dead=true,m.dt=.3;shots.length=0;pshots.length=0;applyTheme();save();updateHud();banner(`${stageName(g)} ${theme().name}`,'#9fdcff');});
  const here=document.querySelector('.chcard.here');if(here)here.scrollIntoView({block:'center'});}
 $('#stagebox').onclick=stageMenu;
+
+// drag the bottom panel down (or tap its grip) to fold it so the battle fills the screen; drag up / tap to unfold
+(()=>{const set=f=>{S.fold=f;document.body.classList.toggle('folded',f);requestAnimationFrame(()=>{resizeStage();measureHud();});save();};let y0=null;
+ $('#panel').addEventListener('pointerdown',e=>{if(e.target.closest('#grip,#tabs'))y0=e.clientY;});
+ addEventListener('pointerup',e=>{if(y0==null)return;const dy=e.clientY-y0;y0=null;if(dy>40&&!S.fold)set(true);else if(dy<-40&&S.fold)set(false);else if(Math.abs(dy)<8&&e.target.closest('#grip'))set(!S.fold);});
+ if(S.fold)set(true);})();
