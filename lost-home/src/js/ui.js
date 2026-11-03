@@ -18,9 +18,9 @@ function pulseGold(){const e=$('#goldtxt').parentElement;e.animate([{transform:'
 let banT;function banner(txt,col){const b=$('#banner');b.textContent=txt;b.style.color=col||'#fff';b.classList.remove('show');void b.offsetWidth;b.classList.add('show');clearTimeout(banT);banT=setTimeout(()=>b.classList.remove('show'),1900);}
 let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);}
 function updateHud(){
- {const t=TITLES.find(x=>x.id===S.title);$('#lvtxt').innerHTML=`Lv.${S.lv} ${S.name||''}${t?` <small style="font:10px var(--f-body);opacity:.8">${t.n}</small>`:''}`;}$('#expbar b').style.width=(S.exp/needExp(S.lv)*100).toFixed(1)+'%';
+ $('#lvtxt').textContent=`Lv.${S.lv} ${S.name||''}`;fitText($('#lvtxt'),14,10);$('#expbar b').style.width=(S.exp/needExp(S.lv)*100).toFixed(1)+'%';
  $('#goldtxt').textContent=fmt(S.gold);$('#stonetxt').textContent=fmt(S.stone||0);{const cp=CP(),up=$('#cpup');$('#cptxt').textContent=fmt(cp);if(window._cp&&cp>_cp*1.0005){up.textContent='+'+fmt(cp-_cp);up.classList.remove('go');void up.offsetWidth;up.classList.add('go');}window._cp=cp;}$('#gemtxt').textContent=fmt(S.gem);
- const bossStage=S.g%10===9;$('#stname').textContent=`${stageName(S.g)} ${theme().name}`;
+ const bossStage=S.g%10===9;$('#stname').textContent=`${stageName(S.g)} ${theme().name}`;fitText($('#stname'),15,10);
  $('#killbar').hidden=!!boss;$('#bosstimer').hidden=!boss;
  $('#killbar b').style.width=(S.farm?100:S.kills/KILLS*100)+'%';if(boss)$('#bosstimer b').style.width=(bossT/30*100)+'%';
  $('#stsub').textContent=boss?'보스를 쓰러뜨리세요!':S.farm?'사냥 중 · 강해지면 다시 도전':bossStage?`보스까지 ${KILLS-S.kills}마리`:`${S.kills} / ${KILLS}`;
@@ -54,6 +54,8 @@ function holdBuy(btn,u){let tm=null,rep=0;const go=()=>{if(!buy(u)){stop();retur
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{tab=t.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));renderPanel();});
 document.querySelectorAll('#mult button').forEach(b=>{b.classList.toggle('on',+b.dataset.m===S.mult);b.onclick=()=>{S.mult=+b.dataset.m;document.querySelectorAll('#mult button').forEach(x=>x.classList.toggle('on',x===b));refreshPanel();save();};});
 /* modal */
+// shrink a one-line label until it fits its box (only re-measured when the text changes)
+function fitText(e,max,min){const k=e.textContent+'|'+e.clientWidth;if(e.dataset.fit===k)return;let s=max;e.style.fontSize=s+'px';while(e.scrollWidth>e.clientWidth+.5&&s>min){s-=.5;e.style.fontSize=s+'px';}e.dataset.fit=e.textContent+'|'+e.clientWidth;}
 function modal(title,text,btns,wide,noX){$('#mbox').classList.toggle('wide',!!wide);$('#mx').hidden=!!noX;$('#mx').onclick=()=>$('#modal').hidden=true;$('#mtitle').textContent=title;$('#mtext').innerHTML=text;const B=$('#mbtns');B.innerHTML='';
  for(const[label,fn,ok]of btns){const b=document.createElement('button');if(Array.isArray(label)){b.textContent=label[0];const s=document.createElement('small');s.textContent=label[1];b.appendChild(s);}else b.textContent=label;if(ok)b.className='ok';b.onclick=()=>{$('#modal').hidden=true;fn&&fn();};B.appendChild(b);}$('#modal').hidden=false;}
 $('#setbtn').onclick=()=>settingsMenu();

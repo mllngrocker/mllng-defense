@@ -25,13 +25,13 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .pill{display:flex;align-items:center;gap:5px;height:28px;padding:0 10px 0 4px;border-radius:999px;background:rgba(10,20,45,.55);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-family:var(--f-title);font-size:14px;text-shadow:0 1px 0 rgba(0,0,0,.4)}
 .pill i{width:20px;height:20px;display:block;flex:none}
 #lvbox{flex:1;min-width:0;padding-left:5px}
-#lvtxt{flex:none;max-width:100%;font-size:13px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#lvbox{flex-direction:column;align-items:stretch;justify-content:center;gap:2px;padding:0 10px}#lvbox .bar{flex:none;height:3px;min-width:0}
+#lvtxt{flex:none;max-width:100%;font-size:13px;line-height:1.05;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#lvbox{position:relative;flex-direction:column;align-items:stretch;justify-content:center;gap:0;padding:0 10px 3px}#lvbox .bar{position:absolute;left:10px;right:10px;bottom:2px;height:2px;min-width:0}
 .pill.cur{height:24px;padding:0 7px 0 3px;gap:3px;font-size:12px;flex:none}.pill.cur i{width:16px;height:16px}
-#stagebox{max-width:calc(100% - 210px)}#stname{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#cpbox{font-size:12px;height:24px}
+#stagebox{width:calc(100% - 170px);max-width:240px;padding-left:10px;padding-right:10px}#stname{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#cpbox{font-size:12px;height:24px}
 .bar{flex:1;height:8px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden;min-width:30px}
 .bar b{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,#5fd35a,#c3ff79);box-shadow:0 0 8px rgba(160,255,120,.6);transition:width .25s}
 #stagebox{justify-content:center;flex-direction:column;align-items:center;height:auto;padding:5px 16px 6px;border-radius:16px;gap:3px}
-#toggles{position:absolute;right:0;top:4px;display:flex;gap:3px;pointer-events:auto}#toggles button{color:#fff;padding:0 7px}
+#toggles{position:absolute;right:0;top:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px;pointer-events:auto}#toggles button{color:#fff;padding:0 7px}
 #cpbox{position:absolute;left:0;top:4px;height:26px;padding:0 9px 0 5px;font-size:13px;color:#ffe9a8}#cpbox i{width:18px;height:18px}
 #cpup{position:absolute;left:100%;top:2px;margin-left:4px;font:12px var(--f-title);color:#8aff8a;text-shadow:0 1px 2px #000;opacity:0;white-space:nowrap}#cpup.go{animation:cpup 1.4s ease-out}
 @keyframes cpup{0%{opacity:0;transform:translateY(6px)}15%{opacity:1;transform:none}70%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
@@ -2452,9 +2452,9 @@ function pulseGold(){const e=$('#goldtxt').parentElement;e.animate([{transform:'
 let banT;function banner(txt,col){const b=$('#banner');b.textContent=txt;b.style.color=col||'#fff';b.classList.remove('show');void b.offsetWidth;b.classList.add('show');clearTimeout(banT);banT=setTimeout(()=>b.classList.remove('show'),1900);}
 let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);}
 function updateHud(){
- {const t=TITLES.find(x=>x.id===S.title);$('#lvtxt').innerHTML=`Lv.${S.lv} ${S.name||''}${t?` <small style="font:10px var(--f-body);opacity:.8">${t.n}</small>`:''}`;}$('#expbar b').style.width=(S.exp/needExp(S.lv)*100).toFixed(1)+'%';
+ $('#lvtxt').textContent=`Lv.${S.lv} ${S.name||''}`;fitText($('#lvtxt'),14,10);$('#expbar b').style.width=(S.exp/needExp(S.lv)*100).toFixed(1)+'%';
  $('#goldtxt').textContent=fmt(S.gold);$('#stonetxt').textContent=fmt(S.stone||0);{const cp=CP(),up=$('#cpup');$('#cptxt').textContent=fmt(cp);if(window._cp&&cp>_cp*1.0005){up.textContent='+'+fmt(cp-_cp);up.classList.remove('go');void up.offsetWidth;up.classList.add('go');}window._cp=cp;}$('#gemtxt').textContent=fmt(S.gem);
- const bossStage=S.g%10===9;$('#stname').textContent=`${stageName(S.g)} ${theme().name}`;
+ const bossStage=S.g%10===9;$('#stname').textContent=`${stageName(S.g)} ${theme().name}`;fitText($('#stname'),15,10);
  $('#killbar').hidden=!!boss;$('#bosstimer').hidden=!boss;
  $('#killbar b').style.width=(S.farm?100:S.kills/KILLS*100)+'%';if(boss)$('#bosstimer b').style.width=(bossT/30*100)+'%';
  $('#stsub').textContent=boss?'보스를 쓰러뜨리세요!':S.farm?'사냥 중 · 강해지면 다시 도전':bossStage?`보스까지 ${KILLS-S.kills}마리`:`${S.kills} / ${KILLS}`;
@@ -2488,6 +2488,8 @@ function holdBuy(btn,u){let tm=null,rep=0;const go=()=>{if(!buy(u)){stop();retur
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{tab=t.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));renderPanel();});
 document.querySelectorAll('#mult button').forEach(b=>{b.classList.toggle('on',+b.dataset.m===S.mult);b.onclick=()=>{S.mult=+b.dataset.m;document.querySelectorAll('#mult button').forEach(x=>x.classList.toggle('on',x===b));refreshPanel();save();};});
 /* modal */
+// shrink a one-line label until it fits its box (only re-measured when the text changes)
+function fitText(e,max,min){const k=e.textContent+'|'+e.clientWidth;if(e.dataset.fit===k)return;let s=max;e.style.fontSize=s+'px';while(e.scrollWidth>e.clientWidth+.5&&s>min){s-=.5;e.style.fontSize=s+'px';}e.dataset.fit=e.textContent+'|'+e.clientWidth;}
 function modal(title,text,btns,wide,noX){$('#mbox').classList.toggle('wide',!!wide);$('#mx').hidden=!!noX;$('#mx').onclick=()=>$('#modal').hidden=true;$('#mtitle').textContent=title;$('#mtext').innerHTML=text;const B=$('#mbtns');B.innerHTML='';
  for(const[label,fn,ok]of btns){const b=document.createElement('button');if(Array.isArray(label)){b.textContent=label[0];const s=document.createElement('small');s.textContent=label[1];b.appendChild(s);}else b.textContent=label;if(ok)b.className='ok';b.onclick=()=>{$('#modal').hidden=true;fn&&fn();};B.appendChild(b);}$('#modal').hidden=false;}
 $('#setbtn').onclick=()=>settingsMenu();
