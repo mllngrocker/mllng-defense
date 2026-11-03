@@ -30,6 +30,8 @@ const PBX=k=>PB(k)+BONUS(k);
 const stat=k=>{const v=UPS.find(u=>u.k===k).val(S.up[k]);return k==='crit'||k==='critd'?v+PBX(k):k==='aspd'?v*(1+PBX('aspd')/100):v;};
 const lvMul=()=>1+.03*(S.lv-1);
 const ATK=()=>stat('atk')*lvMul()*gearMul('w')*(1+PBX('atk')/100), MAXHP=()=>stat('hp')*lvMul()*gearMul('a')*(1+PBX('hp')/100), REGEN=()=>stat('regen')*lvMul()*(1+PBX('regen')/100);
+// combat power: expected damage per second (crit included) plus a share of survivability
+const CP=()=>Math.floor(ATK()*1.6*stat('aspd')*(1+Math.min(100,stat('crit'))/100*(stat('critd')/100-1))*10+MAXHP()*.5+REGEN()*5);
 const KILLS=20;
 const mobHp=g=>36*Math.pow(1.36,g), mobAtk=g=>9*Math.pow(1.245,g), mobGold=g=>6*Math.pow(1.145,g), mobExp=g=>3*Math.pow(1.14,g), needExp=l=>12*Math.pow(1.22,l);
 

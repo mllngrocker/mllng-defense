@@ -49,7 +49,7 @@ function drawBear(c,m){
  c.lineJoin='round';for(const q of parts){q.p();c.lineWidth=2.4;c.strokeStyle=FUR.line;c.stroke();}
  // 2) fills
  for(const q of parts){
-  if(q.arm&&!(m.kind==='throw'&&m.atk>.45&&m.atk<.95)){c.save();c.translate(paw[0],paw[1]);c.rotate(-(w-Math.PI));drawWeapon(c,curWeapon(),t);c.restore();}
+  if(q.arm&&!m.noWeapon&&!(m.kind==='throw'&&m.atk>.45&&m.atk<.95)){c.save();c.translate(paw[0],paw[1]);c.rotate(-(w-Math.PI));drawWeapon(c,curWeapon(),t);c.restore();}
   q.p();c.save();if(q.head){c.shadowColor='rgba(90,100,125,.3)';c.shadowBlur=6;c.shadowOffsetY=2;}
   c.fillStyle=furGrad(c,q.y[0],q.y[1],q.d);c.fill();c.restore();
   c.save();q.p();c.clip();furStrokes(c,-40,q.y[0],46,q.y[1],q.torso?150:q.head?40:26,q.y[0]*13+q.d*99,q.torso?1.2:q.head?.25:1.5);

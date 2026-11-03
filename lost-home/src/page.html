@@ -22,6 +22,9 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .bar{flex:1;height:8px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden;min-width:30px}
 .bar b{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,#5fd35a,#c3ff79);box-shadow:0 0 8px rgba(160,255,120,.6);transition:width .25s}
 #stagebox{justify-content:center;flex-direction:column;align-items:center;height:auto;padding:5px 16px 6px;border-radius:16px;gap:3px}
+#cpbox{position:absolute;left:0;top:4px;height:26px;padding:0 9px 0 5px;font-size:13px;color:#ffe9a8}#cpbox i{width:18px;height:18px}
+#cpup{position:absolute;left:100%;top:2px;margin-left:4px;font:12px var(--f-title);color:#8aff8a;text-shadow:0 1px 2px #000;opacity:0;white-space:nowrap}#cpup.go{animation:cpup 1.4s ease-out}
+@keyframes cpup{0%{opacity:0;transform:translateY(6px)}15%{opacity:1;transform:none}70%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
 #stname{font-size:15px;letter-spacing:.5px}#stagebox{pointer-events:auto;cursor:pointer}#stname::after{content:" ▾";font-size:11px;opacity:.8}
 #stsub{font-family:var(--f-body);font-size:11px;opacity:.85}
 #killbar{width:150px;height:6px}
@@ -167,7 +170,8 @@ body[data-dun] #qbtn{display:none}
     <div class="pill"><i data-ic="gold"></i><span id="goldtxt">0</span></div>
     <div class="pill"><i data-ic="gem"></i><span id="gemtxt">0</span></div>
    </div>
-   <div class="hrow" style="justify-content:center">
+   <div class="hrow" style="justify-content:center;position:relative">
+    <div class="pill" id="cpbox"><i data-ic="cp"></i><span id="cptxt">0</span><b id="cpup"></b></div>
     <div class="pill" id="stagebox"><span id="stname">1-1 쓰레기 해변</span><div class="bar" id="killbar"><b></b></div><div class="bar" id="bosstimer" hidden><b></b></div><span id="stsub"></span></div>
    </div>
    <div class="hrow" style="justify-content:center"><button id="bossbtn" hidden>보스 도전!</button></div>

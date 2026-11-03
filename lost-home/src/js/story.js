@@ -2,23 +2,56 @@
 const PRO=[
  {txt:'북극의 빙하가 모두 녹아내렸다.',th:{...LOBBY_THEME,sky:['#3a2a5a','#c86a5a','#ffb07a'],sun:['#ffd0a0',.7,.38,.07],aurora:0},floe:1},
  {txt:'집도, 가족도, 얼음 위의 길도 모두 사라졌다.',th:{...LOBBY_THEME,sky:['#0a1428','#1a2a48','#3a5070'],wx:7},floe:.55,alone:1},
- {txt:'떠다니는 쓰레기 사이로, 낯선 땅이 보였다.',th:THEMES[0],trash:1},
- {txt:'고향을 되찾기 위해, 백곰은 판자 하나를 쥐었다.',th:{...LOBBY_THEME,aurora:1},hero:1},
+ {txt:'떠다니는 쓰레기 사이로, 낯선 땅이 보였다.',th:THEMES[0],gr:.005,hz:.44,trash:1,land:1},
+ {txt:'고향을 되찾기 위해, 백곰은 판자 하나를 쥐었다.',th:{...THEMES[0],sky:['#34405e','#7a7486','#e0a888'],sun:['#ffd0a0',.8,.3,.05],rays:.3,sea:'#2a6a98',fog:'#c8a8a0'},gr:.005,hz:.44,trash:1,pick:1},
 ];
 let proI=0,proT=0,proBG=null,proOn=false;
-function startPrologue(done){const el=$('#prologue');el.hidden=false;proOn=true;proI=0;proT=0;if(!proBG){proBG=new BG($('#pbg'));proBG.ground=.16;proBG.horizon=.4;}proBG.theme(PRO[0].th);
- const next=()=>{proI++;proT=0;if(proI>=PRO.length){end();return;}proBG.theme(PRO[proI].th);sfx('buy');};
+function proScene(){const P=PRO[proI];proBG.theme(P.th);proBG.ground=P.gr||.16;proBG.horizon=P.hz||.4;}
+function startPrologue(done){const el=$('#prologue');el.hidden=false;proOn=true;proI=0;proT=0;if(!proBG)proBG=new BG($('#pbg'));proScene();
+ const next=()=>{proI++;proT=0;if(proI>=PRO.length){end();return;}proScene();sfx('buy');};
  const end=()=>{proOn=false;el.hidden=true;el.onclick=null;done();};
  el.onclick=e=>{if(e.target.id==='pskip'){end();return;}next();};}
+/* floating trash: PET bottle, can, plastic bag, tyre, styrofoam — bobbing on the water with a ripple */
+function drawJunk(c,type,x,y,s,t,i,rot=0){const b=Math.sin(t*1.6+i*1.7)*2*s,r=rot+Math.sin(t*1.1+i)*.15;c.save();c.translate(x,y+b);
+ c.fillStyle='rgba(255,255,255,.35)';c.beginPath();c.ellipse(0,3*s,16*s,3*s,0,0,TAU);c.fill();c.rotate(r);c.lineJoin='round';const ol=w=>{c.lineWidth=w*s;c.strokeStyle='rgba(30,35,50,.85)';c.stroke();};
+ if(type===0){c.rotate(1.3);rr(c,-4*s,-14*s,8*s,18*s,3*s);c.fillStyle='rgba(170,220,255,.8)';c.fill();ol(1.2);rr(c,-2.6*s,-18*s,5.2*s,4*s,1*s);c.fillStyle='#3a7bd5';c.fill();ol(1);c.fillStyle='rgba(60,120,210,.6)';c.fillRect(-4*s,-8*s,8*s,4*s);}
+ else if(type===1){rr(c,-9*s,-6*s,18*s,9*s,4*s);c.fillStyle=lgrad(c,-6*s,3*s,'#d83a3a');c.fill();ol(1.2);c.fillStyle='#e8eef6';c.fillRect(-2*s,-6*s,4*s,9*s);}
+ else if(type===2){c.beginPath();c.moveTo(-12*s,2*s);c.quadraticCurveTo(-14*s,-10*s,-4*s,-9*s);c.quadraticCurveTo(0,-14*s,5*s,-9*s);c.quadraticCurveTo(14*s,-9*s,12*s,2*s);c.closePath();c.fillStyle='rgba(245,248,255,.75)';c.fill();ol(1);
+  c.beginPath();c.moveTo(-5*s,-9*s);c.quadraticCurveTo(-7*s,-16*s,-2*s,-12*s);c.lineWidth=1.4*s;c.strokeStyle='rgba(200,210,230,.9)';c.stroke();}
+ else if(type===3){c.beginPath();c.ellipse(0,-2*s,12*s,5*s,0,0,TAU);c.lineWidth=5*s;c.strokeStyle='#1e2028';c.stroke();c.beginPath();c.ellipse(0,-3*s,12*s,5*s,0,Math.PI,TAU);c.lineWidth=1.2*s;c.strokeStyle='rgba(255,255,255,.25)';c.stroke();}
+ else{rr(c,-10*s,-7*s,20*s,9*s,1.5*s);c.fillStyle=lgrad(c,-7*s,2*s,'#f4f4f0');c.fill();ol(1);c.fillStyle='rgba(180,170,150,.5)';c.fillRect(-6*s,-5*s,3*s,2*s);c.fillRect(3*s,-3*s,2*s,2*s);}
+ c.restore();}
+// the "strange land" on the horizon: hazy hills, a factory chimney and a trash heap
+function drawLand(c,w,hy,t){c.save();const x0=w*.42,x1=w*1.05;c.beginPath();c.moveTo(x0,hy+2);
+ for(let x=x0;x<=x1;x+=6){const k=(x-x0)/(x1-x0);c.lineTo(x,hy-(Math.sin(k*3.2)*14+Math.sin(k*9+1)*5+10)*Math.min(1,k*4));}c.lineTo(x1,hy+2);c.closePath();
+ const g=c.createLinearGradient(0,hy-40,0,hy);g.addColorStop(0,'rgba(90,110,140,.9)');g.addColorStop(1,'rgba(150,170,195,.9)');c.fillStyle=g;c.fill();
+ const cx=w*.8;c.fillStyle='rgba(80,95,120,.95)';c.fillRect(cx,hy-46,7,32);c.fillRect(cx-16,hy-26,30,14);
+ for(let i=0;i<4;i++){const k=(t*.15+i/4)%1;c.fillStyle=`rgba(120,120,130,${.45*(1-k)})`;c.beginPath();c.arc(cx+4+k*20,hy-50-k*36,5+k*12,0,TAU);c.fill();}
+ c.fillStyle='rgba(110,100,90,.9)';c.beginPath();c.moveTo(w*.55,hy-6);c.quadraticCurveTo(w*.6,hy-22,w*.66,hy-6);c.closePath();c.fill();c.restore();}
 function drawPrologue(t,dt){if(!proOn)return;proT+=dt;const cv=$('#pfg'),r=$('#prologue').getBoundingClientRect(),w=r.width,h=r.height,q=Math.min(DPR,1.5);
  if(cv.width!==Math.round(w*DPR)||cv.height!==Math.round(h*DPR)){cv.width=w*DPR;cv.height=h*DPR;proBG.resize(Math.round(w*q),Math.round(h*q));}
  const P=PRO[proI];proBG.draw(t,t*.02);const c=cv.getContext('2d');c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,w,h);
  const gy=h*(1-proBG.ground)-h*.03,s=Math.min(w/380,h/700)*1.2,bx=w*.5,bob=Math.sin(t*1.2)*3;
  if(P.floe){const fw=90*P.floe;c.save();c.translate(bx,gy+bob);c.beginPath();c.ellipse(0,6*s,fw*s,14*s,0,0,TAU);c.fillStyle='#eaf6ff';c.fill();
-  if(P.alone){c.strokeStyle='rgba(90,140,190,.8)';c.lineWidth=2;c.beginPath();c.moveTo(-fw*.3*s,2*s);c.lineTo(-fw*.1*s,10*s);c.lineTo(fw*.15*s,4*s);c.stroke();}c.scale(s,s);HERO().draw(c,{t,ph:0,walk:0,atk:-1});c.restore();}
- else if(P.trash){c.save();c.translate(w*.3,h*(1-.2));c.scale(s*.8,s*.8);HERO().draw(c,{t,ph:t*6,walk:1,atk:-1});c.restore();}
- else{c.save();c.translate(bx,gy);c.scale(s*1.3,s*1.3);HERO().draw(c,{t,ph:0,walk:0,atk:Math.min(.99,(proT%2.4)/1.2)});HEROES.bear.swing(c,{t,atk:Math.min(.99,(proT%2.4)/1.2),kind:'melee'});c.restore();}
- const n=Math.min(P.txt.length,Math.floor(proT*14));$('#ptxt').textContent=P.txt.slice(0,n);
+  if(P.alone){c.strokeStyle='rgba(90,140,190,.8)';c.lineWidth=2;c.beginPath();c.moveTo(-fw*.3*s,2*s);c.lineTo(-fw*.1*s,10*s);c.lineTo(fw*.15*s,4*s);c.stroke();}c.scale(s,s);HERO().draw(c,{t,ph:0,walk:0,atk:-1});c.restore();return proText(P);}
+ // sea scenes: junk scattered in depth, the bear drifting on a small floe among it
+ const hy=h*(1-proBG.horizon),fy=h*.84+bob,fx=P.pick?bx:w*.42+Math.sin(t*.3)*8,junk=[];
+ if(P.land)drawLand(c,w,hy,t);
+ // seeded random scatter: lone pieces plus a few drifting clumps, each with its own size, tilt and drift
+ const R=(i,j)=>{const v=Math.sin(i*127.1+j*311.7)*43758.5453;return v-Math.floor(v);};
+ for(let i=0;i<46;i++){let x,k;const clump=i%3===0?Math.floor(R(i,9)*4):-1;
+  if(clump>=0){x=R(clump,1)*w+(R(i,2)-.5)*70;k=Math.min(1,Math.max(0,R(clump,3)*.9+(R(i,4)-.5)*.12));}else{x=R(i,1)*w;k=R(i,3);}
+  k=Math.pow(k,.85);const drift=(P.pick?2:5+R(i,6)*10)*(.4+k);
+  junk.push([Math.floor(R(i,5)*5),((x+t*drift)%(w+60)+w+60)%(w+60)-30,lerp(hy+6,h*.99,k),s*(.45+1.15*k)*(.75+R(i,7)*.5),i,(R(i,8)-.5)*2.4]);}
+ junk.sort((a,b)=>a[2]-b[2]);for(const j of junk)if(j[2]<fy)drawJunk(c,j[0],j[1],j[2],j[3],t,j[4],j[5]);
+ const got=P.pick&&proT>1.5;
+ if(P.pick&&!got){const px=fx+62*s,py=fy+4*s+Math.sin(t*2)*2*s;c.save();c.translate(px,py);c.rotate(1.45+Math.sin(t*1.5)*.06);c.scale(s,s);drawWeapon(c,ITEMS.plank,t);c.restore();}
+ c.save();c.translate(fx,fy);c.beginPath();c.ellipse(0,6*s,58*s,12*s,0,0,TAU);c.fillStyle='#eaf6ff';c.fill();c.fillStyle='rgba(255,255,255,.35)';c.beginPath();c.ellipse(0,14*s,70*s,6*s,0,0,TAU);c.fill();
+ c.scale(s*1.1,s*1.1);HERO().draw(c,P.pick?{t,atk:-1,kind:got?'melee':'gun',noWeapon:!got}:{t,atk:-1,noWeapon:1});c.restore();
+ if(got&&proT<2.6){const k=(proT-1.5)/1.1;c.save();c.globalCompositeOperation='lighter';c.translate(fx+18*s,fy-150*s);for(let i=0;i<8;i++){c.rotate(TAU/8);c.fillStyle=`rgba(255,240,170,${.7*(1-k)})`;c.beginPath();c.moveTo(0,0);c.lineTo(46*s*(.5+k),-4*s);c.lineTo(46*s*(.5+k),4*s);c.fill();}c.restore();}
+ for(const j of junk)if(j[2]>=fy)drawJunk(c,j[0],j[1],j[2],j[3],t,j[4],j[5]);
+ proText(P);}
+function proText(P){const n=Math.min(P.txt.length,Math.floor(proT*14));$('#ptxt').textContent=P.txt.slice(0,n);
  $('#pphint').textContent=proI<PRO.length-1?'화면을 누르면 다음 장면':'화면을 누르면 모험 시작';}
 /* naming */
 const cleanName=v=>(v||'').replace(/<[^>]*>/g,'').replace(/[<>&"'`]/g,'').trim().slice(0,8);
