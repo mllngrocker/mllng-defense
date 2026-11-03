@@ -6,7 +6,7 @@ function frame(now){requestAnimationFrame(frame);const raw=Math.min(.1,(now-last
  if(screen==='lobby'){drawLobby(t);return;}
  if(screen==='pro'){drawPrologue(t,raw);return;}
  let dt=Math.min(raw,1/20);if(hitstop>0){hitstop-=dt;dt*=.08;}shake=Math.max(0,shake-raw*30);
- step(dt);render(t);
+ step(dt);if(S.spd===2)step(dt);render(t);
  hudT-=raw;if(hudT<0){hudT=.25;updateHud();}
  saveT-=raw;if(saveT<0){saveT=10;save();}}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)save();});

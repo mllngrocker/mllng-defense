@@ -12,6 +12,8 @@ const KEY='lost-home-v3';
 const S0={gold:0,gem:300,lv:1,exp:0,g:0,kills:0,best:0,up:{atk:0,hp:0,regen:0,crit:0,critd:0,aspd:0},farm:false,snd:true,mult:1,started:false,t:0,stats:{kills:0,bosses:0,gold:0,play:0},
  inv:{plank:{n:1,lv:0}},eq:{w:'plank',a1:null,a2:null,c:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear',dun:{},stone:0};
 let S=JSON.parse(JSON.stringify(S0));
+// operator mode is gone: a browser that had it drops the flag and the granted save, and starts fresh
+try{if(localStorage.getItem('lost-home-admin')){localStorage.removeItem('lost-home-admin');localStorage.removeItem(KEY);}}catch(e){}
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S=Object.assign(S,s,{up:Object.assign(S.up,s.up||{}),stats:Object.assign(S.stats,s.stats||{})});}catch(e){}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function resetSave(){try{localStorage.removeItem(KEY);}catch(e){}location.reload();}

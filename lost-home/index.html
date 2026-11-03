@@ -97,7 +97,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .sk{position:relative;width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.55);background:rgba(10,20,45,.6);display:grid;place-items:center;overflow:hidden;box-shadow:0 0 12px rgba(120,220,255,.35)}
 .sk svg{width:28px;height:28px;position:relative;z-index:1}.sk i{position:absolute;inset:0;background:conic-gradient(rgba(5,10,25,.72) var(--p,0%),transparent 0);z-index:2}
 .sk.lock{opacity:.35}.sk b{position:absolute;z-index:3;font:13px var(--f-title);text-shadow:0 1px 2px #000}
-#sauto{position:absolute;left:0;bottom:46px;height:22px;padding:0 9px;border-radius:999px;font:11px var(--f-title);background:rgba(10,20,45,.6);border:1px solid rgba(255,255,255,.35)}#sauto.on{background:linear-gradient(#5ad0ff,#2f8ae0);border-color:#aee8ff}
+#sauto{position:absolute;left:0;bottom:46px;height:22px;padding:0 9px;border-radius:999px;font:11px var(--f-title);background:rgba(10,20,45,.6);border:1px solid rgba(255,255,255,.35)}#sspd{position:absolute;left:52px;bottom:46px;height:22px;padding:0 9px;border-radius:999px;font:11px var(--f-title);background:rgba(10,20,45,.6);border:1px solid rgba(255,255,255,.35)}#sspd.on{background:linear-gradient(#ffd84a,#ff9a2a);border-color:#ffe9a0;color:#4a2a00}#sauto.on{background:linear-gradient(#5ad0ff,#2f8ae0);border-color:#aee8ff}
 .sec{font-family:var(--f-title);font-size:14px;margin:4px 2px 0;color:var(--ink)}
 .eqcard{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:#fff;box-shadow:0 4px 14px rgba(30,60,120,.08)}
 .ibox{width:64px;height:64px;flex:none;border-radius:14px;background:linear-gradient(145deg,#2a3a5e,#141e36);border:2.5px solid var(--gc,#b8c2d0);box-shadow:0 0 12px var(--gc,transparent);position:relative}
@@ -218,6 +218,8 @@ const KEY='lost-home-v3';
 const S0={gold:0,gem:300,lv:1,exp:0,g:0,kills:0,best:0,up:{atk:0,hp:0,regen:0,crit:0,critd:0,aspd:0},farm:false,snd:true,mult:1,started:false,t:0,stats:{kills:0,bosses:0,gold:0,play:0},
  inv:{plank:{n:1,lv:0}},eq:{w:'plank',a1:null,a2:null,c:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear',dun:{},stone:0};
 let S=JSON.parse(JSON.stringify(S0));
+// operator mode is gone: a browser that had it drops the flag and the granted save, and starts fresh
+try{if(localStorage.getItem('lost-home-admin')){localStorage.removeItem('lost-home-admin');localStorage.removeItem(KEY);}}catch(e){}
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S=Object.assign(S,s,{up:Object.assign(S.up,s.up||{}),stats:Object.assign(S.stats,s.stats||{})});}catch(e){}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function resetSave(){try{localStorage.removeItem(KEY);}catch(e){}location.reload();}
@@ -2008,12 +2010,12 @@ const SKICON={glacier:'<svg viewBox="0 0 32 32"><path d="M16 2v28M4 9l24 14M4 23
  tornado:'<svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M4 6h24M7 12h18M10 18h12M13 24h6M15 29h2"/></svg>',
  beam:'<svg viewBox="0 0 32 32"><defs><linearGradient id="bm" x1="0" x2="1"><stop offset="0" stop-color="#7affd8"/><stop offset="1" stop-color="#a88aff"/></linearGradient></defs><path d="M3 12h26v8H3z" fill="url(#bm)"/><path d="M3 15h26v2H3z" fill="#fff"/><circle cx="5" cy="16" r="5" fill="#fff"/></svg>'};
 const gbox=(img,g,extra='',attr='',st='')=>`<div class="ibox" ${attr} style="--gc:${GCOL[g]};${st}"><img src="${img}" alt=""><span class="gb">${GRADES[g]}</span>${extra}</div>`;
-function renderSkillbar(){$('#skillbar').innerHTML=Object.keys(SKILLS).map(k=>`<button class="sk" data-k="${k}" aria-label="${SKILLS[k].n}">${SKICON[k]}<i></i><b></b></button>`).join('')+`<button id="sauto">AUTO</button>`;
+function renderSkillbar(){$('#skillbar').innerHTML=Object.keys(SKILLS).map(k=>`<button class="sk" data-k="${k}" aria-label="${SKILLS[k].n}">${SKICON[k]}<i></i><b></b></button>`).join('')+`<button id="sauto">AUTO</button><button id="sspd">x1</button>`;
  document.querySelectorAll('.sk').forEach(b=>b.onclick=()=>{if(!castSkill(b.dataset.k)&&!skOpen(b.dataset.k))toast(`${stageName(SKILLS[b.dataset.k].unlock)} 도달 시 열려요`);});
- $('#sauto').onclick=()=>{S.sauto=!S.sauto;save();updateSkillbar();};updateSkillbar();}
+ $('#sauto').onclick=()=>{S.sauto=!S.sauto;save();updateSkillbar();};$('#sspd').onclick=()=>{S.spd=S.spd===2?1:2;save();updateSkillbar();};updateSkillbar();}
 function updateSkillbar(){for(const b of document.querySelectorAll('.sk')){const k=b.dataset.k,open=skOpen(k);b.classList.toggle('lock',!open);
   b.querySelector('i').style.setProperty('--p',(open?skCd[k]/SKILLS[k].cd*100:100)+'%');b.querySelector('b').textContent=open&&skCd[k]>0?Math.ceil(skCd[k]):'';}
- const a=$('#sauto');if(a)a.classList.toggle('on',!!S.sauto);}
+ const a=$('#sauto');if(a)a.classList.toggle('on',!!S.sauto);const sp=$('#sspd');if(sp){sp.textContent='x'+(S.spd||1);sp.classList.toggle('on',S.spd===2);}}
 function eqCard(k,s){if(!k)return`<div class="info" style="padding:10px 14px">빈 칸 · 뽑기에서 얻을 수 있어요</div>`;const[id,g]=gsplit(k),it=ITEMS[id],m=slotMul(k);
  const eff=s==='w'?`${KIND[it.k].n} · 공격력 x${m<100?m.toFixed(1):fmt(m)}`:s==='a'?`체력 +${fmt(m*50)}%`:`체력 +${fmt(m*25)}% · 외형 변경`;
  return`<div class="eqcard" data-item="${k}">${gbox(itemIcon(id),g)}<div class="rinfo"><div class="rname">${it.n}<small>+${S.inv[k].lv}</small></div><div class="rval">${eff}</div>${it.ult?`<div class="rval" style="color:#9a3ad8">필살기 · ${ULTS[it.ult].n}</div>`:''}</div><button class="btn2" data-item="${k}">관리</button></div>`;}
@@ -2078,7 +2080,7 @@ function frame(now){requestAnimationFrame(frame);const raw=Math.min(.1,(now-last
  if(screen==='lobby'){drawLobby(t);return;}
  if(screen==='pro'){drawPrologue(t,raw);return;}
  let dt=Math.min(raw,1/20);if(hitstop>0){hitstop-=dt;dt*=.08;}shake=Math.max(0,shake-raw*30);
- step(dt);render(t);
+ step(dt);if(S.spd===2)step(dt);render(t);
  hudT-=raw;if(hudT<0){hudT=.25;updateHud();}
  saveT-=raw;if(saveT<0){saveT=10;save();}}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)save();});
