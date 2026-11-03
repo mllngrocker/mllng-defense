@@ -78,7 +78,7 @@ const SKICON={glacier:'<svg viewBox="0 0 32 32"><path d="M16 2v28M4 9l24 14M4 23
  tornado:'<svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M4 6h24M7 12h18M10 18h12M13 24h6M15 29h2"/></svg>',
  beam:'<svg viewBox="0 0 32 32"><defs><linearGradient id="bm" x1="0" x2="1"><stop offset="0" stop-color="#7affd8"/><stop offset="1" stop-color="#a88aff"/></linearGradient></defs><path d="M3 12h26v8H3z" fill="url(#bm)"/><path d="M3 15h26v2H3z" fill="#fff"/><circle cx="5" cy="16" r="5" fill="#fff"/></svg>'};
 const gbox=(img,g,extra='',attr='',st='')=>`<div class="ibox" ${attr} style="--gc:${GCOL[g]};${st}"><img src="${img}" alt=""><span class="gb">${GRADES[g]}</span>${extra}</div>`;
-function renderSkillbar(){$('#skillbar').innerHTML=Object.keys(SKILLS).map(k=>`<button class="sk" data-k="${k}" aria-label="${SKILLS[k].n}">${SKICON[k]}<i></i><b></b></button>`).join('')+`<button id="sauto">AUTO</button><button id="sspd">x1</button>`;
+function renderSkillbar(){$('#skillbar').innerHTML=Object.keys(SKILLS).map(k=>`<button class="sk" data-k="${k}" aria-label="${SKILLS[k].n}">${SKICON[k]}<i></i><b></b></button>`).join('');
  document.querySelectorAll('.sk').forEach(b=>b.onclick=()=>{if(!castSkill(b.dataset.k)&&!skOpen(b.dataset.k))toast(`${stageName(SKILLS[b.dataset.k].unlock)} 도달 시 열려요`);});
  $('#sauto').onclick=()=>{S.sauto=!S.sauto;save();updateSkillbar();};$('#sspd').onclick=()=>{S.spd=S.spd===2?1:2;save();updateSkillbar();};updateSkillbar();}
 function updateSkillbar(){for(const b of document.querySelectorAll('.sk')){const k=b.dataset.k,open=skOpen(k);b.classList.toggle('lock',!open);
