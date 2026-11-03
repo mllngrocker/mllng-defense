@@ -25,9 +25,10 @@ const UPS=[
  {k:'critd',n:'치명타 피해',d:'치명타 배율',max:9999,cost:l=>40*Math.pow(1.11,l),val:l=>180+10*l,show:v=>fmt(v)+'%'},
  {k:'aspd',n:'공격 속도',d:'초당 공격 배율',max:100,cost:l=>30*Math.pow(1.13,l),val:l=>1+.02*l,show:v=>'x'+v.toFixed(2)},
 ];
-const stat=k=>UPS.find(u=>u.k===k).val(S.up[k]);
+// pet passive bonus (PB) is added here so every caller sees it
+const stat=k=>{const v=UPS.find(u=>u.k===k).val(S.up[k]);return k==='crit'||k==='critd'?v+PB(k):k==='aspd'?v*(1+PB('aspd')/100):v;};
 const lvMul=()=>1+.03*(S.lv-1);
-const ATK=()=>stat('atk')*lvMul()*gearMul('w'), MAXHP=()=>stat('hp')*lvMul()*gearMul('a'), REGEN=()=>stat('regen')*lvMul();
+const ATK=()=>stat('atk')*lvMul()*gearMul('w')*(1+PB('atk')/100), MAXHP=()=>stat('hp')*lvMul()*gearMul('a')*(1+PB('hp')/100), REGEN=()=>stat('regen')*lvMul()*(1+PB('regen')/100);
 const KILLS=20;
 const mobHp=g=>36*Math.pow(1.36,g), mobAtk=g=>9*Math.pow(1.245,g), mobGold=g=>6*Math.pow(1.145,g), mobExp=g=>3*Math.pow(1.14,g), needExp=l=>12*Math.pow(1.22,l);
 

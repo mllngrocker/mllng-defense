@@ -30,12 +30,6 @@ const ITEMS={
  shell:{n:'조개 목걸이',s:'a',g:0,col:'#ffd8c8'}, tooth:{n:'물범 이빨 부적',s:'a',g:1,col:'#f4eedc'}, kelp:{n:'다시마 팔찌',s:'a',g:2,col:'#5ab04a'},
  aurora:{n:'오로라 구슬',s:'a',g:3,col:'#7affd8'}, heart:{n:'빙하의 심장',s:'a',g:4,col:'#7fc8ff'}, crown:{n:'북극성 왕관',s:'a',g:5,col:'#ffe27a'}, star:{n:'고향의 별',s:'a',g:6,col:'#fffbe0'},
 };
-// pets: kind decides how they attack. mul = damage as a share of the bear's attack
-const PETS={
- penguin:{n:'아기 펭귄',g:1,kind:'shot',mul:.35,cd:1.4,d:'눈덩이를 던져요'},
- fox:{n:'북극여우',g:2,kind:'dash',mul:.6,cd:1.8,d:'몬스터에게 달려들어 물어요'},
- owl:{n:'흰올빼미',g:3,kind:'dive',mul:1.1,cd:2.4,d:'하늘에서 급강하해 할퀴어요'},
-};
 const gkey=(id,g)=>id+'#'+g, gsplit=k=>{const i=k.lastIndexOf('#');return[k.slice(0,i),+k.slice(i+1)];};
 // older saves stored plain ids
 for(const k of Object.keys(S.inv))if(!k.includes('#')){const v=S.inv[k];delete S.inv[k];if(ITEMS[k])S.inv[gkey(k,ITEMS[k].g)]=v;}
@@ -44,12 +38,11 @@ if(!S.eq.w||!S.inv[S.eq.w]){S.inv[gkey('plank',0)]=S.inv[gkey('plank',0)]||{n:1,
 const enhMul=lv=>1+.15*lv, enhCost=(g,lv)=>Math.floor(200*Math.pow(2.2,g)*Math.pow(1.35,lv));
 function gearMul(slot){const k=S.eq[slot];if(!k||!S.inv[k])return 1;const[,g]=gsplit(k);return GMUL[g]*enhMul(S.inv[k].lv||0)*(slot==='a'?.6:1)+(slot==='a'?.4:0);}
 function curWeapon(){const[id,g]=gsplit(S.eq.w||'plank#0');return Object.assign({id,kind:KIND[ITEMS[id].k]},ITEMS[id],{g});}
-function petMul(id){const p=PETS[id];return p.mul*(1+.6*p.g)*enhMul(S.pets[id]?.lv||0);}
 function rollGrade(){let r=Math.random()*GACHAW.reduce((a,b)=>a+b,0);for(let g=0;g<GACHAW.length;g++){r-=GACHAW[g];if(r<=0)return g;}return 0;}
 function addItem(id,g){const k=gkey(id,g),own=S.inv[k];S.inv[k]={n:(own?.n||0)+1,lv:own?.lv||0};const s=ITEMS[id].s,cur=S.eq[s];if(!cur||gsplit(cur)[1]<g)S.eq[s]=k;return!own;}
 function gacha(n){const cost=n>=10?900:100;if(S.gem<cost)return null;S.gem-=cost;const out=[];
  for(let i=0;i<n;i++){const g=rollGrade();
-  if(Math.random()<.12){const pool=Object.keys(PETS).filter(k=>PETS[k].g<=Math.max(1,g));const id=pick(pool);const own=S.pets[id];out.push({pet:1,id,g:PETS[id].g,isNew:!own});S.pets[id]={n:(own?.n||0)+1,lv:own?.lv||0};if(!S.pet)S.pet=id;continue;}
+  if(Math.random()<.12){const pg=Math.min(g,4),pool=Object.keys(PETS).filter(k=>PETS[k].g===pg);const id=pick(pool.length?pool:Object.keys(PETS).filter(k=>PETS[k].g===0));out.push({pet:1,id,g:PETS[id].g,isNew:addPet(id,PETS[id].g)});continue;}
   const id=pick(Object.keys(ITEMS).filter(k=>ITEMS[k].g===g));out.push({id,g,isNew:addItem(id,g)});}
  save();return out;}
 // merge: 3 of the same item+grade -> 1 of the same item, next grade
