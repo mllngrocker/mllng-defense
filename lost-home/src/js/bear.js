@@ -44,6 +44,7 @@ function drawBear(c,m){
     c.bezierCurveTo(30,-6.5,33,2,28,6.5);c.bezierCurveTo(23,10,16,9.5,10,7.5);c.bezierCurveTo(0,8,-13,6,-15,-2);c.closePath();c.moveTo(1,-20);c.arc(-3,-20,4.8,0,TAU);c.restore();},d:0,y:[-131,-98],head:1},
   {p:()=>limbPath(c,SH[0],SH[1],a,34,13,8.5),d:0,y:[-100,-50],arm:1},          // near arm
  ];
+ costume('back',c,m);
  // 1) one outline under everything
  c.lineJoin='round';for(const q of parts){q.p();c.lineWidth=2.4;c.strokeStyle=FUR.line;c.stroke();}
  // 2) fills
@@ -56,7 +57,8 @@ function drawBear(c,m){
    const r=c.createLinearGradient(-36,0,-18,0);r.addColorStop(0,'rgba(255,255,255,.75)');r.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=r;c.fillRect(-40,-110,22,85);}
   if(q.head){const g=c.createRadialGradient(HD[0]+27,HD[1]+2,1,HD[0]+24,HD[1]+2,11);g.addColorStop(0,'rgba(120,100,80,.35)');g.addColorStop(1,'rgba(120,100,80,0)');c.fillStyle=g;c.fillRect(HD[0]+15,HD[1]-12,30,24);}
   c.restore();
-  if(q.head){c.save();c.translate(HD[0],HD[1]+br*.3);c.scale(1.15,1.15);face(c,0,0,m);c.restore();}
+  if(q.torso)costume('body',c,m);
+  if(q.head){c.save();c.translate(HD[0],HD[1]+br*.3);c.scale(1.15,1.15);face(c,0,0,m);costume('head',c,m);c.restore();}
  }
  // gun muzzle flash / magic circle at the paw
  if(m.kind==='gun'&&m.atk>=0&&m.atk<.16){const tx=paw[0]+Math.sin(w)*50,ty=paw[1]+Math.cos(w)*50,k=1-m.atk/.16;c.save();c.globalCompositeOperation='lighter';c.translate(tx,ty);c.rotate(Math.PI/2-w);

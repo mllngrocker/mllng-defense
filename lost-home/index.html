@@ -202,7 +202,7 @@ function fmt(n){n=Math.floor(n);if(n<1e4)return n.toLocaleString('en-US');
 /* ---------- save ---------- */
 const KEY='lost-home-v3';
 const S0={gold:0,gem:300,lv:1,exp:0,g:0,kills:0,best:0,up:{atk:0,hp:0,regen:0,crit:0,critd:0,aspd:0},farm:false,snd:true,mult:1,started:false,t:0,stats:{kills:0,bosses:0,gold:0,play:0},
- inv:{plank:{n:1,lv:0}},eq:{w:'plank',a:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear',dun:{},stone:0};
+ inv:{plank:{n:1,lv:0}},eq:{w:'plank',a1:null,a2:null,c:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear',dun:{},stone:0};
 let S=JSON.parse(JSON.stringify(S0));
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S=Object.assign(S,s,{up:Object.assign(S.up,s.up||{}),stats:Object.assign(S.stats,s.stats||{})});}catch(e){}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -213,9 +213,9 @@ const UPS=[
  {k:'atk',n:'공격력',d:'백곰의 기본 공격력',max:9999,cost:l=>10*Math.pow(1.1,l),val:l=>12*Math.pow(1.085,l)+6*l,show:v=>fmt(v)},
  {k:'hp',n:'체력',d:'최대 체력',max:9999,cost:l=>10*Math.pow(1.1,l),val:l=>160*Math.pow(1.085,l)+30*l,show:v=>fmt(v)},
  {k:'regen',n:'체력 회복',d:'초당 회복량',max:9999,cost:l=>15*Math.pow(1.11,l),val:l=>3+3*l*Math.pow(1.06,l),show:v=>fmt(v)+'/초'},
- {k:'crit',n:'치명타 확률',d:'치명타가 터질 확률',max:150,cost:l=>40*Math.pow(1.13,l),val:l=>8+.5*l,show:v=>v.toFixed(1)+'%'},
+ {k:'crit',n:'치명타 확률',d:'치명타가 터질 확률',max:184,cost:l=>40*Math.pow(1.13,l),val:l=>8+.5*l,show:v=>v.toFixed(1)+'%'},
  {k:'critd',n:'치명타 피해',d:'치명타 배율',max:9999,cost:l=>40*Math.pow(1.11,l),val:l=>180+10*l,show:v=>fmt(v)+'%'},
- {k:'aspd',n:'공격 속도',d:'초당 공격 배율',max:100,cost:l=>30*Math.pow(1.13,l),val:l=>1+.02*l,show:v=>'x'+v.toFixed(2)},
+ {k:'aspd',n:'공격 속도',d:'초당 공격 배율',max:250,cost:l=>30*Math.pow(1.13,l),val:l=>1+.02*l,show:v=>'x'+v.toFixed(2)},
 ];
 // pet passive bonus (PB) is added here so every caller sees it
 const stat=k=>{const v=UPS.find(u=>u.k===k).val(S.up[k]);return k==='crit'||k==='critd'?v+PB(k):k==='aspd'?v*(1+PB('aspd')/100):v;};
@@ -719,6 +719,7 @@ function drawBear(c,m){
     c.bezierCurveTo(30,-6.5,33,2,28,6.5);c.bezierCurveTo(23,10,16,9.5,10,7.5);c.bezierCurveTo(0,8,-13,6,-15,-2);c.closePath();c.moveTo(1,-20);c.arc(-3,-20,4.8,0,TAU);c.restore();},d:0,y:[-131,-98],head:1},
   {p:()=>limbPath(c,SH[0],SH[1],a,34,13,8.5),d:0,y:[-100,-50],arm:1},          // near arm
  ];
+ costume('back',c,m);
  // 1) one outline under everything
  c.lineJoin='round';for(const q of parts){q.p();c.lineWidth=2.4;c.strokeStyle=FUR.line;c.stroke();}
  // 2) fills
@@ -731,7 +732,8 @@ function drawBear(c,m){
    const r=c.createLinearGradient(-36,0,-18,0);r.addColorStop(0,'rgba(255,255,255,.75)');r.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=r;c.fillRect(-40,-110,22,85);}
   if(q.head){const g=c.createRadialGradient(HD[0]+27,HD[1]+2,1,HD[0]+24,HD[1]+2,11);g.addColorStop(0,'rgba(120,100,80,.35)');g.addColorStop(1,'rgba(120,100,80,0)');c.fillStyle=g;c.fillRect(HD[0]+15,HD[1]-12,30,24);}
   c.restore();
-  if(q.head){c.save();c.translate(HD[0],HD[1]+br*.3);c.scale(1.15,1.15);face(c,0,0,m);c.restore();}
+  if(q.torso)costume('body',c,m);
+  if(q.head){c.save();c.translate(HD[0],HD[1]+br*.3);c.scale(1.15,1.15);face(c,0,0,m);costume('head',c,m);c.restore();}
  }
  // gun muzzle flash / magic circle at the paw
  if(m.kind==='gun'&&m.atk>=0&&m.atk<.16){const tx=paw[0]+Math.sin(w)*50,ty=paw[1]+Math.cos(w)*50,k=1-m.atk/.16;c.save();c.globalCompositeOperation='lighter';c.translate(tx,ty);c.rotate(Math.PI/2-w);
@@ -950,12 +952,18 @@ const gkey=(id,g)=>id+'#'+g, gsplit=k=>{const i=k.lastIndexOf('#');return[k.slic
 // older saves stored plain ids
 for(const k of Object.keys(S.inv))if(!k.includes('#')){const v=S.inv[k];delete S.inv[k];if(ITEMS[k])S.inv[gkey(k,ITEMS[k].g)]=v;}
 for(const s of['w','a'])if(S.eq[s]&&!S.eq[s].includes('#'))S.eq[s]=ITEMS[S.eq[s]]?gkey(S.eq[s],ITEMS[S.eq[s]].g):null;
+// accessories moved to two slots a1/a2
+if(S.eq.a!==undefined){S.eq.a1=S.eq.a1||S.eq.a;delete S.eq.a;}
+const SLOTS={w:['w'],a:['a1','a2'],c:['c']};
 if(!S.eq.w||!S.inv[S.eq.w]){S.inv[gkey('plank',0)]=S.inv[gkey('plank',0)]||{n:1,lv:0};S.eq.w=gkey('plank',0);}
 const enhMul=lv=>1+.15*lv, enhCost=(g,lv)=>Math.floor(200*Math.pow(2.2,g)*Math.pow(1.35,lv));
-function gearMul(slot){const k=S.eq[slot];if(!k||!S.inv[k])return 1;const[,g]=gsplit(k);return GMUL[g]*enhMul(S.inv[k].lv||0)*(slot==='a'?.6:1)+(slot==='a'?.4:0);}
+const slotMul=k=>{if(!k||!S.inv[k])return 0;const[,g]=gsplit(k);return GMUL[g]*enhMul(S.inv[k].lv||0);};
+// w: attack multiplier. a: HP multiplier from both accessories and the costume
+function gearMul(slot){if(slot==='w')return S.eq.w?slotMul(S.eq.w):1;return(1+.5*(slotMul(S.eq.a1)+slotMul(S.eq.a2)))*(1+.25*slotMul(S.eq.c));}
 function curWeapon(){const[id,g]=gsplit(S.eq.w||'plank#0');return Object.assign({id,kind:KIND[ITEMS[id].k]},ITEMS[id],{g});}
 function rollGrade(){let r=Math.random()*GACHAW.reduce((a,b)=>a+b,0);for(let g=0;g<GACHAW.length;g++){r-=GACHAW[g];if(r<=0)return g;}return 0;}
-function addItem(id,g){const k=gkey(id,g),own=S.inv[k];S.inv[k]={n:(own?.n||0)+1,lv:own?.lv||0};const s=ITEMS[id].s,cur=S.eq[s];if(!cur||gsplit(cur)[1]<g)S.eq[s]=k;return!own;}
+function equipItem(k){const s=ITEMS[gsplit(k)[0]].s,sl=SLOTS[s];if(sl.some(x=>S.eq[x]===k))return;const free=sl.find(x=>!S.eq[x]);S.eq[free||sl.reduce((a,b)=>slotMul(S.eq[a])<=slotMul(S.eq[b])?a:b)]=k;}
+function addItem(id,g){const k=gkey(id,g),own=S.inv[k];S.inv[k]={n:(own?.n||0)+1,lv:own?.lv||0};const sl=SLOTS[ITEMS[id].s];if(sl.some(x=>!S.eq[x])||sl.some(x=>gsplit(S.eq[x])[1]<g&&S.eq[x]!==k))equipItem(k);return!own;}
 function gacha(n){const cost=n>=10?900:100;if(S.gem<cost)return null;S.gem-=cost;const out=[];
  for(let i=0;i<n;i++){const g=rollGrade();
   if(Math.random()<.12){const pg=Math.min(g,4),pool=Object.keys(PETS).filter(k=>PETS[k].g===pg);const id=pick(pool.length?pool:Object.keys(PETS).filter(k=>PETS[k].g===0));out.push({pet:1,id,g:PETS[id].g,isNew:addPet(id,PETS[id].g)});continue;}
@@ -963,9 +971,66 @@ function gacha(n){const cost=n>=10?900:100;if(S.gem<cost)return null;S.gem-=cost
  save();return out;}
 // merge: 3 of the same item+grade -> 1 of the same item, next grade
 function canMerge(k){const[,g]=gsplit(k),o=S.inv[k];return o&&g<6&&o.n>=MERGE_N;}
-function merge(k){if(!canMerge(k))return false;const[id,g]=gsplit(k);S.inv[k].n-=MERGE_N;if(S.inv[k].n<=0){delete S.inv[k];for(const s of['w','a'])if(S.eq[s]===k)S.eq[s]=null;}
+function merge(k){if(!canMerge(k))return false;const[id,g]=gsplit(k);S.inv[k].n-=MERGE_N;if(S.inv[k].n<=0){delete S.inv[k];for(const s of['w','a1','a2','c'])if(S.eq[s]===k)S.eq[s]=null;}
  addItem(id,g+1);if(!S.eq.w)S.eq.w=gkey(id,g+1);return gkey(id,g+1);}
 function mergeAll(){let n=0;for(let pass=0;pass<7;pass++)for(const k of Object.keys(S.inv))while(canMerge(k)){merge(k);n++;}save();return n;}
+
+/* ---------- costumes (20): change how the bear looks + HP bonus ----------
+ Each costume has up to three layers drawn by drawBear: back (behind the body), body (over the torso), head (in head space). */
+const C_=(n,g,col)=>({n,s:'c',g,col});
+Object.assign(ITEMS,{
+ scarf:C_('파란 목도리',0,'#3d6ad8'),straw:C_('밀짚모자',0,'#e8c870'),redhood:C_('빨간 두건',0,'#d83a3a'),
+ kelp:C_('미역 닌자',1,'#3a7a3a'),duck:C_('오리 튜브 수영복',1,'#ffd23a'),raincoat:C_('노란 우비',1,'#ffcf2a'),chef:C_('요리사 모자',1,'#f4f4f4'),
+ pirate:C_('해적 선장',2,'#2a2a30'),ghillie:C_('길리슈트',2,'#5a7a3a'),shark:C_('상어 후드',2,'#7a8a9a'),lifeguard:C_('해양 구조대',2,'#e83a3a'),padding:C_('롱패딩',2,'#22242c'),
+ santa:C_('산타 옷',3,'#d8283a'),diver:C_('심해 잠수복',3,'#1a3a5a'),explorer:C_('북극 탐험대 파카',3,'#ff7a2a'),
+ knight:C_('기사 갑옷',4,'#b8bcc8'),mage:C_('대마법사 로브',4,'#5a2a9a'),astro:C_('우주복',5,'#f0f2f6'),
+ kingcrown:C_('백곰왕의 왕관',6,'#ffd23a'),aurorawing:C_('오로라 날개옷',6,'#7affd8'),
+});
+const OLC='rgba(40,30,30,.85)';
+function cfill(c,fill,lw=1.6){c.fillStyle=fill;c.fill();c.lineWidth=lw;c.strokeStyle=OLC;c.stroke();}
+function vgrad(c,y0,y1,col){return lgrad(c,y0,y1,col);}
+// body-layer helpers (bear world coords: torso x -40..30, y -116..-22)
+const coat=(c,col,trim)=>{c.beginPath();c.moveTo(-30,-96);c.bezierCurveTo(-40,-70,-38,-40,-26,-24);c.bezierCurveTo(-8,-18,14,-20,26,-28);c.bezierCurveTo(31,-50,30,-86,20,-106);c.bezierCurveTo(4,-112,-18,-110,-30,-96);c.closePath();cfill(c,vgrad(c,-110,-20,col));
+ if(trim){c.beginPath();c.moveTo(-26,-24);c.bezierCurveTo(-8,-17,14,-19,26,-28);c.lineWidth=5;c.strokeStyle=trim;c.stroke();}};
+const COS={
+ scarf:{body(c,m){const fl=Math.sin(m.t*5)*3+(m.walk||0)*5;c.beginPath();c.moveTo(-14,-104);c.bezierCurveTo(-26,-100,-36+fl*.3,-92,-46+fl,-86+fl*.4);c.lineTo(-44+fl,-78);c.bezierCurveTo(-34,-86,-24,-92,-12,-96);c.closePath();cfill(c,'#2a4472',1.2);
+  c.beginPath();c.moveTo(-16,-108);c.bezierCurveTo(-4,-100,10,-100,22,-106);c.lineTo(23,-97);c.bezierCurveTo(10,-91,-4,-91,-16,-99);c.closePath();cfill(c,vgrad(c,-108,-91,'#3d6ad8'),1.2);}},
+ straw:{head(c){ell(c,4,-20,24,5,-.1);cfill(c,vgrad(c,-25,-15,'#e8c870'));c.beginPath();c.ellipse(3,-24,12,9,-.1,Math.PI,0);cfill(c,vgrad(c,-33,-22,'#f0d488'));c.beginPath();c.ellipse(3,-23,12,2.5,-.1,0,TAU);c.fillStyle='#c83a3a';c.fill();}},
+ redhood:{head(c){c.beginPath();c.moveTo(-14,-10);c.bezierCurveTo(-14,-24,4,-28,14,-18);c.lineTo(10,-12);c.bezierCurveTo(2,-18,-8,-16,-12,-6);c.closePath();cfill(c,vgrad(c,-26,-6,'#d83a3a'));c.fillStyle='#fff';for(let i=0;i<5;i++){ell(c,-8+i*4,-17+Math.abs(i-2),1,1);c.fill();}
+  c.beginPath();c.moveTo(-14,-8);c.lineTo(-24,-4);c.lineTo(-20,2);c.closePath();cfill(c,'#c8283a',1);}},
+ kelp:{head(c,m){rr(c,-15,-17,30,5,2);cfill(c,'#3a7a3a',1.2);const f=Math.sin(m.t*6)*2;for(const d of[0,4]){c.beginPath();c.moveTo(-14,-15);c.quadraticCurveTo(-24,-12+d+f,-30,-6+d+f);c.lineWidth=3;c.strokeStyle='#3a7a3a';c.stroke();}}},
+ duck:{body(c){c.beginPath();c.ellipse(-4,-40,36,10,0,0,TAU);c.lineWidth=12;c.strokeStyle=OLC;c.stroke();c.lineWidth=9;c.strokeStyle='#ffd23a';c.stroke();
+  c.save();c.translate(26,-46);ell(c,0,0,8,7);cfill(c,'#ffd23a');c.beginPath();c.moveTo(6,0);c.lineTo(13,1);c.lineTo(6,3);c.closePath();cfill(c,'#ff8a2a',1);ell(c,2,-2,1.2,1.2);c.fillStyle='#111';c.fill();c.restore();}},
+ raincoat:{body(c){coat(c,'#ffcf2a');for(const y of[-90,-70,-50]){ell(c,2,y,2,2);c.fillStyle='#8a6a10';c.fill();}},head(c){c.beginPath();c.ellipse(2,-20,20,5,-.15,0,TAU);cfill(c,'#ffcf2a');c.beginPath();c.ellipse(1,-23,12,9,-.1,Math.PI,0);cfill(c,vgrad(c,-32,-20,'#ffd84a'));}},
+ chef:{body(c){c.beginPath();c.moveTo(-6,-96);c.lineTo(22,-100);c.lineTo(26,-30);c.quadraticCurveTo(10,-24,-6,-30);c.closePath();cfill(c,'#f8f8f8');},head(c){rr(c,-10,-30,22,10,3);cfill(c,'#f4f4f4');for(const[x,r]of[[-6,7],[1,8],[8,7]]){ell(c,x,-35,r,r);cfill(c,'#ffffff',1.2);}}},
+ pirate:{head(c){c.beginPath();c.moveTo(-18,-16);c.quadraticCurveTo(0,-40,20,-16);c.quadraticCurveTo(0,-24,-18,-16);c.closePath();cfill(c,vgrad(c,-36,-16,'#2a2a30'));ell(c,1,-24,3,3);c.fillStyle='#f4eedc';c.fill();
+  c.beginPath();c.moveTo(-6,-14);c.lineTo(22,-10);c.lineWidth=1.4;c.strokeStyle='#111';c.stroke();ell(c,14,-12,3,2.6);c.fillStyle='#111';c.fill();}},
+ ghillie:{body(c,m){for(let i=0;i<26;i++){const x=-34+(i*13)%62,y=-110+((i*29)%86),a=Math.sin(m.t*2+i)*.2;c.save();c.translate(x,y);c.rotate(.6+a);ell(c,0,6,3,8);c.fillStyle=i%3?'#5a7a3a':'#7a9a4a';c.fill();c.restore();}},head(c){for(let i=0;i<6;i++){c.save();c.translate(-10+i*4,-20);c.rotate(-.6+i*.25);ell(c,0,-5,2.4,7);c.fillStyle='#5a7a3a';c.fill();c.restore();}}},
+ shark:{head(c){c.beginPath();c.moveTo(-17,0);c.bezierCurveTo(-19,-22,2,-30,16,-16);c.lineTo(18,-8);c.bezierCurveTo(6,-18,-6,-16,-10,4);c.closePath();cfill(c,vgrad(c,-28,4,'#7a8a9a'));
+  c.beginPath();c.moveTo(-6,-24);c.lineTo(-2,-38);c.lineTo(4,-25);c.closePath();cfill(c,'#6a7a8a');for(let i=0;i<4;i++){c.beginPath();c.moveTo(4+i*3,-14+i*.8);c.lineTo(5.5+i*3,-10+i*.8);c.lineTo(7+i*3,-14+i*.8);c.fillStyle='#fff';c.fill();}}},
+ lifeguard:{body(c){c.beginPath();c.moveTo(-24,-100);c.lineTo(22,-104);c.lineTo(26,-56);c.lineTo(-28,-54);c.closePath();cfill(c,vgrad(c,-104,-54,'#e83a3a'));c.fillStyle='#fff';c.fillRect(-4,-92,8,24);c.fillRect(-12,-84,24,8);}},
+ padding:{body(c){coat(c,'#22242c');c.strokeStyle='rgba(255,255,255,.12)';c.lineWidth=1.2;for(let y=-100;y<-24;y+=11){c.beginPath();c.moveTo(-36,y);c.quadraticCurveTo(-4,y+4,28,y);c.stroke();}}},
+ santa:{body(c){coat(c,'#d8283a','#ffffff');rr(c,-36,-56,66,7,2);cfill(c,'#2a1a14',1.2);rr(c,-4,-57,9,9,1.5);cfill(c,'#ffd23a',1);},head(c,m){c.beginPath();c.moveTo(-14,-18);c.quadraticCurveTo(-4,-46,-26-Math.sin(m.t*2)*3,-30);c.lineTo(14,-18);c.closePath();cfill(c,vgrad(c,-46,-18,'#d8283a'));rr(c,-16,-22,32,7,3.5);cfill(c,'#ffffff',1.2);ell(c,-26-Math.sin(m.t*2)*3,-30,4,4);cfill(c,'#fff',1);}},
+ diver:{body(c){coat(c,'#1a3a5a');c.strokeStyle='#ffd23a';c.lineWidth=2;c.beginPath();c.moveTo(-30,-80);c.lineTo(26,-84);c.stroke();},head(c){rr(c,4,-17,20,9,4);cfill(c,'rgba(120,200,255,.55)',1.6);c.beginPath();c.moveTo(-14,-12);c.lineTo(4,-13);c.lineWidth=2.2;c.strokeStyle='#1a1a24';c.stroke();}},
+ explorer:{body(c){coat(c,'#ff7a2a','#f4eedc');rr(c,-6,-104,4,80,1);c.fillStyle='rgba(0,0,0,.25)';c.fill();},head(c){c.beginPath();c.moveTo(-18,4);c.bezierCurveTo(-22,-24,4,-34,18,-14);c.lineTo(14,-8);c.bezierCurveTo(6,-22,-10,-20,-12,6);c.closePath();cfill(c,vgrad(c,-30,6,'#ff7a2a'));
+  c.beginPath();c.moveTo(14,-8);c.bezierCurveTo(6,-22,-10,-20,-12,6);c.lineWidth=5;c.strokeStyle='#f4eedc';c.stroke();}},
+ knight:{body(c){c.beginPath();c.moveTo(-30,-100);c.bezierCurveTo(-36,-72,-30,-48,-22,-40);c.lineTo(24,-42);c.bezierCurveTo(30,-60,30,-86,22,-104);c.closePath();cfill(c,metal(c,-104,-40,'#b8bcc8'));
+  c.strokeStyle='rgba(255,255,255,.4)';c.lineWidth=1.2;c.beginPath();c.moveTo(-2,-102);c.lineTo(-2,-44);c.stroke();},head(c){c.beginPath();c.moveTo(-16,2);c.bezierCurveTo(-18,-20,-2,-28,10,-22);c.bezierCurveTo(16,-18,18,-12,16,-8);c.lineTo(4,-8);c.lineTo(2,4);c.closePath();cfill(c,metal(c,-26,4,'#b8bcc8'));
+  c.beginPath();c.moveTo(0,-26);c.quadraticCurveTo(-10,-40,-22,-36);c.lineWidth=3;c.strokeStyle='#d83a3a';c.stroke();}},
+ mage:{body(c,m){coat(c,'#5a2a9a','#ffd23a');c.fillStyle='#ffd23a';for(let i=0;i<6;i++){const x=-28+((i*17)%50),y=-96+((i*23)%66);c.save();c.translate(x,y);c.beginPath();for(let k=0;k<10;k++){const r=k%2?1.2:3;c.lineTo(Math.cos(k*Math.PI/5)*r,Math.sin(k*Math.PI/5)*r);}c.fill();c.restore();}},
+  head(c,m){c.beginPath();c.moveTo(-18,-16);c.quadraticCurveTo(-6,-30,-8-Math.sin(m.t)*2,-60);c.quadraticCurveTo(4,-34,18,-16);c.closePath();cfill(c,vgrad(c,-60,-16,'#5a2a9a'));c.beginPath();c.ellipse(0,-17,22,4.5,-.1,0,TAU);cfill(c,'#4a1a8a');}},
+ astro:{body(c){coat(c,'#f0f2f6');rr(c,-12,-90,22,16,3);cfill(c,'#c8ccd6',1.2);for(let i=0;i<3;i++){ell(c,-6+i*6,-82,2,2);c.fillStyle=['#ff4a4a','#ffd23a','#4ac0ff'][i];c.fill();}},
+  head(c){c.beginPath();c.arc(6,-6,30,0,TAU);c.fillStyle='rgba(180,220,255,.28)';c.fill();c.lineWidth=2.4;c.strokeStyle='rgba(220,235,255,.95)';c.stroke();ell(c,-8,-20,8,4,-.6);c.fillStyle='rgba(255,255,255,.55)';c.fill();}},
+ kingcrown:{back(c,m){const fl=Math.sin(m.t*2)*4+(m.walk||0)*6;c.beginPath();c.moveTo(-22,-106);c.bezierCurveTo(-44-fl,-80,-50-fl,-40,-56-fl*1.4,-4);c.lineTo(-10,-4);c.bezierCurveTo(-16,-40,-12,-80,10,-108);c.closePath();cfill(c,vgrad(c,-108,-4,'#b8102a'));
+   c.beginPath();c.moveTo(-22,-106);c.bezierCurveTo(-8,-112,4,-112,10,-108);c.lineWidth=6;c.strokeStyle='#f4eedc';c.stroke();},
+  head(c){c.save();c.translate(-1,-21);c.beginPath();c.moveTo(-12,4);c.lineTo(-13,-8);c.lineTo(-7,-2);c.lineTo(-2,-12);c.lineTo(3,-2);c.lineTo(9,-8);c.lineTo(9,4);c.closePath();cfill(c,metal(c,-12,4,'#ffd23a'));ell(c,-2,-1,2,2);c.fillStyle='#d8102a';c.fill();c.restore();}},
+ aurorawing:{back(c,m){const f=Math.sin(m.t*3)*.12;c.save();c.globalCompositeOperation='lighter';for(const s of[1,.8]){c.save();c.translate(-14,-96);c.rotate(-.4-f);c.scale(s,s);c.beginPath();c.moveTo(0,0);c.bezierCurveTo(-30,-50,-80,-50,-90,-20);c.bezierCurveTo(-70,-10,-60,10,-40,20);c.bezierCurveTo(-24,14,-10,8,0,0);
+   const g=c.createLinearGradient(-90,0,0,0);g.addColorStop(0,'rgba(170,120,255,.15)');g.addColorStop(.5,`hsla(${160+Math.sin(m.t)*30},90%,70%,.55)`);g.addColorStop(1,'rgba(122,255,216,.8)');c.fillStyle=g;c.fill();c.restore();}c.restore();},
+  body(c,m){c.beginPath();c.moveTo(-28,-96);c.quadraticCurveTo(0,-70,26,-40);c.lineWidth=5;c.strokeStyle=`hsla(${(m.t*60)%360},90%,70%,.7)`;c.stroke();}},
+};
+// costume HP bonus and helpers
+function cosId(){const k=S.eq.c;return k&&S.inv[k]?gsplit(k)[0]:null;}
+function costume(layer,c,m){const id=m&&m.cos||cosId();if(!id||!COS[id]||!COS[id][layer])return;c.save();COS[id][layer](c,m);c.restore();}
 
 /* ---------- weapon art: grip at origin, weapon points to -y. Used in the paw, icons and projectiles ---------- */
 const WL=58;
@@ -1033,7 +1098,8 @@ function drawProj(c,p,t){c.save();c.translate(p.x,p.y);
 const _icon={};
 function itemIcon(id,pet){const k=(pet?'p:':'')+id;if(_icon[k])return _icon[k];const cv=document.createElement('canvas');cv.width=cv.height=96;const c=cv.getContext('2d');
  if(pet){c.translate(48,80);c.scale(1.05,1.05);PET_ART[id](c,{t:1,ph:0});}
- else{const it=ITEMS[id];if(it.s==='w'){const small=it.k==='throw'||it.k==='magic';if(small){c.translate(48,62);c.scale(2.4,2.4);}else if(it.k==='gun'){c.translate(30,74);c.rotate(.9);c.scale(1.35,1.35);}else{c.translate(28,76);c.rotate(.75);c.scale(1.25,1.25);}drawWeapon(c,it,1);}
+ else{const it=ITEMS[id];if(it.s==='c'){c.translate(40,150);c.scale(.82,.82);drawBear(c,{t:1,cos:id,atk:-1,kind:'magic'});}
+  else if(it.s==='w'){const small=it.k==='throw'||it.k==='magic';if(small){c.translate(48,62);c.scale(2.4,2.4);}else if(it.k==='gun'){c.translate(30,74);c.rotate(.9);c.scale(1.35,1.35);}else{c.translate(28,76);c.rotate(.75);c.scale(1.25,1.25);}drawWeapon(c,it,1);}
   else{c.translate(48,48);const g=c.createRadialGradient(-6,-8,2,0,0,22);g.addColorStop(0,'#fff');g.addColorStop(.45,it.col);g.addColorStop(1,shade(it.col,-.45));
    c.beginPath();c.arc(0,4,20,0,TAU);c.fillStyle=g;c.fill();c.lineWidth=2.5;c.strokeStyle=FUR.line;c.stroke();c.beginPath();c.arc(0,-6,24,Math.PI*1.15,Math.PI*1.85);c.lineWidth=2;c.strokeStyle='#8a7a6a';c.stroke();
    c.shadowColor=it.col;c.shadowBlur=14;ell(c,-6,-3,6,4,-.5);c.fillStyle='rgba(255,255,255,.75)';c.fill();}}
@@ -1695,21 +1761,22 @@ function renderSkillbar(){$('#skillbar').innerHTML=Object.keys(SKILLS).map(k=>`<
 function updateSkillbar(){for(const b of document.querySelectorAll('.sk')){const k=b.dataset.k,open=skOpen(k);b.classList.toggle('lock',!open);
   b.querySelector('i').style.setProperty('--p',(open?skCd[k]/SKILLS[k].cd*100:100)+'%');b.querySelector('b').textContent=open&&skCd[k]>0?Math.ceil(skCd[k]):'';}
  const a=$('#sauto');if(a)a.classList.toggle('on',!!S.sauto);}
-function eqSection(slot,title){const k=S.eq[slot],own=Object.keys(S.inv).filter(x=>ITEMS[gsplit(x)[0]].s===slot).sort((x,y)=>gsplit(y)[1]-gsplit(x)[1]||ITEMS[gsplit(x)[0]].n.localeCompare(ITEMS[gsplit(y)[0]].n));
- let card=`<div class="info">장착한 ${title}가 없어요. 뽑기에서 얻을 수 있어요.</div>`;
- if(k){const[id,g]=gsplit(k),it=ITEMS[id],gm=gearMul(slot);card=`<div class="eqcard" data-item="${k}">${gbox(itemIcon(id),g)}<div class="rinfo"><div class="rname">${it.n}<small>+${S.inv[k].lv}</small></div>
-  <div class="rval">${slot==='w'?`${KIND[it.k].n} · 공격력`:'체력'} x${gm<100?gm.toFixed(1):fmt(gm)}</div>${it.ult?`<div class="rval" style="color:${ULTS[it.ult].col};filter:brightness(.75)">필살기 · ${ULTS[it.ult].n}</div>`:''}</div><button class="btn2" data-item="${k}">관리</button></div>`;}
- return `<div class="sec">${title}</div>${card}<div class="igrid">${own.map(x=>{const[id,g]=gsplit(x);return gbox(itemIcon(id),g,`<span class="cnt">x${S.inv[x].n}</span>${canMerge(x)?'<span class="new" style="background:#2fb84a">합성</span>':''}`,`data-item="${x}"`).replace('class="ibox"',x===k?'class="ibox on"':'class="ibox"');}).join('')}</div>`;}
-function itemPopup(k){const[id,g]=gsplit(k),it=ITEMS[id],o=S.inv[k];if(!o)return;const c=enhCost(g,o.lv),eq=S.eq[it.s]===k;
- const info=`<div style="display:flex;gap:12px;align-items:center;text-align:left">${gbox(itemIcon(id),g)}<div><b style="color:${shade(GCOL[g],-.35)}">${GRADES[g]}등급</b> · 보유 ${o.n}개 · +${o.lv}<br>${it.s==='w'?KIND[it.k].n+' 무기':'장신구 (체력)'}${it.ult?`<br><span style="color:#9a3ad8">필살기 · ${ULTS[it.ult].n}</span>`:''}</div></div>
+function eqCard(k,s){if(!k)return`<div class="info" style="padding:10px 14px">빈 칸 · 뽑기에서 얻을 수 있어요</div>`;const[id,g]=gsplit(k),it=ITEMS[id],m=slotMul(k);
+ const eff=s==='w'?`${KIND[it.k].n} · 공격력 x${m<100?m.toFixed(1):fmt(m)}`:s==='a'?`체력 +${fmt(m*50)}%`:`체력 +${fmt(m*25)}% · 외형 변경`;
+ return`<div class="eqcard" data-item="${k}">${gbox(itemIcon(id),g)}<div class="rinfo"><div class="rname">${it.n}<small>+${S.inv[k].lv}</small></div><div class="rval">${eff}</div>${it.ult?`<div class="rval" style="color:#9a3ad8">필살기 · ${ULTS[it.ult].n}</div>`:''}</div><button class="btn2" data-item="${k}">관리</button></div>`;}
+function eqSection(s,title){const sl=SLOTS[s],eq=sl.map(x=>S.eq[x]),own=Object.keys(S.inv).filter(x=>ITEMS[gsplit(x)[0]].s===s).sort((x,y)=>gsplit(y)[1]-gsplit(x)[1]||ITEMS[gsplit(x)[0]].n.localeCompare(ITEMS[gsplit(y)[0]].n));
+ return `<div class="sec">${title}</div>${eq.map(k=>eqCard(k,s)).join('')}<div class="igrid">${own.map(x=>{const[id,g]=gsplit(x);return gbox(itemIcon(id),g,`<span class="cnt">x${S.inv[x].n}</span>${canMerge(x)?'<span class="new" style="background:#2fb84a">합성</span>':''}`,`data-item="${x}"`).replace('class="ibox"',eq.includes(x)?'class="ibox on"':'class="ibox"');}).join('')}</div>`;}
+function itemPopup(k){const[id,g]=gsplit(k),it=ITEMS[id],o=S.inv[k];if(!o)return;const c=enhCost(g,o.lv),eq=SLOTS[it.s].some(x=>S.eq[x]===k);
+ const info=`<div style="display:flex;gap:12px;align-items:center;text-align:left">${gbox(itemIcon(id),g)}<div><b style="color:${shade(GCOL[g],-.35)}">${GRADES[g]}등급</b> · 보유 ${o.n}개 · +${o.lv}<br>${it.s==='w'?KIND[it.k].n+' 무기':it.s==='a'?'장신구 (체력)':'코스튬 (체력 · 외형)'}${it.ult?`<br><span style="color:#9a3ad8">필살기 · ${ULTS[it.ult].n}</span>`:''}</div></div>
   <p style="margin-top:10px;font-size:12px">같은 장비 ${MERGE_N}개를 합성하면 <b>${it.n} ${GRADES[Math.min(6,g+1)]}등급</b> 1개가 돼요.</p>`;
- const btns=[];if(!eq)btns.push(['장착',()=>{const hp=bear.hp/MAXHP();S.eq[it.s]=k;bear.hp=hp*MAXHP();save();renderPanel();},1]);
+ const btns=[];if(!eq)btns.push(['장착',()=>{const hp=bear.hp/MAXHP();equipItem(k);bear.hp=hp*MAXHP();save();renderPanel();},1]);
+ else if(it.s!=='w')btns.push(['해제',()=>{for(const x of SLOTS[it.s])if(S.eq[x]===k)S.eq[x]=null;bear.hp=Math.min(bear.hp,MAXHP());save();renderPanel();}]);
  btns.push([`강화 ${fmt(c)}`,()=>{if(S.gold<c){toast('골드가 부족해요');return;}S.gold-=c;o.lv++;track('enh');sfx('level');save();updateHud();renderPanel();itemPopup(k);}]);
  if(S.stone>0)btns.push([`강화석 1개로 강화`,()=>{S.stone--;o.lv++;track('enh');sfx('level');save();renderPanel();itemPopup(k);}]);
  if(canMerge(k))btns.push(['합성',()=>{const nk=merge(k);track('merge');sfx('clear');banner(`${GRADES[g+1]}등급 ${it.n}!`,GCOL[g+1]);save();updateHud();renderPanel();itemPopup(nk);},1]);
  btns.push(['닫기']);modal(it.n,info,btns);}
 const PANEL={
- gear(L){const mc=Object.keys(S.inv).filter(canMerge).length;L.innerHTML=(mc?`<button class="btn2" id="mergeall" style="width:100%">모두 합성 (${mc}종)</button>`:'')+eqSection('w','무기')+eqSection('a','장신구');
+ gear(L){const mc=Object.keys(S.inv).filter(canMerge).length;L.innerHTML=(mc?`<button class="btn2" id="mergeall" style="width:100%">모두 합성 (${mc}종)</button>`:'')+eqSection('w','무기')+eqSection('a','장신구 (2칸)')+eqSection('c','코스튬');
   L.querySelectorAll('[data-item]').forEach(e=>e.onclick=()=>itemPopup(e.dataset.item));
   const ma=$('#mergeall');if(ma)ma.onclick=()=>{const n=mergeAll();track('merge',n);sfx('clear');toast(`${n}번 합성했어요!`);updateHud();renderPanel();};},
  skill(L){L.innerHTML=Object.keys(SKILLS).map(k=>{const sk=SKILLS[k],open=skOpen(k),c=skCost(k);return `<div class="row"><div class="ric" style="background:linear-gradient(145deg,#2a3a5e,#141e36)">${SKICON[k]}</div>
@@ -1723,7 +1790,7 @@ const PANEL={
   ${S.pet===k?'<span class="btn2" style="height:30px;line-height:30px;font-size:11px;background:#8a96b8;box-shadow:none">함께</span>':''}</div>`;}).join('');
   L.querySelectorAll('[data-pk]').forEach(e=>e.onclick=()=>petPopup(e.dataset.pk));
   const ma=$('#pmergeall');if(ma)ma.onclick=()=>{let n=0;for(let p=0;p<7;p++)for(const k of Object.keys(S.pets))while(canMergePet(k)){mergePet(k);n++;}sfx('clear');toast(`${n}번 합성했어요!`);renderPanel();};},
- gacha(L){const tot=GACHAW.reduce((a,b)=>a+b,0);L.innerHTML=`<div class="gacha"><h3>북극 보물 뽑기</h3><p>무기 · 장신구 · 펫이 나와요. 더 좋은 장비는 자동으로 장착돼요.</p>
+ gacha(L){const tot=GACHAW.reduce((a,b)=>a+b,0);L.innerHTML=`<div class="gacha"><h3>북극 보물 뽑기</h3><p>무기 · 장신구 · 코스튬 · 펫이 나와요. 더 좋은 장비는 자동으로 장착돼요.</p>
   <div class="row2"><button data-n="1">1회<br><small>보석 100</small></button><button data-n="10">10회<br><small>보석 900</small></button></div>
   <div class="odds">${GRADES.map((g,i)=>`<span style="color:${GCOL[i]}"><b>${g}</b> ${(GACHAW[i]/tot*100).toFixed(GACHAW[i]/tot<.01?2:1)}%</span>`).join('')}</div></div>
   <div class="info">보석은 스테이지 클리어(+3), 레벨 업(+10), 보스 처치(+30)로 모을 수 있어요.</div>`;

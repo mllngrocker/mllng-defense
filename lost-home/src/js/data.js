@@ -10,7 +10,7 @@ function fmt(n){n=Math.floor(n);if(n<1e4)return n.toLocaleString('en-US');
 /* ---------- save ---------- */
 const KEY='lost-home-v3';
 const S0={gold:0,gem:300,lv:1,exp:0,g:0,kills:0,best:0,up:{atk:0,hp:0,regen:0,crit:0,critd:0,aspd:0},farm:false,snd:true,mult:1,started:false,t:0,stats:{kills:0,bosses:0,gold:0,play:0},
- inv:{plank:{n:1,lv:0}},eq:{w:'plank',a:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear',dun:{},stone:0};
+ inv:{plank:{n:1,lv:0}},eq:{w:'plank',a1:null,a2:null,c:null},skl:{glacier:1,tornado:1,beam:1},sauto:true,pets:{},pet:null,hero:'bear',dun:{},stone:0};
 let S=JSON.parse(JSON.stringify(S0));
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S=Object.assign(S,s,{up:Object.assign(S.up,s.up||{}),stats:Object.assign(S.stats,s.stats||{})});}catch(e){}
 function save(){S.t=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -21,9 +21,9 @@ const UPS=[
  {k:'atk',n:'공격력',d:'백곰의 기본 공격력',max:9999,cost:l=>10*Math.pow(1.1,l),val:l=>12*Math.pow(1.085,l)+6*l,show:v=>fmt(v)},
  {k:'hp',n:'체력',d:'최대 체력',max:9999,cost:l=>10*Math.pow(1.1,l),val:l=>160*Math.pow(1.085,l)+30*l,show:v=>fmt(v)},
  {k:'regen',n:'체력 회복',d:'초당 회복량',max:9999,cost:l=>15*Math.pow(1.11,l),val:l=>3+3*l*Math.pow(1.06,l),show:v=>fmt(v)+'/초'},
- {k:'crit',n:'치명타 확률',d:'치명타가 터질 확률',max:150,cost:l=>40*Math.pow(1.13,l),val:l=>8+.5*l,show:v=>v.toFixed(1)+'%'},
+ {k:'crit',n:'치명타 확률',d:'치명타가 터질 확률',max:184,cost:l=>40*Math.pow(1.13,l),val:l=>8+.5*l,show:v=>v.toFixed(1)+'%'},
  {k:'critd',n:'치명타 피해',d:'치명타 배율',max:9999,cost:l=>40*Math.pow(1.11,l),val:l=>180+10*l,show:v=>fmt(v)+'%'},
- {k:'aspd',n:'공격 속도',d:'초당 공격 배율',max:100,cost:l=>30*Math.pow(1.13,l),val:l=>1+.02*l,show:v=>'x'+v.toFixed(2)},
+ {k:'aspd',n:'공격 속도',d:'초당 공격 배율',max:250,cost:l=>30*Math.pow(1.13,l),val:l=>1+.02*l,show:v=>'x'+v.toFixed(2)},
 ];
 // pet passive bonus (PB) is added here so every caller sees it
 const stat=k=>{const v=UPS.find(u=>u.k===k).val(S.up[k]);return k==='crit'||k==='critd'?v+PB(k):k==='aspd'?v*(1+PB('aspd')/100):v;};

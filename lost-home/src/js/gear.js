@@ -34,12 +34,18 @@ const gkey=(id,g)=>id+'#'+g, gsplit=k=>{const i=k.lastIndexOf('#');return[k.slic
 // older saves stored plain ids
 for(const k of Object.keys(S.inv))if(!k.includes('#')){const v=S.inv[k];delete S.inv[k];if(ITEMS[k])S.inv[gkey(k,ITEMS[k].g)]=v;}
 for(const s of['w','a'])if(S.eq[s]&&!S.eq[s].includes('#'))S.eq[s]=ITEMS[S.eq[s]]?gkey(S.eq[s],ITEMS[S.eq[s]].g):null;
+// accessories moved to two slots a1/a2
+if(S.eq.a!==undefined){S.eq.a1=S.eq.a1||S.eq.a;delete S.eq.a;}
+const SLOTS={w:['w'],a:['a1','a2'],c:['c']};
 if(!S.eq.w||!S.inv[S.eq.w]){S.inv[gkey('plank',0)]=S.inv[gkey('plank',0)]||{n:1,lv:0};S.eq.w=gkey('plank',0);}
 const enhMul=lv=>1+.15*lv, enhCost=(g,lv)=>Math.floor(200*Math.pow(2.2,g)*Math.pow(1.35,lv));
-function gearMul(slot){const k=S.eq[slot];if(!k||!S.inv[k])return 1;const[,g]=gsplit(k);return GMUL[g]*enhMul(S.inv[k].lv||0)*(slot==='a'?.6:1)+(slot==='a'?.4:0);}
+const slotMul=k=>{if(!k||!S.inv[k])return 0;const[,g]=gsplit(k);return GMUL[g]*enhMul(S.inv[k].lv||0);};
+// w: attack multiplier. a: HP multiplier from both accessories and the costume
+function gearMul(slot){if(slot==='w')return S.eq.w?slotMul(S.eq.w):1;return(1+.5*(slotMul(S.eq.a1)+slotMul(S.eq.a2)))*(1+.25*slotMul(S.eq.c));}
 function curWeapon(){const[id,g]=gsplit(S.eq.w||'plank#0');return Object.assign({id,kind:KIND[ITEMS[id].k]},ITEMS[id],{g});}
 function rollGrade(){let r=Math.random()*GACHAW.reduce((a,b)=>a+b,0);for(let g=0;g<GACHAW.length;g++){r-=GACHAW[g];if(r<=0)return g;}return 0;}
-function addItem(id,g){const k=gkey(id,g),own=S.inv[k];S.inv[k]={n:(own?.n||0)+1,lv:own?.lv||0};const s=ITEMS[id].s,cur=S.eq[s];if(!cur||gsplit(cur)[1]<g)S.eq[s]=k;return!own;}
+function equipItem(k){const s=ITEMS[gsplit(k)[0]].s,sl=SLOTS[s];if(sl.some(x=>S.eq[x]===k))return;const free=sl.find(x=>!S.eq[x]);S.eq[free||sl.reduce((a,b)=>slotMul(S.eq[a])<=slotMul(S.eq[b])?a:b)]=k;}
+function addItem(id,g){const k=gkey(id,g),own=S.inv[k];S.inv[k]={n:(own?.n||0)+1,lv:own?.lv||0};const sl=SLOTS[ITEMS[id].s];if(sl.some(x=>!S.eq[x])||sl.some(x=>gsplit(S.eq[x])[1]<g&&S.eq[x]!==k))equipItem(k);return!own;}
 function gacha(n){const cost=n>=10?900:100;if(S.gem<cost)return null;S.gem-=cost;const out=[];
  for(let i=0;i<n;i++){const g=rollGrade();
   if(Math.random()<.12){const pg=Math.min(g,4),pool=Object.keys(PETS).filter(k=>PETS[k].g===pg);const id=pick(pool.length?pool:Object.keys(PETS).filter(k=>PETS[k].g===0));out.push({pet:1,id,g:PETS[id].g,isNew:addPet(id,PETS[id].g)});continue;}
@@ -47,6 +53,6 @@ function gacha(n){const cost=n>=10?900:100;if(S.gem<cost)return null;S.gem-=cost
  save();return out;}
 // merge: 3 of the same item+grade -> 1 of the same item, next grade
 function canMerge(k){const[,g]=gsplit(k),o=S.inv[k];return o&&g<6&&o.n>=MERGE_N;}
-function merge(k){if(!canMerge(k))return false;const[id,g]=gsplit(k);S.inv[k].n-=MERGE_N;if(S.inv[k].n<=0){delete S.inv[k];for(const s of['w','a'])if(S.eq[s]===k)S.eq[s]=null;}
+function merge(k){if(!canMerge(k))return false;const[id,g]=gsplit(k);S.inv[k].n-=MERGE_N;if(S.inv[k].n<=0){delete S.inv[k];for(const s of['w','a1','a2','c'])if(S.eq[s]===k)S.eq[s]=null;}
  addItem(id,g+1);if(!S.eq.w)S.eq.w=gkey(id,g+1);return gkey(id,g+1);}
 function mergeAll(){let n=0;for(let pass=0;pass<7;pass++)for(const k of Object.keys(S.inv))while(canMerge(k)){merge(k);n++;}save();return n;}

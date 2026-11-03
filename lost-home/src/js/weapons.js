@@ -64,7 +64,8 @@ function drawProj(c,p,t){c.save();c.translate(p.x,p.y);
 const _icon={};
 function itemIcon(id,pet){const k=(pet?'p:':'')+id;if(_icon[k])return _icon[k];const cv=document.createElement('canvas');cv.width=cv.height=96;const c=cv.getContext('2d');
  if(pet){c.translate(48,80);c.scale(1.05,1.05);PET_ART[id](c,{t:1,ph:0});}
- else{const it=ITEMS[id];if(it.s==='w'){const small=it.k==='throw'||it.k==='magic';if(small){c.translate(48,62);c.scale(2.4,2.4);}else if(it.k==='gun'){c.translate(30,74);c.rotate(.9);c.scale(1.35,1.35);}else{c.translate(28,76);c.rotate(.75);c.scale(1.25,1.25);}drawWeapon(c,it,1);}
+ else{const it=ITEMS[id];if(it.s==='c'){c.translate(40,150);c.scale(.82,.82);drawBear(c,{t:1,cos:id,atk:-1,kind:'magic'});}
+  else if(it.s==='w'){const small=it.k==='throw'||it.k==='magic';if(small){c.translate(48,62);c.scale(2.4,2.4);}else if(it.k==='gun'){c.translate(30,74);c.rotate(.9);c.scale(1.35,1.35);}else{c.translate(28,76);c.rotate(.75);c.scale(1.25,1.25);}drawWeapon(c,it,1);}
   else{c.translate(48,48);const g=c.createRadialGradient(-6,-8,2,0,0,22);g.addColorStop(0,'#fff');g.addColorStop(.45,it.col);g.addColorStop(1,shade(it.col,-.45));
    c.beginPath();c.arc(0,4,20,0,TAU);c.fillStyle=g;c.fill();c.lineWidth=2.5;c.strokeStyle=FUR.line;c.stroke();c.beginPath();c.arc(0,-6,24,Math.PI*1.15,Math.PI*1.85);c.lineWidth=2;c.strokeStyle='#8a7a6a';c.stroke();
    c.shadowColor=it.col;c.shadowBlur=14;ell(c,-6,-3,6,4,-.5);c.fillStyle='rgba(255,255,255,.75)';c.fill();}}
