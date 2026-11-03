@@ -1,4 +1,4 @@
-/* ---------- pet art: 4 legendary beasts x 3 evolution stages ([0] C~A baby, [1] S~SSS youth, [2] H titan), facing right, feet at y=0 ---------- */
+/* ---------- pet art: 4 legendary beasts x 3 evolution stages ([0] C~A baby, [1] S~SSS youth, [2] H titan) + 4 common pets x 2 stages, facing right, feet at y=0 ---------- */
 const BEAST={};
 // 주작 · 기린 · 청룡: baby and youth stages, plus helpers shared with the titan forms
 (()=>{
@@ -184,7 +184,7 @@ const dragon=[
  const[px,py]=pts[4];glow(c,px-2,py+20,12,'#c8fff4',.9);ell(c,px-2,py+20,4.4,4.4);ink(c,rgrad(c,px-2,py+20,4.4,'#e0fbff'),1.2);
  dhead(c,pts[0][0]+8,pts[0][1]-10,1.55,2,t);}
 ];
-BEAST._={beye,blade,flameTuft,qhead,dhead,tube,scales,cloud,lg,FIRE,GOLD,QI,DR,PH,shape,ink,glow};BEAST.phoenix=phoenix;BEAST.qilin=qilin;BEAST.dragon=dragon;
+BEAST._={beye,blade,flameTuft,qhead,dhead,tube,scales,cloud,lg,FIRE,GOLD,QI,DR,PH,shape,ink,glow,babyHead};BEAST.phoenix=phoenix;BEAST.qilin=qilin;BEAST.dragon=dragon;
 })();
 
 // H-grade titan forms of 주작 · 기린 · 청룡: about twice the youth's size, a different silhouette
@@ -385,4 +385,86 @@ function tiger(c,t,ph,adult){GLOWS=adult;
  GLOWS=0;}
 BEAST.tiger[1]=(c,m)=>{c.save();c.scale(.78,.78);tiger(c,m.t,m.ph,0);c.restore();};
 BEAST.tiger[2]=(c,m)=>{glow(c,0,-44,84,'#9ad8ff',.2);c.save();c.scale(1.18,1.18);tiger(c,m.t,m.ph,1);c.restore();};
+})();
+
+// 물개 · 펭귄 · 북극여우 · 갈매기: common pets with 2 stages, [0] baby (C~A), [1] adult (S~SSS)
+(()=>{
+const{beye,blade,lg,shape,ink,glow,babyHead}=BEAST._;const INK='#15131c';
+const flip=(c,x,y,rx,ry,rot,fill,lw=1.6)=>{c.beginPath();c.ellipse(x,y,rx,ry,rot,0,TAU);ink(c,fill,lw);};
+const whisk=(c,x,y,d=1)=>{c.lineWidth=.6;c.strokeStyle='rgba(20,20,30,.6)';for(let i=0;i<3;i++){c.beginPath();c.moveTo(x,y+i*1.2);c.quadraticCurveTo(x+d*4,y-1+i*1.4,x+d*8,y-1.6+i*2.2);c.stroke();}};
+const SEAL=['#ffffff','#f2f4f8','#cdd4e2'],GREY=['#c8d0dc','#9aa6b8','#6a768a'],PEN=['#3a4258','#262c3c','#141824'],FOX=['#ffffff','#f6f2ea','#d6d2ca'],GULL=['#ffffff','#f2f4f6','#c8ccd4'],CHICK=['#d8dce4','#b8bec8','#8a92a0'];
+Object.assign(BEAST,{
+ seal:[
+  // pup: fluffy white, lying, big glossy eyes
+  (c,m)=>{const t=m.t,b=Math.sin(t*2)*.5;
+   shape(c,[[-20,-2],[-18,-12,'q',-24,-10],[2,-16,'q',-8,-18],[10,-3],[-20,-2,'q',-4,1]]);ink(c,lg(c,-18,0,SEAL),1.8);
+   flip(c,-20,-4,5,2.6,-.5,lg(c,-7,0,SEAL),1.4);flip(c,-21,-1,5,2.4,.4,lg(c,-3,1,SEAL),1.4);flip(c,2,-1.6,5,2.4,-.2,lg(c,-4,1,SEAL),1.4);
+   babyHead(c,6,-18+b,1.15,SEAL,'#ffffff','#2a2a3a',L=>{if(L==='front'){whisk(c,6,5,1);whisk(c,-6,5,-1);}});},
+  // adult: sleek grey seal sitting up on its flippers, spotted, cocky look
+  (c,m)=>{const t=m.t,sw=Math.sin(t*2)*.08;
+   flip(c,-20,-3,9,3.4,.25,lg(c,-6,1,GREY),1.6);flip(c,-24,-6,8,3,-.5,lg(c,-9,-3,GREY),1.6);
+   shape(c,[[-18,-4],[-8,-26,'q',-18,-20],[8,-42,'q',0,-40],[16,-30,'q',18,-38],[10,-4,'q',16,-14],[-18,-4,'q',-4,2]]);ink(c,lg(c,-44,0,GREY),2);
+   c.save();c.clip?0:0;c.restore();for(const[x,y,r]of[[-8,-14,1.6],[-2,-20,1.2],[2,-12,1.4],[-12,-8,1.2],[4,-26,1]]){ell(c,x,y,r,r*.8);c.fillStyle='rgba(60,70,90,.55)';c.fill();}
+   ell(c,4,-16,6,9);c.fillStyle='rgba(235,240,248,.6)';c.fill();
+   c.save();c.translate(10,-22);c.rotate(.5+sw);flip(c,4,0,8,3,0,lg(c,-3,3,GREY),1.5);c.restore();
+   // head
+   shape(c,[[2,-36],[6,-48,'q',2,-46],[18,-48,'q',13,-52],[24,-42,'q',24,-46],[16,-36,'q',22,-36]]);ink(c,lg(c,-52,-34,GREY),1.8);
+   ell(c,22,-42.4,1.4,1);c.fillStyle=INK;c.fill();whisk(c,21,-40.4,1);
+   c.beginPath();c.moveTo(18,-39);c.quadraticCurveTo(20.4,-37.6,22.6,-39.2);c.lineWidth=1;c.strokeStyle=INK;c.stroke();
+   beye(c,14,-44,2.2,1,t,'#3a3040');}],
+ penguin:[
+  // chick: fluffy grey down, white face mask
+  (c,m)=>{const t=m.t,b=Math.abs(Math.sin(m.ph*.6))*1.2;c.translate(0,-b);
+   for(const x of[-4,4]){shape(c,[[x-3,0],[x,-3],[x+3,0]]);ink(c,'#ff9a3a',1);}
+   shape(c,[[-11,-4],[-12,-18,'q',-14,-10],[0,-22,'q',-8,-24],[12,-18,'q',8,-24],[11,-4,'q',14,-10],[-11,-4,'q',0,2]]);ink(c,lg(c,-24,0,CHICK),1.8);
+   for(const d of[-1,1])flip(c,d*12,-12,2.6,6,d*.4,lg(c,-18,-6,CHICK),1.4);
+   babyHead(c,0,-26,1.1,['#2e3446','#262c3c','#141824'],'#ffffff','#5a6a8a',L=>{if(L==='mid'){ell(c,0,1.6,8.6,7.4);c.fillStyle='#ffffff';c.fill();}
+    if(L==='front'){c.beginPath();c.moveTo(-1.6,3.2);c.lineTo(1.6,3.2);c.lineTo(0,5.6);c.closePath();ink(c,'#ffb03a',.9);}});},
+  // adult: emperor-style penguin standing tall, golden neck patch, flippers out
+  (c,m)=>{const t=m.t,fl=Math.sin(t*3)*.1;
+   for(const x of[-5,5]){shape(c,[[x-4,0],[x,-3],[x+4,0]]);ink(c,'#ff9a3a',1.1);}
+   shape(c,[[-12,-4],[-14,-30,'q',-16,-16],[0,-50,'q',-12,-48],[12,-36,'q',10,-48],[12,-4,'q',16,-18],[-12,-4,'q',0,2]]);ink(c,lg(c,-50,0,PEN),2);
+   shape(c,[[-6,-4],[-8,-28,'q',-9,-14],[4,-38,'q',-4,-38],[8,-4,'q',10,-20]]);c.fillStyle=lg(c,-38,-4,['#ffffff','#f4f6fa','#d8dce6']);c.fill();
+   ell(c,5,-36,4,3.6);c.fillStyle=lg(c,-40,-32,['#ffe27a','#ffb02a']);c.fill();
+   for(const[d,x]of[[-1,-12.5],[1,11.5]]){c.save();c.translate(x,-32);c.rotate(-d*(.35+fl));flip(c,0,8,3,10,0,lg(c,-2,18,PEN),1.5);c.restore();}
+   c.beginPath();c.moveTo(9,-44);c.lineTo(20,-41);c.lineTo(9,-39.4);c.closePath();ink(c,lg(c,-44,-39,['#ffb84a','#ff6a2a']),1.1);
+   beye(c,5,-44,2,1,t,'#3a3040');}],
+ fox:[
+  // kit: big ears, fluffy tail, cute
+  (c,m)=>{const t=m.t,tw=Math.sin(t*2.4)*.15;
+   c.save();c.translate(-10,-6);c.rotate(-.6+tw);shape(c,[[0,-3],[-14,-10,'q',-8,-12],[-18,-2,'q',-20,-8],[0,3,'q',-10,4]]);ink(c,lg(c,-12,4,FOX),1.6);c.restore();
+   shape(c,[[-12,-3],[-11,-16,'q',-15,-10],[2,-18,'q',-6,-20],[10,-4,'q',12,-14],[-12,-3,'q',0,1]]);ink(c,lg(c,-20,0,FOX),1.8);
+   for(const x of[-6,5]){ell(c,x,-1.5,4,2.6);ink(c,lg(c,-4,1,FOX),1.3);}
+   babyHead(c,2,-24,1.15,FOX,'#ffffff','#6a8ac8',L=>{if(L==='back')for(const d of[-1,1]){c.save();c.translate(d*7,-7);c.rotate(d*.35);shape(c,[[-4.4,3],[0,-10],[4.4,3]]);ink(c,lg(c,-10,3,FOX),1.5);shape(c,[[-2.2,2],[0,-6],[2.2,2]]);c.fillStyle='#f4c0c8';c.fill();c.restore();}});},
+  // adult: elegant fox standing, huge fluffy tail, pointed snout, sly eye
+  (c,m)=>{const t=m.t,tw=Math.sin(t*2)*.12,s=Math.sin(m.ph)*.15;
+   c.save();c.translate(-16,-22);c.rotate(-.2+tw);shape(c,[[0,-4],[-12,-18,'q',-4,-16],[-30,-14,'q',-24,-22],[-26,0,'q',-34,-4],[0,4,'q',-12,6]]);ink(c,lg(c,-22,6,FOX),1.8);c.restore();
+   const leg=(x,o)=>{c.save();c.translate(x,-18);c.rotate(o);shape(c,[[-3.4,0],[-2.4,18],[2.6,18],[3.6,0]]);ink(c,lg(c,0,18,FOX),1.5);ell(c,.4,18,3.6,1.8);ink(c,'#ffffff',1.2);c.restore();};
+   leg(-12,s);leg(6,-s);
+   shape(c,[[-18,-24],[-12,-32,'q',-18,-32],[8,-34,'q',-2,-36],[14,-24,'q',14,-30],[6,-17,'q',12,-17],[-16,-17,'q',-4,-15]]);ink(c,lg(c,-36,-15,FOX),2);
+   leg(-8,-s);leg(10,s);
+   c.save();c.translate(16,-40);for(const dx of[-4,2]){c.save();c.translate(dx,-4);c.rotate(dx*.06);shape(c,[[-3.6,3],[0,-9],[3.6,3]]);ink(c,lg(c,-9,3,FOX),1.4);c.restore();}
+   shape(c,[[-8,4],[-6,-5,'q',-9,-2],[4,-6,'q',-2,-8],[16,1,'q',10,-3],[4,6,'q',12,6],[-8,4,'q',-2,8]]);ink(c,lg(c,-8,7,FOX),1.8);
+   ell(c,16,1,1.2,1);c.fillStyle=INK;c.fill();c.beginPath();c.moveTo(8,3.6);c.quadraticCurveTo(11,4.6,14,2.6);c.lineWidth=.9;c.strokeStyle=INK;c.stroke();
+   beye(c,4,-1.4,2,1,t,'#e8a020');c.restore();}],
+ gull:[
+  // chick: speckled grey fluff, little beak
+  (c,m)=>{const t=m.t,b=Math.abs(Math.sin(m.ph*.6))*1.2;c.translate(0,-b);
+   for(const x of[-3,4]){c.beginPath();c.moveTo(x,-3);c.lineTo(x,0);c.moveTo(x-2,1);c.lineTo(x,0);c.lineTo(x+2,1);c.lineWidth=1.3;c.strokeStyle='#d88a3a';c.stroke();}
+   shape(c,[[-11,-4],[-12,-16,'q',-14,-10],[0,-20,'q',-8,-22],[11,-16,'q',8,-22],[10,-4,'q',13,-10],[-11,-4,'q',0,2]]);ink(c,lg(c,-22,0,CHICK),1.8);
+   for(const[x,y]of[[-6,-12],[-2,-8],[4,-11],[6,-6],[-8,-6]]){ell(c,x,y,1,.8);c.fillStyle='rgba(60,60,80,.5)';c.fill();}
+   flip(c,-11,-11,2.4,5,.4,lg(c,-16,-6,CHICK),1.3);
+   babyHead(c,0,-24,1.05,CHICK,'#ffffff','#3a3a4a',L=>{if(L==='front'){c.beginPath();c.moveTo(-1.8,3);c.lineTo(1.8,3);c.lineTo(0,6);c.closePath();ink(c,'#3a3a46',.9);}});},
+  // adult: gull hovering with spread wings, yellow beak with a red spot
+  (c,m)=>{const t=m.t,fl=Math.sin(t*8)*.35;c.translate(0,-30);
+   const wing=(d,a)=>{c.save();c.translate(-2,-2);c.rotate(a);shape(c,[[0,0],[-16,-10,'q',-6,-10],[-30,-6,'q',-24,-12],[-28,-2],[-14,1,'q',-20,2],[0,3]]);ink(c,lg(c,-12,3,['#e8ecf2','#b8c0cc']),1.6);
+    c.beginPath();c.moveTo(-28,-2.4);c.lineTo(-22,-6.6);c.lineTo(-20,-1);c.closePath();c.fillStyle=INK;c.fill();c.restore();};
+   wing(-1,.75+fl);
+   blade(c,-10,0,10,2.9,4,lg(c,-3,3,GULL),1.4);
+   shape(c,[[-12,0],[-6,-7,'q',-12,-6],[8,-8,'q',2,-10],[14,-2,'q',14,-6],[4,4,'q',12,4],[-12,0,'q',-6,4]]);ink(c,lg(c,-10,4,GULL),1.8);
+   shape(c,[[8,-8],[10,-15,'q',7,-13],[17,-15,'q',14,-17],[18,-8,'q',20,-12],[12,-5]]);ink(c,lg(c,-17,-5,GULL),1.7);
+   c.beginPath();c.moveTo(17,-12);c.lineTo(26,-10.4);c.quadraticCurveTo(25,-8.6,22,-8.8);c.lineTo(17,-9.6);c.closePath();ink(c,'#ffd23a',1.1);ell(c,23.4,-9.4,.8,.6);c.fillStyle='#e83a2a';c.fill();
+   beye(c,14,-12,1.8,1,t,'#e8c040');
+   wing(1,.35+fl*.8);}]
+});
 })();

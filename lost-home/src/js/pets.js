@@ -1,24 +1,28 @@
-/* ---------- pets: 4 legendary beasts, one equipped. Stored per pet AND grade (S.pets['tiger#0']); 3 same → same pet next grade.
- They evolve with grade: C~A baby, S~SSS youth, H titan (art in beasts.js). kind = how it attacks, bk/bv = passive bonus. S급 이상은 5번째 공격마다 펫 스킬(3배). */
+/* ---------- pets: 4 legendary beasts + 4 common animals, one equipped. Stored per pet AND grade (S.pets['tiger#0']); 3 same → same pet next grade.
+ They evolve with grade: beasts C~A baby, S~SSS youth, H titan; commons C~A baby, S~SSS adult and stop at SSS (max). Art in beasts.js. kind = how it attacks, bk/bv = passive bonus. S급 이상은 5번째 공격마다 펫 스킬(3배). */
 const PETS={
  tiger:{n:'백호',an:['아기 백호','젊은 백호','신수 백호'],kind:'multi',mul:.5,cd:1.6,at:'할퀴기 연타',bk:'atk',bv:5,col:'#bfe8ff'},
  phoenix:{n:'주작',an:['아기 주작','젊은 주작','신수 주작'],kind:'heal',mul:.45,cd:1.6,at:'불꽃 치유',bk:'regen',bv:10,col:'#ff8a3a',fly:1},
  qilin:{n:'기린',an:['아기 기린','젊은 기린','신수 기린'],kind:'proj',mul:.6,cd:1.4,at:'황금 뿔 일격',bk:'gold',bv:8,col:'#ffd34a'},
  dragon:{n:'청룡',an:['아기 청룡','젊은 청룡','신수 청룡'],kind:'aoe',mul:.9,cd:2.6,at:'청룡 파도',bk:'critd',bv:30,col:'#3ae0b8',fly:1},
+ seal:{n:'물개',an:['아기 물개','물개'],kind:'stun',mul:.35,cd:3,at:'꽥! 울어서 기절',bk:'def',bv:4,col:'#c8d4e4',common:1},
+ penguin:{n:'펭귄',an:['아기 펭귄','펭귄'],kind:'pierce',mul:.45,cd:2.2,at:'배 미끄럼 관통',bk:'hp',bv:4,col:'#bfe4ff',common:1},
+ fox:{n:'북극여우',an:['아기 여우','북극여우'],kind:'multi',mul:.3,cd:1.8,at:'할퀴기 연타',bk:'crit',bv:1.5,col:'#fff4d8',common:1},
+ gull:{n:'갈매기',an:['아기 갈매기','갈매기'],kind:'proj',mul:.35,cd:1.2,at:'부리로 쪼기',bk:'gold',bv:4,col:'#f6f9fb',fly:1,common:1},
 };
-for(const k in PETS)PETS[k].g=0;
-const petStage=g=>g>=6?2:g>=3?1:0;
+for(const k in PETS){PETS[k].g=0;PETS[k].max=PETS[k].common?5:6;}
+const petStage=(id,g)=>PETS[id].common?(g>=3?1:0):(g>=6?2:g>=3?1:0);
 // how big each stage is drawn (the art itself grows a lot between stages)
-const PET_SC=[1.1,.66,.52];
-function drawBeast(c,id,g,m){const st=petStage(g);c.save();c.scale(PET_SC[st],PET_SC[st]);BEAST[id][st](c,m);c.restore();}
+const PET_SC=[1.1,.66,.52],PET_SC_COMMON=[1.05,.8];
+function drawBeast(c,id,g,m){const st=petStage(id,g),k=(PETS[id].common?PET_SC_COMMON:PET_SC)[st];c.save();c.scale(k,k);BEAST[id][st](c,m);c.restore();}
 // old 12-pet saves → the 4 beasts by fighting style, keeping count and best enhance level
-const OLD_PET={mongsil:'tiger',dwittung:'tiger',somsom:'tiger',uni:'tiger',beoreok:'tiger',rudol:'tiger',kkiruk:'phoenix',ttoreu:'phoenix',jogae:'qilin',ppojjak:'qilin',turtank:'dragon',orca:'dragon'};
-for(const k of Object.keys(S.pets)){const[id,g]=gsplit(k);const to=OLD_PET[id];if(!to)continue;const nk=gkey(to,g),o=S.pets[k],cur=S.pets[nk];S.pets[nk]={n:(cur?.n||0)+o.n,lv:Math.max(cur?.lv||0,o.lv||0)};delete S.pets[k];if(S.pet===k)S.pet=nk;}
+const OLD_PET={mongsil:'seal',dwittung:'penguin',somsom:'fox',kkiruk:'gull',uni:'tiger',beoreok:'tiger',rudol:'tiger',ttoreu:'phoenix',jogae:'qilin',ppojjak:'qilin',turtank:'dragon',orca:'dragon'};
+for(const k of Object.keys(S.pets)){const[id,g0]=gsplit(k);const to=OLD_PET[id];if(!to)continue;const g=Math.min(g0,PETS[to].max),nk=gkey(to,g),o=S.pets[k],cur=S.pets[nk];S.pets[nk]={n:(cur?.n||0)+o.n,lv:Math.max(cur?.lv||0,o.lv||0)};delete S.pets[k];if(S.pet===k)S.pet=nk;}
 const PB_N={hp:'체력',gold:'골드 획득',atk:'공격력',crit:'치명타 확률',regen:'체력 회복',def:'받는 피해 감소',thorn:'피해 반사',critd:'치명타 피해',aspd:'공격 속도'};
 for(const k of Object.keys(S.pets))if(!k.includes('#'))delete S.pets[k];
 if(S.pet&&!S.pets[S.pet])S.pet=null;
 function addPet(id,g){const k=gkey(id,g),own=S.pets[k];S.pets[k]={n:(own?.n||0)+1,lv:own?.lv||0};if(!S.pet||gsplit(S.pet)[1]<g)S.pet=k;return!own;}
-const canMergePet=k=>{const[,g]=gsplit(k),o=S.pets[k];return o&&g<6&&o.n>=MERGE_N;};
+const canMergePet=k=>{const[id,g]=gsplit(k),o=S.pets[k];return o&&g<PETS[id].max&&o.n>=MERGE_N;};
 function mergePet(k){if(!canMergePet(k))return null;const[id,g]=gsplit(k);S.pets[k].n-=MERGE_N;if(S.pets[k].n<=0){delete S.pets[k];if(S.pet===k)S.pet=null;}addPet(id,g+1);save();return gkey(id,g+1);}
 function petMul(k){const[id,g]=gsplit(k);return PETS[id].mul*GMUL[g]*.6*enhMul(S.pets[k]?.lv||0);}
 function petBonusOf(k){const[id,g]=gsplit(k),P=PETS[id];return P.bv*(1+.5*(g-P.g))*enhMul(S.pets[k]?.lv||0);}
@@ -28,7 +32,7 @@ function PB(stat){if(!S.pet||!S.pets[S.pet])return 0;const[id]=gsplit(S.pet);ret
 const pet={x:0,y:0,cd:1,mode:'idle',t:0,tx:0,ph:0,hits:null,n:0,fx:[]};
 function petHit(m,mul,col){const crit=Math.random()*100<stat('crit');const d=ATK()*petMul(S.pet)*mul*(crit?stat('critd')/100:1);hitMob(m,d,crit);sparks(m.x,m.y-35*K*m.size,8,col,280);return d;}
 function stepPet(dt){if(!S.pet||!S.pets[S.pet])return;const[id,g]=gsplit(S.pet),P=PETS[id],home=Math.max(BX-56*K,40*K),tg=front();pet.ph+=dt*9*Math.max(bear.walk,.2);
- if(!pet.x)pet.x=home;pet.cd-=dt;const fly=P.fly&&petStage(g)>0,air=fly?GY-(150+Math.sin(performance.now()/500)*6)*K:GY;
+ if(!pet.x)pet.x=home;pet.cd-=dt;const fly=P.fly&&petStage(id,g)>0,air=fly?GY-(150+Math.sin(performance.now()/500)*6)*K:GY;
  for(let i=pet.fx.length-1;i>=0;i--){const f=pet.fx[i];f.t+=dt;if(f.kind==='wave'){f.x+=380*K*dt;for(const m of mobs)if(!m.dead&&!f.hit.has(m)&&Math.abs(m.x-f.x)<20*K){f.hit.add(m);petHit(m,f.mul,P.col);}if(f.x>W+40)pet.fx.splice(i,1);}else if(f.t>.6)pet.fx.splice(i,1);}
  {pet.x=lerp(pet.x,home,dt*4);pet.y=air;
   if(pet.cd<=0&&tg&&tg.x<W*.95&&!bear.dead){pet.cd=P.cd;pet.t=0;pet.n++;const sk=g>=3&&pet.n%5===0,mul=sk?3:1;pet.sk=sk;if(sk)num(pet.x,pet.y-60*K,'★'+P.at,'gold');
@@ -49,7 +53,7 @@ function drawPet(c,t){if(!S.pet||!S.pets[S.pet])return;const[id]=gsplit(S.pet),P
    for(let i=-1;i<=1;i++){const len=r*Math.min(1,f.t*8);c.lineCap='round';c.strokeStyle=`rgba(${hexRGB(P.col).map(v=>Math.round(v*255)).join(',')},${a*.8})`;c.lineWidth=6*K*a;c.beginPath();c.moveTo(i*8*K,-len);c.lineTo(i*8*K,len);c.stroke();c.strokeStyle=`rgba(255,255,255,${a})`;c.lineWidth=2*K*a;c.stroke();}c.restore();}
   else if(f.kind==='line'){const k=f.t/.6,a=1-k;c.save();c.globalCompositeOperation='lighter';const g=c.createLinearGradient(pet.x,0,W,0);g.addColorStop(0,`rgba(255,255,255,${a})`);g.addColorStop(1,'rgba(160,220,255,0)');c.fillStyle=g;c.fillRect(pet.x,f.y-5*K*a,W*Math.min(1,f.t*5),10*K*a);c.restore();}
   else{c.save();c.globalCompositeOperation='lighter';const g=c.createLinearGradient(f.x-50*K,0,f.x+10*K,0);g.addColorStop(0,'rgba(90,180,240,0)');g.addColorStop(1,'rgba(150,220,255,.8)');c.fillStyle=g;c.beginPath();c.moveTo(f.x-60*K,GY);c.quadraticCurveTo(f.x-10*K,GY-70*K,f.x+12*K,GY-40*K);c.quadraticCurveTo(f.x,GY-10*K,f.x+10*K,GY);c.closePath();c.fill();c.restore();}}
- const g0=gsplit(S.pet)[1];if(!(P.fly&&petStage(g0)>0)){c.fillStyle='rgba(10,20,40,.25)';c.beginPath();c.ellipse(pet.x,GY+2*K,16*K,3.5*K,0,0,TAU);c.fill();}
+ const g0=gsplit(S.pet)[1];if(!(P.fly&&petStage(id,g0)>0)){c.fillStyle='rgba(10,20,40,.25)';c.beginPath();c.ellipse(pet.x,GY+2*K,16*K,3.5*K,0,0,TAU);c.fill();}
  const g=gsplit(S.pet)[1],sc=K*Math.min(1.2,.95+.04*g);const lg=Math.sin(Math.min(1,(.25-(pet.lunge||0))/.25)*Math.PI)*(pet.lunge>0?8*K:0);c.save();c.translate(pet.x+lg,pet.y);c.scale(sc,sc);petAura(c,g,t,'back');drawBeast(c,id,g,{t,ph:pet.ph,act:pet.lunge>0});petAura(c,g,t,'front');c.restore();}
 /* grade aura: the stronger the pet, the more mystical it looks. layer 'back' = behind the art, 'front' = over it */
 function petAura(c,g,t,layer,h=44){if(g<2)return;const col=GCOL[g],[r,gg,b]=hexRGB(col).map(v=>Math.round(v*255));c.save();c.globalCompositeOperation='lighter';
