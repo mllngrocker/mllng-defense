@@ -2,7 +2,7 @@
 const bgStage=new BG($('#bg')),fg=$('#fg'),fc=fg.getContext('2d');
 let W=400,H=420,K=1,GY=336,BX=100,scroll=0,shake=0,hitstop=0,curTheme=-1,boss=null,bossT=0;
 const bear={hp:1,atk:-1,cd:0,hit:0,dead:false,deadT:0,ph:0,walk:0,regT:0};
-const mobs=[],shots=[];
+const mobs=[],shots=[],pshots=[];
 function resizeStage(){const r=$('#stage').getBoundingClientRect();if(!(r.width>0&&r.height>0))return;W=r.width;H=r.height;DPR=Math.min(window.devicePixelRatio||1,2);
  fg.width=W*DPR;fg.height=H*DPR;const q=Math.min(DPR,1.5);bgStage.resize(Math.round(W*q),Math.round(H*q));
  K=H/430;GY=H*(1-bgStage.ground);BX=W*.24;}
@@ -33,6 +33,11 @@ function hitMob(m,dmg,crit){m.hp-=dmg;m.hit=1;m.kb+=(m.tier===2?3:14)*K*(crit?1.
  if(crit){shake=Math.max(shake,6);hitstop=Math.max(hitstop,.05);sfx('crit');}else sfx('hit');if(m.hp<=0)killMob(m);}
 function front(){let best=null;for(const m of mobs)if(!m.dead&&(!best||m.x<best.x))best=m;return best;}
 function reachX(m){return BX+(40+ART_W[m.arch]*m.size)*K;}
+// how far the bear can hit with the current weapon kind
+function bearReach(m){const r=curWeapon().kind.range;return r?BX+r*K:reachX(m);}
+function bearHit(t,mul){const crit=Math.random()*100<stat('crit');const dmg=ATK()*curWeapon().kind.mul*mul*(crit?stat('critd')/100:1)*rnd(.92,1.08);hitMob(t,dmg,crit);ultCharge();return[dmg,crit];}
+function fireProj(t){const w=curWeapon(),k=w.k,sp=k==='gun'?900:k==='throw'?520:420;
+ pshots.push({kind:k,it:w,col:w.col,x:BX+(k==='gun'?50:30)*K,y:GY-(k==='gun'?72:k==='magic'?96:105)*K,tx:t.x,ty:t.y-ART_H[t.arch]*.45*K*t.size,sp:sp*K,spin:0,tg:t});sfx(k==='gun'?'shot':'buy');}
 function hurtBear(d){if(bear.dead)return;bear.hp-=d;bear.hit=1;num(BX,GY-110*K,d,'hurt');sfx('hurt');shake=Math.max(shake,3);
  if(bear.hp<=0){bear.dead=true;bear.deadT=1.6;bear.hp=0;dust(BX,GY,10,K);if(boss)bossFail();}}
 function step(dt){
@@ -41,16 +46,24 @@ function step(dt){
  bear.hit=Math.max(0,bear.hit-dt*5);
  if(bear.dead){bear.deadT-=dt;if(bear.deadT<=0){bear.dead=false;bear.hp=MAXHP();for(const m of mobs)m.x+=120*K;ring(BX,GY,'#9fdcff',50*K);}}
  else bear.hp=Math.min(MAXHP(),bear.hp+REGEN()*dt);
- const f=front(),engaged=f&&f.x<=reachX(f)+10*K;
+ const f=front(),engaged=f&&f.x<=bearReach(f)+10*K,wk=curWeapon().k;
  bear.walk=lerp(bear.walk,(!engaged&&!bear.dead)?1:0,dt*6);const spd=120*K*bear.walk;
  scroll+=spd*dt/H;bear.ph+=dt*9*bear.walk;
  if(bear.atk>=0){bear.atk+=dt/bear.ad;
-  if(!bear.done&&bear.atk>=.5){bear.done=true;const t=front();if(t&&t.x<=reachX(t)+14*K){const crit=Math.random()*100<stat('crit');const dmg=ATK()*(crit?stat('critd')/100:1)*rnd(.92,1.08);
-   slash(t.x-ART_W[t.arch]*t.size*K*.4,t.y-ART_H[t.arch]*t.size*K*.4,K*(t.tier===2?1.6:1),crit);hitMob(t,dmg,crit);
-   for(const o of mobs)if(o!==t&&!o.dead&&o.x<t.x+50*K)hitMob(o,dmg*.4,false);}}
+  const hitAt=wk==='gun'?.05:wk==='melee'?.5:.46;
+  if(!bear.done&&bear.atk>=hitAt){bear.done=true;const t=front();if(t&&t.x<=bearReach(t)+14*K){
+   if(wk!=='melee')fireProj(t);
+   else{const[dmg,crit]=bearHit(t,1);slash(t.x-ART_W[t.arch]*t.size*K*.4,t.y-ART_H[t.arch]*t.size*K*.4,K*(t.tier===2?1.6:1),crit);for(const o of mobs)if(o!==t&&!o.dead&&o.x<t.x+50*K)hitMob(o,dmg*.4,false);}}}
   if(bear.atk>=1)bear.atk=-1;}
- bear.cd-=dt;const interval=1/(1.6*stat('aspd'));
- if(!bear.dead&&bear.atk<0&&bear.cd<=0&&f&&f.x<=reachX(f)+10*K){bear.atk=0;bear.done=false;bear.ad=Math.min(.38,interval*.9);bear.cd=interval;}
+ bear.cd-=dt;const interval=curWeapon().kind.spd/(1.6*stat('aspd'));
+ if(!bear.dead&&bear.atk<0&&bear.cd<=0&&f&&f.x<=bearReach(f)+10*K){bear.atk=0;bear.done=false;bear.ad=Math.min({melee:.38,gun:.22,throw:.42,magic:.5}[wk],interval*.9);bear.cd=interval;}
+ // bear projectiles
+ for(let i=pshots.length-1;i>=0;i--){const p=pshots[i];if(p.tg&&!p.tg.dead){p.tx=p.tg.x;p.ty=p.tg.y-ART_H[p.tg.arch]*.45*K*p.tg.size;}
+  const dx=p.tx-p.x,dy=p.ty-p.y,d=Math.hypot(dx,dy),st=p.sp*dt;p.spin+=dt*18;
+  if(d<=st+6*K){pshots.splice(i,1);const t=p.tg&&!p.tg.dead?p.tg:mobs.find(m=>!m.dead&&Math.abs(m.x-p.tx)<30*K);if(!t)continue;
+   const[dmg]=bearHit(t,1);if(p.kind==='magic'){ring(p.tx,p.ty,p.col,40*K);sparks(p.tx,p.ty,14,p.col,320);for(const o of mobs)if(o!==t&&!o.dead&&Math.abs(o.x-t.x)<55*K)hitMob(o,dmg*.5,false);}
+   else if(p.kind==='throw'&&p.it.shape==='balloon'){ring(p.tx,p.ty,'#bfe8ff',30*K);sparks(p.tx,p.ty,12,'#bfe8ff',260);}continue;}
+  p.x+=dx/d*st;p.y+=dy/d*st-(p.kind==='throw'?Math.sin(Math.min(1,(p.x-BX)/(p.tx-BX+1))*Math.PI)*60*K*dt:0);}
  // mobs
  if(!boss&&S.g%10===9&&!S.farm&&S.kills>=KILLS&&!mobs.some(m=>!m.dead))startBoss();
  if(!mobs.some(m=>!m.dead)&&!(S.g%10===9&&!S.farm&&S.kills>=KILLS))spawnWave();
@@ -58,13 +71,14 @@ function step(dt){
  for(let i=mobs.length-1;i>=0;i--){const m=mobs[i];m.hit=Math.max(0,m.hit-dt*6);
   if(m.dead){m.dt+=dt;if(m.dt>.35)mobs.splice(i,1);continue;}
   m.x+=m.kb*dt*8;m.kb*=Math.pow(.02,dt);
+  if(m.frozen>0){m.frozen-=dt;continue;}
   const stop=m.ranged?BX+170*K:reachX(m),ahead=mobs.find(o=>o!==m&&!o.dead&&o.x<m.x&&m.x-o.x<(ART_W[o.arch]*o.size+ART_W[m.arch]*m.size)*K*.9&&!o.fly&&!m.fly);
   const moving=m.x>stop&&!ahead;if(moving){m.x-=(m.spd*K+spd)*dt;m.ph+=dt*8;}else if(bear.walk>.1)m.x-=spd*dt;
   m.y=m.fly?GY-(70+Math.sin(performance.now()/600+m.seed)*10)*K:GY;
   if(m.atk>=0){m.atk+=dt/.45;if(!m.done&&m.atk>=.5){m.done=true;if(m.ranged){shots.push({x:m.x-20*K,y:m.y-ART_H[m.arch]*.45*K*m.size,vx:-300*K,col:m.a,dmg:m.dmg});sfx('shot');}else if(!bear.dead)hurtBear(m.dmg);}if(m.atk>=1)m.atk=-1;}
   m.cd-=dt;if(!moving&&m.x<=stop+6*K&&m.cd<=0&&m.atk<0&&!bear.dead){m.atk=0;m.done=false;m.cd=m.tier===2?1.6:1.4;}}
  for(let i=shots.length-1;i>=0;i--){const s=shots[i];s.x+=s.vx*dt;if(s.pet){if(petShotHit(s))shots.splice(i,1);continue;}if(s.x<BX+18*K){if(!bear.dead)hurtBear(s.dmg);sparks(s.x,s.y,6,s.col,200);shots.splice(i,1);}}
- stepSkills(dt);stepPet(dt);
+ stepSkills(dt);stepPet(dt);stepUlt(dt);
  stepFx(dt);
 }
 /* ---------- render ---------- */
@@ -83,14 +97,17 @@ function render(t){
   drawEnt(fc,ART[m.arch],{t,ph:m.ph,atk:m.atk,a:m.a,b:m.b,sub:m.sub,seed:m.seed,id:m.id},m.x,m.y,s,m.dead?1:m.hit,1-dd);
   if(!m.dead&&m.tier!==2&&m.hp<m.max){const w=44*K*m.size,y=m.y-(ART_H[m.arch]+14)*K*m.size;fc.fillStyle='rgba(10,15,30,.6)';rr(fc,m.x-w/2-1,y-1,w+2,7,3.5);fc.fill();fc.fillStyle=m.tier?'#ffb03a':'#ff5b6e';rr(fc,m.x-w/2,y,w*clamp(m.hp/m.max,0,1),5,2.5);fc.fill();}}
 drawPet(fc,t);
- if(!bear.dead||Math.floor(t*10)%2)drawEnt(fc,bearWithSwing,{t,ph:bear.ph,walk:bear.walk,atk:bear.atk},BX,GY,K*.95,bear.hit*.7,bear.dead?.5:1);
+ if(!bear.dead||Math.floor(t*10)%2)drawEnt(fc,bearWithSwing,{t,ph:bear.ph,walk:bear.walk,atk:bear.atk,kind:curWeapon().k},BX,GY,K*.95,bear.hit*.7,bear.dead?.5:1);
  fc.globalCompositeOperation='lighter';for(const s of shots){const g=fc.createRadialGradient(s.x,s.y,0,s.x,s.y,12*K);g.addColorStop(0,'#fff');g.addColorStop(.4,s.col);g.addColorStop(1,'rgba(0,0,0,0)');fc.fillStyle=g;fc.beginPath();fc.arc(s.x,s.y,12*K,0,TAU);fc.fill();}
  fc.globalCompositeOperation='source-over';
+ for(const p of pshots)drawProj(fc,p,t);
  drawSkills(fc,t);
+ drawUlt(fc,t);
  drawFx(fc,K);
  // bear hp bar
  const bw=60*K,by=GY+12*K;fc.fillStyle='rgba(10,15,30,.55)';rr(fc,BX-bw/2-1,by-1,bw+2,8,4);fc.fill();const hpk=clamp(bear.hp/MAXHP(),0,1);
  const hg=fc.createLinearGradient(BX-bw/2,0,BX+bw/2,0);hg.addColorStop(0,'#5fd35a');hg.addColorStop(1,'#c3ff79');fc.fillStyle=hpk<.3?'#ff5b6e':hg;rr(fc,BX-bw/2,by,bw*hpk,6,3);fc.fill();
+ const uw=curWeapon();if(uw.ult){fc.fillStyle='rgba(10,15,30,.55)';rr(fc,BX-bw/2-1,by+8,bw+2,6,3);fc.fill();fc.fillStyle=ultG>=1?`hsl(${t*300%360},90%,65%)`:ULTS[uw.ult].col;rr(fc,BX-bw/2,by+9,bw*ultG,4,2);fc.fill();}
  // boss bar
  if(boss&&!boss.dead){const w=W*.7,x=(W-w)/2,y=Math.max(120,H*.3);fc.font=`${15*K}px Jal, sans-serif`;fc.textAlign='center';fc.lineWidth=4;fc.strokeStyle='#1a1028';fc.strokeText(boss.name,W/2,y-8);fc.fillStyle='#ffd0d6';fc.fillText(boss.name,W/2,y-8);
   fc.fillStyle='rgba(10,10,25,.7)';rr(fc,x-2,y-2,w+4,14,7);fc.fill();const bg2=fc.createLinearGradient(x,0,x+w,0);bg2.addColorStop(0,'#ff3d5a');bg2.addColorStop(1,'#ff9a6a');fc.fillStyle=bg2;rr(fc,x,y,w*clamp(boss.hp/boss.max,0,1),10,5);fc.fill();}

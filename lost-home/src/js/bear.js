@@ -15,12 +15,16 @@ function limbPath(c,x,y,A,len,w0,w1,foot){c.save();c.translate(x,y);c.rotate(-A)
  if(foot){c.quadraticCurveTo(-w1-1,len+w1*.9,w1*.4,len+w1*.95);c.quadraticCurveTo(w1*2.6,len+w1,w1*2.4,len+w1*.1);c.quadraticCurveTo(w1*1.8,len-w1*.6,w1,len-2);}
  else c.arc(0,len,w1*1.15,Math.PI,0,true);
  c.quadraticCurveTo(w0*1.1,len*.5,w0,0);c.arc(0,0,w0,0,Math.PI,true);c.closePath();c.restore();}
-const BEAR_KEY={rest:{a:.55,w:Math.PI+.35},wind:{a:Math.PI-.45,w:Math.PI+1.25},hit:{a:.95,w:1.35}};
-function bearPose(m){const t=m.t||0,k=BEAR_KEY;let a,w,lean=0;
+// pose keys per weapon kind: a = upper-arm angle, w = weapon angle (0 down, + forward); p = [wind-up end, strike end]
+const BEAR_KEYS={melee:{rest:{a:.55,w:Math.PI+.35},wind:{a:Math.PI-.45,w:Math.PI+1.25},hit:{a:.95,w:1.35},p:[.3,.52]},
+ throw:{rest:{a:.55,w:Math.PI+.35},wind:{a:Math.PI-.25,w:Math.PI+1.3},hit:{a:1.7,w:1},p:[.32,.48]},
+ magic:{rest:{a:.95,w:Math.PI/2+.5},wind:{a:1.95,w:Math.PI/2+.1},hit:{a:1.45,w:Math.PI/2+.25},p:[.38,.52]},
+ gun:{rest:{a:1.3,w:Math.PI/2-.05},wind:{a:1.48,w:Math.PI/2+.32},hit:{a:1.3,w:Math.PI/2-.05},p:[.06,.14]}};
+function bearPose(m){const t=m.t||0,kind=m.kind||'melee',k=BEAR_KEYS[kind],[p0,p1]=k.p,ls=kind==='gun'?.25:1;let a,w,lean=0;
  if(m.atk>=0){const p=m.atk;
-  if(p<.3){const e=ease(p/.3);a=lerp(k.rest.a,k.wind.a,e);w=lerp(k.rest.w,k.wind.w,e);lean=-.08*e;}
-  else if(p<.52){const e=ease((p-.3)/.22);a=lerp(k.wind.a,k.hit.a,e);w=lerp(k.wind.w,k.hit.w,e);lean=lerp(-.08,.16,e);}
-  else{const e=ease((p-.52)/.48);a=lerp(k.hit.a,k.rest.a,e);w=lerp(k.hit.w,k.rest.w,e);lean=.16*(1-e);}}
+  if(p<p0){const e=ease(p/p0);a=lerp(k.rest.a,k.wind.a,e);w=lerp(k.rest.w,k.wind.w,e);lean=-.08*e*ls;}
+  else if(p<p1){const e=ease((p-p0)/(p1-p0));a=lerp(k.wind.a,k.hit.a,e);w=lerp(k.wind.w,k.hit.w,e);lean=lerp(-.08,.16,e)*ls;}
+  else{const e=ease((p-p1)/(1-p1));a=lerp(k.hit.a,k.rest.a,e);w=lerp(k.hit.w,k.rest.w,e);lean=.16*(1-e)*ls;}}
  else{a=k.rest.a+Math.sin(t*2)*.04;w=k.rest.w+Math.sin(t*2)*.03;}
  return{a,w,lean};}
 function drawBear(c,m){
@@ -44,7 +48,7 @@ function drawBear(c,m){
  c.lineJoin='round';for(const q of parts){q.p();c.lineWidth=2.4;c.strokeStyle=FUR.line;c.stroke();}
  // 2) fills
  for(const q of parts){
-  if(q.arm){c.save();c.translate(paw[0],paw[1]);c.rotate(-(w-Math.PI));drawWeapon(c,curWeapon(),t);c.restore();}
+  if(q.arm&&!(m.kind==='throw'&&m.atk>.45&&m.atk<.95)){c.save();c.translate(paw[0],paw[1]);c.rotate(-(w-Math.PI));drawWeapon(c,curWeapon(),t);c.restore();}
   q.p();c.save();if(q.head){c.shadowColor='rgba(90,100,125,.3)';c.shadowBlur=6;c.shadowOffsetY=2;}
   c.fillStyle=furGrad(c,q.y[0],q.y[1],q.d);c.fill();c.restore();
   c.save();q.p();c.clip();furStrokes(c,-40,q.y[0],46,q.y[1],q.torso?150:q.head?40:26,q.y[0]*13+q.d*99,q.torso?1.2:q.head?.25:1.5);
@@ -54,6 +58,12 @@ function drawBear(c,m){
   c.restore();
   if(q.head){c.save();c.translate(HD[0],HD[1]+br*.3);c.scale(1.15,1.15);face(c,0,0,m);c.restore();}
  }
+ // gun muzzle flash / magic circle at the paw
+ if(m.kind==='gun'&&m.atk>=0&&m.atk<.16){const tx=paw[0]+Math.sin(w)*50,ty=paw[1]+Math.cos(w)*50,k=1-m.atk/.16;c.save();c.globalCompositeOperation='lighter';c.translate(tx,ty);c.rotate(Math.PI/2-w);
+  for(let i=0;i<3;i++){c.beginPath();c.moveTo(0,0);c.lineTo(18*k,-5+i*5);c.lineTo(6*k,0);c.closePath();c.fillStyle=`rgba(255,${200+i*20},120,${.9*k})`;c.fill();}ell(c,0,0,7*k,7*k);c.fillStyle=`rgba(255,250,220,${k})`;c.fill();c.restore();}
+ if(m.kind==='magic'&&m.atk>=.1&&m.atk<.7){const k=Math.sin((m.atk-.1)/.6*Math.PI),col=curWeapon().col,cx=paw[0]+14,cy=paw[1]-6;c.save();c.globalCompositeOperation='lighter';c.translate(cx,cy);c.rotate(t*2);
+  c.strokeStyle=shade(col,.4);c.lineWidth=1.6;c.globalAlpha=k;c.beginPath();c.arc(0,0,14*k,0,TAU);c.stroke();c.beginPath();c.arc(0,0,9*k,0,TAU);c.stroke();
+  for(let i=0;i<6;i++){const an=i*TAU/6;c.beginPath();c.moveTo(Math.cos(an)*9*k,Math.sin(an)*9*k);c.lineTo(Math.cos(an+2.1)*9*k,Math.sin(an+2.1)*9*k);c.stroke();}c.restore();}
  c.restore();
  return{sx:SH[0],sy:SH[1],a,w,lean};
 }
@@ -67,10 +77,10 @@ function face(c,x,y,m){
  ell(c,x+28.3,y-.6,3.6,3.1,.2);const ng=c.createRadialGradient(x+27.3,y-1.6,.3,x+28.3,y-.6,4);ng.addColorStop(0,'#5a5450');ng.addColorStop(.4,'#141010');ng.addColorStop(1,'#050404');c.fillStyle=ng;c.fill();
 }
 // glowing swing trail that follows the real weapon tip over the last part of the swing; call right after drawBear
-function swingPts(p,t){const ps=bearPose({atk:p,t}),r=ps.lean+.12,cr=Math.cos(r),sr=Math.sin(r);
+function swingPts(p,t){const ps=bearPose({atk:p,t,kind:'melee'}),r=ps.lean+.12,cr=Math.cos(r),sr=Math.sin(r);
  const ax=10+Math.sin(ps.a)*34,ay=-90+Math.cos(ps.a)*34,dx=Math.sin(ps.w),dy=Math.cos(ps.w);
  const rot=(x,y)=>[x*cr-y*sr,x*sr+y*cr];return[rot(ax+dx*64,ay+dy*64),rot(ax+dx*18,ay+dy*18)];}
-function drawSwing(c,m){if(!(m.atk>=.32&&m.atk<.8))return;
+function drawSwing(c,m){if((m.kind&&m.kind!=='melee')||!(m.atk>=.32&&m.atk<.8))return;
  const p1=Math.min(m.atk,.52),p0=Math.max(.3,p1-.2),fade=m.atk<.52?1:1-(m.atk-.52)/.28;if(p1-p0<.01)return;
  const N=16,out=[],inn=[];for(let i=0;i<=N;i++){const k=i/N,[o,n]=swingPts(p0+(p1-p0)*k,m.t);out.push(o);inn.push([lerp(o[0],n[0],Math.pow(k,.7)),lerp(o[1],n[1],Math.pow(k,.7))]);}
  const poly=(A,B)=>{c.beginPath();c.moveTo(A[0][0],A[0][1]);for(const q of A)c.lineTo(q[0],q[1]);for(let i=B.length-1;i>=0;i--)c.lineTo(B[i][0],B[i][1]);c.closePath();};
