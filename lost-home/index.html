@@ -94,10 +94,10 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 #mbtns button{flex:1 1 40%;min-height:46px;padding:6px 4px;line-height:1.15;border-radius:14px;font-family:var(--f-title);font-size:16px;background:#cfdcf3;color:var(--ink2)}
 #mbtns button.ok{background:linear-gradient(#4f9bff,#2f6fe0);color:#fff;box-shadow:0 3px 0 #1f4fa8}
 .tab{font-size:13px;padding:0 2px}
-#skillbar{position:absolute;left:10px;top:calc(max(10px,env(safe-area-inset-top)) + 98px);z-index:6;display:flex;gap:5px}
-.sk{position:relative;width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.55);background:rgba(10,20,45,.6);display:grid;place-items:center;overflow:hidden;box-shadow:0 0 12px rgba(120,220,255,.35)}
-.sk svg{width:20px;height:20px;position:relative;z-index:1}.sk i{position:absolute;inset:0;background:conic-gradient(rgba(5,10,25,.72) var(--p,0%),transparent 0);z-index:2}
-.sk.lock{opacity:.35}.sk b{position:absolute;z-index:3;font:11px var(--f-title);text-shadow:0 1px 2px #000}
+#skillbar{position:absolute;left:10px;top:calc(max(10px,env(safe-area-inset-top)) + 68px);z-index:6;display:flex;gap:4px}
+.sk{position:relative;width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.55);background:rgba(10,20,45,.6);display:grid;place-items:center;overflow:hidden;box-shadow:0 0 12px rgba(120,220,255,.35)}
+.sk svg{width:15px;height:15px;position:relative;z-index:1}.sk i{position:absolute;inset:0;background:conic-gradient(rgba(5,10,25,.72) var(--p,0%),transparent 0);z-index:2}
+.sk.lock{opacity:.35}.sk b{position:absolute;z-index:3;font:9px var(--f-title);text-shadow:0 1px 2px #000}
 #sauto{height:22px;padding:0 9px;border-radius:999px;font:11px var(--f-title);background:rgba(10,20,45,.6);border:1px solid rgba(255,255,255,.35)}#sspd{height:22px;padding:0 9px;border-radius:999px;font:11px var(--f-title);background:rgba(10,20,45,.6);border:1px solid rgba(255,255,255,.35)}#sspd.on{background:linear-gradient(#ffd84a,#ff9a2a);border-color:#ffe9a0;color:#4a2a00}#sauto.on{background:linear-gradient(#5ad0ff,#2f8ae0);border-color:#aee8ff}
 .sec{font-family:var(--f-title);font-size:14px;margin:4px 2px 0;color:var(--ink)}
 .eqcard{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:#fff;box-shadow:0 4px 14px rgba(30,60,120,.08)}
@@ -1756,8 +1756,14 @@ function PB(stat){if(!S.pet||!S.pets[S.pet])return 0;const[id]=gsplit(S.pet);ret
 /* ---------- runtime ---------- */
 const pet={x:0,y:0,cd:1,mode:'idle',t:0,tx:0,ph:0,hits:null,n:0,fx:[]};
 function petHit(m,mul,col){const crit=Math.random()*100<stat('crit');const d=ATK()*petMul(S.pet)*mul*(crit?stat('critd')/100:1);hitMob(m,d,crit);sparks(m.x,m.y-35*K*m.size,8,col,280);return d;}
-function stepPet(dt){if(!S.pet||!S.pets[S.pet])return;const[id,g]=gsplit(S.pet),P=PETS[id],home=Math.max(BX-56*K,40*K),tg=front();pet.ph+=dt*9*Math.max(bear.walk,.2);
- if(!pet.x)pet.x=home;pet.cd-=dt;const fly=P.fly&&petStage(id,g)>0,air=fly?GY-(150+Math.sin(performance.now()/500)*6)*K:GY;
+// horizontal extent [left,right] of a pet's art in K units, measured once from an offscreen render
+const _pbox={};function petBox(id,g){const k=id+petStage(id,g);if(_pbox[k])return _pbox[k];const c=document.createElement('canvas');c.width=c.height=400;const x=c.getContext('2d');x.translate(200,300);const s=Math.min(1.2,.95+.04*g);x.scale(s,s);drawBeast(x,id,g,{t:1,ph:0});
+ const d=x.getImageData(0,0,400,400).data;let x0=200,x1=200;for(let i=3;i<d.length;i+=4)if(d[i]>20){const px=(i>>2)%400;if(px<x0)x0=px;if(px>x1)x1=px;}return _pbox[k]=[200-x0,x1-200];}
+const BEAR_BACK=40;// how far the bear (with costume/weapon) reaches behind BX, in K units
+function stepPet(dt){BX=W*.24;if(!S.pet||!S.pets[S.pet])return;const[id,g]=gsplit(S.pet),P=PETS[id],tg=front(),fly0=P.fly&&petStage(id,g)>0,[pl,pr]=petBox(id,g);
+ // ground pets stand fully behind the bear (the bear steps right if a big pet needs the room); flyers hover above its head
+ if(!fly0)BX=Math.max(BX,(BEAR_BACK+4+pl+pr)*K+4);const home=fly0?Math.max(BX-40*K,(pl+4)*K):BX-(BEAR_BACK+4+pr)*K;pet.ph+=dt*9*Math.max(bear.walk,.2);
+ if(!pet.x)pet.x=home;pet.cd-=dt;const fly=P.fly&&petStage(id,g)>0,air=fly?GY-(168+Math.sin(performance.now()/500)*6)*K:GY;
  for(let i=pet.fx.length-1;i>=0;i--){const f=pet.fx[i];f.t+=dt;if(f.kind==='wave'){f.x+=380*K*dt;for(const m of mobs)if(!m.dead&&!f.hit.has(m)&&Math.abs(m.x-f.x)<20*K){f.hit.add(m);petHit(m,f.mul,P.col);}if(f.x>W+40)pet.fx.splice(i,1);}else if(f.t>.6)pet.fx.splice(i,1);}
  {pet.x=lerp(pet.x,home,dt*4);pet.y=air;
   if(pet.cd<=0&&tg&&tg.x<W*.95&&!bear.dead){pet.cd=P.cd;pet.t=0;pet.n++;pet.lunge=.25;const sk=g>=3&&pet.n%5===0,mul=sk?3:1;pet.sk=sk;if(sk)num(pet.x,pet.y-60*K,'★'+P.at,'gold');
@@ -2461,8 +2467,13 @@ function updateSkillbar(){for(const b of document.querySelectorAll('.sk')){const
 function eqCard(k,s){if(!k)return`<div class="info" style="padding:10px 14px">빈 칸 · 뽑기에서 얻을 수 있어요</div>`;const[id,g]=gsplit(k),it=ITEMS[id],m=slotMul(k);
  const eff=s==='w'?`${KIND[it.k].n} · 공격력 x${m<100?m.toFixed(1):fmt(m)}`:s==='a'?`체력 +${fmt(m*50)}%`:`체력 +${fmt(m*25)}% · 외형 변경`;
  return`<div class="eqcard" data-item="${k}">${gbox(itemIcon(id),g)}<div class="rinfo"><div class="rname">${it.n}<small>+${S.inv[k].lv}</small></div><div class="rval">${eff}</div>${it.ult?`<div class="rval" style="color:#9a3ad8">필살기 · ${ULTS[it.ult].n}</div>`:''}</div><button class="btn2" data-item="${k}">관리</button></div>`;}
-function eqSection(s,title){const sl=SLOTS[s],eq=sl.map(x=>S.eq[x]),own=Object.keys(S.inv).filter(x=>ITEMS[gsplit(x)[0]].s===s).sort((x,y)=>gsplit(y)[1]-gsplit(x)[1]||ITEMS[gsplit(x)[0]].n.localeCompare(ITEMS[gsplit(y)[0]].n));
- return `<div class="sec">${title}</div>${eq.map(k=>eqCard(k,s)).join('')}<div class="igrid">${own.map(x=>{const[id,g]=gsplit(x);return gbox(itemIcon(id),g,`<span class="cnt">x${S.inv[x].n}</span>${canMerge(x)?'<span class="new" style="background:#2fb84a">합성</span>':''}`,`data-item="${x}"`).replace('class="ibox"',eq.includes(x)?'class="ibox on"':'class="ibox"');}).join('')}</div>`;}
+// equipment tab shows only what's worn; the owned items of a slot type open in a picker popup
+const ownOf=s=>Object.keys(S.inv).filter(x=>ITEMS[gsplit(x)[0]].s===s).sort((x,y)=>gsplit(y)[1]-gsplit(x)[1]||ITEMS[gsplit(x)[0]].n.localeCompare(ITEMS[gsplit(y)[0]].n));
+function eqSection(s,title){const eq=SLOTS[s].map(x=>S.eq[x]),own=ownOf(s),mg=own.filter(canMerge).length;
+ return `<div class="sec" style="display:flex;justify-content:space-between;align-items:center">${title}<button class="btn2" data-pick="${s}" style="height:28px;line-height:28px;padding:0 12px;font-size:11px">${own.length}종 보유 · 바꾸기${mg?` <b style="color:#bff7c8">합성 ${mg}</b>`:''}</button></div>${eq.map(k=>eqCard(k,s)).join('')}`;}
+function pickPopup(s,title){const eq=SLOTS[s].map(x=>S.eq[x]);
+ modal(title,`<div class="igrid">${ownOf(s).map(x=>{const[id,g]=gsplit(x);return gbox(itemIcon(id),g,`<span class="cnt">x${S.inv[x].n}</span>${canMerge(x)?'<span class="new" style="background:#2fb84a">합성</span>':''}`,`data-item="${x}"`).replace('class="ibox"',eq.includes(x)?'class="ibox on"':'class="ibox"');}).join('')||'<p>아직 없어요 · 뽑기에서 얻을 수 있어요</p>'}</div>`,[],1);
+ $('#mtext').querySelectorAll('[data-item]').forEach(e=>e.onclick=()=>itemPopup(e.dataset.item));}
 function itemPopup(k){const[id,g]=gsplit(k),it=ITEMS[id],o=S.inv[k];if(!o)return;const c=enhCost(g,o.lv),eq=SLOTS[it.s].some(x=>S.eq[x]===k);
  const info=`<div style="display:flex;gap:12px;align-items:center;text-align:left">${gbox(itemIcon(id),g)}<div><b style="color:${shade(GCOL[g],-.35)}">${GRADES[g]}등급</b> · 보유 ${o.n}개 · +${o.lv}<br>${it.s==='w'?KIND[it.k].n+' 무기':it.s==='a'?'장신구 (체력)':'코스튬 (체력 · 외형)'}${it.ult?`<br><span style="color:#9a3ad8">필살기 · ${ULTS[it.ult].n}</span>`:''}</div></div>
   <p style="margin-top:10px;font-size:12px">같은 장비 ${MERGE_N}개를 합성하면 <b>${it.n} ${GRADES[Math.min(6,g+1)]}등급</b> 1개가 돼요.</p><p style="margin-top:8px;font-size:12px;line-height:1.5"><b>강화</b>: 한 번에 장비 효과 +15% (지금 +${o.lv}). 골드 ${fmt(c)} 또는 <b>강화석</b> 1개가 들어요.<br><small>강화석은 던전에서 얻는 재료예요 · 보유 ${fmt(S.stone||0)}개</small></p>`;
@@ -2475,6 +2486,7 @@ function itemPopup(k){const[id,g]=gsplit(k),it=ITEMS[id],o=S.inv[k];if(!o)return
 const PANEL={
  gear(L){const mc=Object.keys(S.inv).filter(canMerge).length;L.innerHTML=(mc?`<button class="btn2" id="mergeall" style="width:100%">모두 합성 (${mc}종)</button>`:'')+eqSection('w','무기')+eqSection('a','장신구 (2칸)')+eqSection('c','코스튬');
   L.querySelectorAll('[data-item]').forEach(e=>e.onclick=()=>itemPopup(e.dataset.item));
+  L.querySelectorAll('[data-pick]').forEach(e=>e.onclick=()=>pickPopup(e.dataset.pick,{w:'무기',a:'장신구',c:'코스튬'}[e.dataset.pick]));
   const ma=$('#mergeall');if(ma)ma.onclick=()=>{const n=mergeAll();track('merge',n);sfx('clear');toast(`${n}번 합성했어요!`);updateHud();renderPanel();};},
  skill(L){L.innerHTML=Object.keys(SKILLS).map(k=>{const sk=SKILLS[k],open=skOpen(k),c=skCost(k);return `<div class="row"><div class="ric" style="background:linear-gradient(145deg,#2a3a5e,#141e36)">${SKICON[k]}</div>
   <div class="rinfo"><div class="rname">${sk.n}<small>${open?'Lv.'+skLv(k):'잠김'}</small></div><div class="rval">${open?`피해 ${fmt(skDmg(k))} · 재사용 ${sk.cd}초`:`${stageName(sk.unlock)} 도달 시 열려요`}</div><div class="rval">${sk.d}</div></div>

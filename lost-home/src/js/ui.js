@@ -88,8 +88,13 @@ function updateSkillbar(){for(const b of document.querySelectorAll('.sk')){const
 function eqCard(k,s){if(!k)return`<div class="info" style="padding:10px 14px">빈 칸 · 뽑기에서 얻을 수 있어요</div>`;const[id,g]=gsplit(k),it=ITEMS[id],m=slotMul(k);
  const eff=s==='w'?`${KIND[it.k].n} · 공격력 x${m<100?m.toFixed(1):fmt(m)}`:s==='a'?`체력 +${fmt(m*50)}%`:`체력 +${fmt(m*25)}% · 외형 변경`;
  return`<div class="eqcard" data-item="${k}">${gbox(itemIcon(id),g)}<div class="rinfo"><div class="rname">${it.n}<small>+${S.inv[k].lv}</small></div><div class="rval">${eff}</div>${it.ult?`<div class="rval" style="color:#9a3ad8">필살기 · ${ULTS[it.ult].n}</div>`:''}</div><button class="btn2" data-item="${k}">관리</button></div>`;}
-function eqSection(s,title){const sl=SLOTS[s],eq=sl.map(x=>S.eq[x]),own=Object.keys(S.inv).filter(x=>ITEMS[gsplit(x)[0]].s===s).sort((x,y)=>gsplit(y)[1]-gsplit(x)[1]||ITEMS[gsplit(x)[0]].n.localeCompare(ITEMS[gsplit(y)[0]].n));
- return `<div class="sec">${title}</div>${eq.map(k=>eqCard(k,s)).join('')}<div class="igrid">${own.map(x=>{const[id,g]=gsplit(x);return gbox(itemIcon(id),g,`<span class="cnt">x${S.inv[x].n}</span>${canMerge(x)?'<span class="new" style="background:#2fb84a">합성</span>':''}`,`data-item="${x}"`).replace('class="ibox"',eq.includes(x)?'class="ibox on"':'class="ibox"');}).join('')}</div>`;}
+// equipment tab shows only what's worn; the owned items of a slot type open in a picker popup
+const ownOf=s=>Object.keys(S.inv).filter(x=>ITEMS[gsplit(x)[0]].s===s).sort((x,y)=>gsplit(y)[1]-gsplit(x)[1]||ITEMS[gsplit(x)[0]].n.localeCompare(ITEMS[gsplit(y)[0]].n));
+function eqSection(s,title){const eq=SLOTS[s].map(x=>S.eq[x]),own=ownOf(s),mg=own.filter(canMerge).length;
+ return `<div class="sec" style="display:flex;justify-content:space-between;align-items:center">${title}<button class="btn2" data-pick="${s}" style="height:28px;line-height:28px;padding:0 12px;font-size:11px">${own.length}종 보유 · 바꾸기${mg?` <b style="color:#bff7c8">합성 ${mg}</b>`:''}</button></div>${eq.map(k=>eqCard(k,s)).join('')}`;}
+function pickPopup(s,title){const eq=SLOTS[s].map(x=>S.eq[x]);
+ modal(title,`<div class="igrid">${ownOf(s).map(x=>{const[id,g]=gsplit(x);return gbox(itemIcon(id),g,`<span class="cnt">x${S.inv[x].n}</span>${canMerge(x)?'<span class="new" style="background:#2fb84a">합성</span>':''}`,`data-item="${x}"`).replace('class="ibox"',eq.includes(x)?'class="ibox on"':'class="ibox"');}).join('')||'<p>아직 없어요 · 뽑기에서 얻을 수 있어요</p>'}</div>`,[],1);
+ $('#mtext').querySelectorAll('[data-item]').forEach(e=>e.onclick=()=>itemPopup(e.dataset.item));}
 function itemPopup(k){const[id,g]=gsplit(k),it=ITEMS[id],o=S.inv[k];if(!o)return;const c=enhCost(g,o.lv),eq=SLOTS[it.s].some(x=>S.eq[x]===k);
  const info=`<div style="display:flex;gap:12px;align-items:center;text-align:left">${gbox(itemIcon(id),g)}<div><b style="color:${shade(GCOL[g],-.35)}">${GRADES[g]}등급</b> · 보유 ${o.n}개 · +${o.lv}<br>${it.s==='w'?KIND[it.k].n+' 무기':it.s==='a'?'장신구 (체력)':'코스튬 (체력 · 외형)'}${it.ult?`<br><span style="color:#9a3ad8">필살기 · ${ULTS[it.ult].n}</span>`:''}</div></div>
   <p style="margin-top:10px;font-size:12px">같은 장비 ${MERGE_N}개를 합성하면 <b>${it.n} ${GRADES[Math.min(6,g+1)]}등급</b> 1개가 돼요.</p><p style="margin-top:8px;font-size:12px;line-height:1.5"><b>강화</b>: 한 번에 장비 효과 +15% (지금 +${o.lv}). 골드 ${fmt(c)} 또는 <b>강화석</b> 1개가 들어요.<br><small>강화석은 던전에서 얻는 재료예요 · 보유 ${fmt(S.stone||0)}개</small></p>`;
@@ -102,6 +107,7 @@ function itemPopup(k){const[id,g]=gsplit(k),it=ITEMS[id],o=S.inv[k];if(!o)return
 const PANEL={
  gear(L){const mc=Object.keys(S.inv).filter(canMerge).length;L.innerHTML=(mc?`<button class="btn2" id="mergeall" style="width:100%">모두 합성 (${mc}종)</button>`:'')+eqSection('w','무기')+eqSection('a','장신구 (2칸)')+eqSection('c','코스튬');
   L.querySelectorAll('[data-item]').forEach(e=>e.onclick=()=>itemPopup(e.dataset.item));
+  L.querySelectorAll('[data-pick]').forEach(e=>e.onclick=()=>pickPopup(e.dataset.pick,{w:'무기',a:'장신구',c:'코스튬'}[e.dataset.pick]));
   const ma=$('#mergeall');if(ma)ma.onclick=()=>{const n=mergeAll();track('merge',n);sfx('clear');toast(`${n}번 합성했어요!`);updateHud();renderPanel();};},
  skill(L){L.innerHTML=Object.keys(SKILLS).map(k=>{const sk=SKILLS[k],open=skOpen(k),c=skCost(k);return `<div class="row"><div class="ric" style="background:linear-gradient(145deg,#2a3a5e,#141e36)">${SKICON[k]}</div>
   <div class="rinfo"><div class="rname">${sk.n}<small>${open?'Lv.'+skLv(k):'잠김'}</small></div><div class="rval">${open?`피해 ${fmt(skDmg(k))} · 재사용 ${sk.cd}초`:`${stageName(sk.unlock)} 도달 시 열려요`}</div><div class="rval">${sk.d}</div></div>

@@ -31,8 +31,14 @@ function PB(stat){if(!S.pet||!S.pets[S.pet])return 0;const[id]=gsplit(S.pet);ret
 /* ---------- runtime ---------- */
 const pet={x:0,y:0,cd:1,mode:'idle',t:0,tx:0,ph:0,hits:null,n:0,fx:[]};
 function petHit(m,mul,col){const crit=Math.random()*100<stat('crit');const d=ATK()*petMul(S.pet)*mul*(crit?stat('critd')/100:1);hitMob(m,d,crit);sparks(m.x,m.y-35*K*m.size,8,col,280);return d;}
-function stepPet(dt){if(!S.pet||!S.pets[S.pet])return;const[id,g]=gsplit(S.pet),P=PETS[id],home=Math.max(BX-56*K,40*K),tg=front();pet.ph+=dt*9*Math.max(bear.walk,.2);
- if(!pet.x)pet.x=home;pet.cd-=dt;const fly=P.fly&&petStage(id,g)>0,air=fly?GY-(150+Math.sin(performance.now()/500)*6)*K:GY;
+// horizontal extent [left,right] of a pet's art in K units, measured once from an offscreen render
+const _pbox={};function petBox(id,g){const k=id+petStage(id,g);if(_pbox[k])return _pbox[k];const c=document.createElement('canvas');c.width=c.height=400;const x=c.getContext('2d');x.translate(200,300);const s=Math.min(1.2,.95+.04*g);x.scale(s,s);drawBeast(x,id,g,{t:1,ph:0});
+ const d=x.getImageData(0,0,400,400).data;let x0=200,x1=200;for(let i=3;i<d.length;i+=4)if(d[i]>20){const px=(i>>2)%400;if(px<x0)x0=px;if(px>x1)x1=px;}return _pbox[k]=[200-x0,x1-200];}
+const BEAR_BACK=40;// how far the bear (with costume/weapon) reaches behind BX, in K units
+function stepPet(dt){BX=W*.24;if(!S.pet||!S.pets[S.pet])return;const[id,g]=gsplit(S.pet),P=PETS[id],tg=front(),fly0=P.fly&&petStage(id,g)>0,[pl,pr]=petBox(id,g);
+ // ground pets stand fully behind the bear (the bear steps right if a big pet needs the room); flyers hover above its head
+ if(!fly0)BX=Math.max(BX,(BEAR_BACK+4+pl+pr)*K+4);const home=fly0?Math.max(BX-40*K,(pl+4)*K):BX-(BEAR_BACK+4+pr)*K;pet.ph+=dt*9*Math.max(bear.walk,.2);
+ if(!pet.x)pet.x=home;pet.cd-=dt;const fly=P.fly&&petStage(id,g)>0,air=fly?GY-(168+Math.sin(performance.now()/500)*6)*K:GY;
  for(let i=pet.fx.length-1;i>=0;i--){const f=pet.fx[i];f.t+=dt;if(f.kind==='wave'){f.x+=380*K*dt;for(const m of mobs)if(!m.dead&&!f.hit.has(m)&&Math.abs(m.x-f.x)<20*K){f.hit.add(m);petHit(m,f.mul,P.col);}if(f.x>W+40)pet.fx.splice(i,1);}else if(f.t>.6)pet.fx.splice(i,1);}
  {pet.x=lerp(pet.x,home,dt*4);pet.y=air;
   if(pet.cd<=0&&tg&&tg.x<W*.95&&!bear.dead){pet.cd=P.cd;pet.t=0;pet.n++;pet.lunge=.25;const sk=g>=3&&pet.n%5===0,mul=sk?3:1;pet.sk=sk;if(sk)num(pet.x,pet.y-60*K,'★'+P.at,'gold');
