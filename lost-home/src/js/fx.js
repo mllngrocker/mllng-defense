@@ -7,7 +7,7 @@ function debris(x,y,n,col,k){for(let i=0;i<n;i++){const a=rnd(-2.8,-.3),v=rnd(12
 function dust(x,y,n,k){for(let i=0;i<n;i++)part({x:x+rnd(-12,12)*k,y,vx:rnd(-50,50),vy:rnd(-40,-10),life:rnd(.4,.8),size:rnd(6,12)*k,col:'rgba(255,255,255,.5)',type:'puff',drag:.94});}
 function ring(x,y,col,size,life=.35){part({x,y,life,ml:life,size,col,type:'ring'});}
 function slash(x,y,k,crit){part({x,y,life:.18,ml:.18,size:60*k,col:crit?'#ffe27a':'#ffffff',type:'slash',rot:rnd(-.3,.3)});}
-function num(x,y,v,kind){nums.push({x:x+rnd(-8,8),y,vy:-90,life:1,txt:typeof v==='string'?v:fmt(v),v:typeof v==='number'?v:0,kind});}
+function num(x,y,v,kind){if(S.set&&!S.set.dmg&&(kind===''||kind==='crit'||kind==='hurt'))return;nums.push({x:x+rnd(-8,8),y,vy:-90,life:1,txt:typeof v==='string'?v:fmt(v),v:typeof v==='number'?v:0,kind});}
 // damage colour by unit: [min value, top colour, bottom colour] — 만 yellow, 억 orange, 조 purple, 경 green, 해 pink
 const DMG_TIER=[[1e20,'#ffe0ec','#ff2e63'],[1e16,'#e2ffd8','#22c55e'],[1e12,'#f3dcff','#9b3dff'],[1e8,'#fff0b0','#ff5a1f'],[1e4,'#ffffff','#ffc93d'],[0,'#ffffff','#d6e2ff']];
 function drawDmg(c,x,y,txt,v,crit,size,alpha){const[,top,bot]=DMG_TIER.find(t=>v>=t[0]);const sz=size*(crit?1.45:1);
@@ -61,7 +61,7 @@ function tone(f0,f1,dur,type='sine',vol=.2,delay=0){const t=AC.currentTime+delay
  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.005);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.02);}
 function noise(dur,f,vol=.2,q=1,type='bandpass'){const t=AC.currentTime,s=AC.createBufferSource(),fl=AC.createBiquadFilter(),g=AC.createGain();s.buffer=noiseBuf;fl.type=type;fl.frequency.value=f;fl.Q.value=q;
  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(fl);fl.connect(g);g.connect(master);s.start(t);s.stop(t+dur);}
-function sfx(n){if(!AC||!S.snd)return;const now=performance.now();if(now-(_last[n]||0)<(n==='coin'?45:30))return;_last[n]=now;
+function sfx(n){if(!AC||!S.snd||(S.set&&!S.set.sfx))return;const now=performance.now();if(now-(_last[n]||0)<(n==='coin'?45:30))return;_last[n]=now;
  switch(n){
   case'hit':noise(.09,900,.25,.8);tone(180,60,.09,'sine',.25);break;
   case'crit':noise(.14,2200,.3,.7);tone(320,90,.14,'triangle',.25);tone(1200,1800,.08,'sine',.08);break;

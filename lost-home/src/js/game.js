@@ -20,7 +20,7 @@ function stageClear(){track('stage');S.g++;S.kills=0;S.best=Math.max(S.best,S.g)
 function applyTheme(){if(dun)return;const i=Math.floor(S.g/10)%THEMES.length;if(i!==curTheme){curTheme=i;bgStage.theme(THEMES[i]);}}
 function gainExp(v){S.exp+=v;let up=false;while(S.exp>=needExp(S.lv)){S.exp-=needExp(S.lv);S.lv++;S.gem+=10;up=true;}
  if(up){banner('LEVEL UP!','#8ae86a');sfx('level');bear.hp=MAXHP();ring(BX,GY,'#8ae86a',60*K,.6);sparks(BX,GY-60*K,20,'#b8ff8a',300);}}
-function killMob(m){if(dun){m.dead=true;m.dt=0;debris(m.x,m.y-30*K,9,m.b,K);sparks(m.x,m.y-30*K,12,m.a,320);sfx('kill');dunKill(m);return;}m.dead=true;m.dt=0;const g=S.g,gold=mobGold(g)*(m.tier===2?25:m.tier===1?4:1)*(1+PB('gold')/100);S.gold+=gold;S.stats.gold+=gold;S.stats.kills++;gainExp(mobExp(g)*(m.tier===2?20:m.tier===1?3:1));
+function killMob(m){codexKill(m.id);if(dun){m.dead=true;m.dt=0;debris(m.x,m.y-30*K,9,m.b,K);sparks(m.x,m.y-30*K,12,m.a,320);sfx('kill');dunKill(m);return;}m.dead=true;m.dt=0;const g=S.g,gold=mobGold(g)*(m.tier===2?25:m.tier===1?4:1)*(1+PBX('gold')/100);S.gold+=gold;S.stats.gold+=gold;S.stats.kills++;gainExp(mobExp(g)*(m.tier===2?20:m.tier===1?3:1));
  const cx=m.x,cy=m.y-ART_H[m.arch]*.4*K*m.size;debris(cx,cy,m.tier?16:9,m.b,K);sparks(cx,cy,12,m.a,320);ring(cx,m.fly?cy:GY,'rgba(255,255,255,.8)',40*K*m.size);sfx('kill');
  for(let i=0,n=m.tier?8:3;i<n;i++)part({x:cx,y:cy,vx:rnd(-140,140),vy:rnd(-380,-180),g:1100,life:1,ml:1,size:5.5*K,type:'coin',rot:rnd(0,6),vr:9,tx:GOLDX,ty:GOLDY,drag:.99});
  num(cx,cy-20*K,'+'+fmt(gold),'gold');track('kill');track('gold',gold);
@@ -88,8 +88,8 @@ function shadow(x,w){fc.fillStyle='rgba(10,20,40,.28)';fc.beginPath();fc.ellipse
 const stageEl=$('#stage');
 function render(t){
  if(stageEl.clientWidth!==Math.round(W)||stageEl.clientHeight!==Math.round(H)){const oG=GY;resizeStage();for(const m of mobs)m.y+=GY-oG;}
- const sx=shake?rnd(-shake,shake):0,sy=shake?rnd(-shake,shake):0;
- $('#bg').style.transform=fg.style.transform=shake?`translate(${sx}px,${sy}px)`:'';
+ const sh=S.set.shake?shake:0,sx=sh?rnd(-sh,sh):0,sy=sh?rnd(-sh,sh):0;
+ $('#bg').style.transform=fg.style.transform=sh?`translate(${sx}px,${sy}px)`:'';
  bgStage.draw(t,scroll);
  fc.setTransform(DPR,0,0,DPR,0,0);fc.clearRect(0,0,W,H);
  for(const m of mobs)if(!m.dead)shadow(m.x,ART_W[m.arch]*K*m.size*(m.fly?.6:1));if(!bear.dead)shadow(BX,30*K);

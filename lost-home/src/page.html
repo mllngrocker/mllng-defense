@@ -141,6 +141,11 @@ body[data-dun] #qbtn{display:none}
 #victory .vn{display:block;font:clamp(22px,7vw,32px) var(--f-title);margin:6px 16px 12px;text-shadow:0 0 24px #ffb02e}
 #victory .vr{display:flex;gap:10px;justify-content:center}#victory .vr span{padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);font:15px var(--f-title)}
 #victory.go>div{animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+.titles{display:grid;grid-template-columns:1fr 1fr;gap:6px}.ttl{padding:8px 10px;border-radius:12px;background:#fff;text-align:left;box-shadow:0 2px 0 rgba(30,60,120,.08)}
+.ttl b{display:block;font:13px var(--f-title);color:var(--ink)}.ttl small{font-size:10.5px;color:var(--ink2)}.ttl.lock{opacity:.5}.ttl.on{background:linear-gradient(#fff7d6,#ffe9a0);box-shadow:0 0 0 2px #ffcf3d inset}
+.codex{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:6px}.codex div{border-radius:10px;background:linear-gradient(145deg,#2a3a5e,#141e36);text-align:center;padding:2px 2px 4px}
+.codex img{width:100%;aspect-ratio:1;display:block}.codex small{display:block;font-size:9px;color:#dfe8ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.codex .unk b{display:grid;place-items:center;aspect-ratio:1;font:22px var(--f-title);color:#5a6a8a}
+.setrow{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid #d0daf0;font:15px var(--f-title);color:var(--ink)}.setrow input{width:22px;height:22px}
 #setbtn{position:absolute;right:10px;bottom:28px;z-index:6;width:34px;height:34px;border-radius:12px;background:rgba(10,20,45,.55);border:1px solid rgba(255,255,255,.2);display:grid;place-items:center}
 #setbtn svg{width:20px;height:20px}
 </style>
@@ -167,7 +172,7 @@ body[data-dun] #qbtn{display:none}
   <button id="setbtn" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
  </div>
  <div id="panel">
-  <div id="tabs"><button class="tab on" data-tab="up">강화</button><button class="tab" data-tab="gear">장비</button><button class="tab" data-tab="skill">스킬</button><button class="tab" data-tab="pet">펫</button><button class="tab" data-tab="gacha">뽑기</button><button class="tab" data-tab="info">기록</button></div>
+  <div id="tabs"><button class="tab on" data-tab="up">강화</button><button class="tab" data-tab="gear">장비</button><button class="tab" data-tab="skill">스킬</button><button class="tab" data-tab="pet">펫</button><button class="tab" data-tab="gacha">뽑기</button><button class="tab" data-tab="info">도감</button></div>
   <div id="ptools"><span id="phint">길게 누르면 연속 강화</span><span class="sp"></span><div class="seg" id="mult"><button data-m="1" class="on">x1</button><button data-m="10">x10</button><button data-m="0">MAX</button></div></div>
   <div id="plist"></div>
   <div id="dunpanel"></div>
