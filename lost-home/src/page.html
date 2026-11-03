@@ -18,7 +18,9 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .pill{display:flex;align-items:center;gap:5px;height:28px;padding:0 10px 0 4px;border-radius:999px;background:rgba(10,20,45,.55);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-family:var(--f-title);font-size:14px;text-shadow:0 1px 0 rgba(0,0,0,.4)}
 .pill i{width:20px;height:20px;display:block;flex:none}
 #lvbox{flex:1;min-width:0;padding-left:5px}
-#lvtxt{flex:none}
+#lvtxt{flex:none;max-width:100%;font-size:13px;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#lvbox{flex-direction:column;align-items:stretch;justify-content:center;gap:2px;padding:0 10px}#lvbox .bar{flex:none;height:3px;min-width:0}
+.pill.cur{height:24px;padding:0 7px 0 3px;gap:3px;font-size:12px;flex:none}.pill.cur i{width:16px;height:16px}
+#stagebox{max-width:calc(100% - 210px)}#stname{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#cpbox{font-size:12px;height:24px}
 .bar{flex:1;height:8px;border-radius:9px;background:rgba(255,255,255,.15);overflow:hidden;min-width:30px}
 .bar b{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,#5fd35a,#c3ff79);box-shadow:0 0 8px rgba(160,255,120,.6);transition:width .25s}
 #stagebox{justify-content:center;flex-direction:column;align-items:center;height:auto;padding:5px 16px 6px;border-radius:16px;gap:3px}
@@ -168,9 +170,9 @@ body[data-dun] #qbtn{display:none}
   <div id="hud">
    <div class="hrow">
     <div class="pill" id="lvbox"><span id="lvtxt">Lv.1</span><div class="bar" id="expbar"><b></b></div></div>
-    <div class="pill"><i data-ic="gold"></i><span id="goldtxt">0</span></div>
-    <div class="pill"><i data-ic="gem"></i><span id="gemtxt">0</span></div>
-    <div class="pill"><i data-ic="stone"></i><span id="stonetxt">0</span></div>
+    <div class="pill cur"><i data-ic="gold"></i><span id="goldtxt">0</span></div>
+    <div class="pill cur"><i data-ic="gem"></i><span id="gemtxt">0</span></div>
+    <div class="pill cur"><i data-ic="stone"></i><span id="stonetxt">0</span></div>
    </div>
    <div class="hrow" style="justify-content:center;position:relative">
     <div class="pill" id="cpbox"><i data-ic="cp"></i><span id="cptxt">0</span><b id="cpup"></b></div>

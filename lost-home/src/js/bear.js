@@ -97,3 +97,26 @@ function drawSwing(c,m){if((m.kind&&m.kind!=='melee')||!(m.atk>=.32&&m.atk<.8))r
 /* playable characters: add new heroes here (draw + swing trail); S.hero picks one */
 const HEROES={bear:{name:'백곰',draw:drawBear,swing:drawSwing}};
 const HERO=()=>HEROES[S.hero]||HEROES.bear;
+
+/* title-screen bear: a cute polar bear standing on all fours, three-quarter view toward the viewer, feet at y=0 */
+function drawLobbyBear(c,t){const br=Math.sin(t*1.6)*.8,L=FUR.line;c.lineJoin='round';c.lineCap='round';
+ const parts=[
+  [()=>{c.beginPath();rr(c,-26,-28,13,28,6);},()=>furGrad(c,-28,0,.12)],                 // far hind leg
+  [()=>{c.beginPath();rr(c,10,-28,13,28,6);},()=>furGrad(c,-28,0,.12)],                  // far front leg
+  [()=>{c.beginPath();c.ellipse(-4,-36+br*.4,37,24,-.04,0,TAU);},()=>furGrad(c,-60,-12)],  // body
+  [()=>{c.beginPath();c.arc(-40,-46+br*.4,5,0,TAU);},()=>furGrad(c,-51,-41)],             // tail
+  [()=>{c.beginPath();rr(c,-38,-30,16,30,7);},()=>furGrad(c,-30,0)],                      // near hind leg
+  [()=>{c.beginPath();rr(c,15,-32,16,32,7);},()=>furGrad(c,-32,0)],                       // near front leg
+  [()=>{c.beginPath();c.arc(13,-72+br,5.4,0,TAU);c.moveTo(42.4,-73+br);c.arc(37,-73+br,5.4,0,TAU);},()=>furGrad(c,-79,-67)], // ears
+  [()=>{c.beginPath();c.ellipse(25,-58+br,18,16,0,0,TAU);},()=>furGrad(c,-74,-42)],       // head
+ ];
+ for(const[p]of parts){p();c.lineWidth=3;c.strokeStyle=L;c.stroke();}for(const[p,f]of parts){p();c.fillStyle=f();c.fill();}
+ // toes
+ c.lineWidth=1;c.strokeStyle='rgba(74,62,50,.6)';for(const x of[-34,-29,19,24,29]){c.beginPath();c.moveTo(x,-3.4);c.lineTo(x,-.4);c.stroke();}
+ // inner ears, muzzle, nose, eyes, smile
+ for(const x of[13,37]){ell(c,x,-72+br,2.6,2.6);c.fillStyle='#c9b8a8';c.fill();}
+ ell(c,27,-50+br,9.5,7);c.fillStyle='#fffaf0';c.fill();c.lineWidth=1.1;c.strokeStyle='rgba(74,62,50,.35)';c.stroke();
+ ell(c,27,-54+br,3.6,2.6);c.fillStyle='#1a1614';c.fill();ell(c,26,-55+br,1.1,.7);c.fillStyle='rgba(255,255,255,.7)';c.fill();
+ c.beginPath();c.moveTo(27,-51.4+br);c.lineTo(27,-49.4+br);c.moveTo(23.6,-48.4+br);c.quadraticCurveTo(27,-45.6+br,30.4,-48.4+br);c.lineWidth=1.3;c.strokeStyle='#2a2220';c.stroke();
+ const blink=(t%4.2)<.12;for(const x of[18.5,33.5]){if(blink){c.beginPath();c.moveTo(x-1.8,-61+br);c.lineTo(x+1.8,-61+br);c.lineWidth=1.3;c.stroke();}else{ell(c,x,-61+br,2,2.3);c.fillStyle='#1a1614';c.fill();ell(c,x-.6,-61.9+br,.7,.7);c.fillStyle='#fff';c.fill();}}
+ for(const x of[14,38]){ell(c,x,-53+br,3,1.6);c.fillStyle='rgba(255,170,170,.3)';c.fill();}}

@@ -59,14 +59,14 @@ function modal(title,text,btns,wide,noX){$('#mbox').classList.toggle('wide',!!wi
 $('#setbtn').onclick=()=>settingsMenu();
 /* lobby */
 const bgLobby=new BG($('#lbg')),lfg=$('#lfg'),lc=lfg.getContext('2d');let screen='lobby';
-bgLobby.theme(LOBBY_THEME);bgLobby.ground=.16;bgLobby.horizon=.36;
+bgLobby.theme(LOBBY_THEME);bgLobby.ground=.005;bgLobby.horizon=.36;
 function lobbyText(){$('#lsub').textContent=S.started?`이어하기 · ${stageName(S.g)} ${theme().name}`:'처음 시작하는 모험';$('#startbtn').textContent=S.started?'이어하기':'모험 시작';}
 function drawLobby(t){const r=$('#lobby').getBoundingClientRect();if(!r.width)return;const w=r.width,h=r.height,q=Math.min(DPR,1.5);
  if(lfg.width!==Math.round(w*DPR)||lfg.height!==Math.round(h*DPR)){lfg.width=w*DPR;lfg.height=h*DPR;bgLobby.resize(Math.round(w*q),Math.round(h*q));}
  bgLobby.draw(t,t*.01);lc.setTransform(DPR,0,0,DPR,0,0);lc.clearRect(0,0,w,h);
  const s=Math.min(w/380,h/700)*1.25,gy=Math.min(h*(1-bgLobby.ground)-h*.02,$('#lsub').getBoundingClientRect().top-r.top-30*s),bx=w*.5,bob=Math.sin(t*1.2)*3;
  lc.save();lc.translate(bx,gy+bob);lc.beginPath();lc.ellipse(0,6*s,90*s,16*s,0,0,TAU);const ig=lc.createLinearGradient(0,-10*s,0,22*s);ig.addColorStop(0,'#ffffff');ig.addColorStop(1,'#9cc8ea');lc.fillStyle=ig;lc.fill();
- lc.strokeStyle='rgba(255,255,255,.6)';lc.lineWidth=2;lc.stroke();lc.scale(s,s);HERO().draw(lc,{t,ph:0,walk:0,atk:-1,kind:curWeapon().k});lc.restore();
+ lc.strokeStyle='rgba(255,255,255,.6)';lc.lineWidth=2;lc.stroke();lc.scale(s*1.25,s*1.25);lc.translate(-4,2);drawLobbyBear(lc,t);lc.restore();
  lc.strokeStyle='rgba(255,255,255,.35)';lc.lineWidth=1.5;for(let i=0;i<3;i++){const k=(t*.4+i/3)%1;lc.globalAlpha=1-k;lc.beginPath();lc.ellipse(bx,gy+bob+8*s,(90+k*60)*s,(16+k*10)*s,0,0,TAU);lc.stroke();}lc.globalAlpha=1;}
 function beginGame(){renderSkillbar();screen='game';if(!S.started){S.started=true;banner(theme().name,'#9fdcff');toast(`${S.name}(이)가 잃어버린 고향을 찾아 떠나요!`);save();}resizeStage();measureHud();updateHud();}
 $('#startbtn').onclick=()=>{audioInit();$('#lobby').hidden=true;if(S.started){beginGame();return;}screen='pro';startPrologue(()=>askName(beginGame));};
