@@ -46,9 +46,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 #toast.show{opacity:1}
 /* panel */
 #panel{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;background:linear-gradient(#e9f1ff,#dbe7fb);color:var(--ink);border-radius:22px 22px 0 0;margin-top:-18px;z-index:8;box-shadow:0 -8px 30px rgba(0,0,0,.35)}
-#tabs{display:flex;gap:6px;padding:2px 12px 6px}
-#grip{flex:0 0 16px;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:none}#grip::before{content:'';width:42px;height:5px;border-radius:3px;background:rgba(40,60,100,.3)}
-body.folded #stage{flex:1 1 auto;height:auto}body.folded #panel{flex:0 0 22px}body.folded #panel>:not(#grip){display:none}
+#tabs{display:flex;gap:6px;padding:10px 12px 6px}
 .tab{flex:1;height:38px;border-radius:12px;font-family:var(--f-title);font-size:14px;color:var(--ink2);background:#cfdcf3;box-shadow:inset 0 -2px 0 rgba(0,0,0,.08)}
 .tab.on{color:#fff;background:linear-gradient(#4f9bff,#2f6fe0);box-shadow:0 3px 0 #1f4fa8,0 6px 14px rgba(47,111,224,.35)}
 #ptools{display:flex;align-items:center;gap:6px;padding:2px 14px 6px;font-size:12px;color:var(--ink2)}
@@ -190,7 +188,6 @@ body[data-dun] #qbtn{display:none}
   <div id="acts"><button id="qbtn">📜 퀘스트</button><button id="dunbtn">⛏ 던전</button><button id="setbtn" aria-label="설정"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button></div>
  </div>
  <div id="panel">
-  <div id="grip" aria-label="패널 접기/펴기"></div>
   <div id="tabs"><button class="tab on" data-tab="up">강화</button><button class="tab" data-tab="gear">장비</button><button class="tab" data-tab="skill">스킬</button><button class="tab" data-tab="pet">펫</button><button class="tab" data-tab="gacha">뽑기</button><button class="tab" data-tab="info">도감</button></div>
   <div id="ptools"><span id="phint">길게 누르면 연속 강화</span><span class="sp"></span><div class="seg" id="mult"><button data-m="1" class="on">x1</button><button data-m="10">x10</button><button data-m="0">MAX</button></div></div>
   <div id="plist"></div>
@@ -2512,12 +2509,6 @@ function stageMenu(){if(dun||boss){toast(boss?'보스전 중에는 이동할 수
   S.g=g;S.kills=0;S.farm=false;for(const m of mobs)m.dead=true,m.dt=.3;shots.length=0;pshots.length=0;applyTheme();save();updateHud();banner(`${stageName(g)} ${theme().name}`,'#9fdcff');});
  const here=document.querySelector('.chcard.here');if(here)here.scrollIntoView({block:'center'});}
 $('#stagebox').onclick=stageMenu;
-
-// drag the bottom panel down (or tap its grip) to fold it so the battle fills the screen; drag up / tap to unfold
-(()=>{const set=f=>{S.fold=f;document.body.classList.toggle('folded',f);requestAnimationFrame(()=>{resizeStage();measureHud();});save();};let y0=null;
- $('#panel').addEventListener('pointerdown',e=>{if(e.target.closest('#grip,#tabs'))y0=e.clientY;});
- addEventListener('pointerup',e=>{if(y0==null)return;const dy=e.clientY-y0;y0=null;if(dy>40&&!S.fold)set(true);else if(dy<-40&&S.fold)set(false);else if(Math.abs(dy)<8&&e.target.closest('#grip'))set(!S.fold);});
- if(S.fold)set(true);})();
 
 /* ---------- boot + main loop ---------- */
 resizeStage();measureHud();addEventListener('resize',()=>{resizeStage();measureHud();});
