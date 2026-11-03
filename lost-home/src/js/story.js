@@ -1,14 +1,14 @@
 /* ---------- prologue cutscene, bear naming, boss victory screen, sleeping bear (AFK) ---------- */
 const PRO=[
- {txt:'북극의 빙하가 모두 녹아내렸다.',th:{...LOBBY_THEME,sky:['#3a2a5a','#c86a5a','#ffb07a'],sun:['#ffd0a0',.7,.38,.07],aurora:0},floe:1},
- {txt:'집도, 가족도, 얼음 위의 길도 모두 사라졌다.',th:{...LOBBY_THEME,sky:['#0a1428','#1a2a48','#3a5070'],wx:7},floe:.55,alone:1},
- {txt:'떠다니는 쓰레기 사이로, 낯선 땅이 보였다.',th:THEMES[0],gr:.005,hz:.44,trash:1,land:1},
- {txt:'고향을 되찾기 위해, 백곰은 판자 하나를 쥐었다.',th:{...THEMES[0],sky:['#34405e','#7a7486','#e0a888'],sun:['#ffd0a0',.8,.3,.05],rays:.3,sea:'#2a6a98',fog:'#c8a8a0'},gr:.005,hz:.44,trash:1,pick:1},
+ {txt:'북극의 빙하가 모두 녹아내렸다.',th:{...LOBBY_THEME,sky:['#3a2a5a','#c86a5a','#ffb07a'],sun:['#ffd0a0',.7,.38,.07],aurora:0},floe:1,fx:.5,fy:.62},
+ {txt:'집도, 가족도, 얼음 위의 길도 모두 사라졌다.',th:{...LOBBY_THEME,sky:['#0a1428','#1a2a48','#3a5070'],wx:7},floe:.55,alone:1,fx:.5,fy:.62},
+ {txt:'떠다니는 쓰레기 사이로, 낯선 땅이 보였다.',th:THEMES[0],gr:.005,hz:.44,trash:1,land:1,fx:.55,fy:.68},
+ {txt:'고향을 되찾기 위해, 백곰은 판자 하나를 쥐었다.',th:{...THEMES[0],sky:['#34405e','#7a7486','#e0a888'],sun:['#ffd0a0',.8,.3,.05],rays:.3,sea:'#2a6a98',fog:'#c8a8a0'},gr:.005,hz:.44,trash:1,pick:1,fx:.55,fy:.72},
 ];
-let proI=0,proT=0,proBG=null,proOn=false;
+let proI=0,proT=0,proBG=null,proOn=false,proShots=[];
 function proScene(){const P=PRO[proI];proBG.theme(P.th);proBG.ground=P.gr||.16;proBG.horizon=P.hz||.4;}
-function startPrologue(done){const el=$('#prologue');el.hidden=false;proOn=true;proI=0;proT=0;if(!proBG)proBG=new BG($('#pbg'));proScene();
- const next=()=>{proI++;proT=0;if(proI>=PRO.length){end();return;}proScene();sfx('buy');};
+function startPrologue(done){const el=$('#prologue');el.hidden=false;proOn=true;proI=0;proT=0;proShots=[];if(!proBG)proBG=new BG($('#pbg'));proScene();
+ const next=()=>{if(proT<.4)return;proShots[proI]=panelShot();proI++;proT=0;if(proI>=PRO.length){end();return;}proScene();sfx('buy');};
  const end=()=>{proOn=false;el.hidden=true;el.onclick=null;done();};
  el.onclick=e=>{if(e.target.id==='pskip'){end();return;}next();};}
 /* floating trash: PET bottle, can, plastic bag, tyre, styrofoam — bobbing on the water with a ripple */
@@ -28,12 +28,12 @@ function drawLand(c,w,hy,t){c.save();const x0=w*.42,x1=w*1.05;c.beginPath();c.mo
  const cx=w*.8;c.fillStyle='rgba(80,95,120,.95)';c.fillRect(cx,hy-46,7,32);c.fillRect(cx-16,hy-26,30,14);
  for(let i=0;i<4;i++){const k=(t*.15+i/4)%1;c.fillStyle=`rgba(120,120,130,${.45*(1-k)})`;c.beginPath();c.arc(cx+4+k*20,hy-50-k*36,5+k*12,0,TAU);c.fill();}
  c.fillStyle='rgba(110,100,90,.9)';c.beginPath();c.moveTo(w*.55,hy-6);c.quadraticCurveTo(w*.6,hy-22,w*.66,hy-6);c.closePath();c.fill();c.restore();}
-function drawPrologue(t,dt){if(!proOn)return;proT+=dt;const cv=$('#pfg'),r=$('#prologue').getBoundingClientRect(),w=r.width,h=r.height,q=Math.min(DPR,1.5);
+function drawScene(t){const cv=$('#pfg'),r=$('#prologue').getBoundingClientRect(),w=r.width,h=r.height,q=Math.min(DPR,1.5);
  if(cv.width!==Math.round(w*DPR)||cv.height!==Math.round(h*DPR)){cv.width=w*DPR;cv.height=h*DPR;proBG.resize(Math.round(w*q),Math.round(h*q));}
  const P=PRO[proI];proBG.draw(t,t*.02);const c=cv.getContext('2d');c.setTransform(DPR,0,0,DPR,0,0);c.clearRect(0,0,w,h);
  const gy=h*(1-proBG.ground)-h*.03,s=Math.min(w/380,h/700)*1.2,bx=w*.5,bob=Math.sin(t*1.2)*3;
  if(P.floe){const fw=90*P.floe;c.save();c.translate(bx,gy+bob);c.beginPath();c.ellipse(0,6*s,fw*s,14*s,0,0,TAU);c.fillStyle='#eaf6ff';c.fill();
-  if(P.alone){c.strokeStyle='rgba(90,140,190,.8)';c.lineWidth=2;c.beginPath();c.moveTo(-fw*.3*s,2*s);c.lineTo(-fw*.1*s,10*s);c.lineTo(fw*.15*s,4*s);c.stroke();}c.scale(s,s);HERO().draw(c,{t,ph:0,walk:0,atk:-1});c.restore();return proText(P);}
+  if(P.alone){c.strokeStyle='rgba(90,140,190,.8)';c.lineWidth=2;c.beginPath();c.moveTo(-fw*.3*s,2*s);c.lineTo(-fw*.1*s,10*s);c.lineTo(fw*.15*s,4*s);c.stroke();}c.scale(s,s);HERO().draw(c,{t,ph:0,walk:0,atk:-1,noWeapon:1});c.restore();return;}
  // sea scenes: junk scattered in depth, the bear drifting on a small floe among it
  const hy=h*(1-proBG.horizon),fy=h*.84+bob,fx=P.pick?bx:w*.42+Math.sin(t*.3)*8,junk=[];
  if(P.land)drawLand(c,w,hy,t);
@@ -50,9 +50,34 @@ function drawPrologue(t,dt){if(!proOn)return;proT+=dt;const cv=$('#pfg'),r=$('#p
  c.scale(s*1.1,s*1.1);HERO().draw(c,P.pick?{t,atk:-1,kind:got?'melee':'gun',noWeapon:!got}:{t,atk:-1,noWeapon:1});c.restore();
  if(got&&proT<2.6){const k=(proT-1.5)/1.1;c.save();c.globalCompositeOperation='lighter';c.translate(fx+18*s,fy-150*s);for(let i=0;i<8;i++){c.rotate(TAU/8);c.fillStyle=`rgba(255,240,170,${.7*(1-k)})`;c.beginPath();c.moveTo(0,0);c.lineTo(46*s*(.5+k),-4*s);c.lineTo(46*s*(.5+k),4*s);c.fill();}c.restore();}
  for(const j of junk)if(j[2]>=fy)drawJunk(c,j[0],j[1],j[2],j[3],t,j[4],j[5]);
- proText(P);}
-function proText(P){const n=Math.min(P.txt.length,Math.floor(proT*14));$('#ptxt').textContent=P.txt.slice(0,n);
- $('#pphint').textContent=proI<PRO.length-1?'화면을 누르면 다음 장면':'화면을 누르면 모험 시작';}
+ }
+/* comic page: the 4 scenes are panels on one page; finished panels stay as frozen shots, the newest one is live */
+function proPanels(w,h){const m=10,top=54,bot=h-64,gap=8,H=bot-top-gap*2,cw=(w-m*2-gap)/2;
+ return[[m,top,w-m*2,H*.28],[m,top+H*.28+gap,cw,H*.38],[m+cw+gap,top+H*.28+gap,cw,H*.38],[m,top+H*.66+gap*2,w-m*2,H*.34]];}
+// cover-crop the full-screen scene around its focus point into rect r
+function panelBlit(c,P,r,w,h){const sc=Math.max(r[2]/w,r[3]/h)*1.12,sw=r[2]/sc,sh=r[3]/sc,sx=clamp(P.fx*w-sw/2,0,w-sw),sy=clamp(P.fy*h-sh/2,0,h-sh);
+ for(const cv of[$('#pbg'),$('#pfg')]){const kx=cv.width/w,ky=cv.height/h;c.drawImage(cv,sx*kx,sy*ky,sw*kx,sh*ky,r[0],r[1],r[2],r[3]);}}
+function caption(c,txt,r,n){c.save();c.font=`${Math.round(clamp(r[2]/17,12,16))}px ${getComputedStyle(document.body).getPropertyValue('--f-title')}`;
+ const lines=[];let cur='';for(const ch of txt.slice(0,n)){if(c.measureText(cur+ch).width>r[2]*.86){lines.push(cur);cur='';}cur+=ch;}lines.push(cur);
+ const lh=parseInt(c.font)*1.35,bw=Math.min(r[2]-12,Math.max(...lines.map(l=>c.measureText(l).width))+16),bh=lines.length*lh+10;
+ if(n>0){c.fillStyle='#fff8e0';c.strokeStyle='#14182a';c.lineWidth=2;c.fillRect(r[0]+6,r[1]+6,bw,bh);c.strokeRect(r[0]+6,r[1]+6,bw,bh);
+  c.fillStyle='#14182a';c.textBaseline='top';lines.forEach((l,i)=>c.fillText(l,r[0]+14,r[1]+11+i*lh));}c.restore();}
+function panelShot(){const r=$('#prologue').getBoundingClientRect(),R=proPanels(r.width,r.height)[proI],cv=document.createElement('canvas');cv.width=R[2]*DPR;cv.height=R[3]*DPR;
+ const c=cv.getContext('2d');c.scale(DPR,DPR);const P=PRO[proI],r0=[0,0,R[2],R[3]];panelBlit(c,P,r0,r.width,r.height);caption(c,P.txt,r0,P.txt.length);return cv;}
+function drawPrologue(t,dt){if(!proOn)return;proT+=dt;drawScene(t);
+ const cm=$('#pcm'),r=$('#prologue').getBoundingClientRect(),w=r.width,h=r.height;if(cm.width!==Math.round(w*DPR)||cm.height!==Math.round(h*DPR)){cm.width=w*DPR;cm.height=h*DPR;}
+ const c=cm.getContext('2d');c.setTransform(DPR,0,0,DPR,0,0);
+ // paper with halftone dots
+ c.fillStyle='#f3ead6';c.fillRect(0,0,w,h);c.fillStyle='rgba(120,100,70,.12)';for(let y=0;y<h;y+=9)for(let x=(y/9%2)*4.5;x<w;x+=9){c.beginPath();c.arc(x,y,1.3,0,TAU);c.fill();}
+ const R=proPanels(w,h),P=PRO[proI],frame=r=>{c.lineWidth=3.5;c.strokeStyle='#14182a';c.strokeRect(r[0],r[1],r[2],r[3]);};
+ for(let i=0;i<proI;i++){c.drawImage(proShots[i],R[i][0],R[i][1],R[i][2],R[i][3]);frame(R[i]);}
+ // newest panel slams in: drops from a little bigger and tilted, with a white flash
+ const r0=R[proI],k=Math.min(1,proT/.35),e=1-Math.pow(1-k,3),sc=1.18-.18*e,rot=(proI%2?.06:-.06)*(1-e),rl=[0,0,r0[2],r0[3]];
+ c.save();c.translate(r0[0]+r0[2]/2,r0[1]+r0[3]/2);c.rotate(rot);c.scale(sc,sc);c.translate(-r0[2]/2,-r0[3]/2);c.globalAlpha=Math.min(1,k*2);
+ c.fillStyle='rgba(0,0,0,.25)';c.fillRect(5,6,r0[2],r0[3]);c.save();c.beginPath();c.rect(0,0,r0[2],r0[3]);c.clip();panelBlit(c,P,rl,w,h);
+ if(k<1){c.fillStyle=`rgba(255,255,255,${.8*(1-k)})`;c.fillRect(0,0,r0[2],r0[3]);}c.restore();
+ caption(c,P.txt,rl,Math.floor(Math.max(0,proT-.3)*14));frame(rl);c.restore();
+ $('#pphint').textContent=proI<PRO.length-1?'화면을 누르면 다음 컷':'화면을 누르면 모험 시작';}
 /* naming */
 const cleanName=v=>(v||'').replace(/<[^>]*>/g,'').replace(/[<>&"'`]/g,'').trim().slice(0,8);
 function askName(cb){modal('백곰의 이름을 지어 주세요',`<input id="nameinp" maxlength="8" value="${S.name||'북실이'}" style="width:100%;height:46px;border-radius:12px;border:2px solid #b8c8e8;padding:0 12px;font:18px var(--f-title);text-align:center;margin-top:6px"><br><small>최대 8글자</small>`,[['결정',()=>{S.name=cleanName($('#nameinp').value)||'북실이';save();updateHud();cb&&cb();},1]],0,1);

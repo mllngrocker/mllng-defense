@@ -35,7 +35,7 @@ const ATK=()=>stat('atk')*lvMul()*gearMul('w')*(1+PBX('atk')/100), MAXHP=()=>sta
 // combat power: expected damage per second (crit included) plus a share of survivability
 const CP=()=>Math.floor(ATK()*1.6*stat('aspd')*(1+Math.min(100,stat('crit'))/100*(stat('critd')/100-1))*10+MAXHP()*.5+REGEN()*5);
 const KILLS=20;
-const mobHp=g=>36*Math.pow(1.36,g), mobAtk=g=>9*Math.pow(1.245,g), mobGold=g=>6*Math.pow(1.145,g), mobExp=g=>3*Math.pow(1.14,g), needExp=l=>12*Math.pow(1.22,l);
+const mobHp=g=>30*Math.pow(1.31,g), mobAtk=g=>7*Math.pow(1.215,g), mobGold=g=>6*Math.pow(1.145,g), mobExp=g=>3*Math.pow(1.14,g), needExp=l=>12*Math.pow(1.22,l);
 
 /* ---------- monsters: id:[name, archetype, sub, main, accent, flags(f=fly r=ranged)] ---------- */
 const MOBS={
