@@ -57,6 +57,21 @@ function drawEnt(c,fn,m,x,y,s,flash=0,alpha=1){
   c.save();c.setTransform(1,0,0,1,0,0);c.globalAlpha=alpha;c.drawImage(scratch,x*DPR-380,y*DPR-680);c.restore();}
  else{c.save();c.translate(x,y);c.scale(s,s);c.globalAlpha=alpha;fn(c,m);c.restore();}
 }
+/* ---------- level up: golden pillar on the bear, rotating rays, rising gold dust, LEVEL UP! + ribbon ---------- */
+let lvFx=null;
+function levelUpFx(from,to){lvFx=lvFx&&performance.now()-lvFx.t0<1500?{...lvFx,to}:{t0:performance.now(),from,to};}
+function lvTxt(c,s,x,y,sz,fill,stroke,lw){c.font=`${sz}px Jal, sans-serif`;c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';c.lineWidth=lw;c.strokeStyle=stroke;c.strokeText(s,x,y);c.fillStyle=fill;c.fillText(s,x,y);}
+function drawLevelUp(c,k){if(!lvFx)return;const t=(performance.now()-lvFx.t0)/1000;if(t>2.6){lvFx=null;return;}
+ const bx=BX,gy=GY,cy=gy-70*k,fade=t>2.1?1-(t-2.1)/.5:1,e=x=>1-Math.pow(1-Math.min(1,x),3),pop=t<.35?.4+e(t/.35)*.75-(t>.25?(t-.25)*1.5:0):1;
+ c.save();c.globalCompositeOperation='lighter';c.globalAlpha=fade;
+ const pw=(40+20*Math.sin(t*10))*k*Math.min(1,t*4),g=c.createLinearGradient(bx-pw,0,bx+pw,0);g.addColorStop(0,'rgba(255,200,60,0)');g.addColorStop(.5,'rgba(255,240,180,.85)');g.addColorStop(1,'rgba(255,200,60,0)');c.fillStyle=g;c.fillRect(bx-pw,0,pw*2,gy);
+ c.save();c.translate(bx,cy);c.rotate(t*.8);for(let i=0;i<14;i++){c.rotate(TAU/14);const L=(120+40*Math.sin(t*6+i))*k*Math.min(1,t*3),gg=c.createLinearGradient(0,0,L,0);gg.addColorStop(0,'rgba(255,230,140,.7)');gg.addColorStop(1,'rgba(255,200,60,0)');c.fillStyle=gg;c.beginPath();c.moveTo(0,-4*k);c.lineTo(L,-12*k);c.lineTo(L,12*k);c.lineTo(0,4*k);c.fill();}c.restore();
+ for(let i=0;i<24;i++){const q=((t*.8+i/24)%1),x=bx+Math.sin(i*7)*60*k,y=gy-q*200*k,s=3*k;c.globalAlpha=fade*(1-q);c.fillStyle=i%2?'#fff6c0':'#ffcf3d';c.beginPath();c.moveTo(x,y-s*2);c.lineTo(x+s*.6,y);c.lineTo(x,y+s*2);c.lineTo(x-s*.6,y);c.fill();}
+ c.restore();c.save();c.globalAlpha=fade;c.translate(W/2,H*.36);c.scale(pop*k,pop*k);
+ const tg=c.createLinearGradient(0,-22,0,22);tg.addColorStop(0,'#fffbe6');tg.addColorStop(.45,'#ffd34a');tg.addColorStop(.55,'#e89a10');tg.addColorStop(1,'#ffe27a');
+ c.shadowColor='rgba(255,180,40,.9)';c.shadowBlur=24;lvTxt(c,'LEVEL UP!',0,0,40,tg,'#3a1e00',7);c.shadowBlur=0;
+ c.fillStyle='#c8283a';c.beginPath();c.moveTo(-95,30);c.lineTo(95,30);c.lineTo(85,44);c.lineTo(95,58);c.lineTo(-95,58);c.lineTo(-85,44);c.closePath();c.fill();c.strokeStyle='#5a0a14';c.lineWidth=2;c.stroke();
+ lvTxt(c,`Lv.${lvFx.from}  →  Lv.${lvFx.to}`,0,44,17,'#fff','#5a0a14',3);c.restore();}
 /* ---------- sound (synthesized, no files) ---------- */
 let AC=null,master=null,noiseBuf=null;
 function audioInit(){if(AC)return;try{AC=new(window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.gain.value=.55;master.connect(AC.destination);

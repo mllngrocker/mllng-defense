@@ -18,8 +18,8 @@ function stageClear(){track('stage');S.g++;S.kills=0;S.best=Math.max(S.best,S.g)
  if(S.g%200===0)modal('마왕 녹스를 쓰러뜨렸어요!','오염의 근원이 사라지고, 북극의 빙하가 다시 얼기 시작했어요.<br>백곰은 마침내 고향으로 돌아갑니다.<br><br><b>더 강해진 세계에서 여정이 다시 시작돼요.</b>',[['계속하기',null,1]]);
  const th=theme();banner(S.g%10===0?th.name:`STAGE ${stageName(S.g)}`,S.g%10===0?'#9fdcff':'#ffe27a');if(S.g%10===9)toast('다음은 챕터 보스 스테이지예요!');applyTheme();updateHud();}
 function applyTheme(){if(dun)return;const i=Math.floor(S.g/10)%THEMES.length;if(i!==curTheme){curTheme=i;bgStage.theme(THEMES[i]);}}
-function gainExp(v){S.exp+=v;let up=false;while(S.exp>=needExp(S.lv)){S.exp-=needExp(S.lv);S.lv++;S.gem+=10;up=true;}
- if(up){banner('LEVEL UP!','#8ae86a');sfx('level');bear.hp=MAXHP();ring(BX,GY,'#8ae86a',60*K,.6);sparks(BX,GY-60*K,20,'#b8ff8a',300);}}
+function gainExp(v){S.exp+=v;let up=false;const lv0=S.lv;while(S.exp>=needExp(S.lv)){S.exp-=needExp(S.lv);S.lv++;S.gem+=10;up=true;}
+ if(up){levelUpFx(lv0,S.lv);sfx('level');bear.hp=MAXHP();ring(BX,GY,'#8ae86a',60*K,.6);sparks(BX,GY-60*K,20,'#b8ff8a',300);}}
 function killMob(m){codexKill(m.id);if(dun){m.dead=true;m.dt=0;debris(m.x,m.y-30*K,9,m.b,K);sparks(m.x,m.y-30*K,12,m.a,320);sfx('kill');dunKill(m);return;}m.dead=true;m.dt=0;const g=S.g,gold=mobGold(g)*(m.tier===2?25:m.tier===1?4:1)*(1+PBX('gold')/100);S.gold+=gold;S.stats.gold+=gold;S.stats.kills++;gainExp(mobExp(g)*(m.tier===2?20:m.tier===1?3:1));
  const cx=m.x,cy=m.y-ART_H[m.arch]*.4*K*m.size;debris(cx,cy,m.tier?16:9,m.b,K);sparks(cx,cy,12,m.a,320);ring(cx,m.fly?cy:GY,'rgba(255,255,255,.8)',40*K*m.size);sfx('kill');
  for(let i=0,n=m.tier?8:3;i<n;i++)part({x:cx,y:cy,vx:rnd(-140,140),vy:rnd(-380,-180),g:1100,life:1,ml:1,size:5.5*K,type:'coin',rot:rnd(0,6),vr:9,tx:GOLDX,ty:GOLDY,drag:.99});
@@ -104,6 +104,7 @@ drawBossFx(fc,t);drawPet(fc,t);
  for(const p of pshots)drawProj(fc,p,t);
  drawSkills(fc,t);
  drawUlt(fc,t);
+ drawLevelUp(fc,K);
  drawFx(fc,K);
  // bear hp bar
  const bw=60*K,by=GY+12*K;fc.fillStyle='rgba(10,15,30,.55)';rr(fc,BX-bw/2-1,by-1,bw+2,8,4);fc.fill();const hpk=clamp(bear.hp/MAXHP(),0,1);
