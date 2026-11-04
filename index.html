@@ -2,9 +2,22 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>잃어버린 고향을 찾아서</title>
-<meta http-equiv="refresh" content="0; url=lost-home/">
-<script>location.replace('lost-home/'+location.search+location.hash)</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>게임 선택</title>
+<style>
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:16px;box-sizing:border-box;background:#14182a;font-family:sans-serif;color:#fff}
+h1{font-size:20px;margin:0 0 8px}
+a{display:block;width:100%;max-width:340px;padding:22px 18px;border-radius:14px;text-decoration:none;color:#fff;border:3px solid #0a0c16;box-shadow:0 5px 0 #0a0c16}
+a:active{transform:translateY(3px);box-shadow:0 2px 0 #0a0c16}
+a b{display:block;font-size:19px;margin-bottom:6px}
+a span{font-size:13px;opacity:.85}
+.bear{background:linear-gradient(#5aa8e0,#2f6ab0)}
+.hero{background:linear-gradient(#5cbf4a,#2f7a2a)}
+</style>
 </head>
-<body><a href="lost-home/">잃어버린 고향을 찾아서</a></body>
+<body>
+<h1>어떤 게임을 할까요?</h1>
+<a class="bear" href="lost-home/"><b>🐻 잃어버린 고향을 찾아서</b><span>백곰 방치형 RPG</span></a>
+<a class="hero" href="rpg/"><b>⚔️ 용사의 마왕 토벌기</b><span>픽셀 RPG · 새 게임</span></a>
+</body>
 </html>

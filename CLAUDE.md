@@ -2,8 +2,9 @@
 
 GitHub Pages로 배포되는 백곰 방치형 RPG. 사용자와는 항상 **한국어**로 대화한다.
 
-- `index.html` : 사이트 첫 주소 → `lost-home/`으로 바로 이동
-- `lost-home/` : 게임 (빌드 결과물 `index.html` + 원본 `src/`)
+- `index.html` : 사이트 첫 주소 → 게임 2개 중 선택
+- `lost-home/` : 백곰 게임 (빌드 결과물 `index.html` + 원본 `src/`)
+- `rpg/` : 픽셀 RPG "용사의 마왕 토벌기" (빌드 없음: `index.html` + `maps.js`(맵 그리기) + `game.js`(전투·대화·진행), 그림은 `rpg/assets/` ArMM1998 에셋, 세이브 `hero-rpg-v1`)
 
 ## 잃어버린 고향을 찾아서 — 작업 방법
 
