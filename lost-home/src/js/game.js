@@ -12,7 +12,7 @@ function mkMob(id,x,tier){const d=mobDef(id),g=S.g+loopMul()*0;const hpM=tier===
  return Object.assign(d,{x,y:d.fly?GY-rnd(55,85)*K:GY,hp:mobHp(g)*hpM,max:mobHp(g)*hpM,dmg:mobAtk(g)*atM,cd:rnd(.3,1.2),atk:-1,ph:rnd(0,6),seed:rnd(0,9),tier,size,hit:0,kb:0,dead:false,dt:0,spd:rnd(55,75)*(d.fly?1.15:1)});}
 function spawnWave(){const th=theme(),n=3+Math.floor(Math.random()*3);
  for(let i=0;i<n;i++){const mid=Math.random()<.12&&i===n-1;mobs.push(mkMob(mid?pick(th.mids):pick(th.mobs),W+40*K+i*rnd(55,80)*K,mid?1:0));}}
-function startBoss(){const th=theme();boss=mkMob(th.boss,W+80*K,2);mobs.push(boss);bossT=30;S.farm=false;banner('BOSS!','#ff5a6a');sfx('boss');shake=10;updateHud();}
+function startBoss(){const th=theme();boss=mkMob(th.boss,W+80*K,2);mobs.push(boss);bossT=30;S.farm=false;bossWarn();sfx('boss');shake=10;updateHud();}
 function bossFail(){if(!boss)return;boss=null;for(const m of mobs)m.dead=true,m.dt=.01;S.farm=true;S.kills=0;toast('보스를 물리치지 못했어요. 더 강해져서 다시 도전해요!');save();updateHud();}
 function stageClear(){track('stage');S.g++;S.kills=0;S.best=Math.max(S.best,S.g);S.gem+=3;save();sfx('clear');
  if(S.g%200===0)modal('마왕 녹스를 쓰러뜨렸어요!','오염의 근원이 사라지고, 북극의 빙하가 다시 얼기 시작했어요.<br>백곰은 마침내 고향으로 돌아갑니다.<br><br><b>더 강해진 세계에서 여정이 다시 시작돼요.</b>',[['계속하기',null,1]]);

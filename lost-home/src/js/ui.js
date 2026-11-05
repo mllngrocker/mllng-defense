@@ -12,9 +12,11 @@ const ICON={
  aspd:'<svg viewBox="0 0 32 32"><path d="M19 2L6 18h9l-3 12 14-17h-9z" fill="#7fe3ff" stroke="#1a6a9a" stroke-width="1.6" stroke-linejoin="round"/></svg>',
 };
 document.querySelectorAll('[data-ic]').forEach(e=>e.innerHTML=ICON[e.dataset.ic]);
+const TABIC={up:'atk',gear:'cp',skill:'aspd',pet:'hp',gacha:'gem',info:'critd'};document.querySelectorAll('.tab').forEach(t=>t.innerHTML=ICON[TABIC[t.dataset.tab]]+'<span>'+t.textContent+'</span>');
 let GOLDX=60,GOLDY=20;
 function measureHud(){const s=$('#stage').getBoundingClientRect(),g=$('#goldtxt').getBoundingClientRect();if(s.width)[GOLDX,GOLDY]=[g.left-s.left-10,g.top-s.top+g.height/2];}
 function pulseGold(){const e=$('#goldtxt').parentElement;e.animate([{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:160});}
+function bossWarn(){const b=$('#bosswarn');b.classList.remove('go');void b.offsetWidth;b.classList.add('go');}
 let banT;function banner(txt,col){const b=$('#banner');b.textContent=txt;b.style.color=col||'#fff';b.classList.remove('show');void b.offsetWidth;b.classList.add('show');clearTimeout(banT);banT=setTimeout(()=>b.classList.remove('show'),1900);}
 let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);}
 function updateHud(){
