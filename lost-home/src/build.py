@@ -9,7 +9,7 @@ chars = set(page + code) | {chr(c) for c in range(32, 127)} | {chr(c) for c in r
 os.makedirs('.build', exist_ok=True)
 open('.build/chars.txt', 'w', encoding='utf8').write(''.join(sorted(c for c in chars if ord(c) >= 32)))
 faces = ''
-for name, src in [('Jal', 'fonts/jalnan.woff'), ('Ssr', 'fonts/ssurround.woff')]:
+for name, src in [('Jal', 'fonts/mapleBold.woff'), ('Ssr', 'fonts/mapleLight.woff')]:  # 메이플스토리체 Bold(제목·숫자) / Light(본문), 이름은 기존 CSS 그대로
     out = f'.build/{name}.woff2'
     subprocess.run(['pyftsubset', src, '--text-file=.build/chars.txt', '--flavor=woff2', '--output-file=' + out, '--layout-features=*'], check=True, stderr=subprocess.DEVNULL)
     faces += '@font-face{font-family:"%s";src:url(data:font/woff2;base64,%s) format("woff2");font-display:block}' % (name, base64.b64encode(open(out, 'rb').read()).decode())
