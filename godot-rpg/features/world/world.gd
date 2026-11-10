@@ -20,6 +20,7 @@ func _ready() -> void:
 		var spot := get_node_or_null(NodePath("Spawns/" + Game.next_spawn)) as Node2D
 		if spot:
 			player.global_position = spot.global_position
+			player.reset_physics_interpolation()
 		Game.next_spawn = ""
 	var rect := ground.get_used_rect()
 	var size := ground.tile_set.tile_size

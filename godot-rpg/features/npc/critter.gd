@@ -13,6 +13,7 @@ var anim_t := 0.0
 
 
 func _ready() -> void:
+	physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF  # 매 화면마다 직접 움직이므로
 	home = position
 	goal = position
 	sprite = Sprite2D.new()

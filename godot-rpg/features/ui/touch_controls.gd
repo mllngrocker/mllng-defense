@@ -2,8 +2,9 @@ extends Control
 ## 휴대폰 터치 조작: 왼쪽 아래를 누른 채 끌면 조이스틱, 오른쪽 아래 큰 버튼은 공격(꾹 누르기 지원), 작은 버튼은 구르기.
 ## 터치를 입력 동작(move_*, attack, dash)으로 바꿔 준다. PC에서는 마우스 클릭도 터치로 받는다.
 
-const JOY_RADIUS := 64.0
-const DEAD_ZONE := 0.2
+const JOY_RADIUS := 52.0
+const DEAD_ZONE := 0.12
+const FULL_AT := 0.55  # 이만큼만 밀어도 최고 속도
 const ATTACK_R := 58.0
 const DASH_R := 40.0
 const SKILL_R := 42.0
@@ -49,6 +50,10 @@ func _input(event: InputEvent) -> void:
 		var drag := event as InputEventScreenDrag
 		if drag.index == joy_index:
 			joy_pos = drag.position
+			# 손가락이 원 밖으로 나가면 받침이 따라온다(떠다니는 조이스틱)
+			var off := joy_pos - joy_base
+			if off.length() > JOY_RADIUS:
+				joy_base = joy_pos - off.normalized() * JOY_RADIUS
 			_apply_joystick()
 			queue_redraw()
 
@@ -60,7 +65,7 @@ func _on_touch_down(index: int, pos: Vector2) -> void:
 		_press_button(index, &"dash")
 	elif pos.distance_to(skill_center()) < SKILL_R * 1.3:
 		_press_button(index, &"skill")
-	elif joy_index == -1 and pos.x < size.x * 0.6 and pos.y > size.y * 0.4:
+	elif joy_index == -1 and pos.x < size.x * 0.6 and pos.y > size.y * 0.3:
 		joy_index = index
 		joy_base = pos
 		joy_pos = pos
@@ -84,10 +89,11 @@ func _press_button(index: int, action: StringName) -> void:
 
 func _apply_joystick() -> void:
 	var v := (joy_pos - joy_base) / JOY_RADIUS
-	if v.length() > 1.0:
-		v = v.normalized()
-	if v.length() < DEAD_ZONE:
+	var l := v.length()
+	if l < DEAD_ZONE:
 		v = Vector2.ZERO
+	else:
+		v = v / l * clampf((l - DEAD_ZONE) / (FULL_AT - DEAD_ZONE), 0.25, 1.0)
 	_set_axis(&"move_left", &"move_right", v.x)
 	_set_axis(&"move_up", &"move_down", v.y)
 

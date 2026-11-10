@@ -24,6 +24,7 @@ window/size/viewport_width=540
 window/size/viewport_height=960
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/stretch/mode.web="viewport"
 window/handheld/orientation=1
 
 [input_devices]
@@ -71,6 +72,10 @@ map={
 2d_physics/layer_2="player"
 2d_physics/layer_3="enemies"
 2d_physics/layer_4="breakables"
+
+[physics]
+
+common/physics_interpolation=true
 
 [rendering]
 

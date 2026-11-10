@@ -84,7 +84,8 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed(&"attack"):
 		attack_buffer = ATTACK_BUFFER
 
-	var input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
+	# 조이스틱 세기를 그대로 쓴다(기본 데드존 0.5면 살짝 밀 때 안 움직여서 뻑뻑하다)
+	var input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down", 0.05)
 	style.physics(delta)
 	var move := input * data.move_speed * style.move_scale
 	if Input.is_action_just_pressed(&"skill") and dash_t <= 0.0 and skill_lock_t <= 0.0:
