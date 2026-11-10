@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/ninja/actor/bat.png" id="2_tex"]
+
+[node name="Bat" instance=ExtResource("1_base")]
+kind = 2
+max_hp = 22
+speed = 46.0
+damage = 8
+chase_range = 120.0
+anim_fps = 10.0
+gold_reward = 5
+drop_chance = 0.2
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource("2_tex")
+offset = Vector2(0, -12)

@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://features/character/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid4_walk.png" id="2_walk"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid-face2.png" id="3_faces"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid4-1.png" id="p1"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid4-2.png" id="p2"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid4-3.png" id="p3"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid4-4.png" id="p4"]
+
+[sub_resource type="AtlasTexture" id="face"]
+atlas = ExtResource("3_faces")
+region = Rect2(144, 144, 144, 144)
+
+[resource]
+script = ExtResource("1_script")
+id = &"maid4"
+display_name = "코튼"
+title = "그림자 바느질"
+rarity = 5
+element = 5
+attack_kind = 0
+walk_sheet = ExtResource("2_walk")
+face = SubResource("face")
+portraits = Array[Texture2D]([ExtResource("p1"), ExtResource("p2"), ExtResource("p3"), ExtResource("p4")])
+card_crop = Rect2(65, 35, 260, 325)
+trail_color = Color(0.75, 0.55, 1, 1)
+base_atk = 24
+atk_growth = 4.2
+base_hp = 145
+hp_growth = 16.0
+move_speed = 82.0
+skill_name = "그림자 습격"
+skill_desc = "주변 적 4명에게 순간이동하며 차례로 벤다(무적)"
+skill_cooldown = 10.0
+star_passives = Array[String](["치명타 피해 +30%", "구르기 쿨타임 -30%", "치명타 확률 +10%", "구르기 후 0.5초 투명(무적)", "적을 처치하면 구르기 즉시 충전", "치명타가 적을 1초간 묶음"])

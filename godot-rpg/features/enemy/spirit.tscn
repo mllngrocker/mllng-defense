@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/ninja/actor/spirit.png" id="2_tex"]
+
+[node name="Spirit" instance=ExtResource("1_base")]
+kind = 3
+max_hp = 45
+speed = 22.0
+damage = 10
+chase_range = 130.0
+anim_fps = 6.0
+gold_reward = 9
+gem_chance = 0.3
+drop_chance = 0.35
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource("2_tex")
+offset = Vector2(0, -10)

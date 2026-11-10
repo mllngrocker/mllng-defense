@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://features/character/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid3_walk.png" id="2_walk"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid-face2.png" id="3_faces"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid3-1.png" id="p1"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid3-2.png" id="p2"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid3-3.png" id="p3"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid3-4.png" id="p4"]
+
+[sub_resource type="AtlasTexture" id="face"]
+atlas = ExtResource("3_faces")
+region = Rect2(144, 0, 144, 144)
+
+[resource]
+script = ExtResource("1_script")
+id = &"maid3"
+display_name = "레몬"
+title = "빗자루 기사"
+rarity = 4
+element = 3
+attack_kind = 2
+walk_sheet = ExtResource("2_walk")
+face = SubResource("face")
+portraits = Array[Texture2D]([ExtResource("p1"), ExtResource("p2"), ExtResource("p3"), ExtResource("p4")])
+card_crop = Rect2(78, 37, 260, 325)
+trail_color = Color(1, 0.92, 0.45, 1)
+base_atk = 24
+atk_growth = 4.2
+base_hp = 160
+hp_growth = 18.0
+move_speed = 64.0
+skill_name = "대지 가르기"
+skill_desc = "앞쪽으로 바위 가시를 줄지어 솟구치게 한다"
+skill_cooldown = 8.0
+star_passives = Array[String](["내려치기 넉백 +30%", "받는 피해 -10%", "내려칠 때 바위 파편이 튐", "체력 +20%", "공격력 +20%", "체력이 30% 이하면 1회 체력 30% 회복"])

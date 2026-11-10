@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://features/character/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo2_walk.png" id="2_walk"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo-face.png" id="3_faces"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo2-1.png" id="p1"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo2-2.png" id="p2"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo2-3.png" id="p3"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo2-4.png" id="p4"]
+
+[sub_resource type="AtlasTexture" id="face"]
+atlas = ExtResource("3_faces")
+region = Rect2(144, 144, 144, 144)
+
+[resource]
+script = ExtResource("1_script")
+id = &"kemo2"
+display_name = "미즈하"
+title = "서리 여우"
+rarity = 3
+element = 1
+attack_kind = 1
+walk_sheet = ExtResource("2_walk")
+face = SubResource("face")
+portraits = Array[Texture2D]([ExtResource("p1"), ExtResource("p2"), ExtResource("p3"), ExtResource("p4")])
+card_crop = Rect2(19, 0, 260, 325)
+trail_color = Color(0.7, 0.92, 1, 1)
+base_atk = 11
+atk_growth = 2.2
+base_hp = 90
+hp_growth = 10.0
+move_speed = 70.0
+skill_name = "얼음 비"
+skill_desc = "주변 적들 머리 위로 얼음 덩어리를 3번 떨어뜨린다"
+skill_cooldown = 8.0
+star_passives = Array[String](["모아 쏘기 피해 +25%", "얼음 가시가 적 1명을 더 관통", "체력 +15%", "모으는 시간 30% 감소", "얼음에 맞은 적 이동 속도 -30% (2초)", "모아 쏘기가 터지면서 주변에 얼음 파편"])

@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://features/character/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid2_walk.png" id="2_walk"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid-face1.png" id="3_faces"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid2-1.png" id="p1"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid2-2.png" id="p2"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid2-3.png" id="p3"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/maid2-4.png" id="p4"]
+
+[sub_resource type="AtlasTexture" id="face"]
+atlas = ExtResource("3_faces")
+region = Rect2(144, 144, 144, 144)
+
+[resource]
+script = ExtResource("1_script")
+id = &"maid2"
+display_name = "베리"
+title = "딸기잼 폭풍"
+rarity = 4
+element = 0
+attack_kind = 0
+walk_sheet = ExtResource("2_walk")
+face = SubResource("face")
+portraits = Array[Texture2D]([ExtResource("p1"), ExtResource("p2"), ExtResource("p3"), ExtResource("p4")])
+card_crop = Rect2(75, 37, 260, 325)
+trail_color = Color(1, 0.6, 0.7, 1)
+base_atk = 17
+atk_growth = 3.1
+base_hp = 130
+hp_growth = 14.0
+move_speed = 80.0
+skill_name = "불꽃 난무"
+skill_desc = "가장 가까운 적을 불꽃 칼날로 6번 몰아친다"
+skill_cooldown = 7.0
+star_passives = Array[String](["연타 속도 +15%", "3타째에 작은 불꽃 폭발", "치명타 확률 +10%", "이동 속도 +10%", "처치할 때마다 3초간 공격력 +10% (중첩 3)", "3타째가 적을 2번 벤다"])

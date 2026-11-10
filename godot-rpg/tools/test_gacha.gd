@@ -1,0 +1,83 @@
+extends Node
+## 뽑기 규칙 확인용(헤드리스): 보석 차감, 10회 ★4 확정, ★5 천장, 중복 → 별 +1, 별이 다 차면 골드, 별 보너스.
+## 실행: godot --headless --path godot-rpg res://tools/test_gacha.tscn
+
+var fails := 0
+var rng := RandomNumberGenerator.new()
+
+
+func _reset() -> void:
+	Save.persist = false
+	Save.load_game()
+	Save.owned = {}
+	for id in Save.STARTERS:
+		Save.owned[String(id)] = {"level": 1, "stars": 0}
+	Save.gems = 500
+	Save.gold = 0
+	Save.pity = 0
+	Save.pity_w = 0
+	Save.weapons = {}
+	Save.equip = {}
+
+
+func _ready() -> void:
+	rng.seed = 12345
+	_reset()
+	_check("보석 50개 차감", Save.spend_gems(Gacha.COST_ONE) and Save.gems == 450)
+	_check("보석이 모자라면 실패", not Save.spend_gems(9999) and Save.gems == 450)
+	var one := Gacha.pull(1, rng)
+	_check("1회 뽑기 결과 1개", one.size() == 1)
+
+	var ok_guarantee := true
+	for trial in 200:
+		_reset()
+		var res := Gacha.pull(10, rng)
+		if res.all(func(r: Dictionary) -> bool: return int(r["rarity"]) < 4):
+			ok_guarantee = false
+	_check("10회 뽑기는 ★4 이상 1개 확정 (200번 시험)", ok_guarantee)
+
+	_reset()
+	Save.pity = Gacha.PITY_5 - 1
+	var p := Gacha.pull(1, rng)
+	_check("50번째는 ★5 확정, 천장 초기화", int(p[0]["rarity"]) == 5 and Save.pity == 0)
+
+	var counts := {3: 0, 4: 0, 5: 0}
+	_reset()
+	for i in 4000:
+		Save.pity = 0
+		counts[Gacha._roll_rarity(rng, false)] += 1
+	print("    확률 (4000번): ★5 %.1f%% · ★4 %.1f%% · ★3 %.1f%%" % [counts[5] / 40.0, counts[4] / 40.0, counts[3] / 40.0])
+	_check("확률이 대략 3% / 17% / 80%", absf(counts[5] / 40.0 - 3.0) < 1.5 and absf(counts[4] / 40.0 - 17.0) < 3.0)
+
+	_reset()
+	_check("이미 있는 캐릭터면 별 +1", Save.grant_character(&"kemo1") == "star" and Save.stars_of(&"kemo1") == 1)
+	_check("처음 나온 캐릭터는 보유", Save.grant_character(&"fairy1") == "new" and Save.is_owned(&"fairy1"))
+	Save.owned["kemo2"]["stars"] = Save.MAX_STARS
+	_check("별이 다 차면 max", Save.grant_character(&"kemo2") == "max")
+
+	_reset()
+	Save.owned["kemo1"]["stars"] = 2
+	var base := Save.character(&"kemo1").atk_at(1)
+	_check("별 2개 → 공격력 +8%% (%d → %d)" % [base, Save.atk_of(&"kemo1")], Save.atk_of(&"kemo1") == roundi(base * 1.08))
+
+	# 상점 화면에서 실제로 눌러 보기
+	_reset()
+	var menu := (load("res://features/menu/main_menu.tscn") as PackedScene).instantiate()
+	add_child(menu)
+	get_tree().current_scene = self
+	await get_tree().process_frame
+	menu._switch_tab("상점")
+	_check("상점 탭으로 바뀜", menu.shop_page.visible and not menu.avatar_page.visible)
+	menu.shop_page._on_pull(10, Gacha.COST_TEN)
+	await get_tree().process_frame
+	var overlay := menu.get_children().filter(func(n: Node) -> bool: return n is GachaResult)
+	_check("10회 소환 → 보석 50 남고 연출 화면이 뜸", Save.gems == 50 and overlay.size() == 1)
+
+	print("결과: ", "통과" if fails == 0 else "실패 %d개" % fails)
+	get_tree().quit(fails)
+
+
+func _check(label: String, ok: bool) -> void:
+	print(("  OK  " if ok else "  FAIL ") + label)
+	if not ok:
+		fails += 1

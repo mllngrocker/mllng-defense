@@ -1,0 +1,7 @@
+.godot/
+/android/
+
+# 외부 소재(BOOTH 등): 약관상 원본 재배포 금지 → 공개 저장소에 올리지 않는다
+/assets/_zips/
+/assets/_raw/
+/assets/vendor/

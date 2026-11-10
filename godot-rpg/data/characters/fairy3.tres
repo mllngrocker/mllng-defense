@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://features/character/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/fairy3_walk.png" id="2_walk"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/fairy-face.png" id="3_faces"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/fairy3-1.png" id="p1"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/fairy3-2.png" id="p2"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/fairy3-3.png" id="p3"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/fairy3-4.png" id="p4"]
+
+[sub_resource type="AtlasTexture" id="face"]
+atlas = ExtResource("3_faces")
+region = Rect2(144, 288, 144, 144)
+
+[resource]
+script = ExtResource("1_script")
+id = &"fairy3"
+display_name = "리프"
+title = "숲의 수호자"
+rarity = 3
+element = 3
+attack_kind = 0
+walk_sheet = ExtResource("2_walk")
+face = SubResource("face")
+portraits = Array[Texture2D]([ExtResource("p1"), ExtResource("p2"), ExtResource("p3"), ExtResource("p4")])
+card_crop = Rect2(73, 61, 260, 325)
+trail_color = Color(0.7, 1, 0.6, 1)
+base_atk = 15
+atk_growth = 2.8
+base_hp = 120
+hp_growth = 14.0
+move_speed = 80.0
+skill_name = "잎새 회오리"
+skill_desc = "3초 동안 잎사귀 회오리를 둘러 닿는 적을 계속 벤다"
+skill_cooldown = 9.0
+star_passives = Array[String](["연타마다 잎사귀 칼날 발사", "체력 +25%", "3타째에 덩굴로 적을 묶음", "받는 피해 -15%", "공격력 +25%", "체력이 가득이면 공격력 +30%"])

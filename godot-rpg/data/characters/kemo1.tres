@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://features/character/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo1_walk.png" id="2_walk"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo-face.png" id="3_faces"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo1-1.png" id="p1"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo1-2.png" id="p2"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo1-3.png" id="p3"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/kemo1-4.png" id="p4"]
+
+[sub_resource type="AtlasTexture" id="face"]
+atlas = ExtResource("3_faces")
+region = Rect2(144, 0, 144, 144)
+
+[resource]
+script = ExtResource("1_script")
+id = &"kemo1"
+display_name = "시로"
+title = "은빛 발톱"
+rarity = 3
+element = 2
+attack_kind = 0
+walk_sheet = ExtResource("2_walk")
+face = SubResource("face")
+portraits = Array[Texture2D]([ExtResource("p1"), ExtResource("p2"), ExtResource("p3"), ExtResource("p4")])
+card_crop = Rect2(36, 57, 260, 325)
+trail_color = Color(0.78, 0.95, 1, 1)
+base_atk = 12
+atk_growth = 2.4
+base_hp = 110
+hp_growth = 13.0
+move_speed = 78.0
+skill_name = "질풍 일섬"
+skill_desc = "앞으로 번개처럼 돌진하며 지나간 적을 3번 벤다"
+skill_cooldown = 6.0
+star_passives = Array[String](["3연타 마지막 타격 피해 +20%", "공격 속도 +10%", "치명타 확률 +8%", "구르기 직후 첫 타격이 반드시 치명타", "적을 처치하면 2초간 이동 속도 +20%", "연타가 끊기지 않으면 타격마다 공격력 +3% (최대 30%)"])
