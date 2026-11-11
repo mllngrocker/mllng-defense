@@ -5,12 +5,12 @@
 
 [node name="Octopus" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 120
+max_hp = 775
 speed = 30.0
-damage = 18
+damage = 34
 chase_range = 100.0
 anim_fps = 6.0
-gold_reward = 18
+gold_reward = 30
 gem_chance = 0.25
 gem_reward = 10
 drop_chance = 0.3

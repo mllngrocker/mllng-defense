@@ -12,17 +12,17 @@ size = Vector2(41, 22)
 script = ExtResource("3_boss")
 boss_name = "마왕 아자젤"
 slam_radius = 80.0
-slam_damage = 140
+slam_damage = 250
 summon = ExtResource("4_minion")
 kind = 0
-max_hp = 40000
+max_hp = 107000
 speed = 22.0
-damage = 120
+damage = 160
 chase_range = 150.0
 anim_fps = 5.0
-gold_reward = 20000
+gold_reward = 35000
 gem_chance = 1.0
-gem_reward = 1000
+gem_reward = 2000
 drop_chance = 1.0
 
 [node name="Shadow" parent="." index="0"]

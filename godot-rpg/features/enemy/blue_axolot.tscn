@@ -5,14 +5,14 @@
 
 [node name="BlueAxolot" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 420
+max_hp = 2021
 speed = 32.0
-damage = 40
+damage = 61
 chase_range = 110.0
 anim_fps = 6.0
-gold_reward = 46
+gold_reward = 95
 gem_chance = 0.3
-gem_reward = 18
+gem_reward = 22
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

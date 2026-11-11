@@ -120,6 +120,10 @@ func _die() -> void:
 	Events.enemy_died.emit(kind)
 	Quests.track("kill", kind)
 	if is_boss:
+		if not Quests.boss_defeated(kind):
+			Save.boss_reward(kind)
+			var world := get_tree().get_first_node_in_group(&"world")
+			get_tree().create_timer(2.5, false).timeout.connect(func() -> void: StoryBox.play(world, "boss_" + kind))
 		Quests.mark_boss(kind)
 		Quests.track("boss", kind)
 	# 같은 자리에 잠시 뒤 다시 나타난다(맵이 맡는다)

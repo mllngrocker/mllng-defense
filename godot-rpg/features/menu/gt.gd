@@ -40,6 +40,8 @@ const YELLOW := Color("ffcc33")
 const PINK := Color("ff6b9a")
 const GREEN := Color("46c46a")
 const STAR := Color("ffd23a")
+## 등급별 별 색: 3성 노랑, 4성 주황, 5성 보라
+const STAR_BY_RARITY := {3: Color("ffd23a"), 4: Color("ff8a2a"), 5: Color("c56bff")}
 const SHADOW := Color(0.18, 0.06, 0.2, 0.28)
 ## 등급 색: ★3 하늘, ★4 보라, ★5 금
 const RARITY: Dictionary[int, Color] = {3: Color("5db8ff"), 4: Color("b77cff"), 5: Color("ffc531")}
@@ -502,6 +504,22 @@ static func lock(ci: CanvasItem, c: Vector2, s: float, color := GRAY) -> void:
 	ci.draw_rect(Rect2(body.get_center() - Vector2(s * 0.04, s * 0.08), Vector2(s * 0.08, s * 0.16)), INK)
 
 
+## 높은 등급 카드 둘레의 빛(4성 주황, 5성 보라 + 반짝이). 시간에 따라 숨 쉬듯 밝아졌다 어두워진다
+static func aura(ci: CanvasItem, r: Rect2, rarity: int, owned := true) -> void:
+	var col: Color = STAR_BY_RARITY.get(rarity, STAR)
+	var t := Time.get_ticks_msec() / 1000.0
+	var pulse := 0.6 + 0.4 * sin(t * 2.6 + r.position.x * 0.05)
+	var strength := (0.22 if rarity == 4 else 0.34) * (1.0 if owned else 0.45) * pulse
+	for k in 4:
+		var g := r.grow(2.0 + k * 2.5)
+		round_line(ci, g, 8.0 + k * 2.0, Color(col, strength * (1.0 - k * 0.22)), 3.0)
+	if rarity >= 5 and owned:
+		for i in 4:
+			var a := t * 1.4 + i * TAU / 4.0
+			var p := r.get_center() + Vector2(cos(a) * r.size.x * 0.55, sin(a) * r.size.y * 0.55)
+			star(ci, p, 3.0 + sin(t * 5.0 + i) * 1.2, Color(1, 0.95, 1, 0.9))
+
+
 ## 재화 칸(어두운 자주 바탕 + 금테)
 static func pill(ci: CanvasItem, r: Rect2, fill := PLUM) -> void:
 	pbox(ci, r, fill, INK, 3, false, true)
@@ -521,6 +539,8 @@ static func header(ci: CanvasItem, pos: Vector2, ko: String, en := "", size := 1
 ## 캐릭터 카드: 진한 외곽선 + 속성색 테두리·바탕 + 일러스트 상반신 + 별(등급) + 속성 배지
 static func char_card(ci: CanvasItem, data: CharacterData, r: Rect2, owned := true, show_name := false) -> void:
 	var rc: Color = ELEMENT_CARD[data.element]
+	if data.rarity >= 4:
+		aura(ci, r, data.rarity, owned)
 	var sky: Array = ELEMENT_SKY[data.element]
 	pbox(ci, r, rc if owned else rc.darkened(0.45).lerp(Color("8e88a0"), 0.4), INK, 2, true, true)
 	var inner := r.grow(-PX * 2.0)
@@ -529,14 +549,15 @@ static func char_card(ci: CanvasItem, data: CharacterData, r: Rect2, owned := tr
 		grad(ci, inner, (sky[1] as Color).lightened(0.3), (sky[0] as Color))
 	else:
 		grad(ci, inner, (sky[0] as Color).darkened(0.35).lerp(Color("9aa3b5"), 0.5), (sky[0] as Color).darkened(0.55).lerp(Color("7d8597"), 0.5))
-	var tint := Color.WHITE if owned else Color(0.3, 0.32, 0.42, 0.95)
+	var tint := Color.WHITE if owned else Color(0.58, 0.6, 0.72, 1.0)
 	UiKit.card_art(ci, data, inner, tint)
 	var fade_h := inner.size.y * 0.32
 	grad(ci, Rect2(inner.position.x, inner.end.y - fade_h, inner.size.x, fade_h), Color(INK, 0.0), Color(INK, 0.75))
 	var n := data.rarity
 	var sr := clampf(inner.size.x / 15.0, 4.0, 8.0)
+	var star_col: Color = STAR_BY_RARITY.get(n, STAR)
 	for i in n:
-		star(ci, Vector2(inner.get_center().x + (i - (n - 1) / 2.0) * sr * 2.15, inner.end.y - sr - 4), sr)
+		star(ci, Vector2(inner.get_center().x + (i - (n - 1) / 2.0) * sr * 2.15, inner.end.y - sr - 4), sr, star_col)
 	if show_name:
 		title(ci, Vector2(inner.get_center().x, inner.end.y - sr * 2.0 - 9), data.display_name, int(clampf(inner.size.x / 5.5, 11, 22)), Color.WHITE, 1)
 	element_badge(ci, Vector2(inner.end.x - 9, inner.position.y + 10), 6.5, data.element)

@@ -7,7 +7,7 @@ extends Control
 const WORLD_SCENE := "res://features/world/village.tscn"  # 모험은 마을에서 시작
 const ShopPage := preload("res://features/gacha/shop_page.gd")
 const QuestPage := preload("res://features/menu/quest_page.gd")
-const GEAR_SLOTS: Array[String] = ["무기", "옷", "장신구", "신발"]
+const GEAR_SLOTS: Array[String] = ["무기", "옷", "펫", "신발"]
 const GEAR_MARGIN := 12.0
 const GEAR_GAP := 10
 const PLATE_HEIGHT := 150.0  # 아래 이름표(별·이름·속성)가 차지하는 높이
@@ -67,6 +67,8 @@ func _process(delta: float) -> void:
 	bg_box.queue_redraw()  # 떠다니는 장식
 	if avatar_page.visible:
 		backdrop.queue_redraw()  # 햇살이 천천히 돈다
+		for c: Control in cards.values():
+			c.queue_redraw()  # 4·5성 카드 빛이 숨 쉬듯
 
 
 # ── 화면 만들기 ──
@@ -170,6 +172,10 @@ func _build_gear_slots() -> void:
 				_bounce(slot, 1.08)
 				if i == 0:
 					_open_weapon_picker()
+				elif i == 2:
+					var pp := PetPicker.new()
+					pp.closed.connect(_refresh_all)
+					add_child(pp)
 				else:
 					_show_toast("%s 장비는 준비 중이에요" % GEAR_SLOTS[i]))
 		slot.resized.connect(func() -> void: slot.pivot_offset = slot.size / 2.0)
@@ -200,7 +206,7 @@ func _layout_gear() -> void:
 
 
 func _build_roster() -> Control:
-	roster_strip = _box(_paint_roster_strip, 154)
+	roster_strip = _box(_paint_roster_strip, 164)
 	var scroll := ScrollContainer.new()
 	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
 	scroll.offset_top = 34
@@ -213,7 +219,7 @@ func _build_roster() -> Control:
 	row.add_child(_spacer(8))
 	for id in Save.ROSTER:
 		var card := _box(_paint_card.bind(id), 0)
-		card.custom_minimum_size = Vector2(90, 118)
+		card.custom_minimum_size = Vector2(98, 128)
 		card.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		card.mouse_filter = Control.MOUSE_FILTER_PASS
 		var press := [Vector2.ZERO]
@@ -435,6 +441,14 @@ func _paint_gear_slot(ci: Control, index: int) -> void:
 		var wtag := Rect2(r.position + Vector2(-2, -4), Vector2(Gt.width(GEAR_SLOTS[index], 11) + 16, 20))
 		Gt.tag(ci, wtag, Gt.NAVY)
 		Gt.text(ci, Vector2(wtag.get_center().x, wtag.position.y + 14), GEAR_SLOTS[index], 11, Color.WHITE, 1)
+		return
+	if index == 2 and Save.pet != "":
+		# 데리고 다니는 펫
+		Gt.pbox(ci, r, Color("fff4d6"))
+		Pets.draw_icon(ci, StringName(Save.pet), r.grow(-10))
+		var ptag := Rect2(r.position + Vector2(-2, -4), Vector2(Gt.width(GEAR_SLOTS[index], 11) + 16, 20))
+		Gt.tag(ci, ptag, Gt.NAVY)
+		Gt.text(ci, Vector2(ptag.get_center().x, ptag.position.y + 14), GEAR_SLOTS[index], 11, Color.WHITE, 1)
 		return
 	Gt.pbox(ci, r, Gt.CREAM)
 	var inner := r.grow(-Gt.PX * 3.0)

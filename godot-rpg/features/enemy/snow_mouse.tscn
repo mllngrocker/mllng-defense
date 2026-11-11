@@ -5,14 +5,14 @@
 
 [node name="SnowMouse" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 180
+max_hp = 1204
 speed = 48.0
-damage = 22
+damage = 43
 chase_range = 120.0
 anim_fps = 9.0
-gold_reward = 24
+gold_reward = 55
 gem_chance = 0.2
-gem_reward = 12
+gem_reward = 15
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

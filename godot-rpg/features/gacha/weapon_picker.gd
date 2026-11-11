@@ -12,6 +12,7 @@ var chosen: StringName
 var grid: GridContainer
 var detail: DrawBox
 var equip_button: GameButton
+var enhance_button: GameButton
 var cards: Dictionary[StringName, DrawBox] = {}
 
 
@@ -84,6 +85,10 @@ func _ready() -> void:
 	var close := _button("닫기", Gt.Kind.WHITE)
 	close.pressed.connect(_close)
 	row.add_child(close)
+	enhance_button = _button("강화", Gt.Kind.GREEN)
+	enhance_button.sub_icon = GameButton.SubIcon.COIN
+	enhance_button.pressed.connect(_on_enhance)
+	row.add_child(enhance_button)
 	equip_button = _button("장착", Gt.Kind.YELLOW)
 	equip_button.pressed.connect(_on_equip)
 	row.add_child(equip_button)
@@ -111,6 +116,11 @@ func _refresh() -> void:
 	equip_button.kind = Gt.Kind.GRAY if on else Gt.Kind.YELLOW
 	equip_button.disabled = chosen == &""
 	equip_button.queue_redraw()
+	var lv := Save.enhance_of(chosen) if chosen != &"" else 0
+	enhance_button.disabled = chosen == &"" or lv >= Weapons.MAX_ENHANCE
+	enhance_button.label = "강화 최대" if lv >= Weapons.MAX_ENHANCE else "강화 +%d" % (lv + 1)
+	enhance_button.sublabel = "" if lv >= Weapons.MAX_ENHANCE else str(Weapons.enhance_cost(lv))
+	enhance_button.queue_redraw()
 	detail.queue_redraw()
 	for w in cards:
 		cards[w].queue_redraw()
@@ -126,6 +136,17 @@ func _on_equip() -> void:
 	else:
 		Save.equip_weapon(char_id, chosen)
 		Game.sfx(&"charged", -6.0, 0.0)
+	_refresh()
+
+
+## 골드로 강화(+8% 공격력씩, 최대 +20)
+func _on_enhance() -> void:
+	if chosen == &"":
+		return
+	if Save.try_enhance(chosen):
+		Game.sfx(&"charged", -4.0, 0.0)
+	else:
+		Game.sfx(&"hurt", -10.0)
 	_refresh()
 
 
@@ -191,11 +212,12 @@ func _paint_detail(ci: Control) -> void:
 	var x := icon.end.x + 14
 	for i in Weapons.rarity_of(w):
 		Gt.star(ci, Vector2(x + 8 + i * 18, r.position.y + 20), 7)
-	Gt.text(ci, Vector2(x, r.position.y + 50), Weapons.name_of(w) + ("  +%d" % refine if refine > 0 else ""), 20, Gt.NAVY)
+	var enh := Save.enhance_of(w)
+	Gt.text(ci, Vector2(x, r.position.y + 50), Weapons.name_of(w) + ("  +%d강" % enh if enh > 0 else "") + ("  (재련 %d)" % refine if refine > 0 else ""), 20, Gt.NAVY)
 	Gt.text(ci, Vector2(x, r.position.y + 72), Weapons.desc_of(w), 12, Gt.NAVY_SOFT, 0, false)
 	var y := r.position.y + 98
 	Gt.icon(ci, &"sword", Vector2(x + 8, y - 5), 18)
-	Gt.text(ci, Vector2(x + 20, y), "공격력 +%d" % Weapons.atk_of(w, refine), 14, Gt.NAVY)
+	Gt.text(ci, Vector2(x + 20, y), "공격력 +%d" % Weapons.atk_of(w, refine, Save.enhance_of(w)), 14, Gt.NAVY)
 	Gt.text(ci, Vector2(x + 130, y), "치명타 +%d%%" % roundi(Weapons.crit_of(w) * 100.0), 14, Color("e5484d"))
 	var holder := Save.holder_of(w)
 	if holder != &"" and holder != char_id:

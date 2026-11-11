@@ -5,14 +5,14 @@
 
 [node name="GreyTrex" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 1100
+max_hp = 4280
 speed = 36.0
-damage = 82
+damage = 98
 chase_range = 120.0
 anim_fps = 6.0
-gold_reward = 96
+gold_reward = 150
 gem_chance = 0.35
-gem_reward = 28
+gem_reward = 30
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

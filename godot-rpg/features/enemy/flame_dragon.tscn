@@ -12,17 +12,17 @@ size = Vector2(36, 20)
 script = ExtResource("3_boss")
 boss_name = "화염룡 이그니스"
 slam_radius = 72.0
-slam_damage = 100
+slam_damage = 200
 summon = ExtResource("4_minion")
 kind = 0
-max_hp = 22000
+max_hp = 73000
 speed = 22.0
-damage = 90
+damage = 130
 chase_range = 150.0
 anim_fps = 5.0
-gold_reward = 9000
+gold_reward = 20000
 gem_chance = 1.0
-gem_reward = 600
+gem_reward = 1200
 drop_chance = 1.0
 
 [node name="Shadow" parent="." index="0"]

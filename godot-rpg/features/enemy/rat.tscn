@@ -5,14 +5,14 @@
 
 [node name="Rat" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 70
+max_hp = 775
 speed = 44.0
-damage = 14
+damage = 34
 chase_range = 110.0
 anim_fps = 9.0
-gold_reward = 13
+gold_reward = 30
 gem_chance = 0.2
-gem_reward = 8
+gem_reward = 10
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

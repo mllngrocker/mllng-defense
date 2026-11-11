@@ -5,14 +5,14 @@
 
 [node name="DemonEye" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 1200
+max_hp = 5800
 speed = 30.0
-damage = 86
+damage = 112
 chase_range = 120.0
 anim_fps = 6.0
-gold_reward = 100
+gold_reward = 210
 gem_chance = 0.35
-gem_reward = 30
+gem_reward = 40
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

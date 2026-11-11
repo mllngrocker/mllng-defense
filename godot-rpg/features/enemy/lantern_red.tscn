@@ -5,14 +5,14 @@
 
 [node name="LanternRed" instance=ExtResource("1_base")]
 kind = 3
-max_hp = 820
+max_hp = 4988
 speed = 30.0
-damage = 68
+damage = 96
 chase_range = 120.0
 anim_fps = 6.0
-gold_reward = 78
+gold_reward = 210
 gem_chance = 0.3
-gem_reward = 24
+gem_reward = 40
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

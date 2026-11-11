@@ -6,7 +6,7 @@ const VERSION := 1
 const STARTERS: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3"]
 ## 아바타 화면에 보이는 순서(전체 캐릭터, ★3 → ★5)
 const ROSTER: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3", &"fairy3", &"fairy2", &"maid2", &"maid3", &"maid1", &"maid4", &"fairy1"]
-const MAX_LEVEL := 60
+const MAX_LEVEL := 100
 const MAX_STARS := 6
 const STAR_BONUS := 0.04  # 별 1개마다 공격력·체력 +4%
 const WELCOME_GEMS := 500  # 처음 시작할 때 주는 보석
@@ -33,6 +33,11 @@ var weapons: Dictionary = {}
 var equip: Dictionary = {}
 ## 퀘스트 진행 상태(Quests가 관리)
 var quest: Dictionary = {}
+## 무기 강화 단계 {무기 id: 단계}
+var wlevel: Dictionary = {}
+## 가진 펫 {펫 id: true}, 데리고 다니는 펫
+var pets: Dictionary = {}
+var pet := ""
 var _cache: Dictionary[StringName, CharacterData] = {}
 
 
@@ -77,22 +82,83 @@ func stars_of(id: StringName) -> int:
 ## 레벨·별·장착 무기를 반영한 공격력
 func atk_of(id: StringName, level := -1) -> int:
 	var lv := level_of(id) if level < 0 else level
-	return roundi(character(id).atk_at(lv) * (1.0 + STAR_BONUS * stars_of(id))) + weapon_atk(id)
+	return roundi((character(id).atk_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) + weapon_atk(id)) * (1.0 + pet_bonus("atk")))
 
 
 ## 장착 무기의 공격력(없으면 0)
 func weapon_atk(id: StringName) -> int:
 	var w := equipped(id)
-	return 0 if w == &"" else Weapons.atk_of(w, refine_of(w))
+	return 0 if w == &"" else Weapons.atk_of(w, refine_of(w), enhance_of(w))
 
 
 ## 기본 치명타 확률 + 장착 무기 보너스
 func crit_of(id: StringName) -> float:
 	var w := equipped(id)
-	return 0.12 + (0.0 if w == &"" else Weapons.crit_of(w))
+	return 0.12 + (0.0 if w == &"" else Weapons.crit_of(w)) + pet_bonus("crit")
 
 
 # ── 무기 ──
+
+func enhance_of(w: StringName) -> int:
+	return int(wlevel.get(String(w), 0))
+
+
+## 골드로 무기를 1단계 강화한다. 성공하면 true.
+func try_enhance(w: StringName) -> bool:
+	var lv := enhance_of(w)
+	var cost := Weapons.enhance_cost(lv)
+	if not has_weapon(w) or lv >= Weapons.MAX_ENHANCE or gold < cost:
+		return false
+	gold -= cost
+	wlevel[String(w)] = lv + 1
+	gold_changed.emit(gold)
+	equip_changed.emit()
+	save_game()
+	return true
+
+
+# ── 펫 ──
+
+func has_pet(p: StringName) -> bool:
+	return pets.has(String(p))
+
+
+## 데리고 다니는 펫의 보너스(atk·hp·crit·gold)
+func pet_bonus(kind: String) -> float:
+	if pet == "" or not Pets.DATA.has(StringName(pet)):
+		return 0.0
+	return float(Pets.bonus_of(StringName(pet)).get(kind, 0.0))
+
+
+## 펫을 준다(처음이면 알림, 데리고 다니는 펫이 없으면 바로 데리고 다닌다)
+func grant_pet(p: StringName) -> void:
+	if has_pet(p):
+		return
+	pets[String(p)] = true
+	if pet == "":
+		pet = String(p)
+	Events.notice.emit("새 펫: %s!" % Pets.name_of(p), Pets.bonus_text(p) + " · 로비 아바타의 펫 칸에서 바꿀 수 있어요")
+	equip_changed.emit()
+	save_game()
+
+
+func choose_pet(p: StringName) -> void:
+	pet = "" if pet == String(p) else String(p)
+	equip_changed.emit()
+	save_game()
+
+
+## 보스를 처음 잡았을 때: 펫 + 보스 무기
+func boss_reward(boss: String) -> void:
+	if not Pets.BOSS_REWARDS.has(boss):
+		return
+	var r: Array = Pets.BOSS_REWARDS[boss]
+	var w: StringName = r[1]
+	if not has_weapon(w):
+		weapons[String(w)] = 0
+		Events.notice.emit.call_deferred("보스 무기: %s!" % Weapons.name_of(w), "공격력 +%d · 로비 아바타의 무기 칸에서 장착하세요" % Weapons.atk_of(w, 0))
+	grant_pet.call_deferred(r[0])
+
 
 func has_weapon(w: StringName) -> bool:
 	return weapons.has(String(w))
@@ -147,11 +213,11 @@ func grant_weapon(w: StringName) -> String:
 
 func hp_of(id: StringName, level := -1) -> int:
 	var lv := level_of(id) if level < 0 else level
-	return roundi(character(id).hp_at(lv) * (1.0 + STAR_BONUS * stars_of(id)))
+	return roundi(character(id).hp_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) * (1.0 + pet_bonus("hp")))
 
 
 func level_up_cost(level: int) -> int:
-	return 40 + level * 20
+	return 40 + level * 20 + roundi(level * level * 2.5)
 
 
 ## 골드를 내고 레벨을 1 올린다. 성공하면 true.
@@ -170,6 +236,8 @@ func try_level_up(id: StringName) -> bool:
 
 
 func add_gold(amount: int) -> void:
+	if amount > 0:
+		amount = roundi(amount * (1.0 + pet_bonus("gold")))
 	gold += amount
 	gold_changed.emit(gold)
 	if amount > 0:
@@ -217,6 +285,9 @@ func load_game() -> void:
 	weapons = {}
 	equip = {}
 	quest = {}
+	wlevel = {}
+	pets = {}
+	pet = ""
 	for id in STARTERS:
 		owned[String(id)] = {"level": 1, "stars": 0}
 	if FileAccess.file_exists(PATH):
@@ -232,6 +303,18 @@ func load_game() -> void:
 				for key: String in ws:
 					if Weapons.DATA.has(StringName(key)):
 						weapons[key] = clampi(int(ws[key]), 0, Weapons.MAX_REFINE)
+			var wl: Variant = parsed.get("wlevel", {})
+			if wl is Dictionary:
+				for key: String in wl:
+					wlevel[key] = clampi(int(wl[key]), 0, Weapons.MAX_ENHANCE)
+			var ps: Variant = parsed.get("pets", {})
+			if ps is Dictionary:
+				for key: String in ps:
+					if Pets.DATA.has(StringName(key)):
+						pets[key] = true
+			pet = str(parsed.get("pet", ""))
+			if not pets.has(pet):
+				pet = ""
 			var qs: Variant = parsed.get("quest", {})
 			if qs is Dictionary:
 				quest = qs
@@ -264,4 +347,4 @@ func save_game() -> void:
 	if f == null:
 		push_error("저장 실패: %s" % error_string(FileAccess.get_open_error()))
 		return
-	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest}))
+	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet}))

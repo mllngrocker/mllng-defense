@@ -14,6 +14,7 @@ const RELIEF := 2  # 바위 단·절벽(TilesetRelief)
 const HELLF := 4  # 지옥 바닥(floor.png를 검붉게 칠한 것)
 const CAVEF := 5  # 동굴 바닥(floor.png를 푸른 회색으로 칠한 것)
 const LAVA := 6  # 용암(water.png를 주황으로 칠한 것)
+const WATERC := 7  # 물가의 풀·진흙을 지운 물(땅 위에 겹쳐 그려 어느 땅과도 이어지게)
 const SNOWB := 3  # 풀 위에 덮는 눈 자국(TilesetFloorB, 흙길 표와 같은 배치로 7줄 위)
 
 const VILLAGE := "res://features/world/village.tscn"
@@ -30,6 +31,12 @@ const SNOWGATE := "res://features/world/snowgate.tscn"
 const TEMPLE := "res://features/world/temple1.tscn"
 const SNOW := "res://features/world/snow1.tscn"
 const SWAMP := "res://features/world/swamp.tscn"
+## 지역 마을(몬스터 없음, 쉬어 가며 이야기를 듣는 곳)
+const DESERT_TOWN := "res://features/world/desert_town.tscn"
+const SNOW_TOWN := "res://features/world/snow_town.tscn"
+const TEMPLE_TOWN := "res://features/world/temple_town.tscn"
+const LAVA_TOWN := "res://features/world/lava_town.tscn"
+const SKY_TOWN := "res://features/world/sky_town.tscn"
 const LAVA1 := "res://features/world/lava1.tscn"
 
 ## 땅 종류: 바탕 칸, 무늬 칸, 길 타일 줄 이동(흙길은 floor.png 7~10줄, 모래길은 같은 배치로 0~3줄)
@@ -93,7 +100,7 @@ const TORII := Rect2i(0, 5, 3, 2)
 ## 맵마다 다른 것들. gaps의 at: 이동문이 붙는 줄(서·동) 또는 칸(북). 몬스터 [장면, 수, 공터에서 최소·최대 거리]
 const MAPS: Array[Dictionary] = [
 	{
-		"path": VILLAGE, "title": "평화로운 마을", "w": 40, "h": 30, "seed": 21, "wobble": 0.0,
+		"path": VILLAGE, "title": "레몬 마을", "w": 40, "h": 30, "seed": 21, "wobble": 0.0,
 		"ground": GRASS_GROUND, "music": "res://assets/ninja/music/village.ogg", "border": "forest",
 		"roads": {"h": [0, 40], "v": [0, 30], "plaza": 3.6},
 		"gaps": [
@@ -141,7 +148,7 @@ const MAPS: Array[Dictionary] = [
 		"ground": SAND_GROUND, "music": "res://assets/ninja/music/desert.ogg", "border": "desert",
 		"gaps": [
 			{"side": "west", "at": 20, "to": FOREST_MAP, "spawn": "east", "label": "◀ 숲"},
-			{"side": "east", "at": 14, "to": DESERT2, "spawn": "west", "label": "협곡 ▶"},
+			{"side": "east", "at": 14, "to": DESERT_TOWN, "spawn": "west", "label": "오아시스 마을 ▶"},
 		],
 		"clearings": 3, "ponds": 3, "rivers": 1, "river_width": 2.2, "trees": 0, "big_trees": 0, "rocks": 14, "bushes": 0, "flowers": 0, "desert": true,
 		"palms": 30, "bones": 14,
@@ -152,7 +159,7 @@ const MAPS: Array[Dictionary] = [
 		"ground": SAND_GROUND, "music": "res://assets/ninja/music/desert2.ogg", "border": "desert",
 		"tint": Color(0.94, 0.84, 0.78),
 		"gaps": [
-			{"side": "west", "at": 26, "to": DESERT, "spawn": "east", "label": "◀ 사막"},
+			{"side": "west", "at": 26, "to": DESERT_TOWN, "spawn": "east", "label": "◀ 오아시스 마을"},
 			{"side": "east", "at": 10, "to": DESERT3, "spawn": "west", "label": "폐허 ▶"},
 		],
 		"clearings": 3, "ponds": 1, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 34, "bushes": 0, "flowers": 0, "desert": true,
@@ -199,13 +206,13 @@ const GATE_MAPS: Array[Dictionary] = [
 		"hub": Vector2i(17, 19), "path_to": Vector2i(16, 8), "scenery": "mountain", "top_rows": 7, "straight_path": true,
 		"clearings": 1, "ponds": 0, "rivers": 0, "trees": 14, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0,
 		"spawns": [],
-		"npcs": [["설산 파수꾼", "knight", Vector2i(20, 9), ["눈사태로 동굴 입구가 막혔다.", "얼음을 녹일 힘이 있어야 지나갈 수 있지.", "1장 보스를 쓰러뜨린 자라면 길을 열어 주겠다."]]],
-		"barriers": [{"cell": Vector2i(15, 7), "size": Vector2i(4, 1), "side": 0, "to": SNOW, "lock": "cyclope_king",
-			"title": "눈사태로 입구가 막혔어요", "sub": "설산은 1장 보스 외눈 거인 왕을 물리친 뒤 열려요"}],
+		"npcs": [["설산 파수꾼", "knight", Vector2i(20, 9), ["눈사태로 동굴 입구가 막혔다.", "얼음을 녹일 힘이 있어야 지나갈 수 있지.", "수정 동굴의 여왕을 쓰러뜨린 자라면 길을 열어 주겠다."]]],
+		"barriers": [{"cell": Vector2i(15, 7), "size": Vector2i(4, 1), "side": 0, "to": SNOW, "lock": "spider_queen",
+			"title": "눈사태로 입구가 막혔어요", "sub": "남쪽 수정 동굴의 거미 여왕을 물리치면 얼음이 녹아요"}],
 	},
 ]
 
-## 2~4장과 1장 남쪽 맵(tools/gen 결과를 붙여 넣음)
+## 2~5장과 1장 남쪽 맵(tools/gen 결과를 붙여 넣음)
 const MORE_MAPS: Array[Dictionary] = [
 	{"path": "res://features/world/swamp.tscn", "title": "독안개 늪", "w": 56, "h": 42, "seed": 101, "ground": SWAMP_GROUND, "music": "res://assets/ninja/music/swamp.ogg", "border": "dead", "gaps": [
 			{"side": "north", "to": "res://features/world/village.tscn", "spawn": "south", "label": "마을", "at": 19},
@@ -228,10 +235,10 @@ const MORE_MAPS: Array[Dictionary] = [
 		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 8, "bushes": 0, "flowers": 0, "spawns": [["octopus", 8, 6, 40], ["racoon", 5, 6, 40], ["kappa", 3, 10, 40]], "sea_south": 26, "desert": true, "palms": 34, "bones": 6, "border_palms": 0.8},
 	{"path": "res://features/world/snow1.tscn", "title": "눈꽃 평원", "w": 50, "h": 40, "seed": 201, "ground": SNOWF_GROUND, "music": "res://assets/ninja/music/snow.ogg", "border": "snow", "gaps": [
 			{"side": "south", "to": "res://features/world/snowgate.tscn", "spawn": "north", "label": "설산 입구", "at": 24},
-			{"side": "north", "to": "res://features/world/snow2.tscn", "spawn": "south", "label": "얼어붙은 호수", "at": 30},
+			{"side": "north", "to": "res://features/world/snow_town.tscn", "spawn": "south", "label": "눈꽃 마을", "at": 30},
 		], "clearings": 3, "ponds": 3, "rivers": 0, "trees": 30, "big_trees": 3, "rocks": 0, "bushes": 0, "flowers": 0, "spawns": [["snow_mouse", 8, 6, 40], ["panda", 5, 8, 40], ["snow_bat", 4, 10, 40]], "tint": Color(0.95, 0.97, 1.0)},
 	{"path": "res://features/world/snow2.tscn", "title": "얼어붙은 호수", "w": 56, "h": 46, "seed": 202, "ground": SNOWF_GROUND, "music": "res://assets/ninja/music/snow.ogg", "border": "snow", "gaps": [
-			{"side": "south", "to": "res://features/world/snow1.tscn", "spawn": "north", "label": "눈꽃 평원", "at": 28},
+			{"side": "south", "to": "res://features/world/snow_town.tscn", "spawn": "north", "label": "눈꽃 마을", "at": 28},
 			{"side": "east", "to": "res://features/world/snow3.tscn", "spawn": "west", "label": "눈보라 협곡 ▶", "at": 22},
 		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 24, "big_trees": 2, "rocks": 0, "bushes": 0, "flowers": 0, "spawns": [["snow_mouse", 6, 8, 40], ["ice_skull", 6, 8, 40], ["snow_bat", 5, 8, 40]], "lake": 13.0, "hub": Vector2i(28, 23), "tint": Color(0.92, 0.96, 1.0)},
 	{"path": "res://features/world/snow3.tscn", "title": "눈보라 협곡", "w": 74, "h": 22, "seed": 203, "ground": SNOWF_GROUND, "music": "res://assets/ninja/music/snow.ogg", "border": "snow", "gaps": [
@@ -255,10 +262,10 @@ const MORE_MAPS: Array[Dictionary] = [
 		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["blue_axolot", 6, 6, 60], ["jump_fish", 5, 6, 60]], "temple": true, "rooms": 4, "tint": Color(0.8, 0.88, 1.0)},
 	{"path": "res://features/world/temple2.tscn", "title": "물길 회랑", "w": 48, "h": 30, "seed": 302, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/temple.ogg", "border": "none", "gaps": [
 			{"side": "west", "to": "res://features/world/temple1.tscn", "spawn": "east", "label": "◀ 신전 입구 홀", "at": 14},
-			{"side": "east", "to": "res://features/world/temple3.tscn", "spawn": "west", "label": "수몰된 서고 ▶", "at": 14},
+			{"side": "east", "to": "res://features/world/temple_town.tscn", "spawn": "west", "label": "물방울 마을 ▶", "at": 14},
 		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["green_octopus", 6, 6, 60], ["blue_axolot", 6, 6, 60]], "temple": true, "rooms": 3, "tint": Color(0.8, 0.88, 1.0)},
 	{"path": "res://features/world/temple3.tscn", "title": "수몰된 서고", "w": 48, "h": 30, "seed": 303, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/temple.ogg", "border": "none", "gaps": [
-			{"side": "west", "to": "res://features/world/temple2.tscn", "spawn": "east", "label": "◀ 물길 회랑", "at": 14},
+			{"side": "west", "to": "res://features/world/temple_town.tscn", "spawn": "east", "label": "◀ 물방울 마을", "at": 14},
 			{"side": "east", "to": "res://features/world/temple4.tscn", "spawn": "west", "label": "거울 연못 ▶", "at": 14},
 		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["kappa_red", 6, 6, 60], ["green_octopus", 6, 6, 60]], "temple": true, "rooms": 4, "tint": Color(0.8, 0.88, 1.0)},
 	{"path": "res://features/world/temple4.tscn", "title": "거울 연못", "w": 48, "h": 30, "seed": 304, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/temple.ogg", "border": "none", "gaps": [
@@ -282,10 +289,10 @@ const MORE_MAPS: Array[Dictionary] = [
 		], "clearings": 3, "ponds": 2, "rivers": 2, "trees": 0, "big_trees": 0, "rocks": 20, "bushes": 0, "flowers": 0, "spawns": [["flam", 6, 6, 60], ["flam2", 5, 6, 60]], "desert": true, "palms": 0, "bones": 24, "border_palms": 0.0, "tint": Color(1.0, 0.82, 0.7), "lava": true, "river_width": 2.6},
 	{"path": "res://features/world/lava3.tscn", "title": "불꽃 협곡", "w": 76, "h": 22, "seed": 403, "ground": HELL_GROUND, "music": "res://assets/ninja/music/lava.ogg", "border": "desert", "gaps": [
 			{"side": "west", "to": "res://features/world/lava2.tscn", "spawn": "east", "label": "◀ 용암 강", "at": 10},
-			{"side": "east", "to": "res://features/world/lava4.tscn", "spawn": "west", "label": "마그마 호수 ▶", "at": 10},
+			{"side": "east", "to": "res://features/world/lava_town.tscn", "spawn": "west", "label": "불꽃 대장간 마을 ▶", "at": 10},
 		], "clearings": 4, "ponds": 2, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 20, "bushes": 0, "flowers": 0, "spawns": [["dragon_y", 5, 6, 60], ["flam2", 6, 6, 60]], "desert": true, "palms": 0, "bones": 24, "border_palms": 0.0, "tint": Color(1.0, 0.82, 0.7), "lava": true},
 	{"path": "res://features/world/lava4.tscn", "title": "마그마 호수", "w": 56, "h": 44, "seed": 404, "ground": HELL_GROUND, "music": "res://assets/ninja/music/lava.ogg", "border": "desert", "gaps": [
-			{"side": "west", "to": "res://features/world/lava3.tscn", "spawn": "east", "label": "◀ 불꽃 협곡", "at": 21},
+			{"side": "west", "to": "res://features/world/lava_town.tscn", "spawn": "east", "label": "◀ 불꽃 대장간 마을", "at": 21},
 			{"side": "east", "to": "res://features/world/lava5.tscn", "spawn": "west", "label": "화산 기슭 ▶", "at": 21},
 		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 20, "bushes": 0, "flowers": 0, "spawns": [["trex", 5, 6, 60], ["flam", 6, 6, 60]], "desert": true, "palms": 0, "bones": 24, "border_palms": 0.0, "tint": Color(1.0, 0.82, 0.7), "lava": true, "lake": 12.0, "hub": Vector2i(28, 22)},
 	{"path": "res://features/world/lava5.tscn", "title": "화산 기슭", "w": 58, "h": 42, "seed": 405, "ground": HELL_GROUND, "music": "res://assets/ninja/music/lava.ogg", "border": "desert", "gaps": [
@@ -299,7 +306,7 @@ const MORE_MAPS: Array[Dictionary] = [
 	{"path": "res://features/world/hell1.tscn", "title": "지옥문", "w": 58, "h": 42, "seed": 407, "ground": HELL_GROUND, "music": "res://assets/ninja/music/hell.ogg", "border": "desert", "gaps": [
 			{"side": "west", "to": "res://features/world/lava6.tscn", "spawn": "east", "label": "◀ 화염룡의 둥지", "at": 20},
 			{"side": "east", "to": "res://features/world/hell2.tscn", "spawn": "west", "label": "비명의 회랑 ▶", "at": 20},
-		], "clearings": 3, "ponds": 3, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 20, "bushes": 0, "flowers": 0, "spawns": [["lantern_red", 7, 6, 60], ["skull", 6, 6, 60]], "desert": true, "palms": 0, "bones": 40, "border_palms": 0.0, "tint": Color(0.78, 0.6, 0.72), "lava": true},
+		], "clearings": 3, "ponds": 3, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 20, "bushes": 0, "flowers": 0, "spawns": [["lantern_red", 7, 6, 60], ["demon_eye", 4, 6, 60]], "desert": true, "palms": 0, "bones": 40, "border_palms": 0.0, "tint": Color(0.78, 0.6, 0.72), "lava": true},
 	{"path": "res://features/world/hell2.tscn", "title": "비명의 회랑", "w": 76, "h": 22, "seed": 408, "ground": HELL_GROUND, "music": "res://assets/ninja/music/hell.ogg", "border": "desert", "gaps": [
 			{"side": "west", "to": "res://features/world/hell1.tscn", "spawn": "east", "label": "◀ 지옥문", "at": 10},
 			{"side": "east", "to": "res://features/world/hell3.tscn", "spawn": "west", "label": "뼈의 들판 ▶", "at": 10},
@@ -307,7 +314,7 @@ const MORE_MAPS: Array[Dictionary] = [
 	{"path": "res://features/world/hell3.tscn", "title": "뼈의 들판", "w": 58, "h": 42, "seed": 409, "ground": HELL_GROUND, "music": "res://assets/ninja/music/hell.ogg", "border": "desert", "gaps": [
 			{"side": "west", "to": "res://features/world/hell2.tscn", "spawn": "east", "label": "◀ 비명의 회랑", "at": 20},
 			{"side": "east", "to": "res://features/world/hell4.tscn", "spawn": "west", "label": "핏빛 호수 ▶", "at": 20},
-		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 20, "bushes": 0, "flowers": 0, "spawns": [["grey_trex", 5, 6, 60], ["skull", 7, 6, 60]], "desert": true, "palms": 0, "bones": 90, "border_palms": 0.0, "tint": Color(0.78, 0.6, 0.72), "lava": true},
+		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 20, "bushes": 0, "flowers": 0, "spawns": [["grey_trex", 5, 6, 60], ["lantern_red", 7, 6, 60]], "desert": true, "palms": 0, "bones": 90, "border_palms": 0.0, "tint": Color(0.78, 0.6, 0.72), "lava": true},
 	{"path": "res://features/world/hell4.tscn", "title": "핏빛 호수", "w": 56, "h": 44, "seed": 410, "ground": HELL_GROUND, "music": "res://assets/ninja/music/hell_deep.ogg", "border": "desert", "gaps": [
 			{"side": "west", "to": "res://features/world/hell3.tscn", "spawn": "east", "label": "◀ 뼈의 들판", "at": 21},
 			{"side": "east", "to": "res://features/world/hell5.tscn", "spawn": "west", "label": "타락한 성채 ▶", "at": 21},
@@ -318,19 +325,131 @@ const MORE_MAPS: Array[Dictionary] = [
 		], "clearings": 3, "ponds": 2, "rivers": 1, "trees": 0, "big_trees": 0, "rocks": 20, "bushes": 0, "flowers": 0, "spawns": [["demon_eye", 6, 6, 60], ["lantern_red", 6, 6, 60]], "desert": true, "palms": 0, "bones": 40, "border_palms": 0.0, "tint": Color(0.78, 0.6, 0.72), "lava": true, "river_width": 2.4},
 	{"path": "res://features/world/hell6.tscn", "title": "마왕의 옥좌", "w": 38, "h": 30, "seed": 412, "ground": HELL_GROUND, "music": "res://assets/ninja/music/hell_deep.ogg", "border": "desert", "gaps": [
 			{"side": "west", "to": "res://features/world/hell5.tscn", "spawn": "east", "label": "◀ 타락한 성채", "at": 14},
+			{"side": "east", "to": "res://features/world/sky1.tscn", "spawn": "west", "label": "빛의 계단 ▶", "at": 14, "lock": "demon_lord", "lock_title": "마왕 아자젤"},
 		], "clearings": 1, "ponds": 2, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 20, "bushes": 0, "flowers": 0, "spawns": [["demon_eye", 4, 6, 60], ["dragon", 4, 6, 60]], "desert": true, "palms": 0, "bones": 40, "border_palms": 0.0, "tint": Color(0.78, 0.6, 0.72), "lava": true, "bosses": [["demon_lord", Vector2i(28, 15)]]},
+	{"path": "res://features/world/sky1.tscn", "title": "버섯 구름섬", "w": 50, "h": 40, "seed": 501, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/sky.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/hell6.tscn", "spawn": "east", "label": "◀ 마왕의 옥좌", "at": 19},
+			{"side": "east", "to": "res://features/world/sky2.tscn", "spawn": "west", "label": "꽃구름 섬 ▶", "at": 19},
+		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 4, "bushes": 14, "flowers": 80, "spawns": [["bamboo", 7, 6, 40], ["heart_green", 6, 6, 40], ["sky_bat", 5, 8, 40]], "isle": true, "tint": Color(1.0, 0.94, 1.0)},
+	{"path": "res://features/world/sky2.tscn", "title": "꽃구름 섬", "w": 50, "h": 40, "seed": 502, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/sky.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/sky1.tscn", "spawn": "east", "label": "◀ 버섯 구름섬", "at": 19},
+			{"side": "east", "to": "res://features/world/sky_town.tscn", "spawn": "west", "label": "구름 마을 ▶", "at": 19},
+		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 14, "big_trees": 10, "rocks": 4, "bushes": 10, "flowers": 140, "spawns": [["bamboo_y", 7, 6, 40], ["gold_racoon", 6, 6, 40], ["sky_bat", 5, 8, 40]], "isle": true, "big_tree_set": "blossom", "tint": Color(1.0, 0.95, 0.98)},
+	{"path": "res://features/world/sky3.tscn", "title": "천공의 탑 1층", "w": 48, "h": 30, "seed": 503, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/sky_town.tscn", "spawn": "east", "label": "◀ 구름 마을", "at": 14},
+			{"side": "east", "to": "res://features/world/sky4.tscn", "spawn": "west", "label": "천공의 탑 2층 ▶", "at": 14},
+		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["sky_spirit", 6, 6, 60], ["gold_racoon", 6, 6, 60]], "temple": true, "rooms": 4, "tint": Color(1.0, 0.93, 0.78)},
+	{"path": "res://features/world/sky4.tscn", "title": "천공의 탑 2층", "w": 48, "h": 30, "seed": 504, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/sky3.tscn", "spawn": "east", "label": "◀ 천공의 탑 1층", "at": 14},
+			{"side": "east", "to": "res://features/world/sky5.tscn", "spawn": "west", "label": "천공의 탑 3층 ▶", "at": 14},
+		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["sky_spirit", 6, 6, 60], ["bamboo_y", 6, 6, 60]], "temple": true, "rooms": 3, "tint": Color(1.0, 0.93, 0.78)},
+	{"path": "res://features/world/sky5.tscn", "title": "천공의 탑 3층", "w": 48, "h": 30, "seed": 505, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/sky4.tscn", "spawn": "east", "label": "◀ 천공의 탑 2층", "at": 14},
+			{"side": "east", "to": "res://features/world/sky6.tscn", "spawn": "west", "label": "천공의 탑 꼭대기 ▶", "at": 14},
+		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["gold_racoon", 7, 6, 60], ["heart_green", 6, 6, 60]], "temple": true, "rooms": 4, "tint": Color(1.0, 0.93, 0.78)},
+	{"path": "res://features/world/sky6.tscn", "title": "천공의 탑 꼭대기", "w": 48, "h": 30, "seed": 506, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/sky5.tscn", "spawn": "east", "label": "◀ 천공의 탑 3층", "at": 14},
+		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["sky_spirit", 4, 6, 60], ["gold_racoon", 3, 6, 60]], "temple": true, "rooms": 3, "tint": Color(1.0, 0.93, 0.78), "bosses": [["giant_soul", Vector2i(36, 14)]]},
+]
+
+## 지역 마을: 레몬 마을과 같은 집·광장 짜임에 땅·사람·말이 다르다. villagers 칸은 광장 기준
+const TOWN_MAPS: Array[Dictionary] = [
+	{
+		"path": DESERT_TOWN, "title": "오아시스 마을", "w": 40, "h": 30, "seed": 61, "wobble": 0.0,
+		"ground": SAND_GROUND, "music": "res://assets/ninja/music/town.ogg", "border": "desert", "border_palms": 0.8,
+		"roads": {"h": [0, 40], "v": [0, 0], "plaza": 3.6}, "torii": false, "desert": true, "palms": 14, "bones": 0,
+		"gaps": [
+			{"side": "west", "to": DESERT, "spawn": "east", "label": "◀ 사막"},
+			{"side": "east", "to": DESERT2, "spawn": "west", "label": "모래바람 협곡 ▶"},
+		],
+		"ponds": 1, "trees": 0, "big_trees": 0, "rocks": 4, "bushes": 0, "flowers": 0,
+		"village": true, "spawns": [],
+		"villagers": [
+			["족장", "sultan", Vector2i(-3, -3), ["모래 폭풍보다 무서운 게 몬스터 떼라네.", "협곡 너머 폐허에서 몬스터가 끝도 없이 기어 나와."]],
+			["물장수", "villager4", Vector2i(8, 3), ["오아시스 물이 점점 줄고 있어요.", "몬스터가 늘어난 뒤로 사막도 메말라 가요."]],
+			["대상", "inspector", Vector2i(-12, 4), ["동쪽 저주받은 폐허엔 외눈 거인 왕이 산다지.", "그 녀석이 날뛰기 시작한 건 최근 일이야."]],
+			["무희", "princess", Vector2i(12, -4), ["레몬 마을에서 왔어요? 먼 길 왔네요.", "하늘을 보면 큰 나무 그림자가 보일 때가 있대요."]],
+		],
+		"critters": [["dog", Vector2i(3, 6)], ["chicken", Vector2i(-8, 8)]],
+	},
+	{
+		"path": SNOW_TOWN, "title": "눈꽃 마을", "w": 36, "h": 32, "seed": 62, "wobble": 0.0,
+		"ground": SNOWF_GROUND, "music": "res://assets/ninja/music/town2.ogg", "border": "snow",
+		"roads": {"h": [0, 0], "v": [0, 32], "plaza": 3.6}, "torii": false, "tint": Color(0.95, 0.97, 1.0),
+		"gaps": [
+			{"side": "south", "to": "res://features/world/snow1.tscn", "spawn": "north", "label": "눈꽃 평원"},
+			{"side": "north", "to": "res://features/world/snow2.tscn", "spawn": "south", "label": "얼어붙은 호수"},
+		],
+		"ponds": 1, "trees": 10, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0,
+		"village": true, "spawns": [],
+		"villagers": [
+			["눈꽃 촌장", "eskimo", Vector2i(-3, -3), ["이 추위에 레몬 마을에서 왔다고? 대단하구먼.", "설산 정상의 대왕곰이 미쳐 날뛰는 바람에 몬스터가 내려오고 있지."]],
+			["얼음 낚시꾼", "ninjaeskimo", Vector2i(6, 4), ["호수가 얼어서 물고기 대신 얼음 해골만 낚여…", "정상에 오르려면 협곡과 서리 숲을 지나야 해."]],
+			["약초꾼", "oldman2", Vector2i(-8, 6), ["몬스터들이 다 하늘 쪽을 보며 울부짖더군.", "높은 곳에 뭔가 있는 게 틀림없어."]],
+		],
+		"critters": [["dog", Vector2i(4, 7)]],
+	},
+	{
+		"path": TEMPLE_TOWN, "title": "물방울 마을", "w": 44, "h": 30, "seed": 63,
+		"ground": GRASS_GROUND, "music": "res://assets/ninja/music/town2.ogg", "border": "none", "temple": true, "rooms": 3,
+		"tint": Color(0.82, 0.92, 1.0),
+		"gaps": [
+			{"side": "west", "at": 14, "to": "res://features/world/temple2.tscn", "spawn": "east", "label": "◀ 물길 회랑"},
+			{"side": "east", "at": 14, "to": "res://features/world/temple3.tscn", "spawn": "west", "label": "수몰된 서고 ▶"},
+		],
+		"spawns": [],
+		"room_npcs": [
+			["신전지기", "monk2", ["물속에도 사람이 산다니 놀랐지? 우린 신전을 지키는 물방울 일족이야.", "크라켄님이 갑자기 사나워지셨어. 하늘에서 검은 물이 스며든 뒤로…"]],
+			["물방울 상인", "villager5", ["해저 신전 깊은 곳엔 해신의 제단이 있어요.", "몬스터는 제단 쪽에서 계속 몰려와요."]],
+			["늙은 학자", "oldman3", ["서고의 옛 기록에 따르면 대륙의 모든 생명은 하늘의 큰 나무에서 왔다네.", "몬스터도 마찬가지일지 모르지…"]],
+		],
+	},
+	{
+		"path": LAVA_TOWN, "title": "불꽃 대장간 마을", "w": 40, "h": 30, "seed": 64, "wobble": 0.0,
+		"ground": HELL_GROUND, "music": "res://assets/ninja/music/town.ogg", "border": "rock",
+		"roads": {"h": [0, 40], "v": [0, 0], "plaza": 3.6}, "torii": false, "tint": Color(1.0, 0.88, 0.78), "desert": true, "palms": 0, "bones": 6,
+		"gaps": [
+			{"side": "west", "to": "res://features/world/lava3.tscn", "spawn": "east", "label": "◀ 불꽃 협곡"},
+			{"side": "east", "to": "res://features/world/lava4.tscn", "spawn": "west", "label": "마그마 호수 ▶"},
+		],
+		"ponds": 0, "trees": 0, "big_trees": 0, "rocks": 6, "bushes": 0, "flowers": 0,
+		"village": true, "spawns": [],
+		"villagers": [
+			["대장장이", "master", Vector2i(-3, -3), ["용암 열기로 벼린 무기는 단단하지! 강화는 아끼지 말라고.", "화염룡이 날뛰는 통에 광산이 다 막혔어."]],
+			["광부", "villager3", Vector2i(9, 4), ["땅 밑에서도 몬스터가 솟아나. 끝이 없어.", "지옥문 너머에 마왕이 있다지만… 그게 다일까?"]],
+			["견습생", "boy", Vector2i(-10, 5), ["레몬 마을 사냥꾼의 아들(딸)이라고요? 소문 들었어요!"]],
+		],
+		"critters": [],
+	},
+	{
+		"path": SKY_TOWN, "title": "구름 마을", "w": 40, "h": 32, "seed": 65, "wobble": 0.0,
+		"ground": GRASS_GROUND, "music": "res://assets/ninja/music/town2.ogg", "border": "none", "isle": true,
+		"roads": {"h": [0, 40], "v": [0, 0], "plaza": 3.6}, "torii": false, "tint": Color(1.0, 0.96, 1.0),
+		"gaps": [
+			{"side": "west", "to": "res://features/world/sky2.tscn", "spawn": "east", "label": "◀ 꽃구름 섬"},
+			{"side": "east", "to": "res://features/world/sky3.tscn", "spawn": "west", "label": "천공의 탑 ▶"},
+		],
+		"ponds": 0, "trees": 6, "big_trees": 3, "big_tree_set": "blossom", "rocks": 0, "bushes": 6, "flowers": 60,
+		"village": true, "spawns": [],
+		"villagers": [
+			["구름 장로", "oldman3", Vector2i(-3, -3), ["땅에서 여기까지 올라온 이는 처음이로구나.", "탑 꼭대기의 큰 나무가 시들고 있다. 그 뿌리에서 검은 열매가 맺혀…", "그 열매가 땅으로 떨어질 때마다 몬스터가 태어나지."]],
+			["바람 소녀", "princess", Vector2i(10, 4), ["탑을 오르면 큰 나무에 닿을 수 있어요.", "나무가 아파하는 소리, 들리지 않아요?"]],
+			["하늘 파수꾼", "knight", Vector2i(-11, 5), ["탑 안은 몬스터 소굴이다. 단단히 준비해라."]],
+		],
+		"critters": [["cat", Vector2i(4, 7)]],
+	},
 ]
 
 ## 마을 사람: [이름, 그림, 위치(광장 중심 기준 칸), 대사]
 const VILLAGERS := [
-	["촌장", "oldman", Vector2i(-3, -3), ["어서 오게, 젊은이!", "동쪽 문으로 나가면 초원이라네.", "초원 너머엔 뜨거운 사막이 있지."]],
-	["경비병", "knight", Vector2i(14, -3), ["이 너머는 초원이다.", "초원·언덕·숲을 지나면 사막이 나온다.", "숲의 킹 슬라임을 잡아야 사막 길이 열려!"]],
-	["상인", "noble", Vector2i(9, 3), ["어서 와요! 좋은 무기는 로비 상점에서!", "남쪽 늪 너머엔 버려진 마을이 있대요."]],
-	["농부", "villager", Vector2i(-14, 6), ["올해 밀 농사가 잘됐어.", "늪에서 갓파가 내려와서 걱정이야."]],
-	["아가씨", "woman", Vector2i(13, 7), ["동쪽 초원의 꽃 언덕 가 봤어요?", "봄이면 꽃잎이 흩날려서 정말 예뻐요."]],
-	["소년", "boy", Vector2i(-5, 9), ["나도 커서 모험가가 될 거야!", "폭포 계곡엔 도롱뇽이 산대!"]],
-	["수도승", "monk", Vector2i(7, -9), ["마음을 가다듬으면 스킬이 더 강해진다네.", "신사에 들러 기도하고 가게."]],
-	["사냥꾼", "hunter", Vector2i(-17, -6), ["설산엔 거대한 곰이 산다더군.", "털가죽이 아주 비싸게 팔리지."]],
+	["촌장", "oldman", Vector2i(-3, -3), ["요즘 밤마다 몬스터 울음소리에 잠을 못 이룬다네…", "어제는 마을 울타리까지 슬라임이 내려왔어.", "이대로 가다간 레몬 마을도 위험하네."]],
+	["경비병", "knight", Vector2i(14, -3), ["동쪽 초원에서 몬스터가 계속 넘어온다!", "혼자 다 막기엔 역부족이야…", "숲 쪽이 특히 수상해."]],
+	["상인", "noble", Vector2i(9, 3), ["몬스터 때문에 짐마차가 못 다녀서 큰일이에요.", "좋은 무기는 로비 상점에서 구해 봐요!"]],
+	["농부", "villager", Vector2i(-14, 6), ["밭에 갓파 발자국이 찍혀 있었어…", "남쪽 늪에서 올라오는 게 분명해."]],
+	["아가씨", "woman", Vector2i(13, 7), ["너희 부모님, 이 근방 최고의 사냥꾼이셨지.", "그 솜씨를 물려받았다면 분명 해낼 거야."]],
+	["소년", "boy", Vector2i(-5, 9), ["형(언니)도 사냥 나가? 나도 데려가!", "폭포 계곡엔 도롱뇽이 산대!"]],
+	["수도승", "monk", Vector2i(7, -9), ["하늘의 큰 나무가 앓고 있다는 옛 노래가 있지.", "몬스터가 끝없이 나오는 데엔 까닭이 있을 걸세."]],
+	["사냥꾼", "hunter", Vector2i(-17, -6), ["네 아버지께 활 쏘는 법을 배웠었지.", "설산엔 거대한 곰이 산다더군."]],
 	["할머니", "oldwoman", Vector2i(-9, 3), ["골드가 모이면 로비에서 레벨을 올리렴.", "보석을 모으면 새 동료를 부를 수 있단다."]],
 	["꼬마", "child", Vector2i(4, 4), ["E 키나 스킬 버튼을 눌러 봐!", "스킬은 캐릭터마다 다 달라!"]],
 	["스승", "master", Vector2i(3, -7), ["수련을 게을리하지 마라.", "구르는 동안엔 공격을 받지 않는다.", "공격 버튼을 꾹 누르면 힘을 모으는 아이도 있지."]],
@@ -364,7 +483,7 @@ func _initialize() -> void:
 	desert_tex = load("res://assets/ninja/tiles/desert.png")
 	tileset = _make_tileset()
 	ResourceSaver.save(tileset, "res://features/world/tileset.tres", ResourceSaver.FLAG_CHANGE_PATH)
-	for m in MAPS + GATE_MAPS + MORE_MAPS:
+	for m in MAPS + GATE_MAPS + MORE_MAPS + TOWN_MAPS:
 		_build_map(m)
 	quit()
 
@@ -526,6 +645,14 @@ func _make_tileset() -> TileSet:
 		if not lava.has_tile(v + Vector2i(0, -7)):
 			lava.create_tile(v + Vector2i(0, -7))
 	ts.add_source(lava, LAVA)
+	var wc := TileSetAtlasSource.new()
+	wc.texture = load("res://assets/ninja/tiles/water_clear.png")
+	wc.texture_region_size = Vector2i(T, T)
+	for wshift: Vector2i in [Vector2i(0, -1), Vector2i(13, -1)]:
+		for v: Vector2i in DIRT_BY_MASK.values() + DIRT_INNER.values():
+			if not wc.has_tile(v + wshift):
+				wc.create_tile(v + wshift)
+	ts.add_source(wc, WATERC)
 	return ts
 
 
@@ -671,6 +798,15 @@ func _road_x(y: int) -> int:
 
 func _paint_ground(ground: TileMapLayer) -> void:
 	var details: Array = ground_set["detail"]
+	# 풀·늪 물은 물가 땅을 지운 타일을 땅 위 층에 겹친다(물가 둘레가 땅 색과 똑같이 이어진다)
+	var wshift: Vector2i = ground_set["water"]
+	var overlay: TileMapLayer = null
+	if wshift.y == -1 and ground_set.get("water_src", WATER) == WATER:
+		overlay = TileMapLayer.new()
+		overlay.name = "WaterLayer"
+		overlay.tile_set = tileset
+		_add(world, overlay)
+		world.move_child(overlay, ground.get_index() + 1)
 	var wet: Dictionary = water.duplicate()
 	for c: Vector2i in dry:
 		if c.x < int(cfg.get("sea_west", 0)):
@@ -679,7 +815,10 @@ func _paint_ground(ground: TileMapLayer) -> void:
 		for x in W:
 			var c := Vector2i(x, y)
 			var fsrc: int = ground_set.get("src", FLOOR)
-			if wet.has(c):
+			if wet.has(c) and overlay:
+				ground.set_cell(c, fsrc, ground_set["base"])
+				overlay.set_cell(c, WATERC, _auto_tile(c, wet, wshift))
+			elif wet.has(c):
 				ground.set_cell(c, ground_set.get("water_src", WATER), _auto_tile(c, wet, ground_set["water"]))
 			elif dirt.has(c):
 				ground.set_cell(c, fsrc, _dirt_tile(c))
@@ -730,19 +869,20 @@ func _make_village(parent: Node, center: Vector2i) -> void:
 			for y in range(c.y + region.size.y, road_y):
 				dirt[Vector2i(c.x + 1, y)] = true
 	# 신사 문(세로 길 위쪽 끝)
-	var tx := _road_x(5)
-	_sprite_prop(parent, house_tex, TORII, Vector2((tx + 1) * T, 6 * T + T - 2.0), Vector2.ZERO, "Torii")
-	_block(Vector2i(tx - 1, 4), Vector2i(4, 3))
+	if cfg.get("torii", true):
+		var tx := _road_x(5)
+		_sprite_prop(parent, house_tex, TORII, Vector2((tx + 1) * T, 6 * T + T - 2.0), Vector2.ZERO, "Torii")
+		_block(Vector2i(tx - 1, 4), Vector2i(4, 3))
 	# 우물
 	var well_c := center + Vector2i(4, -4)
 	_sprite_prop(parent, desert_tex, WELL, Vector2(well_c * T) + Vector2(T, 2 * T - 2.0), Vector2(26, 12), "Well")
 	_block(well_c - Vector2i.ONE, Vector2i(4, 4))
 	# 마을 사람
-	_make_npcs(parent, VILLAGERS, center)
+	_make_npcs(parent, cfg.get("villagers", VILLAGERS), center)
 	# 동물
 	var critter_script := load("res://features/npc/critter.gd") as Script
-	var critters := [["cat", Vector2i(-6, 3)], ["cat", Vector2i(8, -3)], ["chicken", Vector2i(-11, 9)], ["chicken", Vector2i(-10, 10)], ["chicken", Vector2i(12, 9)],
-		["dog", Vector2i(2, 6)], ["cow", Vector2i(-15, 9)], ["pig", Vector2i(-12, 11)], ["horse", Vector2i(15, -6)]]
+	var critters: Array = cfg.get("critters", [["cat", Vector2i(-6, 3)], ["cat", Vector2i(8, -3)], ["chicken", Vector2i(-11, 9)], ["chicken", Vector2i(-10, 10)], ["chicken", Vector2i(12, 9)],
+		["dog", Vector2i(2, 6)], ["cow", Vector2i(-15, 9)], ["pig", Vector2i(-12, 11)], ["horse", Vector2i(15, -6)]])
 	for k: Array in critters:
 		var cr := Node2D.new()
 		cr.set_script(critter_script)
@@ -788,7 +928,7 @@ func _make_scenery(ground: Node) -> void:
 	deco.name = "Deco"
 	deco.tile_set = gate_ts
 	_add(world, deco)
-	world.move_child(deco, ground.get_index() + 1)
+	world.move_child(deco, _above_ground(ground))
 	var ent := world.get_node(^"Entities")
 	var fx := Node2D.new()
 	fx.name = "Scenery"
@@ -797,6 +937,12 @@ func _make_scenery(ground: Node) -> void:
 	else:
 		_make_snow_mountain(deco, ent, fx)
 	_add(world, fx)
+
+
+## 땅(과 물 겹침 층) 바로 위 자리: 장식 층이 물에 덮이지 않게
+func _above_ground(ground: Node) -> int:
+	var wl := world.get_node_or_null(^"WaterLayer")
+	return (wl.get_index() if wl else ground.get_index()) + 1
 
 
 ## 장식 층에 칸 찍기(타일이 없으면 만든다). src: 0 겨울 팩, 1 물의 신전 팩, 2 Ninja 물
@@ -941,7 +1087,7 @@ func _make_waterfall(ground: Node, ent: Node) -> void:
 	cliff.name = "Cliff"
 	cliff.tile_set = tileset
 	_add(world, cliff)
-	world.move_child(cliff, ground.get_index() + 1)
+	world.move_child(cliff, _above_ground(ground))
 	for y in top:
 		for x in W:
 			cliff.set_cell(Vector2i(x, y), RELIEF, Vector2i(5, 2 if y == top - 1 else 1))
@@ -1083,6 +1229,11 @@ func _build_temple(ground: TileMapLayer, ent: Node, spawns: Node) -> void:
 			if not blocked.has(c):
 				_sprite_prop(ent, temple_tex, Rect2i(k % 2, 20, 1, 1), Vector2((c.x + 0.5) * T, (c.y + 1) * T), Vector2(10, 6), "Urn")
 				_block(c, Vector2i.ONE)
+	var rn: Array = cfg.get("room_npcs", [])
+	for k in rn.size():
+		var v: Array = rn[k]
+		var c := rooms[k % n].get_center() + Vector2i(0, 2 + k / n * 2)
+		_make_npcs(ent, [[v[0], v[1], c, v[2]]], Vector2i.ZERO)
 	hub = rooms[0].get_center()
 	_make_portals(spawns)
 	_make_npcs(ent, cfg.get("npcs", []), Vector2i.ZERO)
@@ -1150,6 +1301,15 @@ func _make_water(start: Vector2i) -> void:
 			if Vector2(c).distance_to(_entry(g)) < 6.0:
 				return true
 		return false
+	# 하늘섬: 둥근 섬 바깥은 모두 물(구름 바다)
+	if cfg.get("isle", false):
+		var c0 := Vector2(W / 2.0, H / 2.0)
+		for y in H:
+			for x in W:
+				var c := Vector2i(x, y)
+				var q := (Vector2(c) - c0) / Vector2(W / 2.0 - 2.5, H / 2.0 - 2.5)
+				if q.length() + noise.get_noise_2d(x * 2.5, y * 2.5) * 0.12 > 1.0 and not keep_clear.call(c):
+					water[c] = true
 	# 큰 호수(가운데 섬에서 시작, 길은 둑길로 남는다)
 	if cfg.has("lake"):
 		var lr: float = cfg["lake"]
@@ -1311,11 +1471,10 @@ func _make_border(parent: Node) -> void:
 			edge.append(Vector2(col * T, y))
 			edge.append(Vector2(W * T - col * T, y))
 	var desert: bool = cfg["border"] in ["desert", "rock"]
-	if cfg["border"] == "none":
-		return
+	var no_props: bool = cfg["border"] == "none"
 	var top := float(cfg.get("top_rows", 0)) * T
 	for p in edge:
-		if _in_gap(p) or water.has(Vector2i(p / T)) or p.y < top:
+		if no_props or _in_gap(p) or water.has(Vector2i(p / T)) or p.y < top:
 			continue
 		var jitter := Vector2(rng.randf_range(-4, 4), rng.randf_range(-3, 3))
 		if desert:

@@ -15,6 +15,9 @@ func _ready() -> void:
 			Save.selected = StringName(a.trim_prefix("--char="))
 		elif a.begins_with("--map="):
 			map = a.trim_prefix("--map=")
+		elif a.begins_with("--pet="):
+			Save.pets[a.trim_prefix("--pet=")] = true
+			Save.pet = a.trim_prefix("--pet=")
 	var path := "res://features/world/%s.tscn" % ("world" if map == "field" else map)
 	add_child((load(path) as PackedScene).instantiate())
 	player = get_tree().get_first_node_in_group(&"player") as Player

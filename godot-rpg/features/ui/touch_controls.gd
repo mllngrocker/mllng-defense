@@ -49,11 +49,7 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventScreenDrag:
 		var drag := event as InputEventScreenDrag
 		if drag.index == joy_index:
-			joy_pos = drag.position
-			# 손가락이 원 밖으로 나가면 받침이 따라온다(떠다니는 조이스틱)
-			var off := joy_pos - joy_base
-			if off.length() > JOY_RADIUS:
-				joy_base = joy_pos - off.normalized() * JOY_RADIUS
+			joy_pos = drag.position  # 받침은 처음 누른 자리에 고정, 방향만 바뀐다
 			_apply_joystick()
 			queue_redraw()
 

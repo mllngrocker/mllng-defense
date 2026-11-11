@@ -5,14 +5,14 @@
 
 [node name="Bluebat" instance=ExtResource("1_base")]
 kind = 2
-max_hp = 80
+max_hp = 727
 speed = 48.0
-damage = 15
+damage = 32
 chase_range = 120.0
 anim_fps = 8.0
-gold_reward = 15
+gold_reward = 30
 gem_chance = 0.2
-gem_reward = 8
+gem_reward = 10
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

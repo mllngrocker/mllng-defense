@@ -15,11 +15,15 @@ const REGION_KINDS := {
 	"snow": ["panda", "bear", "ice_skull", "frost_spirit", "snow_bat", "snow_mouse", "yeti_king"],
 	"temple": ["blue_axolot", "deep_octopus", "green_octopus", "red_octopus", "jump_fish", "kappa_red", "kraken"],
 	"lava": ["flam", "flam2", "dragon", "dragon_y", "trex", "grey_trex", "heart_red", "flame_dragon"],
-	"hell": ["lantern_red", "demon_eye", "skull", "dragon", "grey_trex", "demon_lord"],
+	"hell": ["lantern_red", "demon_eye", "dragon", "grey_trex", "demon_lord"],
+	"sky": ["bamboo", "bamboo_y", "gold_racoon", "heart_green", "sky_spirit", "sky_bat", "giant_soul"],
 }
 
+## 이 메인 퀘스트 보상을 받으면 펫도 준다
+const PET_REWARDS := {"촌장에게 인사하기": &"cat", "무기 장착하기": &"chicken", "성장하기": &"dog"}
+
 const MAIN: Array[Dictionary] = [
-	{"title": "촌장에게 인사하기", "desc": "마을 광장에 있는 촌장에게 가까이 가서 이야기를 듣자.", "type": "talk", "target": "촌장", "count": 1, "gold": 100, "gems": 30},
+	{"title": "촌장에게 인사하기", "desc": "레몬 마을 광장의 촌장에게 몬스터 이야기를 듣자.", "type": "talk", "target": "촌장", "count": 1, "gold": 100, "gems": 30},
 	{"title": "초원으로!", "desc": "마을 동쪽 끝의 빛나는 문으로 나가 초록 초원에 가 보자.", "type": "reach", "target": "field", "count": 1, "gold": 100, "gems": 0},
 	{"title": "슬라임 퇴치", "desc": "초록 초원에서 통통 튀는 슬라임을 5마리 물리치자.", "type": "kill", "target": "slime", "count": 5, "gold": 200, "gems": 30},
 	{"title": "새 동료 부르기", "desc": "로비의 상점 탭에서 소환을 1번 해 보자.", "type": "pull", "target": "", "count": 1, "gold": 0, "gems": 100},
@@ -31,27 +35,48 @@ const MAIN: Array[Dictionary] = [
 	{"title": "스킬 연습", "desc": "전투에서 스킬(E 키 / 노란 버튼)을 5번 써 보자.", "type": "skill", "target": "", "count": 5, "gold": 200, "gems": 30},
 	{"title": "숲의 주인", "desc": "어스름 숲 북동쪽 깊은 곳의 킹 슬라임을 물리치자. 사막 길이 열린다!", "type": "boss", "target": "king_slime", "count": 1, "gold": 800, "gems": 150},
 	{"title": "뜨거운 사막", "desc": "어스름 숲 동쪽 끝의 문을 지나 사막에 도착하자.", "type": "reach", "target": "desert", "count": 1, "gold": 200, "gems": 0},
+	{"title": "오아시스 마을", "desc": "사막 동쪽의 오아시스 마을에서 족장의 이야기를 듣자.", "type": "talk", "target": "족장", "count": 1, "gold": 400, "gems": 30},
 	{"title": "사막 정찰", "desc": "사막의 몬스터를 15마리 물리치자.", "type": "kill", "target": "desert", "count": 15, "gold": 500, "gems": 50},
 	{"title": "모래바람 협곡", "desc": "사막 동쪽 문을 지나 바위투성이 협곡으로 들어가자.", "type": "reach", "target": "desert2", "count": 1, "gold": 300, "gems": 30},
 	{"title": "저주받은 폐허", "desc": "협곡 끝, 뼈만 남은 폐허에 발을 들이자. 공기가 무겁다…", "type": "reach", "target": "desert3", "count": 1, "gold": 400, "gems": 50},
 	{"title": "외눈 거인 왕", "desc": "저주받은 폐허 남동쪽 깊은 곳의 외눈 거인 왕을 물리치고 1장을 끝내자!", "type": "boss", "target": "cyclope_king", "count": 1, "gold": 2000, "gems": 300},
+	# 1-2장 남쪽의 그림자
+	{"title": "남쪽의 그림자", "desc": "외눈 거인 왕이 말한 남쪽으로! 마을 남쪽 문을 지나 독안개 늪에 가 보자.", "type": "reach", "target": "swamp", "count": 1, "gold": 1500, "gems": 50},
+	{"title": "늪 정화", "desc": "남쪽 지역의 몬스터를 60마리 물리치자.", "type": "kill", "target": "south", "count": 60, "gold": 3000, "gems": 80},
+	{"title": "버려진 마을의 비밀", "desc": "늪 동쪽, 사람들이 사라진 버려진 마을을 조사하자.", "type": "reach", "target": "ruinvillage", "count": 1, "gold": 2000, "gems": 50},
+	{"title": "더 강해지기", "desc": "아무 캐릭터나 레벨 25를 만들자.", "type": "level", "target": "", "count": 25, "gold": 3000, "gems": 100},
+	{"title": "수정 거미 여왕", "desc": "버려진 마을 남쪽 수정 동굴 깊은 곳의 여왕을 물리치자. 설산의 얼음이 녹는다!", "type": "boss", "target": "spider_queen", "count": 1, "gold": 8000, "gems": 300},
 	# 2장 설산
-	{"title": "2장: 눈꽃 평원", "desc": "마을 북쪽 설산 입구의 동굴이 열렸다! 들어가서 눈꽃 평원에 가 보자.", "type": "reach", "target": "snow1", "count": 1, "gold": 800, "gems": 50},
-	{"title": "설원의 사냥", "desc": "설산의 몬스터를 25마리 물리치자.", "type": "kill", "target": "snow", "count": 25, "gold": 1500, "gems": 80},
-	{"title": "서리 전나무 숲", "desc": "얼어붙은 호수와 눈보라 협곡을 지나 서리 전나무 숲에 닿자.", "type": "reach", "target": "snow4", "count": 1, "gold": 1500, "gems": 60},
-	{"title": "설원의 대왕곰", "desc": "빙하 동굴 너머 설산 정상의 대왕곰을 물리치자. 해저 신전의 봉인이 풀린다!", "type": "boss", "target": "yeti_king", "count": 1, "gold": 5000, "gems": 400},
+	{"title": "2장: 눈꽃 평원", "desc": "마을 북쪽 설산 입구의 동굴이 열렸다! 눈꽃 평원으로 가자.", "type": "reach", "target": "snow1", "count": 1, "gold": 3000, "gems": 60},
+	{"title": "눈꽃 마을", "desc": "눈꽃 평원 북쪽의 눈꽃 마을에서 촌장의 이야기를 듣자.", "type": "talk", "target": "눈꽃 촌장", "count": 1, "gold": 3000, "gems": 60},
+	{"title": "설원의 사냥", "desc": "설산의 몬스터를 80마리 물리치자.", "type": "kill", "target": "snow", "count": 80, "gold": 6000, "gems": 120},
+	{"title": "서리 전나무 숲", "desc": "얼어붙은 호수와 눈보라 협곡을 지나 서리 전나무 숲에 닿자.", "type": "reach", "target": "snow4", "count": 1, "gold": 4000, "gems": 60},
+	{"title": "추위를 견디는 힘", "desc": "아무 캐릭터나 레벨 40을 만들자.", "type": "level", "target": "", "count": 40, "gold": 6000, "gems": 150},
+	{"title": "설원의 대왕곰", "desc": "빙하 동굴 너머 설산 정상의 대왕곰을 물리치자. 해저 신전의 봉인이 풀린다!", "type": "boss", "target": "yeti_king", "count": 1, "gold": 15000, "gems": 500},
 	# 3장 해저 신전
-	{"title": "3장: 해저 신전", "desc": "마을 서쪽 나루터의 신전 문이 열렸다. 해저 신전으로 들어가자.", "type": "reach", "target": "temple1", "count": 1, "gold": 2000, "gems": 80},
-	{"title": "신전 정화", "desc": "해저 신전의 몬스터를 30마리 물리치자.", "type": "kill", "target": "temple", "count": 30, "gold": 3000, "gems": 120},
-	{"title": "심연 계단", "desc": "신전 깊은 곳, 심연 계단까지 내려가자.", "type": "reach", "target": "temple5", "count": 1, "gold": 3000, "gems": 100},
-	{"title": "심해의 크라켄", "desc": "해신의 제단에 도사린 크라켄을 물리치자. 저주받은 폐허 동쪽 길이 열린다!", "type": "boss", "target": "kraken", "count": 1, "gold": 10000, "gems": 600},
+	{"title": "3장: 해저 신전", "desc": "마을 서쪽 나루터의 신전 문이 열렸다. 해저 신전으로 들어가자.", "type": "reach", "target": "temple1", "count": 1, "gold": 6000, "gems": 80},
+	{"title": "물방울 마을", "desc": "신전 안 물방울 마을의 늙은 학자에게 큰 나무 이야기를 듣자.", "type": "talk", "target": "늙은 학자", "count": 1, "gold": 6000, "gems": 80},
+	{"title": "신전 정화", "desc": "해저 신전의 몬스터를 100마리 물리치자.", "type": "kill", "target": "temple", "count": 100, "gold": 12000, "gems": 150},
+	{"title": "심연 계단", "desc": "신전 깊은 곳, 심연 계단까지 내려가자.", "type": "reach", "target": "temple5", "count": 1, "gold": 8000, "gems": 80},
+	{"title": "깊은 바다의 힘", "desc": "아무 캐릭터나 레벨 55를 만들자.", "type": "level", "target": "", "count": 55, "gold": 12000, "gems": 200},
+	{"title": "심해의 크라켄", "desc": "해신의 제단에 도사린 크라켄을 물리치자. 저주받은 폐허 동쪽 길이 열린다!", "type": "boss", "target": "kraken", "count": 1, "gold": 30000, "gems": 800},
 	# 4장 용암·지옥
-	{"title": "4장: 잿빛 황무지", "desc": "저주받은 폐허 동쪽 문을 지나 용암 지대로 가자.", "type": "reach", "target": "lava1", "count": 1, "gold": 4000, "gems": 100},
-	{"title": "불꽃 사냥", "desc": "용암 지대의 몬스터를 40마리 물리치자.", "type": "kill", "target": "lava", "count": 40, "gold": 6000, "gems": 150},
-	{"title": "화염룡 이그니스", "desc": "용암 지대 끝, 화염룡의 둥지에서 이그니스를 물리치자. 지옥문이 열린다!", "type": "boss", "target": "flame_dragon", "count": 1, "gold": 15000, "gems": 800},
-	{"title": "지옥문", "desc": "지옥문을 지나 지옥에 발을 들이자.", "type": "reach", "target": "hell1", "count": 1, "gold": 6000, "gems": 120},
-	{"title": "지옥 정화", "desc": "지옥의 몬스터를 50마리 물리치자.", "type": "kill", "target": "hell", "count": 50, "gold": 9000, "gems": 200},
-	{"title": "마왕 아자젤", "desc": "마왕의 옥좌에서 마왕 아자젤을 쓰러뜨리고 세상을 구하자!", "type": "boss", "target": "demon_lord", "count": 1, "gold": 50000, "gems": 3000},
+	{"title": "4장: 잿빛 황무지", "desc": "저주받은 폐허 동쪽 문을 지나 용암 지대로 가자.", "type": "reach", "target": "lava1", "count": 1, "gold": 12000, "gems": 100},
+	{"title": "불꽃 사냥", "desc": "용암 지대의 몬스터를 120마리 물리치자.", "type": "kill", "target": "lava", "count": 120, "gold": 25000, "gems": 200},
+	{"title": "불꽃 대장간 마을", "desc": "불꽃 협곡 동쪽 대장간 마을의 대장장이를 만나자.", "type": "talk", "target": "대장장이", "count": 1, "gold": 15000, "gems": 100},
+	{"title": "불에 단련되기", "desc": "아무 캐릭터나 레벨 70을 만들자.", "type": "level", "target": "", "count": 70, "gold": 25000, "gems": 250},
+	{"title": "화염룡 이그니스", "desc": "용암 지대 끝, 화염룡의 둥지에서 이그니스를 물리치자. 지옥문이 열린다!", "type": "boss", "target": "flame_dragon", "count": 1, "gold": 50000, "gems": 1200},
+	{"title": "지옥문", "desc": "지옥문을 지나 지옥에 발을 들이자.", "type": "reach", "target": "hell1", "count": 1, "gold": 20000, "gems": 150},
+	{"title": "지옥 정화", "desc": "지옥의 몬스터를 150마리 물리치자.", "type": "kill", "target": "hell", "count": 150, "gold": 40000, "gems": 300},
+	{"title": "마왕과 맞설 힘", "desc": "아무 캐릭터나 레벨 85를 만들자.", "type": "level", "target": "", "count": 85, "gold": 40000, "gems": 300},
+	{"title": "마왕 아자젤", "desc": "마왕의 옥좌에서 몬스터의 왕 아자젤을 쓰러뜨리자!", "type": "boss", "target": "demon_lord", "count": 1, "gold": 80000, "gems": 2000},
+	# 5장 천공의 탑
+	{"title": "5장: 빛의 계단", "desc": "마왕이 남긴 빛의 계단을 올라 하늘섬에 가 보자.", "type": "reach", "target": "sky1", "count": 1, "gold": 30000, "gems": 200},
+	{"title": "구름 마을", "desc": "하늘섬의 구름 마을에서 장로에게 큰 나무 이야기를 듣자.", "type": "talk", "target": "구름 장로", "count": 1, "gold": 30000, "gems": 200},
+	{"title": "구름 위의 사냥", "desc": "하늘섬과 천공의 탑 몬스터를 150마리 물리치자.", "type": "kill", "target": "sky", "count": 150, "gold": 60000, "gems": 400},
+	{"title": "천공의 탑", "desc": "꽃구름 섬을 지나 천공의 탑 꼭대기에 오르자.", "type": "reach", "target": "sky6", "count": 1, "gold": 40000, "gems": 300},
+	{"title": "전설의 용사", "desc": "아무 캐릭터나 레벨 100을 만들자.", "type": "level", "target": "", "count": 100, "gold": 80000, "gems": 500},
+	{"title": "고대 거인의 혼", "desc": "탑 꼭대기 큰 나무를 지키는 고대 거인의 혼을 잠재우고, 몬스터가 끝없이 나타나는 이유를 밝혀내자!", "type": "boss", "target": "giant_soul", "count": 1, "gold": 200000, "gems": 5000},
 ]
 
 const DAILY: Array[Dictionary] = [
@@ -142,6 +167,8 @@ func claim_main() -> bool:
 		return false
 	var q := current()
 	_reward(q)
+	if PET_REWARDS.has(q["title"]):
+		Save.grant_pet(PET_REWARDS[q["title"]])
 	Save.quest["main"] = main_index() + 1
 	Save.quest["progress"] = 0
 	Save.save_game()

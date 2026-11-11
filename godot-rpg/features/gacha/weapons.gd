@@ -31,7 +31,18 @@ const DATA: Dictionary[StringName, Array] = {
 	&"sickle": ["농부의 낫", 3, 5, 0.02, "밭일하다 들고 나왔다"],
 	&"mace": ["가시 철퇴", 3, 6, 0.01, "둔탁하지만 확실하다"],
 	&"wand": ["견습 마법봉", 3, 4, 0.03, "마법 학교 입학 선물"],
+	# 보스를 처음 잡으면 받는 무기(뽑기에서는 안 나온다): [.., true]
+	&"slime_scepter": ["슬라임 왕의 홀", 5, 20, 0.04, "말랑하지만 묵직한 왕의 홀", true],
+	&"crystal_fang": ["수정 송곳니", 5, 26, 0.15, "거미 여왕의 수정 송곳니로 만든 단검", true],
+	&"cyclops_maul": ["거인의 가시 몽둥이", 5, 34, 0.04, "외눈 거인 왕이 휘두르던 몽둥이", true],
+	&"glacier_blade": ["빙하의 대검", 5, 52, 0.06, "녹지 않는 얼음으로 벼린 대검", true],
+	&"sea_trident": ["해신의 삼지창", 5, 78, 0.08, "깊은 바다의 힘이 깃든 삼지창", true],
+	&"ignis_spear": ["이그니스의 화염창", 5, 112, 0.10, "화염룡의 숨결이 타오르는 창", true],
+	&"demon_sword": ["마왕의 검", 5, 160, 0.15, "마왕 아자젤을 쓰러뜨린 자의 증표", true],
+	&"giant_heart": ["거인의 심장창", 5, 230, 0.18, "고대 거인이 남긴 빛나는 창", true],
 }
+const MAX_ENHANCE := 20
+const ENHANCE_BONUS := 0.08  # 강화 1마다 공격력 +8%
 
 static var _tex: Dictionary[StringName, Texture2D] = {}
 
@@ -45,9 +56,19 @@ static func ids() -> Array[StringName]:
 static func pool(rarity: int) -> Array[StringName]:
 	var out: Array[StringName] = []
 	for id: StringName in DATA:
-		if int(DATA[id][1]) == rarity:
+		if int(DATA[id][1]) == rarity and not is_boss(id):
 			out.append(id)
 	return out
+
+
+## 보스 전리품 무기(뽑기에 안 나옴)
+static func is_boss(id: StringName) -> bool:
+	return DATA[id].size() > 5 and DATA[id][5]
+
+
+## 강화 비용(골드): 갈수록 비싸진다
+static func enhance_cost(level: int) -> int:
+	return 200 + level * level * 150
 
 
 static func name_of(id: StringName) -> String:
@@ -67,8 +88,8 @@ static func crit_of(id: StringName) -> float:
 
 
 ## 재련을 반영한 공격력
-static func atk_of(id: StringName, refine: int) -> int:
-	return roundi(int(DATA[id][2]) * (1.0 + REFINE_BONUS * refine))
+static func atk_of(id: StringName, refine: int, enhance := 0) -> int:
+	return roundi(int(DATA[id][2]) * (1.0 + REFINE_BONUS * refine) * (1.0 + ENHANCE_BONUS * enhance))
 
 
 static func texture(id: StringName) -> Texture2D:

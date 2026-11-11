@@ -75,7 +75,7 @@ map={
 
 [physics]
 
-common/physics_interpolation=true
+common/physics_interpolation=false
 
 [rendering]
 

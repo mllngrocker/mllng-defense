@@ -36,6 +36,7 @@ var tracker: DrawBox
 
 
 func _ready() -> void:
+	add_to_group(&"hud")
 	canvas.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	canvas.draw.connect(_draw_hud)
 	Events.character_changed.connect(_on_character_changed)
@@ -212,7 +213,8 @@ func _draw_counters(ci: Control) -> void:
 	for i in rows.size():
 		var r := Rect2(x, 12 + i * 36, 112, 30)
 		Gt.pill(ci, r)
-		Gt.icon(ci, rows[i][0], Vector2(r.position.x + 4, r.get_center().y), 26)
+		# 아이콘은 칸 안쪽 왼쪽에 크게(골드·보석 그림은 여백이 있어 조금 더 키운다)
+		Gt.icon(ci, rows[i][0], Vector2(r.position.x + 15, r.get_center().y), 26 if i == 0 else 34)
 		Gt.title(ci, Vector2(r.end.x - 10, r.position.y + 21), _comma(rows[i][1]), 15, rows[i][2], 2)
 
 

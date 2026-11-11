@@ -5,14 +5,14 @@
 
 [node name="JumpFish" instance=ExtResource("1_base")]
 kind = 1
-max_hp = 400
+max_hp = 2514
 speed = 40.0
-damage = 40
+damage = 77
 chase_range = 120.0
 anim_fps = 7.0
-gold_reward = 46
+gold_reward = 95
 gem_chance = 0.3
-gem_reward = 18
+gem_reward = 22
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

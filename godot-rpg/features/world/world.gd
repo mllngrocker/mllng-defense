@@ -22,6 +22,12 @@ func _ready() -> void:
 			player.global_position = spot.global_position
 			player.reset_physics_interpolation()
 		Game.next_spawn = ""
+	if Save.pet != "" and Pets.DATA.has(StringName(Save.pet)):
+		var pet := Pet.new()
+		pet.name = "Pet"
+		pet.pet_id = StringName(Save.pet)
+		player.get_parent().add_child(pet)
+		pet.global_position = player.global_position + Pet.FOLLOW
 	var rect := ground.get_used_rect()
 	var size := ground.tile_set.tile_size
 	var cam: Camera2D = player.get_node(^"Camera")
@@ -35,6 +41,8 @@ func _ready() -> void:
 	if map_title != "":
 		Events.map_entered.emit.call_deferred(map_title)
 	Quests.track.call_deferred("reach", map_id())
+	# 처음 온 맵이면 이야기 장면(맵 이름 띠가 보인 뒤)
+	get_tree().create_timer(1.0, false).timeout.connect(func() -> void: StoryBox.play(self, "enter_" + map_id()))
 
 
 ## 맵 이름(village / field / desert)

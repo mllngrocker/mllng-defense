@@ -5,14 +5,14 @@
 
 [node name="SnowBat" instance=ExtResource("1_base")]
 kind = 2
-max_hp = 200
+max_hp = 1498
 speed = 50.0
-damage = 24
+damage = 53
 chase_range = 130.0
 anim_fps = 8.0
-gold_reward = 26
+gold_reward = 55
 gem_chance = 0.25
-gem_reward = 12
+gem_reward = 15
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

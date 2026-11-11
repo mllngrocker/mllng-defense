@@ -5,14 +5,14 @@
 
 [node name="HeartRed" instance=ExtResource("1_base")]
 kind = 1
-max_hp = 760
+max_hp = 3440
 speed = 40.0
-damage = 62
+damage = 79
 chase_range = 120.0
 anim_fps = 8.0
-gold_reward = 72
+gold_reward = 150
 gem_chance = 0.3
-gem_reward = 24
+gem_reward = 30
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

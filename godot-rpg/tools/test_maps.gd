@@ -7,10 +7,12 @@ const MAPS := ["village", "world", "hill", "forest", "desert", "desert2", "deser
 	"swamp", "ruinvillage", "crystalcave", "waterfall", "beach",
 	"snow1", "snow2", "snow3", "snow4", "snow5", "snow6",
 	"temple1", "temple2", "temple3", "temple4", "temple5", "temple6",
-	"lava1", "lava2", "lava3", "lava4", "lava5", "lava6", "hell1", "hell2", "hell3", "hell4", "hell5", "hell6"]
+	"lava1", "lava2", "lava3", "lava4", "lava5", "lava6", "hell1", "hell2", "hell3", "hell4", "hell5", "hell6",
+	"sky1", "sky2", "sky3", "sky4", "sky5", "sky6",
+	"desert_town", "snow_town", "temple_town", "lava_town", "sky_town"]
 const BOSS_MAPS := {"forest": "KingSlime", "desert3": "CyclopeKing", "crystalcave": "SpiderQueen", "snow6": "YetiKing",
-	"temple6": "Kraken", "lava6": "FlameDragon", "hell6": "DemonLord"}
-const PEACEFUL := ["village", "shore", "snowgate"]
+	"temple6": "Kraken", "lava6": "FlameDragon", "hell6": "DemonLord", "sky6": "GiantSoul"}
+const PEACEFUL := ["village", "shore", "snowgate", "desert_town", "snow_town", "temple_town", "lava_town", "sky_town"]
 
 var fails := 0
 

@@ -45,7 +45,7 @@ func _ready() -> void:
 	Quests.claim_main()
 
 	# 사막 처치 수: 사막 몬스터만 센다
-	Save.quest["main"] = 12
+	Save.quest["main"] = 13
 	Save.quest["progress"] = 0
 	Quests.track("kill", "slime")
 	Quests.track("kill", "snake")

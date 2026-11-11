@@ -12,17 +12,17 @@ size = Vector2(31, 17)
 script = ExtResource("3_boss")
 boss_name = "수정 거미 여왕"
 slam_radius = 56.0
-slam_damage = 26
+slam_damage = 70
 summon = ExtResource("4_minion")
 kind = 0
-max_hp = 1800
+max_hp = 12000
 speed = 22.0
-damage = 22
+damage = 45
 chase_range = 150.0
 anim_fps = 5.0
-gold_reward = 800
+gold_reward = 3000
 gem_chance = 1.0
-gem_reward = 100
+gem_reward = 300
 drop_chance = 1.0
 
 [node name="Shadow" parent="." index="0"]

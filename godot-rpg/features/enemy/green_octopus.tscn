@@ -5,14 +5,14 @@
 
 [node name="GreenOctopus" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 460
+max_hp = 2679
 speed = 34.0
-damage = 42
+damage = 82
 chase_range = 110.0
 anim_fps = 6.0
-gold_reward = 48
+gold_reward = 95
 gem_chance = 0.3
-gem_reward = 18
+gem_reward = 22
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

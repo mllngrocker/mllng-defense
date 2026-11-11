@@ -5,14 +5,14 @@
 
 [node name="Panda" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 260
+max_hp = 1204
 speed = 30.0
-damage = 26
+damage = 43
 chase_range = 110.0
 anim_fps = 6.0
-gold_reward = 30
+gold_reward = 55
 gem_chance = 0.25
-gem_reward = 14
+gem_reward = 15
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

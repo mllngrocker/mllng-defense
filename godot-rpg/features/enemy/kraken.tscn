@@ -12,17 +12,17 @@ size = Vector2(36, 20)
 script = ExtResource("3_boss")
 boss_name = "심해의 크라켄"
 slam_radius = 70.0
-slam_damage = 70
+slam_damage = 160
 summon = ExtResource("4_minion")
 kind = 0
-max_hp = 12000
+max_hp = 43000
 speed = 22.0
-damage = 60
+damage = 100
 chase_range = 150.0
 anim_fps = 5.0
-gold_reward = 5000
+gold_reward = 12000
 gem_chance = 1.0
-gem_reward = 400
+gem_reward = 800
 drop_chance = 1.0
 
 [node name="Shadow" parent="." index="0"]
