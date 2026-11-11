@@ -22,7 +22,10 @@ func _ready() -> void:
 	Save.equip_gear(id, &"boots2")
 	_check("신발 → 이동 속도 +9%%", is_equal_approx(Save.gear_bonus(id, "speed"), 0.09))
 	Save.equip_gear(&"kemo2", &"neck3")
-	_check("다른 캐릭터가 장착하면 빼 온다", Save.gear_on(id, "neck") == &"" and Save.gear_on(&"kemo2", "neck") == &"neck3" and Save.atk_of(id) < roundi(atk0 * 1.2))
+	_check("남이 낀 장비는 못 낀다", Save.gear_on(id, "neck") == &"neck3" and Save.gear_on(&"kemo2", "neck") == &"")
+	Save.swap_equipment(id, &"kemo2")
+	_check("장비 옮기기: 통째로 맞바꾼다", Save.gear_on(&"kemo2", "neck") == &"neck3" and Save.gear_on(&"kemo2", "armor") == &"armor4" and not Save.has_equipment(id))
+	Save.swap_equipment(id, &"kemo2")
 	Save.unequip_gear(id, "armor")
 	_check("해제하면 체력이 줄어든다", Save.gear_on(id, "armor") == &"")
 	for i in Gear.MAX_REFINE + 2:

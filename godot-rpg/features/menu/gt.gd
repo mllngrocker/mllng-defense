@@ -41,7 +41,7 @@ const PINK := Color("ff6b9a")
 const GREEN := Color("46c46a")
 const STAR := Color("ffd23a")
 ## 등급별 별 색: 3성 노랑, 4성 주황, 5성 보라
-const STAR_BY_RARITY := {3: Color("ffd23a"), 4: Color("ff8a2a"), 5: Color("c56bff")}
+const STAR_BY_RARITY := {3: Color("ffd23a"), 4: Color("ff8a2a"), 5: Color("c56bff"), 6: Color("ff4f7a")}
 const SHADOW := Color(0.18, 0.06, 0.2, 0.28)
 ## 등급 색: ★3 하늘, ★4 보라, ★5 금
 const RARITY: Dictionary[int, Color] = {3: Color("5db8ff"), 4: Color("b77cff"), 5: Color("ffc531")}
@@ -264,6 +264,35 @@ static func star(ci: CanvasItem, c: Vector2, r: float, color := STAR) -> void:
 
 
 ## 반짝이(네 갈래 별빛)
+## 무지개 별(7성): 꼭짓점마다 무지개색이 번지는 큰 별 하나
+static func rainbow_star(ci: CanvasItem, c: Vector2, r: float) -> void:
+	var pts := star_pts(c, r)
+	var out := star_pts(c, r + 2.0)
+	ci.draw_colored_polygon(out, INK)
+	var cols := PackedColorArray()
+	for i in pts.size():
+		cols.append(Color.from_hsv(float(i) / pts.size(), 0.75, 1.0))
+	# 가운데 흰빛에서 꼭짓점 색으로 퍼지게 삼각형 부채로 그린다
+	for i in pts.size():
+		var j := (i + 1) % pts.size()
+		ci.draw_polygon(PackedVector2Array([c, pts[i], pts[j]]), PackedColorArray([Color.WHITE, cols[i], cols[j]]))
+	ci.draw_circle(c + Vector2(-r * 0.18, -r * 0.2), r * 0.16, Color(1, 1, 1, 0.8))
+
+
+## 별 등급 줄(가운데 맞춤): 3~6성은 그 수만큼 등급색 별, 7성은 무지개 별 하나. 그린 폭을 돌려준다
+static func rank_stars(ci: CanvasItem, c: Vector2, rank: int, r: float, left := false) -> float:
+	if rank >= 7:
+		var big := r * 1.45
+		rainbow_star(ci, c + Vector2(big if left else 0.0, 0), big)
+		return big * 2.0
+	var gap := r * 2.15
+	var col: Color = STAR_BY_RARITY.get(rank, STAR)
+	var x0 := c.x + (r if left else -(rank - 1) * gap / 2.0)
+	for i in rank:
+		star(ci, Vector2(x0 + i * gap, c.y), r, col)
+	return (rank - 1) * gap + r * 2.0
+
+
 static func sparkle(ci: CanvasItem, c: Vector2, s: float, color := Color.WHITE) -> void:
 	var l := s * 1.6
 	var w := s * 0.28
@@ -595,11 +624,8 @@ static func char_card(ci: CanvasItem, data: CharacterData, r: Rect2, owned := tr
 	UiKit.card_art(ci, data, inner, tint)
 	var fade_h := inner.size.y * 0.32
 	grad(ci, Rect2(inner.position.x, inner.end.y - fade_h, inner.size.x, fade_h), Color(INK, 0.0), Color(INK, 0.75))
-	var n := data.rarity
-	var sr := clampf(inner.size.x / 15.0, 4.0, 8.0)
-	var star_col: Color = STAR_BY_RARITY.get(n, STAR)
-	for i in n:
-		star(ci, Vector2(inner.get_center().x + (i - (n - 1) / 2.0) * sr * 2.15, inner.end.y - sr - 4), sr, star_col)
+	var sr := clampf(inner.size.x / 17.0, 3.6, 8.0)
+	rank_stars(ci, Vector2(inner.get_center().x, inner.end.y - sr - 4), Save.rank_of(data.id) if owned else data.rarity, sr)
 	if show_name:
 		title(ci, Vector2(inner.get_center().x, inner.end.y - sr * 2.0 - 9), data.display_name, int(clampf(inner.size.x / 5.5, 11, 22)), Color.WHITE, 1)
 	element_badge(ci, Vector2(inner.end.x - 9, inner.position.y + 10), 6.5, data.element)

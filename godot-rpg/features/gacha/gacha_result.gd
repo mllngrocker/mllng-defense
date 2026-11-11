@@ -232,8 +232,11 @@ func _draw_single_weapon(r: Dictionary) -> void:
 
 func _draw_result_info(r: Dictionary, title: String, sub: String, top: Vector2, s: float) -> void:
 	var rarity := int(r["rarity"])
-	for i in rarity:
-		Gt.star(self, top + Vector2((i - (rarity - 1) / 2.0) * 30.0 * s, 0), 13 * s)
+	if r.has("id") and Save.ROSTER.has(StringName(str(r["id"]))):
+		Gt.rank_stars(self, top, Save.rank_of(StringName(str(r["id"]))), 13 * s)  # 캐릭터는 지금 별 등급(7성은 무지개 별)
+	else:
+		for i in rarity:
+			Gt.star(self, top + Vector2((i - (rarity - 1) / 2.0) * 30.0 * s, 0), 13 * s)
 	Gt.text(self, top + Vector2(0, 50 * s), title, int(40 * s), Color.WHITE, 1, true, 8, Gt.INK)
 	Gt.text(self, top + Vector2(0, 68 * s), sub, int(14 * s), Color("ffe36b"), 1, true, 4, Gt.INK, true)
 	_draw_tag(r, top + Vector2(0, 80 * s), s)
@@ -244,7 +247,7 @@ func _tag_info(r: Dictionary) -> Array:
 		"new":
 			return ["NEW!", Color("ff4f8b")]
 		"star":
-			return ["★%d" % int(r["stars"]), Color("ffb31a")]
+			return ["%d성 승급!" % Save.rank_of(r["id"]), Color("ffb31a")]
 		"refine":
 			return ["재련 +%d" % int(r["refine"]), Color("4fb4ff")]
 		_:

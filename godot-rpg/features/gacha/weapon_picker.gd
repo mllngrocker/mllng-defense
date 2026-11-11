@@ -1,7 +1,7 @@
 class_name WeaponPicker
 extends Control
 ## 무기 선택 창(화면 전체를 덮는다): 가진 무기 카드 목록 → 누르면 아래에 능력치·설명 → "장착"/"해제".
-## 다른 캐릭터가 끼고 있는 무기를 장착하면 그 캐릭터에서 빼 온다.
+## 다른 캐릭터가 끼고 있는 무기는 장착할 수 없다(그 캐릭터에서 먼저 해제하거나, 출전을 바꿀 때 옮긴다).
 
 signal closed
 
@@ -112,9 +112,10 @@ func _choose(w: StringName) -> void:
 
 func _refresh() -> void:
 	var on := chosen != &"" and Save.equipped(char_id) == chosen
-	equip_button.label = "해제" if on else "장착"
-	equip_button.kind = Gt.Kind.GRAY if on else Gt.Kind.YELLOW
-	equip_button.disabled = chosen == &""
+	var held := chosen != &"" and Save.holder_of(chosen) != &"" and Save.holder_of(chosen) != char_id
+	equip_button.label = "해제" if on else ("착용 중" if held else "장착")
+	equip_button.kind = Gt.Kind.GRAY if on or held else Gt.Kind.YELLOW
+	equip_button.disabled = chosen == &"" or held
 	equip_button.queue_redraw()
 	var lv := Save.enhance_of(chosen) if chosen != &"" else 0
 	enhance_button.disabled = chosen == &"" or lv >= Weapons.MAX_ENHANCE

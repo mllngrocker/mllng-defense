@@ -53,6 +53,63 @@ func _ready() -> void:
 	get_tree().create_timer(1.0, false).timeout.connect(func() -> void: StoryBox.play(self, "enter_" + map_id()))
 
 
+# ── 길찾기(자동 사냥용) ──
+## 맵을 16px 칸으로 나눠 나무·바위·물·벽(1층)이 있는 칸을 막힌 칸으로 표시한 격자. 처음 쓸 때 한 번 만든다.
+var _nav: AStarGrid2D
+
+
+func _build_nav() -> void:
+	_nav = AStarGrid2D.new()
+	_nav.region = ground.get_used_rect()
+	_nav.cell_size = Vector2(16, 16)
+	_nav.offset = Vector2(8, 8)
+	_nav.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
+	_nav.update()
+	var space := get_world_2d().direct_space_state
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(11, 9)  # 용사 몸 크기쯤
+	var q := PhysicsShapeQueryParameters2D.new()
+	q.shape = shape
+	q.collision_mask = 1
+	var r := _nav.region
+	for y in range(r.position.y, r.end.y):
+		for x in range(r.position.x, r.end.x):
+			q.transform = Transform2D(0.0, Vector2(x * 16 + 8, y * 16 + 8))
+			if not space.intersect_shape(q, 1).is_empty():
+				_nav.set_point_solid(Vector2i(x, y), true)
+
+
+func _nav_cell(p: Vector2) -> Vector2i:
+	var r := _nav.region
+	var c := Vector2i(floori(p.x / 16.0), floori(p.y / 16.0))
+	c = Vector2i(clampi(c.x, r.position.x, r.end.x - 1), clampi(c.y, r.position.y, r.end.y - 1))
+	if not _nav.is_point_solid(c):
+		return c
+	# 막힌 칸이면 가장 가까운 빈 칸(2칸 안)
+	var best := c
+	var best_d := INF
+	for dy in range(-2, 3):
+		for dx in range(-2, 3):
+			var n := c + Vector2i(dx, dy)
+			if r.has_point(n) and not _nav.is_point_solid(n):
+				var d := (Vector2(n) * 16.0 + Vector2(8, 8)).distance_to(p)
+				if d < best_d:
+					best_d = d
+					best = n
+	return best
+
+
+## a에서 b까지 장애물을 돌아가는 길(칸 가운데 점들). 길이 없으면 빈 배열. 물리 프레임 안에서 부른다.
+func nav_path(a: Vector2, b: Vector2) -> PackedVector2Array:
+	if _nav == null:
+		_build_nav()
+	var ca := _nav_cell(a)
+	var cb := _nav_cell(b)
+	if _nav.is_point_solid(ca) or _nav.is_point_solid(cb):
+		return PackedVector2Array()
+	return _nav.get_point_path(ca, cb)
+
+
 ## 지금 맵·자리를 기억한다(로비에 갔다 와도 여기서 다시 시작)
 func remember_place() -> void:
 	if is_instance_valid(player) and player.hp > 0:

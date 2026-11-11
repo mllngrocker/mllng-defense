@@ -41,7 +41,10 @@ func _ready() -> void:
 	_check("무기 천장: 50번째 ★5, 캐릭터 천장(7)은 그대로", int(p[0]["rarity"]) == 5 and Save.pity_w == 0 and Save.pity == 7)
 
 	Save.equip_weapon(&"kemo2", Weapons.STARTER)
-	_check("다른 캐릭터에게 끼우면 원래 캐릭터에서 빠짐", Save.equipped(&"kemo2") == Weapons.STARTER and Save.equipped(&"kemo1") == &"")
+	_check("남이 낀 무기는 못 낀다", Save.equipped(&"kemo2") == &"" and Save.equipped(&"kemo1") == Weapons.STARTER)
+	Save.unequip(&"kemo1")
+	Save.equip_weapon(&"kemo2", Weapons.STARTER)
+	_check("해제한 뒤에는 다른 캐릭터가 낄 수 있다", Save.equipped(&"kemo2") == Weapons.STARTER)
 	Save.unequip(&"kemo2")
 	_check("해제하면 공격력이 원래대로", Save.weapon_atk(&"kemo2") == 0)
 

@@ -416,9 +416,9 @@ func _paint_plate(ci: Control) -> void:
 	var top := h - PLATE_HEIGHT
 	var x := 14.0
 	# 별 + 레벨 꼬리표
-	for i in data.rarity:
-		Gt.star(ci, Vector2(x + 11 + i * 25, top + 20), 10)
-	var lv_tag := Rect2(x + data.rarity * 25 + 6, top + 8, 68, 24)
+	var rank := Save.rank_of(viewing)
+	var sw := Gt.rank_stars(ci, Vector2(x, top + 20), rank, 10, true)
+	var lv_tag := Rect2(x + sw + 10, top + 8, 68, 24)
 	Gt.tag(ci, lv_tag, Gt.NAVY if owned else Color("8e88a0"))
 	Gt.text(ci, Vector2(lv_tag.get_center().x, lv_tag.position.y + 17), "Lv.%d" % Save.level_of(viewing) if owned else "미보유", 14, Color.WHITE, 1)
 	# 이름 + 영문 이름 + 별명
@@ -598,11 +598,13 @@ func _paint_skill(ci: Control) -> void:
 
 func _paint_passive_header(ci: Control) -> void:
 	var stars := Save.stars_of(viewing)
+	var m := Save.max_stars(viewing)
 	var w := ci.size.x
 	Gt.header(ci, Vector2(2, 23), "성장 효과", "STAR BONUS", 16)
-	for i in Save.MAX_STARS:
-		Gt.star(ci, Vector2(w - 12 - (Save.MAX_STARS - 1 - i) * 20, 15), 7.5, Gt.STAR if i < stars else Color("c9c3d6"))
-	Gt.text(ci, Vector2(w - 132, 21), "별마다 공격력·체력 +4%", 11, Gt.NAVY_SOFT, 2)
+	# 승급 칸: 올린 별은 채워지고, 다 채우면 7성(무지개 별)
+	for i in m:
+		Gt.star(ci, Vector2(w - 12 - (m - 1 - i) * 20, 15), 7.5, Gt.STAR if i < stars else Color("c9c3d6"))
+	Gt.text(ci, Vector2(w - 20 - m * 20, 21), "또 뽑으면 별 +1 (공격·체력 +8%) · " + ("7성 달성!" if stars >= m else "7성까지 %d번" % (m - stars)), 11, Gt.NAVY_SOFT, 2)
 
 
 func _paint_passive_row(ci: Control, index: int, text: String, unlocked: bool) -> void:
@@ -667,7 +669,7 @@ func _refresh_level_button() -> void:
 
 func _refresh_passives() -> void:
 	var data := Save.character(viewing)
-	var stars := Save.stars_of(viewing)
+	var stars := Save.passives_unlocked(viewing)
 	for child in passive_box.get_children():
 		child.queue_free()
 	for i in data.star_passives.size():
@@ -700,10 +702,29 @@ func _on_portrait_input(e: InputEvent) -> void:
 		_bounce(portrait, 1.04)
 
 
+## 출전 캐릭터 바꾸기: 지금 출전 캐릭터가 장비를 끼고 있으면 옮길지 먼저 묻는다
 func _on_select_pressed() -> void:
-	Save.select(viewing)
+	var prev := Save.selected
+	var next := viewing
+	if prev != next and Save.is_owned(next) and Save.has_equipment(prev):
+		var box := ConfirmBox.new()
+		box.title = "장비를 그대로 옮길까요?"
+		box.sub = "%s의 무기·장비를 %s에게 옮겨요 (서로 맞바꿈)" % [Save.character(prev).display_name, Save.character(next).display_name]
+		box.yes_label = "옮기기"
+		box.no_label = "그대로 두기"
+		box.answered.connect(func(yes: bool) -> void:
+			if yes:
+				Save.swap_equipment(prev, next)
+			_select(next))
+		add_child(box)
+		return
+	_select(next)
+
+
+func _select(id: StringName) -> void:
+	Save.select(id)
 	_refresh_all()
-	_show_toast("%s 출전!" % Save.character(viewing).display_name)
+	_show_toast("%s 출전!" % Save.character(id).display_name)
 
 
 func _on_level_up_pressed() -> void:

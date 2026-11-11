@@ -52,6 +52,9 @@ var auto := false
 var speed_mult := 1.0  # 신발 등 장비의 이동 속도 효과
 var _auto_target: Node2D
 var _auto_check := 0.0
+var _auto_think := 0.0
+var _auto_path := PackedVector2Array()
+var _auto_i := 0
 var _auto_best := INF
 var _auto_skip: Dictionary = {}  # 길이 막혀 못 가는 몬스터 → 무시할 남은 시간
 
@@ -152,8 +155,9 @@ func refresh_stats() -> void:
 
 
 # ── 자동 사냥 ──
+## 0.35초마다 주변을 다시 살펴 가장 가까이 갈 수 있는 몬스터(또는 떨어진 아이템)를 고르고,
+## 맵 길찾기(world.nav_path)로 나무·바위·물을 돌아간다. 닿으면 멈춰서 공격하고 스킬이 차면 바로 쓴다.
 
-## 가까운 몬스터 쪽으로 갈 방향(0~1 세기)을 돌려준다. 닿으면 멈춰서 공격·스킬.
 func _auto_drive(delta: float) -> Vector2:
 	if hp < max_hp * 0.35 and Save.item_count(&"potion") > 0:
 		Items.use(&"potion", get_tree())  # 체력이 적으면 물약
@@ -161,16 +165,18 @@ func _auto_drive(delta: float) -> Vector2:
 		_auto_skip[k] -= delta
 		if _auto_skip[k] <= 0.0:
 			_auto_skip.erase(k)
-	if _auto_target == null or not is_instance_valid(_auto_target) or _auto_target.get(&"hp") <= 0:
-		_auto_target = _auto_pick()
-		_auto_check = 0.0
-		_auto_best = INF
-	if _auto_target == null:
+	var gone: bool = _auto_target == null or not is_instance_valid(_auto_target) or (_auto_target.get(&"hp") != null and _auto_target.get(&"hp") <= 0)
+	_auto_think -= delta
+	if gone or _auto_think <= 0.0:
+		_auto_think = 0.35
+		_auto_choose()
+	if _auto_target == null or not is_instance_valid(_auto_target):
 		return Vector2.ZERO
 	var v := _auto_target.global_position - global_position
 	var d := v.length()
-	var reach := 75.0 if data.attack_kind == 1 else 16.0  # 마법은 떨어져서 쏜다
-	# 길이 막혀 1.5초 동안 가까워지지 않으면 다른 몬스터로
+	var is_enemy := _auto_target.is_in_group(&"enemies")
+	var reach := 4.0 if not is_enemy else (75.0 if data.attack_kind == 1 else 16.0)  # 마법은 떨어져서 쏜다
+	# 1.5초 동안 가까워지지 않으면 잠깐 포기하고 다른 것으로
 	_auto_check += delta
 	if d < _auto_best - 2.0:
 		_auto_best = d
@@ -179,7 +185,7 @@ func _auto_drive(delta: float) -> Vector2:
 		_auto_skip[_auto_target.get_instance_id()] = 4.0
 		_auto_target = null
 		return Vector2.ZERO
-	if d <= reach + 10.0:
+	if is_enemy and d <= reach + 10.0:
 		dir = _dir_from(v)
 		if skill_lock_t <= 0.0:
 			for node in ["a3", "a2", "a1"]:
@@ -187,23 +193,66 @@ func _auto_drive(delta: float) -> Vector2:
 					break
 		if not style.busy and style.wants_press():
 			attack_buffer = ATTACK_BUFFER
-		_auto_best = minf(_auto_best, d)
 		_auto_check = 0.0
 		return Vector2.ZERO if d <= reach else v.normalized() * 0.6
-	return v.normalized()
+	# 길 따라 걷기: 지나온 점은 넘기고 다음 점으로
+	while _auto_i < _auto_path.size() and global_position.distance_to(_auto_path[_auto_i]) < 5.0:
+		_auto_i += 1
+	if _auto_i < _auto_path.size() - 1:
+		return (_auto_path[_auto_i] - global_position).normalized()
+	return v.normalized()  # 마지막 칸(또는 길 없음)은 곧장
 
 
-func _auto_pick() -> Node2D:
-	var best: Node2D = null
-	var best_d := INF
+## 목표 다시 고르기: 가까운 순으로 몇 개만 길을 찾아 보고, 실제 걸어갈 거리가 가장 짧은 것을 고른다
+func _auto_choose() -> void:
+	var world := get_tree().get_first_node_in_group(&"world")
+	var cands: Array = []
 	for e: Node2D in get_tree().get_nodes_in_group(&"enemies"):
-		if e.get(&"hp") <= 0 or _auto_skip.has(e.get_instance_id()):
+		if e.get(&"hp") > 0 and not _auto_skip.has(e.get_instance_id()):
+			cands.append([e.global_position.distance_to(global_position), e])
+	# 떨어진 아이템·하트: 가까이 있으면 주우러 간다(하트는 체력이 깎였을 때만)
+	for p: Node2D in get_tree().get_nodes_in_group(&"pickups"):
+		if _auto_skip.has(p.get_instance_id()) or (p.is_in_group(&"hearts") and hp >= max_hp):
 			continue
-		var d := e.global_position.distance_to(global_position)
-		if d < best_d:
-			best_d = d
-			best = e
-	return best
+		var pd := p.global_position.distance_to(global_position)
+		if pd < 90.0:
+			cands.append([pd * 0.6, p])  # 조금 더 먼저 줍게
+	cands.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0])
+	var best: Node2D = null
+	var best_len := INF
+	var best_path := PackedVector2Array()
+	for i in mini(cands.size(), 4):
+		var r := _auto_route(world, cands[i][1], cands[i][0])
+		if r[0] < best_len:
+			best_len = r[0]
+			best = cands[i][1]
+			best_path = r[1]
+	# 지금 목표가 멀쩡하면, 새 목표가 25% 넘게 가까울 때만 바꾼다(왔다 갔다 하지 않게)
+	var cur := _auto_target
+	if cur != null and is_instance_valid(cur) and cur != best and not _auto_skip.has(cur.get_instance_id()) and (cur.get(&"hp") == null or cur.get(&"hp") > 0):
+		var r := _auto_route(world, cur, cur.global_position.distance_to(global_position) * (1.0 if cur.is_in_group(&"enemies") else 0.6))
+		if best == null or best_len > float(r[0]) * 0.75:
+			best = cur
+			best_path = r[1]
+	if best != _auto_target:
+		_auto_check = 0.0
+		_auto_best = INF
+	_auto_target = best
+	_auto_path = best_path
+	_auto_i = 1 if best_path.size() > 1 else 0
+
+
+## 그 대상까지 걸어갈 거리와 길 [거리, 길]. 길이 없는 곳(물 건너 등)은 거리를 크게 쳐서 뒤로 미룬다
+func _auto_route(world: Node, node: Node2D, straight: float) -> Array:
+	var path := PackedVector2Array()
+	if world and world.has_method(&"nav_path"):
+		path = world.call(&"nav_path", global_position, node.global_position)
+	if path.size() >= 2:
+		var length := 0.0
+		for k in range(1, path.size()):
+			length += path[k - 1].distance_to(path[k])
+		return [length * (1.0 if node.is_in_group(&"enemies") else 0.6), path]
+	return [straight + (400.0 if straight > 28.0 else 0.0), path]
 
 
 # ── 공격 방식(AttackStyle)이 쓰는 도구 ──

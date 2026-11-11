@@ -25,6 +25,7 @@ static func spawn_gear(parent: Node, id: StringName, pos: Vector2) -> void:
 
 
 func _ready() -> void:
+	add_to_group(&"pickups")
 	collision_layer = 0
 	collision_mask = 2
 	monitorable = false

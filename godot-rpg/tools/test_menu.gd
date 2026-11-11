@@ -30,6 +30,11 @@ func _ready() -> void:
 	menu._preview(&"kemo3")
 	_check("다른 캐릭터를 보면 출전 버튼이 보임", menu.action_button.visible)
 	menu._on_select_pressed()
+	# 출전 캐릭터가 장비를 끼고 있으면 "장비를 옮길까요?" 창이 먼저 뜬다 → 그대로 두기
+	var box := menu.get_child(menu.get_child_count() - 1) as ConfirmBox
+	_check("장비가 있으면 옮길지 묻는다", (box != null) == Save.has_equipment(&"kemo1"))
+	if box:
+		box._answer(false)
 	_check("출전 캐릭터가 카라로 바뀜", Save.selected == &"kemo3" and Save.current().display_name == "카라")
 
 	menu._preview(&"fairy1")

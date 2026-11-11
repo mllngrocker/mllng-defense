@@ -26,6 +26,24 @@ func _physics_process(_delta: float) -> void:
 		player.max_hp = 99999  # 시험 중 쓰러지지 않게
 		player.hp = 99999
 		start_pos = player.global_position
+		# 길찾기: 가장 먼 몬스터까지 길이 나오고, 길 위에 막힌 칸이 없다
+		var world := get_tree().get_first_node_in_group(&"world")
+		var far: Node2D = null
+		for e: Node2D in get_tree().get_nodes_in_group(&"enemies"):
+			if far == null or e.global_position.distance_to(player.global_position) > far.global_position.distance_to(player.global_position):
+				far = e
+		var path: PackedVector2Array = world.nav_path(player.global_position, far.global_position)
+		var nav: AStarGrid2D = world.get(&"_nav")
+		var solid := 0
+		var blocked := 0
+		for y in range(nav.region.position.y, nav.region.end.y):
+			for x in range(nav.region.position.x, nav.region.end.x):
+				if nav.is_point_solid(Vector2i(x, y)):
+					solid += 1
+		for pt in path:
+			if nav.is_point_solid(Vector2i(floori(pt.x / 16.0), floori(pt.y / 16.0))):
+				blocked += 1
+		_check("길찾기: 막힌 칸 %d개를 피해 %d칸짜리 길" % [solid, path.size()], solid > 20 and path.size() > 3 and blocked == 0)
 		player.auto = true
 	if frame == 60 * 25:
 		_check("자동으로 움직였다 (%.0f칸)" % (player.global_position.distance_to(start_pos) / 16.0), player.global_position.distance_to(start_pos) > 32.0)

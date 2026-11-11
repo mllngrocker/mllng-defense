@@ -2,7 +2,7 @@ class_name GearPicker
 extends Control
 ## 장비 선택 창(로비 아바타의 옷·신발·목걸이·반지 칸): 그 부위의 장비 4등급을 카드로 보여 준다.
 ## 가진 것은 등급색으로 밝게, 아직 없는 것은 어둡게. 카드를 누르면 아래에 효과·설명 → "장착"/"해제".
-## 다른 캐릭터가 끼고 있는 장비를 장착하면 그 캐릭터에서 빼 온다.
+## 다른 캐릭터가 끼고 있는 장비는 장착할 수 없다(그 캐릭터에서 먼저 해제하거나, 출전을 바꿀 때 옮긴다).
 
 signal closed
 
@@ -93,9 +93,10 @@ func _button(text: String, kind: int) -> GameButton:
 func _refresh() -> void:
 	var on := Save.gear_on(char_id, slot) == chosen
 	var have := Save.has_gear(chosen)
-	equip_button.label = "해제" if on else ("장착" if have else "미보유")
-	equip_button.kind = Gt.Kind.GRAY if on or not have else Gt.Kind.YELLOW
-	equip_button.disabled = not have
+	var held := Save.gear_holder(chosen) != &"" and Save.gear_holder(chosen) != char_id
+	equip_button.label = "해제" if on else ("착용 중" if held else ("장착" if have else "미보유"))
+	equip_button.kind = Gt.Kind.GRAY if on or held or not have else Gt.Kind.YELLOW
+	equip_button.disabled = not have or held
 	equip_button.queue_redraw()
 	detail.queue_redraw()
 	for g in cards:
@@ -164,5 +165,5 @@ func _paint_detail(ci: Control) -> void:
 	if not Save.has_gear(chosen):
 		note = "아직 얻지 못했어요 · 높은 등급일수록 드물게 나와요"
 	elif holder != &"" and holder != char_id:
-		note = "%s이(가) 끼고 있어요 · 장착하면 빼 옵니다" % Save.character(holder).display_name
+		note = "%s이(가) 끼고 있어서 장착할 수 없어요 · 먼저 해제해 주세요" % Save.character(holder).display_name
 	Gt.text(ci, Vector2(r.position.x + 14, r.end.y - 12), note, 11, Gt.GRAY, 0, false)

@@ -10,6 +10,8 @@ var _t := 0.0
 
 
 func _ready() -> void:
+	add_to_group(&"pickups")
+	add_to_group(&"hearts")
 	body_entered.connect(_on_body_entered)
 	# 튀어나오는 느낌
 	sprite.position.y = -14.0

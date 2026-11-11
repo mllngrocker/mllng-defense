@@ -7,8 +7,10 @@ const STARTERS: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3"]
 ## 아바타 화면에 보이는 순서(전체 캐릭터, ★3 → ★5)
 const ROSTER: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3", &"fairy3", &"fairy2", &"maid2", &"maid3", &"maid1", &"maid4", &"fairy1", &"scarlet"]
 const MAX_LEVEL := 150  # 2부에서 100 → 150
-const MAX_STARS := 6
-const STAR_BONUS := 0.04  # 별 1개마다 공격력·체력 +4%
+const MAX_STARS := 6  # 성장 효과 줄 수(별 승급으로 차례로 열린다)
+## 별 등급: 타고난 등급(★3~5)에 중복으로 얻은 별을 더한다. 최대 7성(무지개 별 하나로 보인다)
+const MAX_RANK := 7
+const STAR_BONUS := 0.08  # 승급한 별 1개마다 공격력·체력 +8%
 const WELCOME_GEMS := 500  # 처음 시작할 때 주는 보석
 
 signal gold_changed(gold: int)
@@ -92,9 +94,27 @@ func level_of(id: StringName) -> int:
 	return int(entry.get("level", 1))
 
 
+## 중복으로 얻어 올린 별 수(0 ~ max_stars)
 func stars_of(id: StringName) -> int:
 	var entry: Dictionary = owned.get(String(id), {})
-	return int(entry.get("stars", 0))
+	return mini(int(entry.get("stars", 0)), max_stars(id))
+
+
+## 이 캐릭터가 더 올릴 수 있는 별 수(★3은 4번, ★5는 2번이면 7성)
+func max_stars(id: StringName) -> int:
+	return MAX_RANK - character(id).rarity
+
+
+## 지금 별 등급(타고난 등급 + 올린 별). 미보유면 타고난 등급
+func rank_of(id: StringName) -> int:
+	return character(id).rarity + (stars_of(id) if is_owned(id) else 0)
+
+
+## 열린 성장 효과 수(6줄): 7성이면 모두, 그 전엔 올린 별에 비례
+func passives_unlocked(id: StringName) -> int:
+	var m := max_stars(id)
+	var s := stars_of(id)
+	return MAX_STARS if s >= m else floori(MAX_STARS * s / float(m))
 
 
 ## 레벨·별·장착 무기를 반영한 공격력
@@ -316,14 +336,14 @@ func gear_holder(id: StringName) -> StringName:
 	return &""
 
 
-## 장착(다른 캐릭터가 끼고 있으면 빼 온다)
+## 장착(다른 캐릭터가 끼고 있으면 못 낀다 — 그 캐릭터에서 먼저 해제)
 func equip_gear(char_id: StringName, id: StringName) -> void:
 	if not has_gear(id):
 		return
 	var slot := Gear.slot_of(id)
 	var other := gear_holder(id)
-	if other != &"":
-		(gear_equip[String(other)] as Dictionary).erase(slot)
+	if other != &"" and other != char_id:
+		return
 	if not gear_equip.has(String(char_id)):
 		gear_equip[String(char_id)] = {}
 	(gear_equip[String(char_id)] as Dictionary)[slot] = String(id)
@@ -334,6 +354,36 @@ func unequip_gear(char_id: StringName, slot: String) -> void:
 	if gear_equip.has(String(char_id)):
 		(gear_equip[String(char_id)] as Dictionary).erase(slot)
 		equip_changed.emit()
+
+
+## 이 캐릭터가 무기나 장비를 하나라도 끼고 있는지
+func has_equipment(char_id: StringName) -> bool:
+	if equipped(char_id) != &"":
+		return true
+	for slot in Gear.SLOTS:
+		if gear_on(char_id, slot) != &"":
+			return true
+	return false
+
+
+## 두 캐릭터의 무기·장비를 통째로 맞바꾼다(출전 캐릭터를 바꿀 때 "장비 옮기기")
+func swap_equipment(a: StringName, b: StringName) -> void:
+	var ka := String(a)
+	var kb := String(b)
+	var wa: Variant = equip.get(ka)
+	var wb: Variant = equip.get(kb)
+	equip.erase(ka)
+	equip.erase(kb)
+	if wa != null:
+		equip[kb] = wa
+	if wb != null:
+		equip[ka] = wb
+	var ga: Variant = gear_equip.get(ka, {})
+	var gb: Variant = gear_equip.get(kb, {})
+	gear_equip[ka] = gb
+	gear_equip[kb] = ga
+	equip_changed.emit()
+	save_game()
 
 
 ## 낀 장비 네 부위의 효과 합(stat: hp·atk·crit·speed·gold)
@@ -387,8 +437,8 @@ func equip_weapon(id: StringName, w: StringName) -> void:
 	if not has_weapon(w):
 		return
 	var other := holder_of(w)
-	if other != &"":
-		equip.erase(String(other))
+	if other != &"" and other != id:
+		return  # 다른 캐릭터가 끼고 있으면 못 낀다(그 캐릭터에서 먼저 해제)
 	equip[String(id)] = String(w)
 	equip_changed.emit()
 	Quests.track("equip")
@@ -466,7 +516,7 @@ func grant_character(id: StringName) -> String:
 	if not owned.has(key):
 		owned[key] = {"level": 1, "stars": 0}
 		return "new"
-	if int(owned[key]["stars"]) < MAX_STARS:
+	if int(owned[key]["stars"]) < max_stars(id):
 		owned[key]["stars"] = int(owned[key]["stars"]) + 1
 		return "star"
 	return "max"

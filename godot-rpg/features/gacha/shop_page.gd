@@ -62,7 +62,7 @@ func _ready() -> void:
 	row.add_child(ten_button)
 	col.add_child(row)
 	note = _draw_box(func(ci: Control) -> void:
-		var t := "중복 캐릭터는 별 +1 (최대 6) · 별이 다 차면 골드로 바꿔 드려요" if mode == "char" else "중복 무기는 재련 +1 (최대 +5, 공격력 +25%씩) · 다 차면 골드로"
+		var t := "중복 캐릭터는 별 +1 (최대 7성 · 무지개 별) · 7성이면 골드로 바꿔 드려요" if mode == "char" else "중복 무기는 재련 +1 (최대 +5, 공격력 +25%씩) · 다 차면 골드로"
 		Gt.text(ci, Vector2(ci.size.x / 2.0, 16), t, 12, Gt.NAVY, 1, false))
 	note.custom_minimum_size.y = 22
 	col.add_child(note)
