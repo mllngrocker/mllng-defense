@@ -40,6 +40,8 @@ const DATA: Dictionary[StringName, Array] = {
 	&"ignis_spear": ["이그니스의 화염창", 5, 112, 0.10, "화염룡의 숨결이 타오르는 창", true],
 	&"demon_sword": ["마왕의 검", 5, 160, 0.15, "마왕 아자젤을 쓰러뜨린 자의 증표", true],
 	&"giant_heart": ["거인의 심장창", 5, 230, 0.18, "고대 거인이 남긴 빛나는 창", true],
+	&"root_lance": ["생명 뿌리창", 5, 300, 0.18, "벌레왕에게서 되찾은 큰 나무의 뿌리로 깎은 창", true],
+	&"gardener_scythe": ["검은 정원사의 낫", 5, 400, 0.22, "검은 씨앗을 거두던 낫. 이제는 생명을 지킨다", true],
 }
 const MAX_ENHANCE := 20
 const ENHANCE_BONUS := 0.08  # 강화 1마다 공격력 +8%

@@ -25,7 +25,10 @@ const SMOKE := preload("res://assets/ninja/fx/smoke.png")
 
 var player: Player
 var data: CharacterData
-var cooldown := 0.0
+var cooldown := 0.0  # 고유기(a1) 남은 재사용 시간(예전 이름 그대로)
+var cds: Dictionary = {"a1": 0.0, "a2": 0.0, "a3": 0.0}  # 슬롯별 남은 재사용 시간
+var power := 1.0  # 지금 쓰는 스킬의 피해 배율(스킬 레벨·숙련·오의)
+var last_name := ""  # 컷인에 보일 이름
 var _orbit: Array[Sprite2D] = []  # 잎새 회오리 잎사귀
 var _orbit_t := 0.0
 
@@ -35,14 +38,26 @@ func setup(p: Player, d: CharacterData) -> void:
 	data = d
 
 
-func ready_ratio() -> float:
-	if data.skill_cooldown <= 0.0:
+func ready_ratio(node := "a1") -> float:
+	var full := SkillTree.cooldown(data.id, node) if Save.is_owned(data.id) else data.skill_cooldown
+	if full <= 0.0:
 		return 1.0
-	return 1.0 - clampf(cooldown / data.skill_cooldown, 0.0, 1.0)
+	return 1.0 - clampf(float(cds.get(node, 0.0)) / full, 0.0, 1.0)
+
+
+## 이 슬롯 스킬을 배웠는지(고유기는 늘)
+func has_skill(node: String) -> bool:
+	if node == "a1":
+		return true
+	if not Save.is_owned(data.id):
+		return false
+	return Save.skill_level(data.id, node) > 0 and (node != "a3" or Save.master.has(String(data.id)))
 
 
 func _physics_process(delta: float) -> void:
-	cooldown = maxf(cooldown - delta, 0.0)
+	for k: String in cds:
+		cds[k] = maxf(float(cds[k]) - delta, 0.0)
+	cooldown = cds["a1"]
 	if not _orbit.is_empty():
 		_orbit_t += delta
 		for i in _orbit.size():
@@ -51,17 +66,22 @@ func _physics_process(delta: float) -> void:
 			_orbit[i].rotation = a * 2.0
 
 
-## 스킬 사용. 재사용 대기 중이면 false.
-func try_cast() -> bool:
-	if cooldown > 0.0 or player.hp <= 0:
+## 스킬 사용(node: a1 고유기 · a2 · a3 오의). 안 배웠거나 재사용 대기 중이면 false.
+func try_cast(node := "a1") -> bool:
+	if not has_skill(node) or float(cds.get(node, 0.0)) > 0.0 or player.hp <= 0:
 		return false
-	cooldown = data.skill_cooldown
+	var owned := Save.is_owned(data.id)
+	cds[node] = SkillTree.cooldown(data.id, node) if owned else data.skill_cooldown
+	cooldown = cds["a1"]
+	power = SkillTree.power(data.id, node) if owned else 1.0
+	var info := SkillTree.info(data.id, node)
+	last_name = info["name"]
 	player.style.cancel()
 	Events.skill_cast.emit(data)
 	Quests.track("skill")
 	player.flash(0.8)
 	Game.sfx(&"charged", -4.0, 0.0)
-	match data.id:
+	match StringName(info["behavior"]):
 		&"kemo1": _gale_dash()
 		&"kemo2": _ice_rain()
 		&"kemo3": _flame_burst()
@@ -72,6 +92,7 @@ func try_cast() -> bool:
 		&"maid1": _judgement()
 		&"maid4": _shadow_raid()
 		&"fairy1": _petal_storm()
+		&"scarlet": _shadow_raid()
 		_: _flame_burst()
 	return true
 
@@ -99,7 +120,7 @@ func fx(tex: Texture2D, frames: int, pos: Vector2, fps := 16.0, sc := 1.0, tint 
 func hit_all(list: Array, mult: float, knock: float, from: Vector2) -> void:
 	for e: Variant in list:
 		if is_instance_valid(e) and e.get(&"hp") > 0:
-			player.hit(e, mult, knock, from)
+			player.hit(e, mult * power, knock, from)
 
 
 func wait(sec: float) -> void:

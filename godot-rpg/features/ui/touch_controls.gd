@@ -27,11 +27,31 @@ func attack_center() -> Vector2:
 
 
 func dash_center() -> Vector2:
-	return size - Vector2(196, 86)
+	return attack_center() + Vector2(-82, 70)
 
 
+## 스킬 동그라미 3개는 공격 버튼을 둘러 반원으로(왼쪽 → 왼쪽 위 → 위)
 func skill_center() -> Vector2:
-	return size - Vector2(206, 200)
+	return attack_center() + Vector2(-110, -6)
+
+
+## 스킬 2·3(배운 경우만 보인다)
+func skill_center_of(node: String) -> Vector2:
+	match node:
+		"a2":
+			return attack_center() + Vector2(-80, -84)
+		"a3":
+			return attack_center() + Vector2(0, -116)
+	return skill_center()
+
+
+func _skill_r(_node: String) -> float:
+	return 32.0
+
+
+func _has(node: String) -> bool:
+	var p := _player()
+	return p != null and p.skills != null and p.skills.has_skill(node)
 
 
 func joy_home() -> Vector2:
@@ -59,8 +79,12 @@ func _on_touch_down(index: int, pos: Vector2) -> void:
 		_press_button(index, &"attack")
 	elif pos.distance_to(dash_center()) < DASH_R * 1.3:
 		_press_button(index, &"dash")
-	elif pos.distance_to(skill_center()) < SKILL_R * 1.3:
+	elif pos.distance_to(skill_center()) < 32.0 * 1.35:
 		_press_button(index, &"skill")
+	elif pos.distance_to(skill_center_of("a2")) < 32.0 * 1.35:
+		_press_button(index, &"skill2")
+	elif pos.distance_to(skill_center_of("a3")) < 32.0 * 1.35:
+		_press_button(index, &"skill3")
 	elif joy_index == -1 and pos.x < size.x * 0.6 and pos.y > size.y * 0.3:
 		joy_index = index
 		joy_base = pos
@@ -126,38 +150,58 @@ func _draw() -> void:
 	draw_circle(knob + Vector2(0, -4), 18.0, Color(1, 1, 1, alpha * 0.6))
 	# 공격 버튼(칼 그림)
 	var attack_down := &"attack" in button_touches.values()
-	_draw_button(attack_center(), ATTACK_R, attack_down, Gt.Kind.PINK)
-	var lift := Vector2(0, 3) if attack_down else Vector2(0, -2)
-	Gt.icon(self, &"sword", attack_center() + lift, ATTACK_R * 1.35)
+	var ac := attack_center() + (Vector2(0, 3) if attack_down else Vector2.ZERO)
+	Gt.ring_button(self, ac, ATTACK_R - 4.0, Color("ff5d8f"), attack_down)
+	Gt.icon(self, &"sword", ac + Vector2(0, -2), ATTACK_R * 1.25)
 	# 구르기 버튼
 	var dash_down := &"dash" in button_touches.values()
-	_draw_button(dash_center(), DASH_R, dash_down, Gt.Kind.BLUE)
-	Gt.title(self, dash_center() + Vector2(0, 6 + (4 if dash_down else 0)), "구르기", 15, Color.WHITE, 1)
+	var dc := dash_center() + (Vector2(0, 3) if dash_down else Vector2.ZERO)
+	Gt.ring_button(self, dc, 28.0, Color("4f8fe6"), dash_down)
+	Gt.title(self, dc + Vector2(0, 6), "구르기", 13, Color.WHITE, 1)
 	_draw_skill_button()
 
 
-## 스킬 버튼: 속성 기호 + 스킬 이름. 재사용 대기 중이면 어둡게 덮고 남은 초를 보여 준다.
+## 스킬 버튼: 스킬 그림(없으면 속성 기호) + 이름. 재사용 대기 중이면 어둡게 덮고 남은 초를 보여 준다.
 func _draw_skill_button() -> void:
 	var p := _player()
 	if p == null or p.skills == null:
 		return
-	var c := skill_center()
-	var down := &"skill" in button_touches.values()
-	var ratio := p.skills.ready_ratio()
-	var ready := ratio >= 1.0
-	_draw_button(c, SKILL_R, down, Gt.Kind.YELLOW if ready else Gt.Kind.GRAY)
-	var top := c + Vector2(0, 5.0 if down else 0.0)
-	Gt.element_glyph(self, top + Vector2(0, -6), SKILL_R * 1.3, p.data.element, Color.WHITE, Gt.kind_colors(Gt.Kind.YELLOW)[0])
-	if not ready:
-		# 남은 시간만큼 시계 방향으로 어둡게
-		var pts := PackedVector2Array([top])
-		var steps := 32
-		for i in steps + 1:
-			var a := -PI / 2.0 + TAU * ratio + (TAU * (1.0 - ratio)) * i / steps
-			pts.append(top + Vector2.from_angle(a) * SKILL_R)
-		draw_colored_polygon(pts, Color(Gt.INK, 0.55))
-		Gt.title(self, top + Vector2(0, 9), "%d" % ceili(p.skills.cooldown), 24, Color.WHITE, 1)
-	Gt.title(self, c + Vector2(0, SKILL_R + 20), p.data.skill_name, 13, Color("ffe36b") if ready else Color("d8d2ea"), 1)
+	var cols := {"a1": Color("e9a83a"), "a2": Color("4aa3e8"), "a3": Color("b45ae8")}
+	for node: String in ["a1", "a2", "a3"]:
+		var action: StringName = {"a1": &"skill", "a2": &"skill2", "a3": &"skill3"}[node]
+		var rad := _skill_r(node)
+		var down := action in button_touches.values()
+		var c := skill_center_of(node) + (Vector2(0, 3) if down else Vector2.ZERO)
+		if not p.skills.has_skill(node):
+			# 빈 칸: 어두운 동그라미 + 자물쇠
+			draw_circle(c, rad + 3.0, Color(Gt.INK, 0.8))
+			draw_circle(c, rad, Color(0.2, 0.18, 0.28, 0.75))
+			draw_arc(c, rad - 2.0, 0, TAU, 32, Color(1, 1, 1, 0.25), 2.0)
+			Gt.lock(self, c + Vector2(0, -2), 24, Color(1, 1, 1, 0.55))
+			continue
+		var ratio := p.skills.ready_ratio(node)
+		var ready := ratio >= 1.0
+		Gt.ring_button(self, c, rad, cols[node] if ready else Color("6a6478"), down)
+		var info := SkillTree.info(p.data.id, node) if Save.is_owned(p.data.id) else {}
+		var tex: Texture2D = SkillTree.icon(info["icon"]) if not info.is_empty() else null
+		if tex:
+			# 그림 가장자리의 네모 테두리를 빼고 가운데만 동그랗게
+			var ts := tex.get_size()
+			Gt.circle_tex(self, tex, c, rad - 6.0, Rect2(ts * 0.17, ts * 0.66), Color.WHITE if ready else Color(0.55, 0.55, 0.6))
+		else:
+			Gt.element_glyph(self, c + Vector2(0, -4), rad * 1.2, p.data.element, Color.WHITE, cols[node])
+		if not ready:
+			var pts := PackedVector2Array([c])
+			var steps := 32
+			for i in steps + 1:
+				var a := -PI / 2.0 + TAU * ratio + (TAU * (1.0 - ratio)) * i / steps
+				pts.append(c + Vector2.from_angle(a) * (rad - 5.0))
+			draw_colored_polygon(pts, Color(Gt.INK, 0.6))
+			Gt.title(self, c + Vector2(0, 8), "%d" % ceili(float(p.skills.cds[node])), 20, Color.WHITE, 1)
+		else:
+			draw_arc(c, rad + 5.0, 0, TAU, 40, Color(cols[node].lightened(0.4), 0.35 + 0.25 * sin(Time.get_ticks_msec() / 250.0)), 2.0)
+		if node == "a3":
+			Gt.text(self, c + Vector2(0, -rad - 6), "오의", 11, Color("ffd0ff"), 1, true, 3, Gt.INK)
 
 
 func _player() -> Player:
@@ -166,11 +210,13 @@ func _player() -> Player:
 
 func _process(_delta: float) -> void:
 	var p := _player()
-	if p and p.skills and p.skills.cooldown > 0.0:
-		queue_redraw()
-	elif _was_cooling:
-		queue_redraw()
-	_was_cooling = p != null and p.skills != null and p.skills.cooldown > 0.0
+	var cooling := false
+	if p and p.skills:
+		for k: String in p.skills.cds:
+			if float(p.skills.cds[k]) > 0.0:
+				cooling = true
+	queue_redraw()
+	_was_cooling = cooling
 
 
 ## 동그란 도트풍 버튼: 진한 외곽선 + 아래 두께 + 본체 + 윗부분 밝게. 누르면 쑥 들어간다.

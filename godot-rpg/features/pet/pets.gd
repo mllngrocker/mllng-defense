@@ -1,6 +1,6 @@
 class_name Pets
 extends RefCounted
-## 펫 10종: 데리고 다니면 옆에서 따라다니며 가까운 몬스터를 물고(용사 공격력 × power), 능력치를 올려 준다.
+## 펫 13종: 데리고 다니면 옆에서 따라다니며 가까운 몬스터를 물고(용사 공격력 × power), 능력치를 올려 준다.
 ## 얻는 법: 메인 퀘스트 보상(치즈냥·꼬꼬·바둑이), 보스를 처음 잡을 때(보스마다 하나). 한 번에 한 마리 데리고 다닌다(Save.pet).
 
 ## id → [이름, 그림, 공격 배율, {보너스}, 얻는 곳]
@@ -16,6 +16,8 @@ const DATA: Dictionary[StringName, Array] = {
 	&"flam": ["불꽃 정령", "res://assets/ninja/actor/flam.png", 0.8, {"atk": 0.20}, "화염룡 이그니스 첫 처치"],
 	&"dragon": ["아기 용", "res://assets/ninja/actor/dragon.png", 1.0, {"atk": 0.25, "crit": 0.05}, "마왕 아자젤 첫 처치"],
 	&"gold_racoon": ["황금 너구리", "res://assets/ninja/actor/gold_racoon.png", 1.2, {"atk": 0.30, "gold": 0.30}, "고대 거인의 혼 첫 처치"],
+	&"root_larva": ["아기 애벌레", "res://assets/ninja/actor/root_larva.png", 1.35, {"atk": 0.35, "hp": 0.20}, "뿌리 먹는 벌레왕 첫 처치"],
+	&"garden_owl": ["밤 부엉이", "res://assets/ninja/actor/garden_owl.png", 1.6, {"atk": 0.45, "crit": 0.08}, "검은 정원사 첫 처치"],
 }
 ## 보스를 처음 잡으면 주는 것: 보스 id → [펫, 보스 무기]
 const BOSS_REWARDS := {
@@ -27,6 +29,8 @@ const BOSS_REWARDS := {
 	"flame_dragon": [&"flam", &"ignis_spear"],
 	"demon_lord": [&"dragon", &"demon_sword"],
 	"giant_soul": [&"gold_racoon", &"giant_heart"],
+	"root_worm": [&"root_larva", &"root_lance"],
+	"black_gardener": [&"garden_owl", &"gardener_scythe"],
 }
 const BONUS_NAMES := {"atk": "공격력", "hp": "체력", "crit": "치명타", "gold": "골드 획득"}
 

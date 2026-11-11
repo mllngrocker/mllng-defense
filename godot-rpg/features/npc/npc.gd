@@ -42,6 +42,10 @@ func _process(delta: float) -> void:
 	var was := near
 	near = p != null and p.global_position.distance_to(global_position) < TALK_RANGE
 	if near and not was:
+		# 이 사람에게 말 거는 메인 퀘스트면 그 퀘스트의 이야기 장면을 먼저 보여 준다
+		var q := Quests.current()
+		if not q.is_empty() and q["type"] == "talk" and q["target"] == display_name:
+			StoryBox.play(self, "quest_" + String(q["title"]))
 		Quests.track("talk", display_name)
 	if near:
 		var v := p.global_position - global_position

@@ -47,6 +47,7 @@ func _ready() -> void:
 		var card := DrawBox.new()
 		card.painter = _paint_card.bind(p)
 		card.custom_minimum_size = Vector2(0, 92)
+		card.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
 		card.gui_input.connect(func(e: InputEvent) -> void:
@@ -61,6 +62,7 @@ func _ready() -> void:
 	detail = DrawBox.new()
 	detail.painter = _paint_detail
 	detail.custom_minimum_size.y = 120
+	detail.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	col.add_child(detail)
 	var row := HBoxContainer.new()
 	row.custom_minimum_size.y = 64
@@ -134,7 +136,7 @@ func _paint_card(ci: Control, p: StringName) -> void:
 		Gt.pbox(ci, r.grow(3), Gt.YELLOW, Gt.INK, 2, false, false)
 	Gt.pbox(ci, r, Color("fff4d6") if owned else Color("cfc8d6"), Gt.INK, 2, false, true)
 	var bob := sin(t * 4.0 + float(p.hash() % 7)) * 2.0 if owned else 0.0
-	var icon := Rect2(r.position + Vector2(8, 8 + bob), r.size - Vector2(16, 30))
+	var icon := Rect2(r.get_center() + Vector2(-24, -30 + bob), Vector2(48, 48))
 	Pets.draw_icon(ci, p, icon)
 	if not owned:
 		ci.draw_rect(icon, Color(Gt.INK, 0.55))

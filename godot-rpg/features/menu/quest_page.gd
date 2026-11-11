@@ -124,7 +124,7 @@ func _paint_main(ci: Control) -> void:
 	var total := Quests.MAIN.size()
 	Gt.header(ci, r.position + Vector2(14, 34), "메인 이야기", "CHAPTER 1  %d / %d" % [mini(idx + 1, total), total], 17)
 	if Quests.all_main_cleared():
-		Gt.title(ci, r.position + Vector2(18, 92), "1장 완료! 마을을 지켜 냈어요", 22, Color("ffe36b"))
+		Gt.title(ci, r.position + Vector2(18, 92), "모든 이야기 완료! 고마워요", 22, Color("ffe36b"))
 		Gt.text(ci, r.position + Vector2(18, 122), "다음 이야기는 준비 중이에요. 일일 퀘스트로 보석을 모아 보세요.", 13, Gt.NAVY_SOFT, 0, false)
 		return
 	var q := Quests.current()

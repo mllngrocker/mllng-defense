@@ -17,6 +17,8 @@ const REGION_KINDS := {
 	"lava": ["flam", "flam2", "dragon", "dragon_y", "trex", "grey_trex", "heart_red", "flame_dragon"],
 	"hell": ["lantern_red", "demon_eye", "dragon", "grey_trex", "demon_lord"],
 	"sky": ["bamboo", "bamboo_y", "gold_racoon", "heart_green", "sky_spirit", "sky_bat", "giant_soul"],
+	"root": ["root_larva", "root_larva_b", "root_mollusc", "root_mole", "root_shroom", "root_beast", "root_worm"],
+	"garden": ["garden_moth", "garden_owl", "garden_owl2", "garden_lizard", "garden_lizard2", "garden_snake", "garden_spider", "garden_beast", "black_gardener"],
 }
 
 ## 이 메인 퀘스트 보상을 받으면 펫도 준다
@@ -77,6 +79,23 @@ const MAIN: Array[Dictionary] = [
 	{"title": "천공의 탑", "desc": "꽃구름 섬을 지나 천공의 탑 꼭대기에 오르자.", "type": "reach", "target": "sky6", "count": 1, "gold": 40000, "gems": 300},
 	{"title": "전설의 용사", "desc": "아무 캐릭터나 레벨 100을 만들자.", "type": "level", "target": "", "count": 100, "gold": 80000, "gems": 500},
 	{"title": "고대 거인의 혼", "desc": "탑 꼭대기 큰 나무를 지키는 고대 거인의 혼을 잠재우고, 몬스터가 끝없이 나타나는 이유를 밝혀내자!", "type": "boss", "target": "giant_soul", "count": 1, "gold": 200000, "gems": 5000},
+	# 2부 6장 큰 나무의 뿌리
+	{"title": "2부: 돌아온 고향", "desc": "레몬 마을로 돌아가 촌장에게 큰 나무 이야기를 전하자.", "type": "talk", "target": "촌장", "count": 1, "gold": 50000, "gems": 300},
+	{"title": "뿌리로 내려가기", "desc": "천공의 탑 꼭대기 동쪽, 큰 나무의 뿌리를 타고 아래로 내려가자.", "type": "reach", "target": "root1", "count": 1, "gold": 40000, "gems": 300},
+	{"title": "부모님의 흔적", "desc": "빛나는 뿌리 동굴에서 부모님이 남긴 흔적을 찾자.", "type": "reach", "target": "root2", "count": 1, "gold": 40000, "gems": 300},
+	{"title": "새싹 마을", "desc": "뿌리 속 새싹 마을의 장로에게 십 년 전 이야기를 듣자.", "type": "talk", "target": "새싹 장로", "count": 1, "gold": 50000, "gems": 300},
+	{"title": "뿌리 정화", "desc": "뿌리 속 몬스터를 150마리 물리치자.", "type": "kill", "target": "root", "count": 150, "gold": 100000, "gems": 500},
+	{"title": "벌레 굴", "desc": "썩은 물길을 지나 벌레 굴에 들어가자.", "type": "reach", "target": "root4", "count": 1, "gold": 60000, "gems": 300},
+	{"title": "뿌리보다 깊게", "desc": "아무 캐릭터나 레벨 115를 만들자.", "type": "level", "target": "", "count": 115, "gold": 120000, "gems": 600},
+	{"title": "뿌리 먹는 벌레왕", "desc": "검은 씨앗의 방에서 뿌리를 갉아 먹는 벌레왕을 물리치자. 검은 정원의 문이 열린다!", "type": "boss", "target": "root_worm", "count": 1, "gold": 250000, "gems": 6000},
+	# 7장 검은 정원
+	{"title": "7장: 검은 정원", "desc": "씨앗을 가져간 사내를 쫓아 검은 정원에 들어가자.", "type": "reach", "target": "garden1", "count": 1, "gold": 80000, "gems": 400},
+	{"title": "정원 정화", "desc": "검은 정원의 몬스터를 180마리 물리치자.", "type": "kill", "target": "garden", "count": 180, "gold": 160000, "gems": 700},
+	{"title": "검은 연못", "desc": "가시덤불 미로를 지나 검은 연못에 닿자.", "type": "reach", "target": "garden3", "count": 1, "gold": 100000, "gems": 400},
+	{"title": "어둠을 꿰뚫는 힘", "desc": "아무 캐릭터나 레벨 130을 만들자.", "type": "level", "target": "", "count": 130, "gold": 200000, "gems": 800},
+	{"title": "정원사의 길", "desc": "거꾸로 자란 숲을 지나 정원사의 길에 들어서자.", "type": "reach", "target": "garden5", "count": 1, "gold": 120000, "gems": 500},
+	{"title": "세 번째 사냥꾼", "desc": "아무 캐릭터나 레벨 140을 만들자.", "type": "level", "target": "", "count": 140, "gold": 250000, "gems": 1000},
+	{"title": "검은 정원사", "desc": "검은 나무 아래에서 검은 정원사를 쓰러뜨리고, 검은 씨앗을 뽑아내자!", "type": "boss", "target": "black_gardener", "count": 1, "gold": 400000, "gems": 10000},
 ]
 
 const DAILY: Array[Dictionary] = [
@@ -216,6 +235,7 @@ func claim_bonus() -> bool:
 		return false
 	Save.quest["bonus"] = true
 	Save.add_gems(DAILY_BONUS_GEMS)
+	Save.give_books(1)  # 일일 퀘스트를 다 하면 트레이닝 북 1권
 	Save.save_game()
 	changed.emit()
 	return true

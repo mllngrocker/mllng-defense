@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/ninja/actor/root_mole.png" id="2_tex"]
+
+[node name="RootMole" instance=ExtResource("1_base")]
+kind = 0
+max_hp = 10500
+speed = 40.0
+damage = 165
+chase_range = 120.0
+anim_fps = 7.0
+gold_reward = 320
+gem_chance = 0.3
+gem_reward = 60
+drop_chance = 0.3
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource("2_tex")
+offset = Vector2(0, -7)

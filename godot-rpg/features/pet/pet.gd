@@ -21,6 +21,7 @@ func _ready() -> void:
 	sprite.hframes = f.x
 	sprite.vframes = f.y
 	sprite.offset = Vector2(0, -7)
+	sprite.scale = Vector2.ONE * 0.8  # 몬스터보다 조금 작게
 	add_child(sprite)
 	var shadow := Sprite2D.new()
 	shadow.texture = load("res://assets/ninja/actor/shadow.png")

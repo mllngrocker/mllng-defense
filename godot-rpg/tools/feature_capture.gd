@@ -50,6 +50,9 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	frame += 1
+	if "--pause" in OS.get_cmdline_user_args() and frame == 10:
+		get_tree().get_first_node_in_group(&"hud").call(&"open_pause")
+		return
 	if player.has_meta(&"walk_to"):
 		var act := &"move_left" if map == "shore" else &"move_up"
 		if frame == 10:

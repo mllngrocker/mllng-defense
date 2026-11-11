@@ -94,6 +94,18 @@ func _build() -> void:
 	_build_level_button()
 	avatar_page.add_child(_pad(stats_bar, 10, 8, 10, 2))
 	skill_box = _box(_paint_skill, 62)
+	skill_box.mouse_filter = Control.MOUSE_FILTER_STOP
+	skill_box.gui_input.connect(func(e: InputEvent) -> void:
+		var mb := e as InputEventMouseButton
+		if mb and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+			if not Save.is_owned(viewing):
+				_show_toast("미보유 캐릭터예요")
+				return
+			_bounce(skill_box, 1.03)
+			var sw := SkillWindow.new()
+			sw.char_id = viewing
+			sw.closed.connect(_refresh_all)
+			add_child(sw))
 	avatar_page.add_child(_pad(skill_box, 10, 2, 10, 2))
 	avatar_page.add_child(_pad(_build_passives(), 10, 4, 10, 6))
 	shop_page = ShopPage.new()
@@ -179,6 +191,8 @@ func _build_gear_slots() -> void:
 				else:
 					_show_toast("%s 장비는 준비 중이에요" % GEAR_SLOTS[i]))
 		slot.resized.connect(func() -> void: slot.pivot_offset = slot.size / 2.0)
+		if i == 2:
+			slot.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST  # 펫 도트가 뭉개지지 않게
 		col.add_child(slot)
 	backdrop.resized.connect(_layout_gear)
 
@@ -445,7 +459,11 @@ func _paint_gear_slot(ci: Control, index: int) -> void:
 	if index == 2 and Save.pet != "":
 		# 데리고 다니는 펫
 		Gt.pbox(ci, r, Color("fff4d6"))
-		Pets.draw_icon(ci, StringName(Save.pet), r.grow(-10))
+		# 도트 펫은 작게, 또렷하게(정수 배율)
+		var cell := 16.0
+		var k := floorf(minf(r.size.x, r.size.y) * 0.55 / cell)
+		var sz := Vector2(cell, cell) * maxf(k, 1.0)
+		Pets.draw_icon(ci, StringName(Save.pet), Rect2(r.get_center() - sz / 2.0 + Vector2(0, 4), sz))
 		var ptag := Rect2(r.position + Vector2(-2, -4), Vector2(Gt.width(GEAR_SLOTS[index], 11) + 16, 20))
 		Gt.tag(ci, ptag, Gt.NAVY)
 		Gt.text(ci, Vector2(ptag.get_center().x, ptag.position.y + 14), GEAR_SLOTS[index], 11, Color.WHITE, 1)
@@ -544,7 +562,13 @@ func _paint_skill(ci: Control) -> void:
 	Gt.tag(ci, tag, Gt.PINK)
 	Gt.text(ci, Vector2(tag.get_center().x, tag.position.y + 13), "스킬", 11, Color.WHITE, 1)
 	Gt.text(ci, Vector2(tag.end.x + 8, r.position.y + 24), data.skill_name, 16, Gt.NAVY)
-	Gt.text(ci, Vector2(r.end.x - 12, r.position.y + 23), "재사용 %d초" % int(data.skill_cooldown), 12, Gt.NAVY_SOFT, 2)
+	# 오른쪽: 스킬 트리 열기(남은 포인트가 있으면 빨간 점)
+	var open := Rect2(Vector2(r.end.x - 96, r.position.y + 10), Vector2(86, r.size.y - 20))
+	Gt.pbox(ci, open, Gt.YELLOW, Gt.INK, 2, false, true)
+	Gt.title(ci, Vector2(open.get_center().x, open.get_center().y + 6), "스킬 트리", 14, Color.WHITE, 1)
+	if Save.is_owned(viewing) and Save.skill_points(viewing) > 0:
+		ci.draw_circle(open.position + Vector2(open.size.x - 4, 4), 7.0, Gt.INK)
+		ci.draw_circle(open.position + Vector2(open.size.x - 4, 4), 5.5, Color("ff3b4d"))
 	Gt.text(ci, Vector2(x, r.position.y + 45), data.skill_desc, 12, Gt.NAVY_SOFT, 0, false)
 
 

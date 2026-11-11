@@ -56,7 +56,7 @@ func _ready() -> void:
 	var pp := PetPicker.new()
 	menu.add_child(pp)
 	await get_tree().process_frame
-	_check("펫 창: 11칸", pp.cards.size() == 11)
+	_check("펫 창: 펫 수만큼 칸(%d)" % Pets.DATA.size(), pp.cards.size() == Pets.DATA.size())
 	print("결과: ", "통과" if fails == 0 else "실패 %d개" % fails)
 	get_tree().quit(fails)
 

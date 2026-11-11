@@ -5,8 +5,8 @@ const PATH := "user://save.json"
 const VERSION := 1
 const STARTERS: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3"]
 ## 아바타 화면에 보이는 순서(전체 캐릭터, ★3 → ★5)
-const ROSTER: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3", &"fairy3", &"fairy2", &"maid2", &"maid3", &"maid1", &"maid4", &"fairy1"]
-const MAX_LEVEL := 100
+const ROSTER: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3", &"fairy3", &"fairy2", &"maid2", &"maid3", &"maid1", &"maid4", &"fairy1", &"scarlet"]
+const MAX_LEVEL := 150  # 2부에서 100 → 150
 const MAX_STARS := 6
 const STAR_BONUS := 0.04  # 별 1개마다 공격력·체력 +4%
 const WELCOME_GEMS := 500  # 처음 시작할 때 주는 보석
@@ -38,6 +38,14 @@ var wlevel: Dictionary = {}
 ## 가진 펫 {펫 id: true}, 데리고 다니는 펫
 var pets: Dictionary = {}
 var pet := ""
+## 스킬 트리 {캐릭터: {노드: 레벨}}, 트레이닝 북으로 받은 추가 포인트 {캐릭터: 수}, 마스터 북 봉인 해제 {캐릭터: true}
+var skill_lv: Dictionary = {}
+var skill_bonus: Dictionary = {}
+var master: Dictionary = {}
+## 설정: 배경음·효과음 크기(0~1), 화면 흔들림, 데미지 숫자
+var settings: Dictionary = {"bgm": 0.8, "sfx": 0.9, "shake": true}
+## 가진 책 {"training": 수, "master": 수}
+var books: Dictionary = {"training": 0, "master": 0}
 var _cache: Dictionary[StringName, CharacterData] = {}
 
 
@@ -82,7 +90,7 @@ func stars_of(id: StringName) -> int:
 ## 레벨·별·장착 무기를 반영한 공격력
 func atk_of(id: StringName, level := -1) -> int:
 	var lv := level_of(id) if level < 0 else level
-	return roundi((character(id).atk_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) + weapon_atk(id)) * (1.0 + pet_bonus("atk")))
+	return roundi((character(id).atk_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) + weapon_atk(id)) * (1.0 + pet_bonus("atk")) * (1.0 + 0.02 * skill_level(id, "p1")))
 
 
 ## 장착 무기의 공격력(없으면 0)
@@ -94,7 +102,7 @@ func weapon_atk(id: StringName) -> int:
 ## 기본 치명타 확률 + 장착 무기 보너스
 func crit_of(id: StringName) -> float:
 	var w := equipped(id)
-	return 0.12 + (0.0 if w == &"" else Weapons.crit_of(w)) + pet_bonus("crit")
+	return 0.12 + (0.0 if w == &"" else Weapons.crit_of(w)) + pet_bonus("crit") + 0.01 * skill_level(id, "p3")
 
 
 # ── 무기 ──
@@ -112,6 +120,103 @@ func try_enhance(w: StringName) -> bool:
 	gold -= cost
 	wlevel[String(w)] = lv + 1
 	gold_changed.emit(gold)
+	equip_changed.emit()
+	save_game()
+	return true
+
+
+# ── 스킬 트리 ──
+
+func skill_level(id: StringName, node: String) -> int:
+	var d: Dictionary = skill_lv.get(String(id), {})
+	return int(d.get(node, 1 if node == "a1" else 0))
+
+
+func skill_cap(id: StringName) -> int:
+	return SkillTree.MASTER_LV if master.has(String(id)) else SkillTree.MAX_LV
+
+
+## 남은 스킬 포인트 = (레벨 - 1) + 트레이닝 북 - 쓴 포인트(고유기 첫 1레벨은 공짜)
+func skill_points(id: StringName) -> int:
+	var spent := 0
+	var d: Dictionary = skill_lv.get(String(id), {})
+	for k: String in d:
+		spent += int(d[k]) - (1 if k == "a1" else 0)
+	return level_of(id) - 1 + int(skill_bonus.get(String(id), 0)) - spent
+
+
+## 이 노드를 올릴 수 있는지(안 되면 이유 문자열)
+func skill_block(id: StringName, node: String) -> String:
+	if not is_owned(id):
+		return "미보유 캐릭터"
+	var lv := skill_level(id, node)
+	if node == "a3" and not master.has(String(id)):
+		return "마스터 북으로 봉인을 풀어야 해요"
+	if lv >= skill_cap(id):
+		return "최대 레벨" if lv >= SkillTree.MASTER_LV else "마스터 북으로 상한을 10까지 올릴 수 있어요"
+	var req := SkillTree.requires(node)
+	if req[0] != "" and skill_level(id, req[0]) < int(req[1]):
+		return "%s Lv.%d 필요" % [SkillTree.info(id, req[0])["name"], req[1]]
+	if skill_points(id) <= 0:
+		return "스킬 포인트가 없어요"
+	return ""
+
+
+func learn_skill(id: StringName, node: String) -> bool:
+	if skill_block(id, node) != "":
+		return false
+	var d: Dictionary = skill_lv.get(String(id), {})
+	d[node] = skill_level(id, node) + 1
+	skill_lv[String(id)] = d
+	equip_changed.emit()
+	Quests.track("skillup")
+	save_game()
+	return true
+
+
+func use_training_book(id: StringName) -> bool:
+	if int(books.get("training", 0)) <= 0 or not is_owned(id):
+		return false
+	books["training"] = int(books["training"]) - 1
+	skill_bonus[String(id)] = int(skill_bonus.get(String(id), 0)) + 1
+	equip_changed.emit()
+	save_game()
+	return true
+
+
+func use_master_book(id: StringName) -> bool:
+	if int(books.get("master", 0)) <= 0 or master.has(String(id)) or not is_owned(id):
+		return false
+	books["master"] = int(books["master"]) - 1
+	master[String(id)] = true
+	equip_changed.emit()
+	save_game()
+	return true
+
+
+func buy_book(kind: String) -> bool:
+	var cost := SkillTree.TRAINING_GEMS if kind == "training" else SkillTree.MASTER_GEMS
+	if not spend_gems(cost):
+		return false
+	books[kind] = int(books.get(kind, 0)) + 1
+	save_game()
+	return true
+
+
+func give_books(training: int, master_books := 0) -> void:
+	books["training"] = int(books.get("training", 0)) + training
+	books["master"] = int(books.get("master", 0)) + master_books
+	save_game()
+
+
+## 스킬 초기화: 쓴 포인트를 모두 돌려준다(골드 1,000 × 레벨)
+func reset_skills(id: StringName) -> bool:
+	var cost := 1000 * level_of(id)
+	if gold < cost:
+		return false
+	gold -= cost
+	gold_changed.emit(gold)
+	skill_lv.erase(String(id))
 	equip_changed.emit()
 	save_game()
 	return true
@@ -158,6 +263,8 @@ func boss_reward(boss: String) -> void:
 		weapons[String(w)] = 0
 		Events.notice.emit.call_deferred("보스 무기: %s!" % Weapons.name_of(w), "공격력 +%d · 로비 아바타의 무기 칸에서 장착하세요" % Weapons.atk_of(w, 0))
 	grant_pet.call_deferred(r[0])
+	give_books(3, 1)
+	Events.notice.emit.call_deferred("스킬 책 획득!", "트레이닝 북 3권 · 마스터 북 1권 — 아바타의 스킬 칸에서 쓰세요")
 
 
 func has_weapon(w: StringName) -> bool:
@@ -213,7 +320,7 @@ func grant_weapon(w: StringName) -> String:
 
 func hp_of(id: StringName, level := -1) -> int:
 	var lv := level_of(id) if level < 0 else level
-	return roundi(character(id).hp_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) * (1.0 + pet_bonus("hp")))
+	return roundi(character(id).hp_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) * (1.0 + pet_bonus("hp")) * (1.0 + 0.03 * skill_level(id, "p2")))
 
 
 func level_up_cost(level: int) -> int:
@@ -288,6 +395,10 @@ func load_game() -> void:
 	wlevel = {}
 	pets = {}
 	pet = ""
+	skill_lv = {}
+	skill_bonus = {}
+	master = {}
+	books = {"training": 0, "master": 0}
 	for id in STARTERS:
 		owned[String(id)] = {"level": 1, "stars": 0}
 	if FileAccess.file_exists(PATH):
@@ -315,6 +426,17 @@ func load_game() -> void:
 			pet = str(parsed.get("pet", ""))
 			if not pets.has(pet):
 				pet = ""
+			for key in ["skill_lv", "skill_bonus", "master"]:
+				var v: Variant = parsed.get(key, {})
+				if v is Dictionary:
+					set(key, v)
+			var st: Variant = parsed.get("settings", {})
+			if st is Dictionary:
+				for k: String in st:
+					settings[k] = st[k]
+			var bk: Variant = parsed.get("books", {})
+			if bk is Dictionary:
+				books = {"training": int(bk.get("training", 0)), "master": int(bk.get("master", 0))}
 			var qs: Variant = parsed.get("quest", {})
 			if qs is Dictionary:
 				quest = qs
@@ -347,4 +469,4 @@ func save_game() -> void:
 	if f == null:
 		push_error("저장 실패: %s" % error_string(FileAccess.get_open_error()))
 		return
-	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet}))
+	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet, "skill_lv": skill_lv, "skill_bonus": skill_bonus, "master": master, "books": books, "settings": settings}))

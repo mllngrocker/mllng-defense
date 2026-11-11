@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://features/character/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/scarlet_walk.png" id="2_walk"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/scarlet-face.png" id="3_face"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/scarlet-1.png" id="p1"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/scarlet-2.png" id="p2"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/scarlet-3.png" id="p3"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/scarlet-4.png" id="p4"]
+
+[resource]
+script = ExtResource("1_script")
+id = &"scarlet"
+display_name = "스칼렛"
+title = "붉은 방울 사냥꾼"
+rarity = 5
+element = 0
+attack_kind = 0
+walk_sheet = ExtResource("2_walk")
+face = ExtResource("3_face")
+portraits = Array[Texture2D]([ExtResource("p1"), ExtResource("p2"), ExtResource("p3"), ExtResource("p4")])
+card_crop = Rect2(60, 40, 260, 325)
+trail_color = Color(1, 0.45, 0.35, 1)
+base_atk = 24
+atk_growth = 4.2
+base_hp = 160
+hp_growth = 18.0
+move_speed = 76.0
+skill_name = "붉은 방울 난무"
+skill_desc = "그림자처럼 적 사이를 누비며 곡검으로 연달아 벤다"
+skill_cooldown = 8.0
+star_passives = Array[String](["곡검 연타 피해 +20%", "치명타 확률 +10%", "스킬을 쓰면 2초간 이동 속도 +30%", "공격력 +20%", "치명타 피해 +50%", "적을 처치하면 스킬 재사용 1초 감소"])

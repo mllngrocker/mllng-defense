@@ -59,7 +59,7 @@ enum Kind { YELLOW, BLUE, WHITE, PINK, GRAY, NAVY, GREEN }
 ## 캐릭터 영문 이름(소제목용)
 const ROMAN: Dictionary[StringName, String] = {
 	&"kemo1": "SHIRO", &"kemo2": "MIZUHA", &"kemo3": "KARA", &"fairy3": "LEAF", &"fairy2": "AQUA",
-	&"maid2": "BERRY", &"maid3": "LEMON", &"maid1": "LINEN", &"maid4": "COTTON", &"fairy1": "FLORA",
+	&"maid2": "BERRY", &"maid3": "LEMON", &"maid1": "LINEN", &"maid4": "COTTON", &"fairy1": "FLORA", &"scarlet": "SCARLET",
 }
 
 
@@ -518,6 +518,48 @@ static func aura(ci: CanvasItem, r: Rect2, rarity: int, owned := true) -> void:
 			var a := t * 1.4 + i * TAU / 4.0
 			var p := r.get_center() + Vector2(cos(a) * r.size.x * 0.55, sin(a) * r.size.y * 0.55)
 			star(ci, p, 3.0 + sin(t * 5.0 + i) * 1.2, Color(1, 0.95, 1, 0.9))
+
+
+## 동그란 버튼: 그림자 + 진한 외곽선 + 금빛 테 + 위는 밝고 아래는 짙은 구슬 + 윗부분 반짝
+static func ring_button(ci: CanvasItem, c: Vector2, r: float, color: Color, down := false) -> void:
+	if not down:
+		ci.draw_circle(c + Vector2(0, 3), r + 3.0, Color(INK, 0.55))
+	ci.draw_circle(c, r + 3.0, INK)
+	ci.draw_circle(c, r + 1.5, GOLD_D)
+	ci.draw_circle(c + Vector2(0, -0.8), r, GOLD_L)
+	ci.draw_circle(c, r - 3.0, INK)
+	ci.draw_circle(c, r - 4.0, color.darkened(0.25))
+	ci.draw_circle(c + Vector2(0, -r * 0.12), r - 5.5, color)
+	ci.draw_circle(c + Vector2(0, -r * 0.3), r * 0.55, color.lightened(0.18))
+	ci.draw_set_transform(c + Vector2(-r * 0.22, -r * 0.5), -0.35, Vector2(1.0, 0.45))
+	ci.draw_circle(Vector2.ZERO, r * 0.38, Color(1, 1, 1, 0.45))
+	ci.draw_set_transform(Vector2.ZERO)
+
+
+## 그림을 동그랗게 잘라 그린다(src는 그림 안의 영역, 비우면 전체)
+static func circle_tex(ci: CanvasItem, tex: Texture2D, c: Vector2, r: float, src := Rect2(), tint := Color.WHITE) -> void:
+	if tex == null:
+		return
+	var ts := tex.get_size()
+	var sr := src if src.size != Vector2.ZERO else Rect2(Vector2.ZERO, ts)
+	var pts := PackedVector2Array()
+	var uvs := PackedVector2Array()
+	for i in 32:
+		var d := Vector2.from_angle(i * TAU / 32.0)
+		pts.append(c + d * r)
+		var q := sr.get_center() + d * Vector2(sr.size.x, sr.size.y) * 0.5
+		uvs.append(q / ts)
+	ci.draw_colored_polygon(pts, tint, uvs, tex)
+
+
+## 비스듬한 판(평행사변형): 위·아래 색 그라데이션 + 외곽선
+static func skew_box(ci: CanvasItem, r: Rect2, skew: float, top: Color, bottom: Color, outline := INK, width := 2.0) -> void:
+	var pts := PackedVector2Array([r.position + Vector2(skew, 0), Vector2(r.end.x, r.position.y), Vector2(r.end.x - skew, r.end.y), Vector2(r.position.x, r.end.y)])
+	ci.draw_polygon(pts, PackedColorArray([top, top, bottom, bottom]))
+	if width > 0.0:
+		var closed := pts.duplicate()
+		closed.append(pts[0])
+		ci.draw_polyline(closed, outline, width)
 
 
 ## 재화 칸(어두운 자주 바탕 + 금테)

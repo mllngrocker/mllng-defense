@@ -202,6 +202,7 @@ texture = ExtResource("2_duj02")
 0:14/0 = 0
 1:14/0 = 0
 2:14/0 = 0
+1:13/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lbe84"]
 texture = ExtResource("3_cwnru")

@@ -349,7 +349,57 @@ const MORE_MAPS: Array[Dictionary] = [
 		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["gold_racoon", 7, 6, 60], ["heart_green", 6, 6, 60]], "temple": true, "rooms": 4, "tint": Color(1.0, 0.93, 0.78)},
 	{"path": "res://features/world/sky6.tscn", "title": "천공의 탑 꼭대기", "w": 48, "h": 30, "seed": 506, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
 			{"side": "west", "to": "res://features/world/sky5.tscn", "spawn": "east", "label": "◀ 천공의 탑 3층", "at": 14},
+			{"side": "east", "to": "res://features/world/root1.tscn", "spawn": "west", "label": "뿌리로 내려가기 ▶", "at": 14, "lock": "giant_soul", "lock_title": "고대 거인의 혼"},
 		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["sky_spirit", 4, 6, 60], ["gold_racoon", 3, 6, 60]], "temple": true, "rooms": 3, "tint": Color(1.0, 0.93, 0.78), "bosses": [["giant_soul", Vector2i(36, 14)]]},
+	# ── 2부 6장: 큰 나무의 뿌리 ──
+	{"path": "res://features/world/root1.tscn", "title": "뿌리 내리막길", "w": 50, "h": 38, "seed": 601, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
+			{"side": "west", "to": "res://features/world/sky6.tscn", "spawn": "east", "label": "◀ 천공의 탑 꼭대기", "at": 18},
+			{"side": "east", "to": "res://features/world/root2.tscn", "spawn": "west", "label": "빛나는 뿌리 동굴 ▶", "at": 18},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["root_larva", 7, 6, 60], ["root_mole", 5, 6, 60]], "crystals": 10, "tint": Color(0.72, 0.88, 0.74)},
+	{"path": "res://features/world/root2.tscn", "title": "빛나는 뿌리 동굴", "w": 52, "h": 40, "seed": 602, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
+			{"side": "west", "to": "res://features/world/root1.tscn", "spawn": "east", "label": "◀ 뿌리 내리막길", "at": 19},
+			{"side": "east", "to": "res://features/world/root_town.tscn", "spawn": "west", "label": "새싹 마을 ▶", "at": 19},
+		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 26, "bushes": 0, "flowers": 0, "spawns": [["root_larva_b", 7, 6, 60], ["root_shroom", 6, 6, 60]], "crystals": 30, "tint": Color(0.72, 0.88, 0.74)},
+	{"path": "res://features/world/root3.tscn", "title": "썩은 물길", "w": 56, "h": 40, "seed": 603, "ground": SWAMP_GROUND, "music": "res://assets/ninja/music/swamp.ogg", "border": "dead", "gaps": [
+			{"side": "west", "to": "res://features/world/root_town.tscn", "spawn": "east", "label": "◀ 새싹 마을", "at": 19},
+			{"side": "east", "to": "res://features/world/root4.tscn", "spawn": "west", "label": "벌레 굴 ▶", "at": 19},
+		], "clearings": 3, "ponds": 6, "rivers": 1, "trees": 16, "big_trees": 6, "big_tree_set": "dead", "rocks": 10, "bushes": 12, "flowers": 4, "spawns": [["root_mollusc", 7, 6, 60], ["root_shroom", 5, 6, 60]], "river_width": 2.2, "tint": Color(0.72, 0.88, 0.74)},
+	{"path": "res://features/world/root4.tscn", "title": "벌레 굴", "w": 72, "h": 24, "seed": 604, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
+			{"side": "west", "to": "res://features/world/root3.tscn", "spawn": "east", "label": "◀ 썩은 물길", "at": 11},
+			{"side": "east", "to": "res://features/world/root5.tscn", "spawn": "west", "label": "뿌리 심장 앞 ▶", "at": 11},
+		], "clearings": 4, "ponds": 1, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["root_larva", 6, 6, 60], ["root_larva_b", 6, 6, 60], ["root_beast", 3, 8, 60]], "crystals": 8, "tint": Color(0.72, 0.88, 0.74)},
+	{"path": "res://features/world/root5.tscn", "title": "뿌리 심장 앞", "w": 54, "h": 40, "seed": 605, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
+			{"side": "west", "to": "res://features/world/root4.tscn", "spawn": "east", "label": "◀ 벌레 굴", "at": 19},
+			{"side": "east", "to": "res://features/world/root6.tscn", "spawn": "west", "label": "검은 씨앗의 방 ▶", "at": 19},
+		], "clearings": 3, "ponds": 2, "rivers": 1, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["root_beast", 5, 6, 60], ["root_mollusc", 6, 6, 60]], "crystals": 20, "river_width": 2.0, "tint": Color(0.72, 0.88, 0.74)},
+	{"path": "res://features/world/root6.tscn", "title": "검은 씨앗의 방", "w": 40, "h": 30, "seed": 606, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
+			{"side": "west", "to": "res://features/world/root5.tscn", "spawn": "east", "label": "◀ 뿌리 심장 앞", "at": 14},
+			{"side": "east", "to": "res://features/world/garden1.tscn", "spawn": "west", "label": "검은 정원 ▶", "at": 14, "lock": "root_worm", "lock_title": "뿌리 먹는 벌레왕"},
+		], "clearings": 1, "ponds": 1, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 24, "bushes": 0, "flowers": 0, "spawns": [["root_beast", 4, 6, 60], ["root_larva_b", 4, 6, 60]], "crystals": 14, "tint": Color(0.66, 0.74, 0.7), "bosses": [["root_worm", Vector2i(28, 15)]]},
+	# ── 2부 7장: 검은 정원 ──
+	{"path": "res://features/world/garden1.tscn", "title": "시든 꽃길", "w": 52, "h": 40, "seed": 701, "ground": FOREST_GROUND, "music": "res://assets/ninja/music/ruinvillage.ogg", "border": "dead", "gaps": [
+			{"side": "west", "to": "res://features/world/root6.tscn", "spawn": "east", "label": "◀ 검은 씨앗의 방", "at": 19},
+			{"side": "east", "to": "res://features/world/garden2.tscn", "spawn": "west", "label": "가시덤불 미로 ▶", "at": 19},
+		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 18, "big_trees": 6, "big_tree_set": "dead", "rocks": 8, "bushes": 14, "flowers": 120, "spawns": [["garden_moth", 7, 6, 60], ["garden_lizard", 6, 6, 60]], "tint": Color(0.74, 0.62, 0.86)},
+	{"path": "res://features/world/garden2.tscn", "title": "가시덤불 미로", "w": 56, "h": 42, "seed": 702, "ground": FOREST_GROUND, "music": "res://assets/ninja/music/ruinvillage.ogg", "border": "dead", "gaps": [
+			{"side": "west", "to": "res://features/world/garden1.tscn", "spawn": "east", "label": "◀ 시든 꽃길", "at": 20},
+			{"side": "east", "to": "res://features/world/garden3.tscn", "spawn": "west", "label": "검은 연못 ▶", "at": 20},
+		], "clearings": 5, "ponds": 1, "rivers": 0, "trees": 44, "big_trees": 8, "big_tree_set": "dead", "rocks": 6, "bushes": 40, "flowers": 30, "spawns": [["garden_snake", 7, 6, 60], ["garden_spider", 6, 6, 60]], "tint": Color(0.74, 0.62, 0.86)},
+	{"path": "res://features/world/garden3.tscn", "title": "검은 연못", "w": 56, "h": 44, "seed": 703, "ground": SWAMP_GROUND, "music": "res://assets/ninja/music/swamp.ogg", "border": "dead", "gaps": [
+			{"side": "west", "to": "res://features/world/garden2.tscn", "spawn": "east", "label": "◀ 가시덤불 미로", "at": 21},
+			{"side": "east", "to": "res://features/world/garden4.tscn", "spawn": "west", "label": "거꾸로 자란 숲 ▶", "at": 21},
+		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 14, "big_trees": 6, "big_tree_set": "dead", "rocks": 6, "bushes": 10, "flowers": 20, "spawns": [["garden_owl", 6, 6, 60], ["garden_lizard2", 6, 6, 60]], "lake": 11.0, "hub": Vector2i(28, 22), "tint": Color(0.74, 0.62, 0.86)},
+	{"path": "res://features/world/garden4.tscn", "title": "거꾸로 자란 숲", "w": 52, "h": 40, "seed": 704, "ground": FOREST_GROUND, "music": "res://assets/ninja/music/forest.ogg", "border": "forest", "gaps": [
+			{"side": "west", "to": "res://features/world/garden3.tscn", "spawn": "east", "label": "◀ 검은 연못", "at": 19},
+			{"side": "east", "to": "res://features/world/garden5.tscn", "spawn": "west", "label": "정원사의 길 ▶", "at": 19},
+		], "clearings": 3, "ponds": 1, "rivers": 1, "trees": 40, "big_trees": 10, "big_tree_set": "dead", "rocks": 6, "bushes": 20, "flowers": 40, "spawns": [["garden_owl2", 6, 6, 60], ["garden_beast", 4, 8, 60], ["garden_moth", 4, 6, 60]], "river_width": 2.0, "tint": Color(0.74, 0.62, 0.86)},
+	{"path": "res://features/world/garden5.tscn", "title": "정원사의 길", "w": 74, "h": 22, "seed": 705, "ground": FOREST_GROUND, "music": "res://assets/ninja/music/forest.ogg", "border": "dead", "gaps": [
+			{"side": "west", "to": "res://features/world/garden4.tscn", "spawn": "east", "label": "◀ 거꾸로 자란 숲", "at": 10},
+			{"side": "east", "to": "res://features/world/garden6.tscn", "spawn": "west", "label": "검은 나무 아래 ▶", "at": 10},
+		], "clearings": 4, "ponds": 1, "rivers": 0, "trees": 20, "big_trees": 6, "big_tree_set": "dead", "rocks": 8, "bushes": 16, "flowers": 80, "spawns": [["garden_beast", 5, 6, 60], ["garden_spider", 5, 6, 60], ["garden_owl", 4, 6, 60]], "ruins": 6, "tint": Color(0.74, 0.62, 0.86)},
+	{"path": "res://features/world/garden6.tscn", "title": "검은 나무 아래", "w": 42, "h": 32, "seed": 706, "ground": FOREST_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "dead", "gaps": [
+			{"side": "west", "to": "res://features/world/garden5.tscn", "spawn": "east", "label": "◀ 정원사의 길", "at": 15},
+		], "clearings": 1, "ponds": 2, "rivers": 0, "trees": 8, "big_trees": 8, "big_tree_set": "dead", "rocks": 6, "bushes": 8, "flowers": 60, "spawns": [["garden_owl2", 4, 6, 60], ["garden_snake", 4, 6, 60]], "tint": Color(0.62, 0.52, 0.76), "bosses": [["black_gardener", Vector2i(30, 15)]]},
 ]
 
 ## 지역 마을: 레몬 마을과 같은 집·광장 짜임에 땅·사람·말이 다르다. villagers 칸은 광장 기준
@@ -438,6 +488,23 @@ const TOWN_MAPS: Array[Dictionary] = [
 		],
 		"critters": [["cat", Vector2i(4, 7)]],
 	},
+	{
+		"path": "res://features/world/root_town.tscn", "title": "새싹 마을", "w": 40, "h": 30, "seed": 66, "wobble": 0.0,
+		"ground": FOREST_GROUND, "music": "res://assets/ninja/music/town2.ogg", "border": "forest",
+		"roads": {"h": [0, 40], "v": [0, 0], "plaza": 3.6}, "torii": false, "tint": Color(0.8, 0.95, 0.82),
+		"gaps": [
+			{"side": "west", "to": "res://features/world/root2.tscn", "spawn": "east", "label": "◀ 빛나는 뿌리 동굴"},
+			{"side": "east", "to": "res://features/world/root3.tscn", "spawn": "west", "label": "썩은 물길 ▶"},
+		],
+		"ponds": 1, "trees": 10, "big_trees": 4, "rocks": 2, "bushes": 10, "flowers": 70,
+		"village": true, "spawns": [],
+		"villagers": [
+			["새싹 장로", "monk", Vector2i(-3, -3), ["큰 나무의 뿌리 속에도 사람이 산다네. 우린 뿌리를 돌보는 새싹 일족이지.", "십 년 전, 검은 옷을 입은 사내가 뿌리 심장으로 내려갔어.", "그 뒤를 쫓아 사냥꾼 부부가 내려갔지… 돌아온 건 사내뿐이었다네."]],
+			["약초꾼", "woman", Vector2i(10, 4), ["뿌리 물이 썩어서 약초가 다 시들었어요.", "벌레들이 뿌리를 갉아 먹고 점점 커지고 있어요."]],
+			["새싹 아이", "child", Vector2i(-11, 5), ["형아도 사냥꾼이야? 할아버지가 그러는데, 옛날에도 멋진 사냥꾼이 왔었대!"]],
+		],
+		"critters": [["chicken", Vector2i(4, 7)]],
+	},
 ]
 
 ## 마을 사람: [이름, 그림, 위치(광장 중심 기준 칸), 대사]
@@ -474,7 +541,8 @@ var hub := Vector2i(-1, -1)  # 필드 가운데 공터(시작 자리)
 var prop_tex: Texture2D  # 나무·바위 그림을 꺼내는 시트(보통 nature, 설산은 겨울 팩)
 var gate_ts: TileSet  # 입구 맵 장식 층용 타일셋(맵마다 새로)
 var water: Dictionary[Vector2i, bool] = {}
-var dry: Dictionary[Vector2i, bool] = {}  # 물 한가운데지만 걸을 수 있는 칸(돌 단·다리). 타일은 물로 칠한다
+var dry: Dictionary[Vector2i, bool] = {}
+var bridge: Dictionary[Vector2i, bool] = {}  # 강이 길을 지나는 칸(물처럼 칠하고 나무 다리를 얹는다, 걸을 수 있음)  # 물 한가운데지만 걸을 수 있는 칸(돌 단·다리). 타일은 물로 칠한다
 
 
 func _initialize() -> void:
@@ -500,6 +568,7 @@ func _build_map(m: Dictionary) -> void:
 	blocked.clear()
 	water.clear()
 	dry.clear()
+	bridge.clear()
 	counter = 0
 	prop_tex = load(WINTER_TEX) if m["border"] == "snow" else nature
 	hub = Vector2i(-1, -1)
@@ -538,6 +607,7 @@ func _build_map(m: Dictionary) -> void:
 	_make_water(start)
 	_paint_ground(ground)
 	_water_bodies(entities)
+	_make_bridges(ground)
 	_make_scenery(ground)
 	if m.get("waterfall", false):
 		_make_waterfall(ground, entities)
@@ -607,7 +677,7 @@ func _make_tileset() -> TileSet:
 		for v: Vector2i in DIRT_INNER.values():
 			if not water_src.has_tile(v + wshift):
 				water_src.create_tile(v + wshift)
-	for v: Vector2i in [Vector2i(0, 12), Vector2i(1, 12), Vector2i(2, 12), Vector2i(0, 14), Vector2i(1, 14), Vector2i(2, 14)]:
+	for v: Vector2i in [Vector2i(0, 12), Vector2i(1, 12), Vector2i(2, 12), Vector2i(0, 14), Vector2i(1, 14), Vector2i(2, 14), Vector2i(1, 13)]:
 		water_src.create_tile(v)  # 나무 다리
 	ts.add_source(water_src, WATER)
 	var relief := TileSetAtlasSource.new()
@@ -811,6 +881,8 @@ func _paint_ground(ground: TileMapLayer) -> void:
 	for c: Vector2i in dry:
 		if c.x < int(cfg.get("sea_west", 0)):
 			wet[c] = true
+	for c: Vector2i in bridge:
+		wet[c] = true
 	for y in H:
 		for x in W:
 			var c := Vector2i(x, y)
@@ -939,6 +1011,23 @@ func _make_scenery(ground: Node) -> void:
 	_add(world, fx)
 
 
+## 강이 길을 지나는 곳에 나무 다리(Ninja 널빤지). 길 방향(가로·세로)에 맞춰 난간 쪽을 고른다
+func _make_bridges(ground: Node) -> void:
+	if bridge.is_empty():
+		return
+	var layer := TileMapLayer.new()
+	layer.name = "Bridges"
+	layer.tile_set = tileset
+	_add(world, layer)
+	world.move_child(layer, _above_ground(ground))
+	for c: Vector2i in bridge:
+		var horiz := bridge.has(c + Vector2i.LEFT) or bridge.has(c + Vector2i.RIGHT)
+		var row := 13
+		if horiz:
+			row = 12 if not bridge.has(c + Vector2i.UP) else (14 if not bridge.has(c + Vector2i.DOWN) else 13)
+		layer.set_cell(c, WATER, Vector2i(1, row))
+
+
 ## 땅(과 물 겹침 층) 바로 위 자리: 장식 층이 물에 덮이지 않게
 func _above_ground(ground: Node) -> int:
 	var wl := world.get_node_or_null(^"WaterLayer")
@@ -990,7 +1079,7 @@ func _make_temple(deco: TileMapLayer, ent: Node, fx: Node2D) -> void:
 	for cx in [isl.position.x + 1, isl.end.x - 2]:
 		_sprite_prop(ent, temple_tex, Rect2i(2, 19, 1, 3), Vector2((cx + 0.5) * T, (isl.position.y + 5) * T), Vector2(12, 8), "Pillar")
 	for c: Vector2i in [Vector2i(isl.position.x + 1, isl.end.y - 1), Vector2i(isl.end.x - 2, isl.end.y - 1)]:
-		_sprite_prop(ent, temple_tex, Rect2i(c.x % 2, 20, 1, 1), Vector2((c.x + 0.5) * T, (c.y + 1) * T), Vector2(10, 6), "Urn")
+		_sprite_prop(ent, temple_tex, Rect2i(c.x % 2, 20, 1, 1), Vector2((c.x + 0.5) * T, (c.y + 1) * T), Vector2.ZERO, "Urn")
 	# 물 쏟는 뱀 석상 둘(왼쪽은 뒤집어 문을 보게)
 	var frames := SpriteFrames.new()
 	frames.set_animation_speed(&"default", 8.0)
@@ -1056,8 +1145,8 @@ func _make_snow_mountain(deco: TileMapLayer, ent: Node, fx: Node2D) -> void:
 	# 절벽 위 전나무, 동굴 옆 눈사람·표지판, 얼음 못
 	for c: Vector2i in [Vector2i(2, 4), Vector2i(29, 4), Vector2i(8, 2), Vector2i(23, 2), Vector2i(14, 0), Vector2i(4, 1), Vector2i(27, 1)]:
 		_sprite_prop(ent, winter, SNOW_TREES[(c.x / 3) % 2], Vector2((c.x + 1.5) * T, (c.y + 3) * T - 2), Vector2.ZERO, "Pine")
-	_sprite_prop(ent, winter, Rect2i(2, 0, 1, 2), Vector2((goal.x - 3 + 0.5) * T, (top + 3) * T), Vector2(10, 6), "Snowman")
-	_sprite_prop(ent, winter, Rect2i(0, 2, 1, 1), Vector2((goal.x + 4 + 0.5) * T, (top + 3) * T), Vector2(10, 6), "Sign")
+	_sprite_prop(ent, winter, Rect2i(2, 0, 1, 2), Vector2((goal.x - 3 + 0.5) * T, (top + 3) * T), Vector2.ZERO, "Snowman")
+	_sprite_prop(ent, winter, Rect2i(0, 2, 1, 1), Vector2((goal.x + 4 + 0.5) * T, (top + 3) * T), Vector2.ZERO, "Sign")
 	var pcols := [6, 7, 7, 7, 8]
 	for y in 3:
 		for x in pcols.size():
@@ -1227,7 +1316,7 @@ func _build_temple(ground: TileMapLayer, ent: Node, spawns: Node) -> void:
 		for k in 2:
 			var c := Vector2i(rng.randi_range(r.position.x + 1, r.end.x - 2), rng.randi_range(r.position.y + 1, r.end.y - 2))
 			if not blocked.has(c):
-				_sprite_prop(ent, temple_tex, Rect2i(k % 2, 20, 1, 1), Vector2((c.x + 0.5) * T, (c.y + 1) * T), Vector2(10, 6), "Urn")
+				_sprite_prop(ent, temple_tex, Rect2i(k % 2, 20, 1, 1), Vector2((c.x + 0.5) * T, (c.y + 1) * T), Vector2.ZERO, "Urn")
 				_block(c, Vector2i.ONE)
 	var rn: Array = cfg.get("room_npcs", [])
 	for k in rn.size():
@@ -1339,26 +1428,43 @@ func _make_water(start: Vector2i) -> void:
 			for x in sx:
 				if not dirt.has(Vector2i(x, y)) and not dry.has(Vector2i(x, y)):
 					water[Vector2i(x, y)] = true
-	# 강
+	# 강: 시작 자리·이동문 앞을 비켜 가는 물길을 고르고(여러 번 시도), 길과 만나는 곳엔 나무 다리
+	var avoid: Array[Vector2] = [Vector2(start)]
+	for g: Dictionary in cfg["gaps"]:
+		avoid.append(_entry(g))
 	for i in int(cfg.get("rivers", 0)):
-		var vertical := rng.randf() < 0.5
-		var a := Vector2(rng.randi_range(BORDER + 8, W - BORDER - 8), -2) if vertical else Vector2(-2, rng.randi_range(BORDER + 6, H - BORDER - 6))
-		var b := Vector2(rng.randi_range(BORDER + 8, W - BORDER - 8), H + 1) if vertical else Vector2(W + 1, rng.randi_range(BORDER + 6, H - BORDER - 6))
 		var width: float = cfg.get("river_width", 2.0)
-		var p := a
-		var t := rng.randf() * 500.0
-		for guard in 4000:
-			if p.distance_to(b) < 1.0:
+		var cells: Dictionary = {}
+		for attempt in 12:
+			cells.clear()
+			var vertical := rng.randf() < 0.5
+			var a := Vector2(rng.randi_range(BORDER + 8, W - BORDER - 8), -2) if vertical else Vector2(-2, rng.randi_range(BORDER + 6, H - BORDER - 6))
+			var b := Vector2(rng.randi_range(BORDER + 8, W - BORDER - 8), H + 1) if vertical else Vector2(W + 1, rng.randi_range(BORDER + 6, H - BORDER - 6))
+			var p := a
+			var t := rng.randf() * 500.0
+			var clash := false
+			for guard in 4000:
+				if p.distance_to(b) < 1.0:
+					break
+				var d := (b - p).normalized()
+				p += (d + d.orthogonal() * noise.get_noise_1d(t) * 2.2).normalized() * 0.5
+				t += 1.2
+				for q in avoid:
+					if p.distance_to(q) < 7.5 + width:
+						clash = true
+				var wnow := width * (0.8 + 0.4 * (noise.get_noise_1d(t * 0.5 + 99.0) + 1.0) / 2.0)
+				for y in range(-4, 5):
+					for x in range(-4, 5):
+						var c := Vector2i(p.round()) + Vector2i(x, y)
+						if Vector2(x, y).length() <= wnow and c.x >= 0 and c.y >= 0 and c.x < W and c.y < H:
+							cells[c] = true
+			if not clash:
 				break
-			var d := (b - p).normalized()
-			p += (d + d.orthogonal() * noise.get_noise_1d(t) * 2.2).normalized() * 0.5
-			t += 1.2
-			var wnow := width * (0.8 + 0.4 * (noise.get_noise_1d(t * 0.5 + 99.0) + 1.0) / 2.0)
-			for y in range(-4, 5):
-				for x in range(-4, 5):
-					var c := Vector2i(p.round()) + Vector2i(x, y)
-					if Vector2(x, y).length() <= wnow and c.x >= 0 and c.y >= 0 and c.x < W and c.y < H and not keep_clear.call(c):
-						water[c] = true
+		for c: Vector2i in cells:
+			if dirt.has(c):
+				bridge[c] = true
+			elif not keep_clear.call(c):
+				water[c] = true
 	# 연못(큰 것·작은 것 섞어서)
 	var made := 0
 	for tries in 300:
@@ -1642,7 +1748,7 @@ func _scatter_props(parent: Node, start: Vector2i) -> void:
 		_scatter(start, 10, 2000, func(c: Vector2i) -> bool:
 			if not _area_free(c, Vector2i.ONE, false):
 				return false
-			_sprite_prop(parent, desert_tex, Rect2i(POTS[rng.randi() % POTS.size()], Vector2i.ONE), Vector2(c * T) + Vector2(T / 2.0, T - 2.0), Vector2(10, 6), "Pot")
+			_sprite_prop(parent, desert_tex, Rect2i(POTS[rng.randi() % POTS.size()], Vector2i.ONE), Vector2(c * T) + Vector2(T / 2.0, T - 2.0), Vector2.ZERO, "Pot")
 			_block(c, Vector2i.ONE)
 			return true)
 
@@ -1683,7 +1789,7 @@ func _prop(parent: Node, region: Rect2i, base: Vector2, solid: Vector2, kind: St
 	return _sprite_prop(parent, prop_tex, region, base, solid, kind, layer)
 
 
-## 그림 한 장 + (부딪힘 상자). base는 그림 아래쪽 가운데(y 정렬 기준).
+## 그림 한 장 + (부딪힘 상자: 나무·바위·건물·기둥만. 덤불은 8층이라 몸은 지나가고 칼로만 벤다). base는 그림 아래쪽 가운데(y 정렬 기준).
 func _sprite_prop(parent: Node, tex: Texture2D, region: Rect2i, base: Vector2, solid: Vector2, kind: String, layer := 1) -> Node2D:
 	var node: Node2D
 	if solid != Vector2.ZERO:

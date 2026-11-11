@@ -29,8 +29,15 @@ var _next_voice := 0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	for bus in ["Music", "SFX"]:
+		if AudioServer.get_bus_index(bus) < 0:
+			AudioServer.add_bus()
+			AudioServer.set_bus_name(AudioServer.bus_count - 1, bus)
+			AudioServer.set_bus_send(AudioServer.bus_count - 1, &"Master")
+	apply_volume.call_deferred()
 	for i in VOICES:
 		var p := AudioStreamPlayer.new()
+		p.bus = &"SFX"
 		add_child(p)
 		_voices.append(p)
 	_setup_font()
@@ -46,7 +53,20 @@ func sfx(sound: StringName, volume_db := 0.0, pitch_jitter := 0.08) -> void:
 
 
 func add_shake(amount: float) -> void:
+	if not bool(Save.settings.get("shake", true)):
+		return
 	shake = maxf(shake, amount)
+
+
+## 설정의 배경음·효과음 크기를 소리 버스에 반영
+func apply_volume() -> void:
+	for pair: Array in [["Music", "bgm"], ["SFX", "sfx"]]:
+		var i := AudioServer.get_bus_index(pair[0])
+		if i < 0:
+			continue
+		var v := float(Save.settings.get(pair[1], 0.8))
+		AudioServer.set_bus_mute(i, v <= 0.01)
+		AudioServer.set_bus_volume_db(i, linear_to_db(maxf(v, 0.001)))
 
 
 ## 다른 맵으로 이동(이동문에서 부른다). 저장하고 장면을 바꾼다.

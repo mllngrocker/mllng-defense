@@ -24,7 +24,6 @@ window/size/viewport_width=540
 window/size/viewport_height=960
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-window/stretch/mode.web="viewport"
 window/handheld/orientation=1
 
 [input_devices]
@@ -60,6 +59,14 @@ dash={
 skill={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"physical_keycode":69), Object(InputEventKey,"physical_keycode":76)]
+}
+skill2={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":82), Object(InputEventKey,"physical_keycode":75)]
+}
+skill3={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"physical_keycode":70), Object(InputEventKey,"physical_keycode":74)]
 }
 map={
 "deadzone": 0.2,

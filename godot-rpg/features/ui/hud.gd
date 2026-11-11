@@ -4,7 +4,7 @@ extends CanvasLayer
 ## 신호만 듣고 게임 상태는 건드리지 않는다.
 
 const MENU_SCENE := "res://features/menu/main_menu.tscn"
-const FACE := Rect2(12, 12, 66, 66)
+const FACE := Rect2(12, 10, 64, 64)
 const BAR := Rect2(92, 48, 186, 24)
 const HP_RED := Color("ff4d5e")
 const CUTIN_TIME := 1.1
@@ -12,6 +12,7 @@ const TITLE_TIME := 2.6
 const NOTE_TIME := 2.0
 const TRACKER := Rect2(10, 90, 270, 66)
 
+var auto_button: IconButton
 var data: CharacterData
 var level := 1
 var hp := 0
@@ -51,7 +52,6 @@ func _ready() -> void:
 		_cutin_t = 0.0)
 	Save.gold_changed.connect(func(_g: int) -> void: canvas.queue_redraw())
 	Save.gems_changed.connect(func(_g: int) -> void: canvas.queue_redraw())
-	_add_menu_button()
 	_add_map_button()
 	_add_tracker()
 	Events.boss_hp.connect(_on_boss_hp)
@@ -170,52 +170,78 @@ func _draw_cutin(ci: Control) -> void:
 	var art := Rect2(Vector2(24, y - 30), Vector2(130, 140))
 	UiKit.card_art(ci, _cutin, art, Color(1, 1, 1, fade))
 	Gt.text(ci, Vector2(170, y + 36), Gt.roman(_cutin.id) + " SKILL", 13, Color(col.lightened(0.5), fade), 0, true, 4, Gt.INK, true)
-	Gt.text(ci, Vector2(168, y + 72), _cutin.skill_name, 32, Color(1, 1, 1, fade), 0, true, 8, Gt.INK)
+	var sk_name := _cutin.skill_name
+	var pl := get_tree().get_first_node_in_group(&"player") as Player
+	if pl and pl.skills and pl.skills.last_name != "":
+		sk_name = pl.skills.last_name
+	Gt.text(ci, Vector2(168, y + 72), sk_name, 32, Color(1, 1, 1, fade), 0, true, 8, Gt.INK)
 	ci.draw_set_transform(Vector2.ZERO)
 
 
 ## 왼쪽 위: 얼굴 액자(등급색 테두리) + Lv + 속성 + 이름 + 체력바
 func _draw_profile(ci: Control) -> void:
 	var rc: Color = Gt.ELEMENT_CARD[data.element] if data else Gt.BLUE
-	Gt.pbox(ci, FACE, rc)
-	var inner := FACE.grow(-Gt.PX * 2.0)
-	Gt.grad(ci, inner, Color("e9f7ff"), rc.lightened(0.35))
+	var c := FACE.get_center()
+	var r := FACE.size.x / 2.0
+	# 이름판(비스듬, 남색 → 투명)
+	Gt.skew_box(ci, Rect2(c.x + 18, 12, 200, 30), 10, Color(Gt.NAVY, 0.95), Color(Gt.NAVY, 0.55), Color(Gt.INK, 0.9), 2.0)
+	Gt.skew_box(ci, Rect2(c.x + 22, 14, 196, 4), 2, Color(1, 1, 1, 0.25), Color(1, 1, 1, 0.0), Color.TRANSPARENT, 0.0)
+	# 초상: 그림자·금테·속성색 구슬·얼굴
+	ci.draw_circle(c + Vector2(0, 3), r + 4, Color(Gt.INK, 0.5))
+	ci.draw_circle(c, r + 4, Gt.INK)
+	ci.draw_circle(c, r + 2.5, Gt.GOLD_D)
+	ci.draw_circle(c + Vector2(0, -1), r + 1, Gt.GOLD_L)
+	ci.draw_circle(c, r - 1.5, Gt.INK)
+	ci.draw_circle(c, r - 2.5, rc.lightened(0.35))
+	ci.draw_circle(c + Vector2(0, 6), r - 6, rc)
 	if data and data.face:
-		ci.draw_texture_rect(data.face, inner, false)
+		Gt.circle_tex(ci, data.face, c, r - 3.0)
 	if data:
-		Gt.element_badge(ci, FACE.position + Vector2(FACE.size.x - 6, 8), 9, data.element)
-		var lv_tag := Rect2(FACE.position + Vector2(6, FACE.size.y - 12), Vector2(54, 20))
-		Gt.tag(ci, lv_tag, Gt.NAVY)
-		Gt.text(ci, Vector2(lv_tag.get_center().x, lv_tag.position.y + 15), "Lv.%d" % level, 12, Color.WHITE, 1)
-		Gt.title(ci, Vector2(BAR.position.x + 2, 38), data.display_name, 20)
-		var nw := Gt.width(data.display_name, 20)
-		Gt.text(ci, Vector2(BAR.position.x + nw + 10, 37), Gt.roman(data.id), 11, Color("ffe36b"), 0, true, 4, Gt.INK, true)
-	# 체력바: 진한 테두리 + 하얀 잔상 + 빨간 체력 + 윗줄 반짝
-	Gt.pbox(ci, BAR, Color("3d3556"), Gt.INK, 1, true, false)
-	var bar_in := BAR.grow(-Gt.PX)
+		Gt.element_badge(ci, c + Vector2(r - 4, -r + 6), 9, data.element)
+		# 레벨 배지(왼쪽 아래 동그라미)
+		var lc := c + Vector2(-r + 6, r - 4)
+		ci.draw_circle(lc, 15, Gt.INK)
+		ci.draw_circle(lc, 13, Gt.GOLD)
+		ci.draw_circle(lc, 11, Gt.NAVY)
+		Gt.text(ci, lc + Vector2(0, 5), str(level), 14, Color.WHITE, 1)
+		Gt.title(ci, Vector2(c.x + r + 14, 35), data.display_name, 18)
+		var nw := Gt.width(data.display_name, 18)
+		Gt.text(ci, Vector2(c.x + r + nw + 22, 34), Gt.roman(data.id), 11, Color("ffe36b"), 0, true, 4, Gt.INK, true)
+	# 체력바(비스듬): 어두운 홈 · 하얀 잔상 · 빨강→분홍 · 눈금 · 윗줄 반짝
+	var bar := Rect2(c.x + r + 4, 46, 196, 20)
+	Gt.skew_box(ci, bar.grow(2), 9, Gt.INK, Gt.INK, Gt.INK, 0.0)
+	Gt.skew_box(ci, bar, 8, Color("2a2238"), Color("3d3556"), Color.TRANSPARENT, 0.0)
 	if max_hp > 0:
-		var lag := snappedf(bar_in.size.x * _shown_hp / max_hp, Gt.PX)
-		var cur := snappedf(bar_in.size.x * hp / max_hp, Gt.PX)
-		ci.draw_rect(Rect2(bar_in.position, Vector2(lag, bar_in.size.y)), Color("fff3e0"))
-		if cur > 0.0:
-			var col := HP_RED if hp > max_hp * 0.3 else Color("ff2a3d").lerp(Color.WHITE, 0.25 * (sin(Time.get_ticks_msec() / 90.0) + 1.0))
-			ci.draw_rect(Rect2(bar_in.position, Vector2(cur, bar_in.size.y)), col)
-			ci.draw_rect(Rect2(bar_in.position, Vector2(cur, Gt.PX)), col.lightened(0.45))
-			ci.draw_rect(Rect2(bar_in.position + Vector2(0, bar_in.size.y - Gt.PX), Vector2(cur, Gt.PX)), col.darkened(0.25))
-		Gt.title(ci, Vector2(bar_in.get_center().x + 8, bar_in.position.y + 14), "%d / %d" % [hp, max_hp], 13, Color.WHITE, 1)
-	Gt.icon(ci, &"heart", BAR.position + Vector2(0, BAR.size.y / 2.0), 26)
+		var lag := bar.size.x * clampf(_shown_hp / max_hp, 0.0, 1.0)
+		var cur := bar.size.x * clampf(float(hp) / max_hp, 0.0, 1.0)
+		if lag > 2.0:
+			Gt.skew_box(ci, Rect2(bar.position, Vector2(lag, bar.size.y)), 8, Color("fff3e0"), Color("ffd9c0"), Color.TRANSPARENT, 0.0)
+		if cur > 2.0:
+			var low := hp <= max_hp * 0.3
+			var blink := 0.25 * (sin(Time.get_ticks_msec() / 90.0) + 1.0) if low else 0.0
+			Gt.skew_box(ci, Rect2(bar.position, Vector2(cur, bar.size.y)), 8, Color("ff7a9a").lerp(Color.WHITE, blink), Color("e8203d"), Color.TRANSPARENT, 0.0)
+			Gt.skew_box(ci, Rect2(bar.position + Vector2(4, 2), Vector2(maxf(cur - 8, 0), 4)), 2, Color(1, 1, 1, 0.45), Color(1, 1, 1, 0.1), Color.TRANSPARENT, 0.0)
+		for i in range(1, 10):
+			var x := bar.position.x + bar.size.x * i / 10.0
+			ci.draw_line(Vector2(x + 6, bar.position.y + 2), Vector2(x - 2, bar.end.y - 2), Color(Gt.INK, 0.35), 1.0)
+		Gt.text(ci, Vector2(bar.position.x + 14, bar.position.y + 15), "HP", 11, Color("ffe36b"), 0, true, 3, Gt.INK, true)
+		Gt.title(ci, Vector2(bar.end.x - 14, bar.position.y + 15), "%d / %d" % [hp, max_hp], 12, Color.WHITE, 2)
 
 
 ## 오른쪽 위(로비 버튼 왼쪽): 처치 수 · 골드 · 보석 칸
 func _draw_counters(ci: Control) -> void:
-	var x := ci.size.x - 82.0 - 112.0
+	var x := ci.size.x - 70.0 - 124.0
 	var rows: Array = [[&"skull", kills, Color.WHITE], [&"coin", Save.gold, Color("ffe36b")], [&"gem", Save.gems, Color("ffb8ea")]]
 	for i in rows.size():
-		var r := Rect2(x, 12 + i * 36, 112, 30)
-		Gt.pill(ci, r)
-		# 아이콘은 칸 안쪽 왼쪽에 크게(골드·보석 그림은 여백이 있어 조금 더 키운다)
-		Gt.icon(ci, rows[i][0], Vector2(r.position.x + 15, r.get_center().y), 26 if i == 0 else 34)
-		Gt.title(ci, Vector2(r.end.x - 10, r.position.y + 21), _comma(rows[i][1]), 15, rows[i][2], 2)
+		var r := Rect2(x + 10, 12 + i * 34, 118, 26)
+		Gt.skew_box(ci, r, 8, Color(Gt.PLUM, 0.95), Color("2a1838", 0.95), Gt.INK, 2.0)
+		Gt.skew_box(ci, Rect2(r.position + Vector2(6, 2), Vector2(r.size.x - 12, 3)), 1, Color(1, 1, 1, 0.22), Color(1, 1, 1, 0.0), Color.TRANSPARENT, 0.0)
+		var ic := Vector2(r.position.x + 2, r.get_center().y)
+		ci.draw_circle(ic, 15, Gt.INK)
+		ci.draw_circle(ic, 13, Gt.GOLD)
+		ci.draw_circle(ic, 11, Color("3a2546"))
+		Gt.icon(ci, rows[i][0], ic, 20 if i == 0 else 26)
+		Gt.title(ci, Vector2(r.end.x - 12, r.position.y + 19), _comma(rows[i][1]), 14, rows[i][2], 2)
 
 
 ## 왼쪽 위 퀘스트 추적창: 지금 메인 퀘스트와 진행도. 다 채우면 반짝이고, 누르면 보상을 받는다.
@@ -247,9 +273,16 @@ func _paint_tracker(ci: Control) -> void:
 	var q := Quests.current()
 	var done := Quests.main_done()
 	var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 160.0)
-	Gt.pbox(ci, r, Color("8a6a18").lerp(Color("c9952a"), pulse) if done else Color(Gt.PLUM, 0.9), Gt.INK, 2, false, true)
-	var tag := Rect2(r.position + Vector2(8, 8), Vector2(52, 20))
-	Gt.tag(ci, tag, Gt.GREEN if done else Gt.PINK)
+	# 반투명 카드 + 왼쪽 색 띠 + 위쪽 금줄
+	if done:
+		Gt.round_grad(ci, r, 6, Color("c9952a").lerp(Color("ffd36b"), pulse), Color("8a6a18"))
+	else:
+		Gt.round_grad(ci, r, 6, Color("3a2650", 0.92), Color("1f1530", 0.88))
+	Gt.round_line(ci, r, 6, Gt.INK, 2.0)
+	ci.draw_rect(Rect2(r.position + Vector2(8, 1.5), Vector2(r.size.x - 16, 1.5)), Color(Gt.GOLD_L, 0.6))
+	ci.draw_rect(Rect2(r.position + Vector2(3, 6), Vector2(4, r.size.y - 12)), Color("7ccf5a") if done else Color("ff6fa8"))
+	var tag := Rect2(r.position + Vector2(12, 8), Vector2(48, 20))
+	Gt.skew_box(ci, tag, 6, Color("8cdf6a") if done else Color("ff8fb8"), Color("4fa83a") if done else Color("e04a86"), Gt.INK, 2.0)
 	Gt.text(ci, Vector2(tag.get_center().x, tag.position.y + 15), "완료!" if done else "메인", 11, Color.WHITE, 1)
 	if q.is_empty():
 		Gt.title(ci, Vector2(tag.end.x + 8, r.position.y + 24), "모든 이야기를 마쳤어요!", 14)
@@ -313,17 +346,56 @@ func _draw_note(ci: Control) -> void:
 
 ## 로비 버튼 아래 "지도" 버튼(M 키도 같음)
 func _add_map_button() -> void:
-	var b := GameButton.new()
-	b.label = "지도"
-	b.kind = Gt.Kind.GREEN
-	b.font_size = 17
-	b.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	b.offset_left = -76
-	b.offset_top = 66
-	b.offset_right = -10
-	b.offset_bottom = 118
-	b.pressed.connect(open_map)
-	add_child(b)
+	var col := VBoxContainer.new()
+	col.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	col.offset_left = -64
+	col.offset_top = 6
+	col.offset_right = -6
+	col.add_theme_constant_override(&"separation", 0)
+	add_child(col)
+	for spec: Array in [["gear", "설정", Color("8a7ae0"), open_pause], ["map", "지도", Color("4fb86b"), open_map], ["home", "로비", Color("4f8fe6"), _go_lobby]]:
+		var b := IconButton.new()
+		b.glyph = spec[0]
+		b.label = spec[1]
+		b.color = spec[2]
+		b.pressed.connect(spec[3])
+		col.add_child(b)
+	# 자동 사냥 켜기·끄기(켜면 주황, 끄면 회색)
+	auto_button = IconButton.new()
+	auto_button.glyph = "auto"
+	auto_button.pressed.connect(_toggle_auto)
+	col.add_child(auto_button)
+	_refresh_auto()
+
+
+func _toggle_auto() -> void:
+	var on := not bool(Save.settings.get("auto", false))
+	Save.settings["auto"] = on
+	var p := get_tree().get_first_node_in_group(&"player")
+	if p:
+		p.set(&"auto", on)
+	Game.sfx(&"pickup", -6.0, 0.0)
+	_refresh_auto()
+
+
+func _refresh_auto() -> void:
+	var on := bool(Save.settings.get("auto", false))
+	auto_button.color = Color("ff9a2e") if on else Color("8a8f9c")
+	auto_button.label = "자동 켬" if on else "자동"
+	auto_button.dot = on
+	auto_button.queue_redraw()
+
+
+func _go_lobby() -> void:
+	Save.save_game()
+	get_tree().change_scene_to_file(MENU_SCENE)
+
+
+## 일시정지·설정 창
+func open_pause() -> void:
+	if get_tree().paused:
+		return
+	add_child(PauseMenu.new())
 
 
 func open_map() -> void:
@@ -335,23 +407,8 @@ func open_map() -> void:
 func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed(&"map"):
 		open_map()
-
-
-## 오른쪽 위 "로비" 버튼: 저장하고 아바타 화면으로 돌아간다.
-func _add_menu_button() -> void:
-	var b := GameButton.new()
-	b.label = "로비"
-	b.kind = Gt.Kind.BLUE
-	b.font_size = 17
-	b.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	b.offset_left = -76
-	b.offset_top = 10
-	b.offset_right = -10
-	b.offset_bottom = 62
-	b.pressed.connect(func() -> void:
-		Save.save_game()
-		get_tree().change_scene_to_file(MENU_SCENE))
-	add_child(b)
+	elif e.is_action_pressed(&"ui_cancel") or (e is InputEventKey and (e as InputEventKey).pressed and not (e as InputEventKey).echo and (e as InputEventKey).keycode == KEY_P):
+		open_pause()
 
 
 func _comma(n: int) -> String:

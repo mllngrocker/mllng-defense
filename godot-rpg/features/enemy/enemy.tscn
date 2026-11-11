@@ -16,7 +16,7 @@ size = Vector2(12, 7)
 
 [node name="Enemy" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 4
-collision_mask = 9
+collision_mask = 1
 motion_mode = 1
 script = ExtResource("1_script")
 

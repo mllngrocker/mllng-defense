@@ -16,7 +16,7 @@ func _ready() -> void:
 	add_child(menu)
 	await get_tree().process_frame
 
-	_check("캐릭터 카드 10장", menu.cards.size() == 10)
+	_check("캐릭터 카드 %d장" % Save.ROSTER.size(), menu.cards.size() == Save.ROSTER.size())
 	_check("시작 보유 3명", Save.STARTERS.all(func(id: StringName) -> bool: return Save.is_owned(id)))
 	_check("★5 플로라는 미보유", not Save.is_owned(&"fairy1"))
 

@@ -36,6 +36,7 @@ func _ready() -> void:
 	cam.limit_right = rect.end.x * size.x
 	cam.limit_bottom = rect.end.y * size.y
 	cam.reset_smoothing.call_deferred()
+	music.bus = &"Music"
 	(music.stream as AudioStreamOggVorbis).loop = true
 	music.play()
 	if map_title != "":

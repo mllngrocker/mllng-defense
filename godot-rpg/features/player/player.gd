@@ -47,6 +47,12 @@ var skills: SkillCaster
 var skill_lock_t := 0.0  # 스킬 쓰는 동안 직접 못 움직인다
 var skill_move := Vector2.ZERO
 var skill_guard := false  # 스킬 쓰는 동안 무적인지
+## 자동 사냥: 켜면 가까운 몬스터를 찾아가 공격하고, 스킬이 차면 바로 쓴다. 조이스틱을 움직이면 그동안은 손으로 조종.
+var auto := false
+var _auto_target: Node2D
+var _auto_check := 0.0
+var _auto_best := INF
+var _auto_skip: Dictionary = {}  # 길이 막혀 못 가는 몬스터 → 무시할 남은 시간
 
 @onready var sprite: Sprite2D = $Sprite
 @onready var sword: Area2D = $Sword
@@ -71,6 +77,7 @@ func _ready() -> void:
 	skills.name = "Skill"
 	add_child(skills)
 	skills.setup(self, data)
+	auto = bool(Save.settings.get("auto", false))
 	Events.character_changed.emit.call_deferred(data, level)
 	Events.player_hp_changed.emit.call_deferred(hp, max_hp)
 
@@ -86,10 +93,17 @@ func _physics_process(delta: float) -> void:
 
 	# 조이스틱 세기를 그대로 쓴다(기본 데드존 0.5면 살짝 밀 때 안 움직여서 뻑뻑하다)
 	var input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down", 0.05)
+	if auto and input == Vector2.ZERO and dash_t <= 0.0:
+		input = _auto_drive(delta)
 	style.physics(delta)
 	var move := input * data.move_speed * style.move_scale
-	if Input.is_action_just_pressed(&"skill") and dash_t <= 0.0 and skill_lock_t <= 0.0:
-		skills.try_cast()
+	if dash_t <= 0.0 and skill_lock_t <= 0.0:
+		if Input.is_action_just_pressed(&"skill"):
+			skills.try_cast("a1")
+		elif Input.is_action_just_pressed(&"skill2"):
+			skills.try_cast("a2")
+		elif Input.is_action_just_pressed(&"skill3"):
+			skills.try_cast("a3")
 	if skill_lock_t > 0.0:
 		skill_lock_t -= delta
 		move = skill_move
@@ -122,6 +136,59 @@ func _physics_process(delta: float) -> void:
 	knockback = knockback.move_toward(Vector2.ZERO, 700.0 * delta)
 	move_and_slide()
 	_animate(delta, input != Vector2.ZERO and not style.busy)
+
+
+# ── 자동 사냥 ──
+
+## 가까운 몬스터 쪽으로 갈 방향(0~1 세기)을 돌려준다. 닿으면 멈춰서 공격·스킬.
+func _auto_drive(delta: float) -> Vector2:
+	for k in _auto_skip.keys():
+		_auto_skip[k] -= delta
+		if _auto_skip[k] <= 0.0:
+			_auto_skip.erase(k)
+	if _auto_target == null or not is_instance_valid(_auto_target) or _auto_target.get(&"hp") <= 0:
+		_auto_target = _auto_pick()
+		_auto_check = 0.0
+		_auto_best = INF
+	if _auto_target == null:
+		return Vector2.ZERO
+	var v := _auto_target.global_position - global_position
+	var d := v.length()
+	var reach := 75.0 if data.attack_kind == 1 else 16.0  # 마법은 떨어져서 쏜다
+	# 길이 막혀 1.5초 동안 가까워지지 않으면 다른 몬스터로
+	_auto_check += delta
+	if d < _auto_best - 2.0:
+		_auto_best = d
+		_auto_check = 0.0
+	elif _auto_check > 1.5 and d > reach + 8.0:
+		_auto_skip[_auto_target.get_instance_id()] = 4.0
+		_auto_target = null
+		return Vector2.ZERO
+	if d <= reach + 10.0:
+		dir = _dir_from(v)
+		if skill_lock_t <= 0.0:
+			for node in ["a3", "a2", "a1"]:
+				if skills.has_skill(node) and skills.try_cast(node):
+					break
+		if not style.busy and style.wants_press():
+			attack_buffer = ATTACK_BUFFER
+		_auto_best = minf(_auto_best, d)
+		_auto_check = 0.0
+		return Vector2.ZERO if d <= reach else v.normalized() * 0.6
+	return v.normalized()
+
+
+func _auto_pick() -> Node2D:
+	var best: Node2D = null
+	var best_d := INF
+	for e: Node2D in get_tree().get_nodes_in_group(&"enemies"):
+		if e.get(&"hp") <= 0 or _auto_skip.has(e.get_instance_id()):
+			continue
+		var d := e.global_position.distance_to(global_position)
+		if d < best_d:
+			best_d = d
+			best = e
+	return best
 
 
 # ── 공격 방식(AttackStyle)이 쓰는 도구 ──

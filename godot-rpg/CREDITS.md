@@ -3,6 +3,7 @@
 | 폴더 | 소재 | 약관 |
 |---|---|---|
 | `assets/ninja/` | Ninja Adventure - Asset Pack (pixel-boy, https://pixel-boy.itch.io/ninja-adventure-asset-pack) | CC0. 출처 표기 불필요 |
+| `assets/vendor/skill_icons/` | pauliuw「Skill, item and spell icons」(https://opengameart.org/content/skill-item-and-spell-icons) — 스킬 아이콘 | CC0 (git 제외 폴더에 둠) |
 | `assets/snowshop/` | スノーショップ「ケモ耳☆立ち絵＆歩行グラ」(https://booth.pm/ja/items/5418900) | 상업 이용·수정·재배포 OK, 출처 표기 불필요, 자작 발언 금지 |
 
 git에 올리지 않는 소재(`assets/_zips`, `assets/_raw`, `assets/vendor`)는 재배포 금지라서 `.gitignore`로 뺐다.
