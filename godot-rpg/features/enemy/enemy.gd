@@ -138,6 +138,15 @@ func _die() -> void:
 	if randf() < gem_chance:
 		Save.add_gems(gem_reward)
 		DamageNumber.spawn(world, global_position + Vector2(0, 6), gem_reward, false, "+%d보석", Color("ff8ad8"))
+	if is_boss:
+		ItemPickup.spawn_gear.call_deferred(world, Gear.roll(true), global_position + Vector2(0, 10))  # 보스는 희귀 이상 장비 하나
+	elif randf() < Gear.DROP_CHANCE:
+		ItemPickup.spawn_gear.call_deferred(world, Gear.roll(false), global_position + Vector2(randf_range(-8, 8), 4))
+	if not is_boss:
+		for k: StringName in Items.DROP:
+			if randf() < float(Items.DROP[k]):
+				ItemPickup.spawn.call_deferred(world, k, global_position + Vector2(randf_range(-8, 8), 2))
+				break
 	if randf() < drop_chance:
 		var heart := HEART_PICKUP.instantiate() as Node2D
 		heart.position = global_position

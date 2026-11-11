@@ -19,6 +19,7 @@ const REGION_KINDS := {
 	"sky": ["bamboo", "bamboo_y", "gold_racoon", "heart_green", "sky_spirit", "sky_bat", "giant_soul"],
 	"root": ["root_larva", "root_larva_b", "root_mollusc", "root_mole", "root_shroom", "root_beast", "root_worm"],
 	"garden": ["garden_moth", "garden_owl", "garden_owl2", "garden_lizard", "garden_lizard2", "garden_snake", "garden_spider", "garden_beast", "black_gardener"],
+	"mist": ["mist_octo", "mist_fish", "mist_skull", "mist_wisp", "mist_lantern", "mist_slime", "mist_snake", "mist_apostle"],
 }
 
 ## 이 메인 퀘스트 보상을 받으면 펫도 준다
@@ -96,6 +97,16 @@ const MAIN: Array[Dictionary] = [
 	{"title": "정원사의 길", "desc": "거꾸로 자란 숲을 지나 정원사의 길에 들어서자.", "type": "reach", "target": "garden5", "count": 1, "gold": 120000, "gems": 500},
 	{"title": "세 번째 사냥꾼", "desc": "아무 캐릭터나 레벨 140을 만들자.", "type": "level", "target": "", "count": 140, "gold": 250000, "gems": 1000},
 	{"title": "검은 정원사", "desc": "검은 나무 아래에서 검은 정원사를 쓰러뜨리고, 검은 씨앗을 뽑아내자!", "type": "boss", "target": "black_gardener", "count": 1, "gold": 400000, "gems": 10000},
+	# 3부 8장 안개 군도
+	{"title": "3부: 정원사의 고백", "desc": "새싹 마을에서 뿌리를 돌보는 로웰에게 씨앗이 어디서 왔는지 묻자.", "type": "talk", "target": "로웰", "count": 1, "gold": 150000, "gems": 500},
+	{"title": "안개 군도로", "desc": "푸른 해변 동쪽 끝에서 배를 타고 안개 군도로 건너가자.", "type": "reach", "target": "mist1", "count": 1, "gold": 150000, "gems": 500},
+	{"title": "안개 항구", "desc": "안개 해안 동쪽 안개 항구의 촌장에게 탑 이야기를 듣자.", "type": "talk", "target": "항구 촌장", "count": 1, "gold": 150000, "gems": 500},
+	{"title": "안개 속 사냥", "desc": "안개 군도의 몬스터를 200마리 물리치자.", "type": "kill", "target": "mist", "count": 200, "gold": 300000, "gems": 900},
+	{"title": "산호 숲", "desc": "난파선 무덤을 지나 산호 숲에 닿자.", "type": "reach", "target": "mist3", "count": 1, "gold": 200000, "gems": 500},
+	{"title": "유령 등대 길", "desc": "꺼진 등대로 이어지는 길을 따라가자.", "type": "reach", "target": "mist4", "count": 1, "gold": 200000, "gems": 500},
+	{"title": "한계를 넘어", "desc": "아무 캐릭터나 레벨 150을 만들자.", "type": "level", "target": "", "count": 150, "gold": 400000, "gems": 1500},
+	{"title": "별을 삼킨 탑", "desc": "별무리 절벽을 넘어 별을 삼킨 탑에 들어가자.", "type": "reach", "target": "mist6", "count": 1, "gold": 300000, "gems": 800},
+	{"title": "안개의 사도", "desc": "탑 입구를 지키는 가면의 사도를 쓰러뜨리고 씨앗의 근원에 다가가자!", "type": "boss", "target": "mist_apostle", "count": 1, "gold": 600000, "gems": 15000},
 ]
 
 const DAILY: Array[Dictionary] = [

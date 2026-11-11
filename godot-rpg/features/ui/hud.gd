@@ -360,6 +360,13 @@ func _add_map_button() -> void:
 		b.color = spec[2]
 		b.pressed.connect(spec[3])
 		col.add_child(b)
+	# 가방(귀환서·물약·스킬 책)
+	var bag := IconButton.new()
+	bag.glyph = "bag"
+	bag.label = "가방"
+	bag.color = Color("c9853a")
+	bag.pressed.connect(open_bag)
+	col.add_child(bag)
 	# 자동 사냥 켜기·끄기(켜면 주황, 끄면 회색)
 	auto_button = IconButton.new()
 	auto_button.glyph = "auto"
@@ -387,7 +394,7 @@ func _refresh_auto() -> void:
 
 
 func _go_lobby() -> void:
-	Save.save_game()
+	get_tree().call_group(&"world", &"remember_place")
 	get_tree().change_scene_to_file(MENU_SCENE)
 
 
@@ -396,6 +403,12 @@ func open_pause() -> void:
 	if get_tree().paused:
 		return
 	add_child(PauseMenu.new())
+
+
+func open_bag() -> void:
+	if get_tree().paused:
+		return
+	add_child(ItemWindow.new())
 
 
 func open_map() -> void:
@@ -409,6 +422,8 @@ func _unhandled_input(e: InputEvent) -> void:
 		open_map()
 	elif e.is_action_pressed(&"ui_cancel") or (e is InputEventKey and (e as InputEventKey).pressed and not (e as InputEventKey).echo and (e as InputEventKey).keycode == KEY_P):
 		open_pause()
+	elif e is InputEventKey and (e as InputEventKey).pressed and not (e as InputEventKey).echo and (e as InputEventKey).keycode == KEY_I:
+		open_bag()
 
 
 func _comma(n: int) -> String:

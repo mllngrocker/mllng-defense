@@ -49,6 +49,7 @@ var skill_move := Vector2.ZERO
 var skill_guard := false  # 스킬 쓰는 동안 무적인지
 ## 자동 사냥: 켜면 가까운 몬스터를 찾아가 공격하고, 스킬이 차면 바로 쓴다. 조이스틱을 움직이면 그동안은 손으로 조종.
 var auto := false
+var speed_mult := 1.0  # 신발 등 장비의 이동 속도 효과
 var _auto_target: Node2D
 var _auto_check := 0.0
 var _auto_best := INF
@@ -78,6 +79,7 @@ func _ready() -> void:
 	add_child(skills)
 	skills.setup(self, data)
 	auto = bool(Save.settings.get("auto", false))
+	speed_mult = 1.0 + (Save.gear_bonus(data.id, "speed") if Save.is_owned(data.id) else 0.0)
 	Events.character_changed.emit.call_deferred(data, level)
 	Events.player_hp_changed.emit.call_deferred(hp, max_hp)
 
@@ -96,7 +98,7 @@ func _physics_process(delta: float) -> void:
 	if auto and input == Vector2.ZERO and dash_t <= 0.0:
 		input = _auto_drive(delta)
 	style.physics(delta)
-	var move := input * data.move_speed * style.move_scale
+	var move := input * data.move_speed * speed_mult * style.move_scale
 	if dash_t <= 0.0 and skill_lock_t <= 0.0:
 		if Input.is_action_just_pressed(&"skill"):
 			skills.try_cast("a1")
@@ -138,10 +140,23 @@ func _physics_process(delta: float) -> void:
 	_animate(delta, input != Vector2.ZERO and not style.busy)
 
 
+## 레벨 업·장비·펫이 바뀌면(가방 창) 능력치를 다시 계산한다. 체력은 비율을 지킨다.
+func refresh_stats() -> void:
+	var ratio := float(hp) / maxf(1.0, float(max_hp))
+	level = Save.level_of(data.id)
+	max_hp = Save.hp_of(data.id) if Save.is_owned(data.id) else data.hp_at(level)
+	atk = Save.atk_of(data.id) if Save.is_owned(data.id) else data.atk_at(level)
+	hp = maxi(1, roundi(max_hp * ratio))
+	Events.character_changed.emit(data, level)
+	Events.player_hp_changed.emit(hp, max_hp)
+
+
 # ── 자동 사냥 ──
 
 ## 가까운 몬스터 쪽으로 갈 방향(0~1 세기)을 돌려준다. 닿으면 멈춰서 공격·스킬.
 func _auto_drive(delta: float) -> Vector2:
+	if hp < max_hp * 0.35 and Save.item_count(&"potion") > 0:
+		Items.use(&"potion", get_tree())  # 체력이 적으면 물약
 	for k in _auto_skip.keys():
 		_auto_skip[k] -= delta
 		if _auto_skip[k] <= 0.0:

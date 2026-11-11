@@ -62,7 +62,7 @@ func _gui_input(e: InputEvent) -> void:
 			elif _btn(0).has_point(mb.position):
 				close()
 			elif _btn(1).has_point(mb.position):
-				Save.save_game()
+				get_tree().call_group(&"world", &"remember_place")
 				get_tree().paused = false
 				get_tree().change_scene_to_file(MENU_SCENE)
 		else:

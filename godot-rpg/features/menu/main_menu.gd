@@ -7,7 +7,11 @@ extends Control
 const WORLD_SCENE := "res://features/world/village.tscn"  # 모험은 마을에서 시작
 const ShopPage := preload("res://features/gacha/shop_page.gd")
 const QuestPage := preload("res://features/menu/quest_page.gd")
-const GEAR_SLOTS: Array[String] = ["무기", "옷", "펫", "신발"]
+## 장비 칸: 왼쪽 무기·옷·신발, 오른쪽 펫·목걸이·반지
+const GEAR_SLOTS: Array[String] = ["무기", "옷", "신발", "펫", "목걸이", "반지"]
+## 칸 번호 → 장비 부위(무기 0·펫 3은 따로)
+const GEAR_KEYS := {1: "armor", 2: "boots", 4: "neck", 5: "ring"}
+const PET_SLOT := 3
 const GEAR_MARGIN := 12.0
 const GEAR_GAP := 10
 const PLATE_HEIGHT := 150.0  # 아래 이름표(별·이름·속성)가 차지하는 높이
@@ -174,7 +178,7 @@ func _build_gear_slots() -> void:
 	var left := _gear_column(Control.PRESET_TOP_LEFT)
 	var right := _gear_column(Control.PRESET_TOP_RIGHT)
 	for i in GEAR_SLOTS.size():
-		var col := left if i < 2 else right
+		var col := left if i < 3 else right
 		var slot := _box(_paint_gear_slot.bind(i), 0)
 		gear_slots.append(slot)
 		slot.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -184,14 +188,14 @@ func _build_gear_slots() -> void:
 				_bounce(slot, 1.08)
 				if i == 0:
 					_open_weapon_picker()
-				elif i == 2:
+				elif i == PET_SLOT:
 					var pp := PetPicker.new()
 					pp.closed.connect(_refresh_all)
 					add_child(pp)
 				else:
-					_show_toast("%s 장비는 준비 중이에요" % GEAR_SLOTS[i]))
+					_open_gear_picker(GEAR_KEYS[i]))
 		slot.resized.connect(func() -> void: slot.pivot_offset = slot.size / 2.0)
-		if i == 2:
+		if i == PET_SLOT:
 			slot.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST  # 펫 도트가 뭉개지지 않게
 		col.add_child(slot)
 	backdrop.resized.connect(_layout_gear)
@@ -210,7 +214,7 @@ func _gear_column(preset: Control.LayoutPreset) -> VBoxContainer:
 ## 칸 크기를 화면 높이에 맞춘다: 위 여백부터 이름표(별) 바로 위까지 2칸이 꽉 차게.
 func _layout_gear() -> void:
 	var avail := backdrop.size.y - GEAR_MARGIN - PLATE_HEIGHT
-	var s := clampf((avail - GEAR_GAP) / 2.0, 64.0, 100.0)
+	var s := clampf((avail - GEAR_GAP * 2) / 3.0, 54.0, 84.0)
 	for slot in gear_slots:
 		slot.custom_minimum_size = Vector2(s, s)
 	gear_cols[0].offset_left = GEAR_MARGIN
@@ -443,7 +447,7 @@ func _paint_plate(ci: Control) -> void:
 		Gt.title(ci, Vector2(r.get_center().x, r.get_center().y + 5), label, 20, Color.WHITE, 1)
 
 
-const GEAR_ICONS: Array[StringName] = [&"slot_guard", &"slot_armor", &"slot_ring", &"slot_boot"]
+const GEAR_ICONS: Array[StringName] = [&"slot_guard", &"slot_armor", &"slot_boot", &"slot_ring", &"slot_amulet", &"slot_ring"]
 
 
 func _paint_gear_slot(ci: Control, index: int) -> void:
@@ -456,7 +460,15 @@ func _paint_gear_slot(ci: Control, index: int) -> void:
 		Gt.tag(ci, wtag, Gt.NAVY)
 		Gt.text(ci, Vector2(wtag.get_center().x, wtag.position.y + 14), GEAR_SLOTS[index], 11, Color.WHITE, 1)
 		return
-	if index == 2 and Save.pet != "":
+	if GEAR_KEYS.has(index) and Save.gear_on(viewing, GEAR_KEYS[index]) != &"":
+		# 낀 장비: 등급색 카드 + 이름표
+		var g := Save.gear_on(viewing, GEAR_KEYS[index])
+		Gear.draw_card(ci, g, r, false, Save.gear_refine(g))
+		var gtag := Rect2(r.position + Vector2(-2, -4), Vector2(Gt.width(GEAR_SLOTS[index], 11) + 16, 20))
+		Gt.tag(ci, gtag, Gt.NAVY)
+		Gt.text(ci, Vector2(gtag.get_center().x, gtag.position.y + 14), GEAR_SLOTS[index], 11, Color.WHITE, 1)
+		return
+	if index == PET_SLOT and Save.pet != "":
 		# 데리고 다니는 펫
 		Gt.pbox(ci, r, Color("fff4d6"))
 		# 도트 펫은 작게, 또렷하게(정수 배율)
@@ -481,6 +493,18 @@ func _paint_gear_slot(ci: Control, index: int) -> void:
 	Gt.tag(ci, plus, Gt.GREEN)
 	ci.draw_rect(Rect2(plus.get_center() - Vector2(5, 1.5), Vector2(10, 3)), Color.WHITE)
 	ci.draw_rect(Rect2(plus.get_center() - Vector2(1.5, 5), Vector2(3, 10)), Color.WHITE)
+
+
+## 옷·신발·목걸이·반지 칸을 누르면 장비 선택 창
+func _open_gear_picker(slot: String) -> void:
+	if not Save.is_owned(viewing):
+		_show_toast("미보유 캐릭터예요")
+		return
+	var picker := GearPicker.new()
+	picker.char_id = viewing
+	picker.slot = slot
+	picker.closed.connect(_refresh_all)
+	add_child(picker)
 
 
 ## 무기 칸을 누르면 무기 선택 창
@@ -693,9 +717,15 @@ func _on_level_up_pressed() -> void:
 		_show_toast("레벨 업!  Lv.%d" % (lv + 1))
 
 
+## 모험: 로비에 오기 전 있던 맵·자리에서 다시 시작(처음이거나 쓰러졌으면 마을)
 func _on_adventure_pressed() -> void:
 	Save.save_game()
-	get_tree().change_scene_to_file(WORLD_SCENE)
+	var path := String(Save.place.get("map", ""))
+	if path != "" and ResourceLoader.exists(path):
+		Game.resume_pos = Vector2(float(Save.place.get("x", 0.0)), float(Save.place.get("y", 0.0)))
+		get_tree().change_scene_to_file(path)
+	else:
+		get_tree().change_scene_to_file(WORLD_SCENE)
 
 
 func _switch_tab(name: String) -> void:

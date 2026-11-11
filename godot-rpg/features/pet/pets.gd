@@ -18,6 +18,7 @@ const DATA: Dictionary[StringName, Array] = {
 	&"gold_racoon": ["황금 너구리", "res://assets/ninja/actor/gold_racoon.png", 1.2, {"atk": 0.30, "gold": 0.30}, "고대 거인의 혼 첫 처치"],
 	&"root_larva": ["아기 애벌레", "res://assets/ninja/actor/root_larva.png", 1.35, {"atk": 0.35, "hp": 0.20}, "뿌리 먹는 벌레왕 첫 처치"],
 	&"garden_owl": ["밤 부엉이", "res://assets/ninja/actor/garden_owl.png", 1.6, {"atk": 0.45, "crit": 0.08}, "검은 정원사 첫 처치"],
+	&"mist_wisp": ["도깨비불", "res://assets/ninja/actor/mist_wisp.png", 1.8, {"atk": 0.55, "gold": 0.20}, "안개의 사도 첫 처치"],
 }
 ## 보스를 처음 잡으면 주는 것: 보스 id → [펫, 보스 무기]
 const BOSS_REWARDS := {
@@ -31,6 +32,7 @@ const BOSS_REWARDS := {
 	"giant_soul": [&"gold_racoon", &"giant_heart"],
 	"root_worm": [&"root_larva", &"root_lance"],
 	"black_gardener": [&"garden_owl", &"gardener_scythe"],
+	"mist_apostle": [&"mist_wisp", &"mist_blade"],
 }
 const BONUS_NAMES := {"atk": "공격력", "hp": "체력", "crit": "치명타", "gold": "골드 획득"}
 

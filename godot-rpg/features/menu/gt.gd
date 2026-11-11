@@ -16,7 +16,7 @@ const ICON_PATHS: Dictionary[StringName, Array] = {
 	&"gem_red": ["gem_red", "gem"], &"gem_green": ["gem_green", "gem"], &"gem_yellow": ["gem_yellow", "gem"],
 	&"helmet": ["helmet", "slot_armor"], &"shield": ["shield", "slot_guard"],
 	&"slot_guard": ["slot_guard", "slot_guard"], &"slot_armor": ["slot_armor", "slot_armor"],
-	&"slot_ring": ["slot_ring", "slot_ring"], &"slot_boot": ["slot_boot", "slot_boot"],
+	&"slot_ring": ["slot_ring", "slot_ring"], &"slot_amulet": ["", "slot_amulet"], &"slot_boot": ["slot_boot", "slot_boot"],
 	&"slot_guard_off": ["slot_guard", "slot_guard_off"], &"slot_armor_off": ["slot_armor", "slot_armor_off"],
 	&"slot_ring_off": ["slot_ring", "slot_ring_off"], &"slot_boot_off": ["slot_boot", "slot_boot_off"],
 }

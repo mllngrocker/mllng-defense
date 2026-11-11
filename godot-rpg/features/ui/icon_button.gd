@@ -49,6 +49,12 @@ func _draw() -> void:
 			draw_line(c + Vector2(-4, -13), c + Vector2(-4, 10), color.darkened(0.3), 1.5)
 			draw_line(c + Vector2(4, -10), c + Vector2(4, 13), color.darkened(0.3), 1.5)
 			draw_circle(c + Vector2(8, -2), 3.0, Color("ff4d5e"))
+		"bag":
+			# 가죽 가방: 몸통 + 덮개 + 손잡이 + 금빛 잠금
+			draw_arc(c + Vector2(0, -7), 6.0, PI, TAU, 10, ink, 3.0)
+			draw_rect(Rect2(c + Vector2(-12, -6), Vector2(24, 18)), ink)
+			draw_rect(Rect2(c + Vector2(-12, -6), Vector2(24, 7)), color.lightened(0.35))
+			draw_rect(Rect2(c + Vector2(-3, -1), Vector2(6, 6)), Color("ffd54f"))
 		"auto":
 			# 빙글 도는 두 화살표 + 가운데 A
 			for k in 2:

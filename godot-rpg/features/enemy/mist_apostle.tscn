@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/ninja/actor/boss_mist_apostle.png" id="2_tex"]
+[ext_resource type="Script" path="res://features/enemy/boss.gd" id="3_boss"]
+[ext_resource type="PackedScene" path="res://features/enemy/mist_wisp.tscn" id="4_minion"]
+
+[sub_resource type="RectangleShape2D" id="big_shape"]
+size = Vector2(44, 24)
+
+[node name="MistApostle" instance=ExtResource("1_base")]
+script = ExtResource("3_boss")
+boss_name = "안개의 사도"
+slam_radius = 92.0
+slam_damage = 520
+summon = ExtResource("4_minion")
+kind = 0
+max_hp = 340000
+speed = 28.0
+damage = 300
+chase_range = 170.0
+anim_fps = 5.0
+gold_reward = 160000
+gem_chance = 1.0
+gem_reward = 10000
+drop_chance = 1.0
+
+[node name="Shadow" parent="." index="0"]
+scale = Vector2(3.2, 3.2)
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource("2_tex")
+offset = Vector2(0, -9)
+scale = Vector2(3.2, 3.2)
+modulate = Color(0.82, 0.9, 1, 1)
+
+[node name="Body" parent="." index="2"]
+position = Vector2(0, -9)
+shape = SubResource("big_shape")

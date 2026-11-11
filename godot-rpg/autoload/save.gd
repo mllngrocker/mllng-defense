@@ -46,6 +46,16 @@ var master: Dictionary = {}
 var settings: Dictionary = {"bgm": 0.8, "sfx": 0.9, "shake": true}
 ## 가진 책 {"training": 수, "master": 수}
 var books: Dictionary = {"training": 0, "master": 0}
+## 가방 아이템 {id: 수}(Items.DATA). 처음엔 귀환서 3·물약 5
+const START_ITEMS := {"return_scroll": 3, "potion": 5}
+var items: Dictionary = START_ITEMS.duplicate()
+## 가진 장비 {id: 재련 수}(Gear.DATA), 캐릭터별 낀 장비 {캐릭터: {부위: id}}
+var gear: Dictionary = {}
+var gear_equip: Dictionary = {}
+## 로비로 나가기 전 있던 곳 {"map": 장면 경로, "x", "y"} — 모험을 누르면 여기서 다시 시작
+var place: Dictionary = {}
+## 마지막으로 들른 마을(귀환서가 데려가는 곳)
+var last_town := "village"
 var _cache: Dictionary[StringName, CharacterData] = {}
 
 
@@ -90,7 +100,7 @@ func stars_of(id: StringName) -> int:
 ## 레벨·별·장착 무기를 반영한 공격력
 func atk_of(id: StringName, level := -1) -> int:
 	var lv := level_of(id) if level < 0 else level
-	return roundi((character(id).atk_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) + weapon_atk(id)) * (1.0 + pet_bonus("atk")) * (1.0 + 0.02 * skill_level(id, "p1")))
+	return roundi((character(id).atk_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) + weapon_atk(id)) * (1.0 + pet_bonus("atk")) * (1.0 + gear_bonus(id, "atk")) * (1.0 + 0.02 * skill_level(id, "p1")))
 
 
 ## 장착 무기의 공격력(없으면 0)
@@ -102,7 +112,7 @@ func weapon_atk(id: StringName) -> int:
 ## 기본 치명타 확률 + 장착 무기 보너스
 func crit_of(id: StringName) -> float:
 	var w := equipped(id)
-	return 0.12 + (0.0 if w == &"" else Weapons.crit_of(w)) + pet_bonus("crit") + 0.01 * skill_level(id, "p3")
+	return 0.12 + (0.0 if w == &"" else Weapons.crit_of(w)) + pet_bonus("crit") + gear_bonus(id, "crit") + 0.01 * skill_level(id, "p3")
 
 
 # ── 무기 ──
@@ -264,7 +274,92 @@ func boss_reward(boss: String) -> void:
 		Events.notice.emit.call_deferred("보스 무기: %s!" % Weapons.name_of(w), "공격력 +%d · 로비 아바타의 무기 칸에서 장착하세요" % Weapons.atk_of(w, 0))
 	grant_pet.call_deferred(r[0])
 	give_books(3, 1)
+	for k: StringName in Items.BOSS_DROP:
+		give_item(k, int(Items.BOSS_DROP[k]))
 	Events.notice.emit.call_deferred("스킬 책 획득!", "트레이닝 북 3권 · 마스터 북 1권 — 아바타의 스킬 칸에서 쓰세요")
+
+
+# ── 장비(옷·신발·목걸이·반지) ──
+
+func has_gear(id: StringName) -> bool:
+	return gear.has(String(id))
+
+
+func gear_refine(id: StringName) -> int:
+	return int(gear.get(String(id), 0))
+
+
+## 장비 얻기: 처음이면 "new", 또 얻으면 재련 +1 "up", 다 찼으면 골드로 "max"
+func give_gear(id: StringName) -> String:
+	if not has_gear(id):
+		gear[String(id)] = 0
+		return "new"
+	if gear_refine(id) < Gear.MAX_REFINE:
+		gear[String(id)] = gear_refine(id) + 1
+		equip_changed.emit()
+		return "up"
+	add_gold(Gear.MAXED_GOLD[Gear.grade_of(id)])
+	return "max"
+
+
+## 이 캐릭터가 그 부위에 낀 장비(없으면 빈 값)
+func gear_on(char_id: StringName, slot: String) -> StringName:
+	var d: Variant = gear_equip.get(String(char_id), {})
+	return StringName(str((d as Dictionary).get(slot, ""))) if d is Dictionary else &""
+
+
+func gear_holder(id: StringName) -> StringName:
+	var slot := Gear.slot_of(id)
+	for key: String in gear_equip:
+		if gear_on(StringName(key), slot) == id:
+			return StringName(key)
+	return &""
+
+
+## 장착(다른 캐릭터가 끼고 있으면 빼 온다)
+func equip_gear(char_id: StringName, id: StringName) -> void:
+	if not has_gear(id):
+		return
+	var slot := Gear.slot_of(id)
+	var other := gear_holder(id)
+	if other != &"":
+		(gear_equip[String(other)] as Dictionary).erase(slot)
+	if not gear_equip.has(String(char_id)):
+		gear_equip[String(char_id)] = {}
+	(gear_equip[String(char_id)] as Dictionary)[slot] = String(id)
+	equip_changed.emit()
+
+
+func unequip_gear(char_id: StringName, slot: String) -> void:
+	if gear_equip.has(String(char_id)):
+		(gear_equip[String(char_id)] as Dictionary).erase(slot)
+		equip_changed.emit()
+
+
+## 낀 장비 네 부위의 효과 합(stat: hp·atk·crit·speed·gold)
+func gear_bonus(char_id: StringName, stat: String) -> float:
+	var total := 0.0
+	for slot in Gear.SLOTS:
+		var g := gear_on(char_id, slot)
+		if g != &"" and Gear.DATA.has(g):
+			total += float(Gear.stats_of(g, gear_refine(g)).get(stat, 0.0))
+	return total
+
+
+func item_count(id: StringName) -> int:
+	return int(items.get(String(id), 0))
+
+
+func give_item(id: StringName, n := 1) -> void:
+	items[String(id)] = item_count(id) + n
+
+
+## 하나 쓰기(없으면 false)
+func use_item(id: StringName) -> bool:
+	if item_count(id) <= 0:
+		return false
+	items[String(id)] = item_count(id) - 1
+	return true
 
 
 func has_weapon(w: StringName) -> bool:
@@ -320,11 +415,11 @@ func grant_weapon(w: StringName) -> String:
 
 func hp_of(id: StringName, level := -1) -> int:
 	var lv := level_of(id) if level < 0 else level
-	return roundi(character(id).hp_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) * (1.0 + pet_bonus("hp")) * (1.0 + 0.03 * skill_level(id, "p2")))
+	return roundi(character(id).hp_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) * (1.0 + pet_bonus("hp")) * (1.0 + gear_bonus(id, "hp")) * (1.0 + 0.03 * skill_level(id, "p2")))
 
 
 func level_up_cost(level: int) -> int:
-	return 40 + level * 20 + roundi(level * level * 2.5)
+	return 30 + level * 12 + roundi(level * level * 1.6)  # 레벨마다 몬스터 약 60~90마리(예전 100마리 남짓)
 
 
 ## 골드를 내고 레벨을 1 올린다. 성공하면 true.
@@ -344,7 +439,7 @@ func try_level_up(id: StringName) -> bool:
 
 func add_gold(amount: int) -> void:
 	if amount > 0:
-		amount = roundi(amount * (1.0 + pet_bonus("gold")))
+		amount = roundi(amount * (1.0 + pet_bonus("gold") + gear_bonus(selected, "gold")))
 	gold += amount
 	gold_changed.emit(gold)
 	if amount > 0:
@@ -398,6 +493,11 @@ func load_game() -> void:
 	skill_lv = {}
 	skill_bonus = {}
 	master = {}
+	items = START_ITEMS.duplicate()
+	gear = {}
+	gear_equip = {}
+	place = {}
+	last_town = "village"
 	books = {"training": 0, "master": 0}
 	for id in STARTERS:
 		owned[String(id)] = {"level": 1, "stars": 0}
@@ -434,6 +534,23 @@ func load_game() -> void:
 			if st is Dictionary:
 				for k: String in st:
 					settings[k] = st[k]
+			var it: Variant = parsed.get("items", null)
+			if it is Dictionary:
+				items = {}
+				for k: String in it:
+					items[k] = int(it[k])
+			var gr: Variant = parsed.get("gear", {})
+			if gr is Dictionary:
+				for k: String in gr:
+					if Gear.DATA.has(StringName(k)):
+						gear[k] = int(gr[k])
+			var ge: Variant = parsed.get("gear_equip", {})
+			if ge is Dictionary:
+				gear_equip = ge
+			var pl: Variant = parsed.get("place", {})
+			if pl is Dictionary:
+				place = pl
+			last_town = str(parsed.get("last_town", "village"))
 			var bk: Variant = parsed.get("books", {})
 			if bk is Dictionary:
 				books = {"training": int(bk.get("training", 0)), "master": int(bk.get("master", 0))}
@@ -469,4 +586,4 @@ func save_game() -> void:
 	if f == null:
 		push_error("저장 실패: %s" % error_string(FileAccess.get_open_error()))
 		return
-	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet, "skill_lv": skill_lv, "skill_bonus": skill_bonus, "master": master, "books": books, "settings": settings}))
+	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet, "skill_lv": skill_lv, "skill_bonus": skill_bonus, "master": master, "books": books, "settings": settings, "items": items, "gear": gear, "gear_equip": gear_equip, "place": place, "last_town": last_town}))

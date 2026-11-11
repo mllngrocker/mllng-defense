@@ -23,6 +23,8 @@ var shake := 0.0
 var hitstop_enabled := true
 ## 맵을 옮길 때 도착할 지점 이름(새 맵의 Spawns/이름). 비면 맵의 기본 시작 위치.
 var next_spawn := ""
+## 로비에서 모험으로 돌아올 때 세울 자리(없으면 Vector2.INF)
+var resume_pos := Vector2.INF
 var _voices: Array[AudioStreamPlayer] = []
 var _next_voice := 0
 

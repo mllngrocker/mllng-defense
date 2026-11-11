@@ -22,6 +22,13 @@ func _ready() -> void:
 			player.global_position = spot.global_position
 			player.reset_physics_interpolation()
 		Game.next_spawn = ""
+	elif Game.resume_pos != Vector2.INF:
+		player.global_position = Game.resume_pos  # 로비에 가기 전 서 있던 자리
+		player.reset_physics_interpolation()
+	Game.resume_pos = Vector2.INF
+	if map_id() in Items.TOWNS:
+		Save.last_town = map_id()  # 귀환서가 데려갈 마을
+	Save.place = {"map": scene_file_path, "x": player.global_position.x, "y": player.global_position.y}
 	if Save.pet != "" and Pets.DATA.has(StringName(Save.pet)):
 		var pet := Pet.new()
 		pet.name = "Pet"
@@ -46,6 +53,13 @@ func _ready() -> void:
 	get_tree().create_timer(1.0, false).timeout.connect(func() -> void: StoryBox.play(self, "enter_" + map_id()))
 
 
+## 지금 맵·자리를 기억한다(로비에 갔다 와도 여기서 다시 시작)
+func remember_place() -> void:
+	if is_instance_valid(player) and player.hp > 0:
+		Save.place = {"map": scene_file_path, "x": player.global_position.x, "y": player.global_position.y}
+	Save.save_game()
+
+
 ## 맵 이름(village / field / desert)
 func map_id() -> String:
 	var f := scene_file_path.get_file().get_basename()
@@ -68,6 +82,7 @@ func schedule_respawn(path: String, pos: Vector2, delay: float) -> void:
 ## 쓰러지면 잠시 뒤 마을 광장에서 다시 일어난다(체력 가득)
 func _on_player_died() -> void:
 	music.stop()
+	Save.place = {}  # 쓰러지면 마을에서 다시
 	Save.save_game()
 	await get_tree().create_timer(2.0).timeout
 	Game.go_to(VILLAGE_SCENE, "")
