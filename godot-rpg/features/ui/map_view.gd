@@ -48,12 +48,12 @@ const REGIONS: Array[Dictionary] = [
 	{"id": "hell4", "name": "핏빛 호수", "pos": Vector2(0.58, 0.93), "color": Color("e0404f"), "info": "6장 · 추천 Lv.109~113", "mobs": "마안 · 용", "boss": "", "boss_name": "", "lock": "flame_dragon", "lock_name": "화염룡 이그니스"},
 	{"id": "hell5", "name": "타락한 성채", "pos": Vector2(0.69, 0.90), "color": Color("e0404f"), "info": "6장 · 추천 Lv.112~115", "mobs": "마안 · 붉은 등불", "boss": "", "boss_name": "", "lock": "flame_dragon", "lock_name": "화염룡 이그니스"},
 	{"id": "hell6", "name": "마왕의 옥좌", "pos": Vector2(0.63, 0.96), "color": Color("e0404f"), "info": "6장 끝 · 추천 Lv.115", "mobs": "마안 · 용", "boss": "demon_lord", "boss_name": "마왕 아자젤", "lock": "flame_dragon", "lock_name": "화염룡 이그니스"},
-	{"id": "sky1", "name": "버섯 구름섬", "pos": Vector2(0.74, 0.23), "color": Color("ffd84a"), "info": "8장 · 추천 Lv.140~143", "mobs": "대나무 · 초록 하트 · 노란 박쥐", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
-	{"id": "sky2", "name": "꽃구름 섬", "pos": Vector2(0.20, 0.23), "color": Color("ffd84a"), "info": "8장 · 추천 Lv.142~145", "mobs": "노란 대나무 · 황금 너구리 · 노란 박쥐", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
-	{"id": "sky3", "name": "천공의 탑 1층", "pos": Vector2(0.46, 0.25), "color": Color("ffd84a"), "info": "8장 · 추천 Lv.144~147", "mobs": "하늘 정령 · 황금 너구리", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
-	{"id": "sky4", "name": "천공의 탑 2층", "pos": Vector2(0.50, 0.21), "color": Color("ffd84a"), "info": "8장 · 추천 Lv.146~148", "mobs": "하늘 정령 · 노란 대나무", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
-	{"id": "sky5", "name": "천공의 탑 3층", "pos": Vector2(0.46, 0.17), "color": Color("ffd84a"), "info": "8장 · 추천 Lv.148~150", "mobs": "황금 너구리 · 초록 하트", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
-	{"id": "sky6", "name": "천공의 탑 꼭대기", "pos": Vector2(0.49, 0.13), "color": Color("ffd84a"), "info": "마지막 장 · 추천 Lv.150", "mobs": "하늘 정령 · 황금 너구리", "boss": "giant_soul", "boss_name": "고대 거인의 혼", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
+	{"id": "sky1", "name": "버섯 구름섬", "pos": Vector2(0.74, 0.23), "color": Color("f4f6ff"), "info": "8장 · 추천 Lv.140~143", "mobs": "대나무 · 초록 하트 · 노란 박쥐", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
+	{"id": "sky2", "name": "꽃구름 섬", "pos": Vector2(0.20, 0.23), "color": Color("f4f6ff"), "info": "8장 · 추천 Lv.142~145", "mobs": "노란 대나무 · 황금 너구리 · 노란 박쥐", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
+	{"id": "sky3", "name": "천공의 탑 1층", "pos": Vector2(0.46, 0.25), "color": Color("f4f6ff"), "info": "8장 · 추천 Lv.144~147", "mobs": "하늘 정령 · 황금 너구리", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
+	{"id": "sky4", "name": "천공의 탑 2층", "pos": Vector2(0.50, 0.21), "color": Color("f4f6ff"), "info": "8장 · 추천 Lv.146~148", "mobs": "하늘 정령 · 노란 대나무", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
+	{"id": "sky5", "name": "천공의 탑 3층", "pos": Vector2(0.46, 0.17), "color": Color("f4f6ff"), "info": "8장 · 추천 Lv.148~150", "mobs": "황금 너구리 · 초록 하트", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
+	{"id": "sky6", "name": "천공의 탑 꼭대기", "pos": Vector2(0.49, 0.13), "color": Color("f4f6ff"), "info": "마지막 장 · 추천 Lv.150", "mobs": "하늘 정령 · 황금 너구리", "boss": "giant_soul", "boss_name": "고대 거인의 혼", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
 	{"id": "desert_town", "name": "오아시스 마을", "pos": Vector2(0.84, 0.63), "color": Color("ffe9a8"), "info": "사막의 마을 · 몬스터 없음", "mobs": "족장 · 물장수 · 대상 · 무희", "boss": "", "boss_name": "", "lock": "king_slime", "lock_name": "킹 슬라임"},
 	{"id": "snow_town", "name": "눈꽃 마을", "pos": Vector2(0.25, 0.37), "color": Color("ffe9a8"), "info": "설산의 마을 · 몬스터 없음", "mobs": "눈꽃 촌장 · 얼음 낚시꾼 · 약초꾼", "boss": "", "boss_name": "", "lock": "spider_queen", "lock_name": "수정 거미 여왕"},
 	{"id": "temple_town", "name": "물방울 마을", "pos": Vector2(0.04, 0.47), "color": Color("ffe9a8"), "info": "바다 밑 마을 · 몬스터 없음", "mobs": "신전지기 · 물방울 상인 · 늙은 학자", "boss": "", "boss_name": "", "lock": "yeti_king", "lock_name": "설원의 대왕곰"},
@@ -354,15 +354,20 @@ func _draw_world(body: Rect2) -> void:
 			draw_circle(q, 12.0 + 2.0 * sin(t * 5.0), Color(1, 1, 1, 0.5))
 		# 동그라미는 늘 그 장의 색(잠긴 곳은 조금 어둡게 + 작은 자물쇠)
 		var town: bool = String(reg["id"]).ends_with("_town") or reg["id"] == "village"
-		var rr := 7.5 if town else 6.5
-		draw_circle(q, rr + 1.6, Gt.INK)
-		draw_circle(q, rr, col.darkened(0.35) if locked else col)
-		draw_circle(q + Vector2(-1.6, -1.6), rr * 0.32, Color(1, 1, 1, 0.55 if not locked else 0.25))
+		var rr := 4.5 if town else 5.0
+		if town:  # 마을은 네모
+			draw_rect(Rect2(q - Vector2.ONE * (rr + 1.3), Vector2.ONE * (rr + 1.3) * 2.0), Gt.INK)
+			draw_rect(Rect2(q - Vector2.ONE * rr, Vector2.ONE * rr * 2.0), col.darkened(0.25) if locked else col)
+			draw_rect(Rect2(q - Vector2.ONE * (rr - 1.5), Vector2(rr * 0.9, 2.0)), Color(1, 1, 1, 0.55 if not locked else 0.25))
+		else:
+			draw_circle(q, rr + 1.3, Gt.INK)
+			draw_circle(q, rr, col.darkened(0.25) if locked else col)
+			draw_circle(q + Vector2(-1.6, -1.6), rr * 0.32, Color(1, 1, 1, 0.55 if not locked else 0.25))
 		if locked:
-			var lq := q + Vector2(rr * 0.7, rr * 0.6)
-			draw_rect(Rect2(lq + Vector2(-2.5, -1), Vector2(5, 4)), Gt.INK)
-			draw_rect(Rect2(lq + Vector2(-1.8, -0.4), Vector2(3.6, 2.8)), Color("ffd54f"))
-			draw_arc(lq + Vector2(0, -1.5), 1.8, PI, TAU, 6, Color("ffd54f"), 1.2)
+			var lq := q + Vector2(rr * 0.85, rr * 0.75)
+			draw_rect(Rect2(lq + Vector2(-1.8, -0.6), Vector2(3.6, 3.0)), Gt.INK)
+			draw_rect(Rect2(lq + Vector2(-1.2, -0.1), Vector2(2.4, 2.0)), Color("ffd54f"))
+			draw_arc(lq + Vector2(0, -1.0), 1.2, PI, TAU, 6, Color("ffd54f"), 1.0)
 		elif reg["boss"] != "":
 			Gt.star(self, q, 3.5, Color("9be27a") if Quests.boss_defeated(reg["boss"]) else Color("ff4d3d"))
 		if reg["id"] == here:
