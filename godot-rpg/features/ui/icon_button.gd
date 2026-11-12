@@ -49,6 +49,12 @@ func _draw() -> void:
 			draw_line(c + Vector2(-4, -13), c + Vector2(-4, 10), color.darkened(0.3), 1.5)
 			draw_line(c + Vector2(4, -10), c + Vector2(4, 13), color.darkened(0.3), 1.5)
 			draw_circle(c + Vector2(8, -2), 3.0, Color("ff4d5e"))
+		"dex":
+			# 펼친 책 + 별
+			draw_colored_polygon(PackedVector2Array([c + Vector2(-14, -9), c + Vector2(0, -6), c + Vector2(0, 11), c + Vector2(-14, 8)]), ink)
+			draw_colored_polygon(PackedVector2Array([c + Vector2(14, -9), c + Vector2(0, -6), c + Vector2(0, 11), c + Vector2(14, 8)]), ink.darkened(0.12))
+			draw_line(c + Vector2(0, -6), c + Vector2(0, 11), color.darkened(0.35), 1.5)
+			Gt.star(self, c + Vector2(-7, 1), 3.5, Color("ffd54f"))
 		"bag":
 			# 가죽 가방: 몸통 + 덮개 + 손잡이 + 금빛 잠금
 			draw_arc(c + Vector2(0, -7), 6.0, PI, TAU, 10, ink, 3.0)

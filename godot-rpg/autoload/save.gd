@@ -8,9 +8,13 @@ const STARTERS: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3"]
 const ROSTER: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3", &"fairy3", &"fairy2", &"maid2", &"maid3", &"maid1", &"maid4", &"fairy1", &"scarlet"]
 const MAX_LEVEL := 150  # 2부에서 100 → 150
 const MAX_STARS := 6  # 성장 효과 줄 수(별 승급으로 차례로 열린다)
-## 별 등급: 타고난 등급(★3~5)에 중복으로 얻은 별을 더한다. 최대 7성(무지개 별 하나로 보인다)
+## 별 등급: 타고난 등급(★3~5)에 중복으로 얻은 별을 더한다. 최대 7성(큰 빨간 별 하나로 보인다)
 const MAX_RANK := 7
 const STAR_BONUS := 0.08  # 승급한 별 1개마다 공격력·체력 +8%
+## 별 조각: 같은 캐릭터를 또 뽑으면 조각 10개. 조각을 모아 로비에서 직접 승급
+const SHARDS_PER_DUP := {3: 10, 4: 10, 5: 10}
+## 그 별 등급으로 올리는 데 드는 조각(높을수록 비싸다): 4성 10 · 5성 20 · 6성 30 · 7성 50
+const PROMOTE_COST := {4: 10, 5: 20, 6: 30, 7: 50}
 const WELCOME_GEMS := 500  # 처음 시작할 때 주는 보석
 
 signal gold_changed(gold: int)
@@ -27,7 +31,7 @@ var pity_w := 0
 var persist := true
 
 var selected: StringName = STARTERS[0]
-## 캐릭터 id(문자열) → {"level": int, "stars": int}
+## 캐릭터 id(문자열) → {"level": int, "stars": 승급한 별 수, "shards": 별 조각}
 var owned: Dictionary = {}
 ## 무기 id(문자열) → 재련 단계(0~5)
 var weapons: Dictionary = {}
@@ -56,6 +60,15 @@ var gear: Dictionary = {}
 var gear_equip: Dictionary = {}
 ## 로비로 나가기 전 있던 곳 {"map": 장면 경로, "x", "y"} — 모험을 누르면 여기서 다시 시작
 var place: Dictionary = {}
+## 마지막으로 저장한 때(유닉스 초) · 이번에 켜기 전까지 비운 시간(초, 방치 보상용)
+var last_seen := 0
+var away_seconds := 0
+## 도감: 몬스터 종류별 처치 수 {kind: 수}
+var dex: Dictionary = {}
+## 업적용 기록 {dungeon, pulls, promote} · 받은 업적 {id: true} · 받은 우편 {id: true}
+var stats: Dictionary = {}
+var ach_claimed: Dictionary = {}
+var mail_claimed: Dictionary = {}
 ## 마지막으로 들른 마을(귀환서가 데려가는 곳)
 var last_town := "village"
 var _cache: Dictionary[StringName, CharacterData] = {}
@@ -120,7 +133,7 @@ func passives_unlocked(id: StringName) -> int:
 ## 레벨·별·장착 무기를 반영한 공격력
 func atk_of(id: StringName, level := -1) -> int:
 	var lv := level_of(id) if level < 0 else level
-	return roundi((character(id).atk_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) + weapon_atk(id)) * (1.0 + pet_bonus("atk")) * (1.0 + gear_bonus(id, "atk")) * (1.0 + 0.02 * skill_level(id, "p1")))
+	return roundi((character(id).atk_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) + weapon_atk(id)) * (1.0 + pet_bonus("atk")) * (1.0 + gear_bonus(id, "atk")) * (1.0 + dex_bonus("atk") + Skins.bonus(id, "atk")) * (1.0 + 0.02 * skill_level(id, "p1")))
 
 
 ## 장착 무기의 공격력(없으면 0)
@@ -132,7 +145,7 @@ func weapon_atk(id: StringName) -> int:
 ## 기본 치명타 확률 + 장착 무기 보너스
 func crit_of(id: StringName) -> float:
 	var w := equipped(id)
-	return 0.12 + (0.0 if w == &"" else Weapons.crit_of(w)) + pet_bonus("crit") + gear_bonus(id, "crit") + 0.01 * skill_level(id, "p3")
+	return 0.12 + (0.0 if w == &"" else Weapons.crit_of(w)) + pet_bonus("crit") + gear_bonus(id, "crit") + Skins.bonus(id, "crit") + 0.01 * skill_level(id, "p3")
 
 
 # ── 무기 ──
@@ -386,6 +399,65 @@ func swap_equipment(a: StringName, b: StringName) -> void:
 	save_game()
 
 
+## 분해: 강화석을 받고 장비가 사라진다(누가 끼고 있으면 못 한다). 받은 강화석 수(실패면 0)
+func dismantle_gear(id: StringName) -> int:
+	if not has_gear(id) or gear_holder(id) != &"":
+		return 0
+	var n := Gear.STONES_FROM[Gear.grade_of(id)] * (1 + gear_refine(id))
+	gear.erase(String(id))
+	give_item(&"stone", n)
+	return n
+
+
+func upgrade_cost(id: StringName) -> int:
+	return Gear.UPGRADE_COST[Gear.grade_of(id)] * (gear_refine(id) + 1)
+
+
+## 강화석으로 재련 +1
+func upgrade_gear(id: StringName) -> bool:
+	if not has_gear(id) or gear_refine(id) >= Gear.MAX_REFINE or item_count(&"stone") < upgrade_cost(id):
+		return false
+	items["stone"] = item_count(&"stone") - upgrade_cost(id)
+	gear[String(id)] = gear_refine(id) + 1
+	equip_changed.emit()
+	return true
+
+
+## 합성 재료로 쓸 수 있는 같은 등급 장비 개수(아무도 안 낀 것, 재련 +1도 하나로 센다)
+func synth_material(grade: int) -> int:
+	var n := 0
+	for k: String in gear:
+		var g := StringName(k)
+		if Gear.grade_of(g) == grade and gear_holder(g) == &"":
+			n += 1 + gear_refine(g)
+	return n
+
+
+## 합성: 고른 장비부터 같은 등급 3개를 써서 한 등급 위 장비를 하나 얻는다. 얻은 장비 id(실패면 빈 값)
+func synth_gear(id: StringName) -> StringName:
+	var grade := Gear.grade_of(id)
+	if not has_gear(id) or gear_holder(id) != &"" or grade >= 4 or synth_material(grade) < Gear.SYNTH_NEED:
+		return &""
+	var need := Gear.SYNTH_NEED
+	var order: Array[StringName] = [id]
+	for k: String in gear:
+		var g := StringName(k)
+		if g != id and Gear.grade_of(g) == grade and gear_holder(g) == &"":
+			order.append(g)
+	for g in order:
+		while need > 0 and has_gear(g):
+			if gear_refine(g) > 0:
+				gear[String(g)] = gear_refine(g) - 1
+			else:
+				gear.erase(String(g))
+			need -= 1
+	var pool := Gear.ids().filter(func(x: StringName) -> bool: return Gear.grade_of(x) == grade + 1)
+	var got: StringName = pool[randi() % pool.size()]
+	give_gear(got)
+	equip_changed.emit()
+	return got
+
+
 ## 낀 장비 네 부위의 효과 합(stat: hp·atk·crit·speed·gold)
 func gear_bonus(char_id: StringName, stat: String) -> float:
 	var total := 0.0
@@ -394,6 +466,26 @@ func gear_bonus(char_id: StringName, stat: String) -> float:
 		if g != &"" and Gear.DATA.has(g):
 			total += float(Gear.stats_of(g, gear_refine(g)).get(stat, 0.0))
 	return total
+
+
+# ── 도감 ──
+
+func add_stat(key: String, n := 1) -> void:
+	stats[key] = int(stats.get(key, 0)) + n
+
+
+func record_kill(kind: String) -> void:
+	dex[kind] = int(dex.get(kind, 0)) + 1
+
+
+## 도감 보너스: 발견한 몬스터 1종마다 공격력 +0.3%, 모은 장비 1종마다 체력 +0.5%
+func dex_bonus(stat: String) -> float:
+	match stat:
+		"atk":
+			return 0.003 * dex.size()
+		"hp":
+			return 0.005 * gear.size()
+	return 0.0
 
 
 func item_count(id: StringName) -> int:
@@ -465,7 +557,7 @@ func grant_weapon(w: StringName) -> String:
 
 func hp_of(id: StringName, level := -1) -> int:
 	var lv := level_of(id) if level < 0 else level
-	return roundi(character(id).hp_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) * (1.0 + pet_bonus("hp")) * (1.0 + gear_bonus(id, "hp")) * (1.0 + 0.03 * skill_level(id, "p2")))
+	return roundi(character(id).hp_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) * (1.0 + pet_bonus("hp")) * (1.0 + gear_bonus(id, "hp")) * (1.0 + dex_bonus("hp") + Skins.bonus(id, "hp")) * (1.0 + 0.03 * skill_level(id, "p2")))
 
 
 func level_up_cost(level: int) -> int:
@@ -510,16 +602,47 @@ func spend_gems(amount: int) -> bool:
 	return true
 
 
-## 뽑기로 얻은 캐릭터: 처음이면 보유, 이미 있으면 별 +1, 별이 다 찼으면 false.
+## 뽑기로 얻은 캐릭터: 처음이면 보유("new"), 이미 있으면 별 조각("shard"), 7성이면 골드로("max").
 func grant_character(id: StringName) -> String:
 	var key := String(id)
 	if not owned.has(key):
-		owned[key] = {"level": 1, "stars": 0}
+		owned[key] = {"level": 1, "stars": 0, "shards": 0}
 		return "new"
-	if int(owned[key]["stars"]) < max_stars(id):
-		owned[key]["stars"] = int(owned[key]["stars"]) + 1
-		return "star"
+	if rank_of(id) < MAX_RANK:
+		owned[key]["shards"] = shards_of(id) + shards_per_dup(id)
+		return "shard"
 	return "max"
+
+
+func shards_of(id: StringName) -> int:
+	return int((owned.get(String(id), {}) as Dictionary).get("shards", 0))
+
+
+func shards_per_dup(id: StringName) -> int:
+	return int(SHARDS_PER_DUP.get(character(id).rarity, 10))
+
+
+## 다음 별로 올리는 데 드는 조각(7성이면 0)
+func promote_cost(id: StringName) -> int:
+	var next := rank_of(id) + 1
+	return int(PROMOTE_COST.get(next, 0)) if next <= MAX_RANK else 0
+
+
+func can_promote(id: StringName) -> bool:
+	return is_owned(id) and rank_of(id) < MAX_RANK and shards_of(id) >= promote_cost(id)
+
+
+## 조각을 내고 별 +1
+func promote(id: StringName) -> bool:
+	if not can_promote(id):
+		return false
+	var e: Dictionary = owned[String(id)]
+	e["shards"] = shards_of(id) - promote_cost(id)
+	e["stars"] = stars_of(id) + 1
+	add_stat("promote")
+	equip_changed.emit()
+	save_game()
+	return true
 
 
 func select(id: StringName) -> void:
@@ -544,6 +667,12 @@ func load_game() -> void:
 	skill_bonus = {}
 	master = {}
 	items = START_ITEMS.duplicate()
+	dex = {}
+	stats = {}
+	ach_claimed = {}
+	mail_claimed = {}
+	last_seen = 0
+	away_seconds = 0
 	gear = {}
 	gear_equip = {}
 	place = {}
@@ -601,6 +730,17 @@ func load_game() -> void:
 			if pl is Dictionary:
 				place = pl
 			last_town = str(parsed.get("last_town", "village"))
+			last_seen = int(parsed.get("last_seen", 0))
+			if last_seen > 0:
+				away_seconds = maxi(0, int(Time.get_unix_time_from_system()) - last_seen)
+			for key in ["stats", "ach_claimed", "mail_claimed"]:
+				var v2: Variant = parsed.get(key, {})
+				if v2 is Dictionary:
+					set(key, v2)
+			var dx: Variant = parsed.get("dex", {})
+			if dx is Dictionary:
+				for k: String in dx:
+					dex[k] = int(dx[k])
 			var bk: Variant = parsed.get("books", {})
 			if bk is Dictionary:
 				books = {"training": int(bk.get("training", 0)), "master": int(bk.get("master", 0))}
@@ -620,7 +760,12 @@ func load_game() -> void:
 				for key: String in saved:
 					var e: Variant = saved[key]
 					if e is Dictionary:
-						owned[key] = {"level": int(e.get("level", 1)), "stars": int(e.get("stars", 0))}
+						owned[key] = {"level": int(e.get("level", 1)), "stars": int(e.get("stars", 0)), "shards": int(e.get("shards", 0))}
+						if not e.has("shards"):
+							# 예전 저장(중복마다 바로 별 +1): 올린 별을 조각으로 돌려준다 → 모아서 직접 승급
+							var old := int(e.get("stars", 0))
+							owned[key]["stars"] = 0
+							owned[key]["shards"] = old * int(SHARDS_PER_DUP.get(character(StringName(key)).rarity, 10))
 	if not owned.has(String(selected)):
 		selected = STARTERS[0]
 	# 무기가 하나도 없으면(새로 시작·예전 저장) 견습 기사의 검을 주고 첫 캐릭터에게 끼워 준다
@@ -636,4 +781,4 @@ func save_game() -> void:
 	if f == null:
 		push_error("저장 실패: %s" % error_string(FileAccess.get_open_error()))
 		return
-	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet, "skill_lv": skill_lv, "skill_bonus": skill_bonus, "master": master, "books": books, "settings": settings, "items": items, "gear": gear, "gear_equip": gear_equip, "place": place, "last_town": last_town}))
+	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet, "skill_lv": skill_lv, "skill_bonus": skill_bonus, "master": master, "books": books, "settings": settings, "items": items, "gear": gear, "gear_equip": gear_equip, "place": place, "last_town": last_town, "last_seen": int(Time.get_unix_time_from_system()), "dex": dex, "stats": stats, "ach_claimed": ach_claimed, "mail_claimed": mail_claimed}))

@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://tools/build_map_graph.gd" id="1"]
+
+[node name="BuildMapGraph" type="Node"]
+script = ExtResource("1")

@@ -123,6 +123,29 @@ func _ready() -> void:
 	menu.quest_page._on_main_claim()
 	_check("퀘스트 화면에서 메인 보상 받기 (보석 +150)", Save.gems == gems_before + 150)
 
+	# 먼저 가 본 맵·먼저 잡은 보스는 그 퀘스트가 나중에 와도 바로 완료(사막 도착이 안 깨지던 문제)
+	Save.quest["visited"] = {}
+	Quests.track("reach", "desert")
+	for k in Quests.MAIN.size():
+		if Quests.MAIN[k]["title"] == "뜨거운 사막":
+			Save.quest["main"] = k
+			Save.quest["progress"] = 0
+	_check("사막에 먼저 와 있었어도 '뜨거운 사막' 완료", Quests.current()["title"] == "뜨거운 사막" and Quests.main_done())
+	Quests.mark_boss("cyclope_king")
+	for k in Quests.MAIN.size():
+		if Quests.MAIN[k]["target"] == "cyclope_king":
+			Save.quest["main"] = k
+	_check("보스를 먼저 잡았어도 보스 퀘스트 완료", Quests.main_done())
+	# 퀘스트 카드: 긴 설명도 잘리지 않고 여러 줄로
+	var hud_w = load("res://features/ui/hud.gd").new()
+	var longest := ""
+	for q in Quests.MAIN:
+		if String(q["desc"]).length() > longest.length():
+			longest = q["desc"]
+	var lines: Array = hud_w._wrap(longest, 11, 242.0)
+	print("    가장 긴 설명 → ", lines.size(), "줄: ", " / ".join(lines))
+	_check("긴 설명은 여러 줄로 나뉘고 글자가 빠지지 않는다", lines.size() >= 2 and "".join(lines).replace(" ", "") == longest.replace(" ", ""))
+	hud_w.free()
 	print("결과: ", "통과" if fails == 0 else "실패 %d개" % fails)
 	get_tree().quit(fails)
 

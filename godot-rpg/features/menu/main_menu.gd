@@ -16,7 +16,7 @@ const GEAR_MARGIN := 12.0
 const GEAR_GAP := 10
 const PLATE_HEIGHT := 150.0  # 아래 이름표(별·이름·속성)가 차지하는 높이
 ## 하단 탭: [한글, 영문]
-const TABS: Array = [["상점", "SHOP"], ["아바타", "AVATAR"], ["모험", "ADVENTURE"], ["퀘스트", "QUEST"]]
+const TABS: Array = [["상점", "SHOP"], ["아바타", "AVATAR"], ["모험", "ADVENTURE"], ["퀘스트", "QUEST"], ["도감", "DEX"]]
 
 var viewing: StringName
 var expression := 0
@@ -36,6 +36,13 @@ var cards: Dictionary[StringName, DrawBox] = {}
 var roster_strip: DrawBox
 var stats_bar: DrawBox
 var skill_box: DrawBox
+var aura_rect: TextureRect
+var skin_dot: DrawBox
+## 별 등급 → 아우라 색: 별 색과 같다(Gt.STAR_BY_RARITY). 아우라는 5성부터(5성 보라 · 6성 파랑 · 7성 빨강)
+const AURA_COLORS := Gt.STAR_BY_RARITY
+const AURA_FROM := 5
+var promote_box: DrawBox
+var promote_button: GameButton
 var level_button: GameButton
 var passive_header: DrawBox
 var passive_box: VBoxContainer
@@ -60,6 +67,7 @@ func _ready() -> void:
 	sky_top = sky[0]
 	sky_bottom = sky[1]
 	_refresh_all()
+	IdleReward.try_show.call_deferred(self)  # 꺼 둔 사이 쌓인 방치 보상
 
 
 func _process(delta: float) -> void:
@@ -71,6 +79,7 @@ func _process(delta: float) -> void:
 	bg_box.queue_redraw()  # 떠다니는 장식
 	if avatar_page.visible:
 		backdrop.queue_redraw()  # 햇살이 천천히 돈다
+		_update_aura()
 		for c: Control in cards.values():
 			c.queue_redraw()  # 4·5성 카드 빛이 숨 쉬듯
 
@@ -111,6 +120,20 @@ func _build() -> void:
 			sw.closed.connect(_refresh_all)
 			add_child(sw))
 	avatar_page.add_child(_pad(skill_box, 10, 2, 10, 2))
+	# 별 조각 막대 + 승급 버튼
+	promote_box = _box(_paint_promote, 54)
+	promote_button = GameButton.new()
+	promote_button.label = "승급"
+	promote_button.kind = Gt.Kind.YELLOW
+	promote_button.font_size = 17
+	promote_button.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
+	promote_button.offset_left = -112
+	promote_button.offset_top = 6
+	promote_button.offset_right = -8
+	promote_button.offset_bottom = -6
+	promote_button.pressed.connect(_on_promote_pressed)
+	promote_box.add_child(promote_button)
+	avatar_page.add_child(_pad(promote_box, 10, 2, 10, 2))
 	avatar_page.add_child(_pad(_build_passives(), 10, 4, 10, 6))
 	shop_page = ShopPage.new()
 	shop_page.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -153,6 +176,21 @@ func _build_portrait_area() -> Control:
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.gui_input.connect(_on_portrait_input)
 	portrait.resized.connect(func() -> void: portrait.pivot_offset = portrait.size / 2.0)
+	var skin_mat := ShaderMaterial.new()
+	skin_mat.shader = preload("res://shared/skin_flash.gdshader")
+	portrait.material = skin_mat  # 7성 스킨 색
+	# 별 등급 아우라: 일러스트 윤곽을 따라 번지는 빛(별 색과 같다, 5성부터: 5성 보라 · 6성 파랑 · 7성 빨강)
+	aura_rect = TextureRect.new()
+	aura_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	aura_rect.offset_top = 6
+	aura_rect.offset_bottom = 10
+	aura_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	aura_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	aura_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mat := ShaderMaterial.new()
+	mat.shader = preload("res://features/menu/aura_glow.gdshader")
+	aura_rect.material = mat
+	backdrop.add_child(aura_rect)
 	backdrop.add_child(portrait)
 	plate = _box(_paint_plate, 0)
 	plate.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -170,6 +208,16 @@ func _build_portrait_area() -> Control:
 	action_button.pressed.connect(_on_select_pressed)
 	backdrop.add_child(action_button)
 	_build_gear_slots()
+	# 스킨 켜기·끄기: 공격 방식 꼬리표 옆 작은 동그라미(미즈하·스칼렛만, 7성이면 열림)
+	skin_dot = _box(_paint_skin_dot, 0)
+	skin_dot.size = Vector2(34, 34)
+	skin_dot.mouse_filter = Control.MOUSE_FILTER_STOP
+	skin_dot.gui_input.connect(func(e: InputEvent) -> void:
+		var mb := e as InputEventMouseButton
+		if mb and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+			_on_skin_pressed())
+	backdrop.add_child(skin_dot)
+	backdrop.resized.connect(func() -> void: skin_dot.position = _skin_dot_pos())
 	return backdrop
 
 
@@ -305,8 +353,10 @@ func _on_tab_pressed(i: int) -> void:
 			_switch_tab("아바타")
 		2:
 			_on_adventure_pressed()
-		_:
+		3:
 			_switch_tab("퀘스트")
+		_:
+			_open_dex()
 
 
 # ── 그리기: 위쪽 바·탭 바 ──
@@ -363,12 +413,19 @@ func _paint_tab_bar(ci: Control) -> void:
 		var c := Vector2(cell.get_center().x, body.position.y + body.size.y * 0.4)
 		_tab_icon(ci, i, c, 34.0 if active else 30.0)
 		Gt.title(ci, Vector2(cell.get_center().x, body.end.y - 13), TABS[i][0], 14, Color.WHITE if active or i == 2 else Color("e6d9f0"), 1)
-		if i == 3 and Quests.has_reward():
+		if i == 3 and (Quests.has_reward() or Achievements.claimable() > 0 or Mail.unread() > 0):
 			# 받을 보상이 있으면 빨간 점
 			var dot := Vector2(body.end.x - 10, body.position.y + 10)
 			ci.draw_circle(dot, 9.0, Gt.INK)
 			ci.draw_circle(dot, 7.0, Color("ff3b4d"))
 			Gt.text(ci, dot + Vector2(0, 5), "!", 12, Color.WHITE, 1)
+
+
+## 도감은 페이지 대신 창으로 연다(지금 보던 탭은 그대로)
+func _open_dex() -> void:
+	var w := DexWindow.new()
+	w.closed.connect(_refresh_all)
+	add_child(w)
 
 
 func _tab_index(name: String) -> int:
@@ -393,6 +450,8 @@ func _tab_icon(ci: CanvasItem, i: int, c: Vector2, s: float) -> void:
 			Gt.icon(ci, &"sword", c, s * 1.05)
 		3:
 			Gt.icon(ci, &"scroll", c, s)
+		4:
+			Gt.icon(ci, &"book", c, s)
 
 
 # ── 그리기: 아바타 페이지 ──
@@ -401,11 +460,68 @@ func _paint_backdrop(ci: Control) -> void:
 	var w := ci.size.x
 	var h := ci.size.y
 	var data := Save.character(viewing)
-	# 캐릭터 뒤 햇살(속성 색이 살짝 섞인 흰빛)
+	var rank := Save.rank_of(viewing) if Save.is_owned(viewing) else 3
+	# 캐릭터 뒤 햇살(속성 색이 살짝 섞인 흰빛, 별이 높으면 아우라 색)
 	var col := Color.WHITE.lerp(Gt.element_color(data.element), 0.25)
-	Gt.burst(ci, Vector2(w * 0.5, h * 0.42), h * 0.75, col, t)
-	# 발밑 풀밭 섬
+	if rank >= AURA_FROM:
+		col = col.lerp(_aura_color(rank, 0.0), 0.45)
+	Gt.burst(ci, Vector2(w * 0.5, h * 0.42), h * (0.75 + 0.05 * maxi(rank - 4, 0)), col, t * (1.0 + 0.4 * maxi(rank - 4, 0)))
+	# 발밑 풀밭 섬 + 별 등급 빛 고리
 	Gt.island(ci, Vector2(w * 0.5, h - 30), 360, 56)
+	if rank >= AURA_FROM:
+		_paint_aura_ground(ci, Vector2(w * 0.5, h - 44), rank)
+
+
+## 별 등급 → 아우라 색(7성 빨강은 불꽃처럼 살짝 일렁인다)
+func _aura_color(rank: int, phase: float) -> Color:
+	var c: Color = AURA_COLORS.get(mini(rank, 7), Color.WHITE)
+	if rank >= 7:
+		c = c.lerp(Color("ff7a2a"), 0.15 + 0.15 * sin(t * 3.0 + phase * TAU))
+	return c
+
+
+## 발밑 빛 고리 + 위로 떠오르는 빛 알갱이(별이 높을수록 많고 빠르다)
+func _paint_aura_ground(ci: Control, c: Vector2, rank: int) -> void:
+	var lvl := rank - 4
+	var pulse := 0.5 + 0.5 * sin(t * 2.4)
+	for i in 3:
+		var rr := 110.0 + i * 16.0 + pulse * 8.0
+		ci.draw_set_transform(c, 0.0, Vector2(1.0, 0.28))
+		ci.draw_arc(Vector2.ZERO, rr, 0, TAU, 48, Color(_aura_color(rank, i * 0.2), 0.35 - i * 0.09), 4.0, true)
+	ci.draw_set_transform(Vector2.ZERO)
+	var n := 8 + lvl * 8
+	var h := ci.size.y
+	for i in n:
+		var seed := float(i) * 12.9898
+		var speed := 30.0 + fmod(seed * 7.0, 30.0) + lvl * 6.0
+		var life := h * 0.75
+		var y := c.y - fmod(t * speed + seed * 41.0, life)
+		var x := c.x + sin(seed) * 120.0 + sin(t * 1.3 + seed) * 8.0
+		var k := 1.0 - (c.y - y) / life
+		var col := _aura_color(rank, float(i) / n)
+		var sz := 2.0 + fmod(seed, 2.5) + (1.0 if rank >= 6 else 0.0)
+		ci.draw_circle(Vector2(x, y), sz * 2.6, Color(col, 0.28 * k))
+		ci.draw_circle(Vector2(x, y), sz * 1.2, Color(col.lightened(0.4), 0.95 * k))
+		if rank >= 6 and i % 3 == 0:
+			Gt.sparkle(ci, Vector2(x, y), 4.0 + sz, Color(1, 1, 1, 0.8 * k))
+
+
+## 일러스트 윤곽 아우라(셰이더 값): 숨 쉬듯 밝아졌다 어두워진다
+func _update_aura() -> void:
+	var rank := Save.rank_of(viewing) if Save.is_owned(viewing) else 3
+	aura_rect.visible = rank >= AURA_FROM
+	if not aura_rect.visible:
+		return
+	aura_rect.position = portrait.position
+	aura_rect.scale = portrait.scale
+	aura_rect.pivot_offset = portrait.pivot_offset
+	var mat := aura_rect.material as ShaderMaterial
+	var col := _aura_color(rank, 0.0)
+	mat.set_shader_parameter(&"glow_color", Color(col, 0.8 + 0.06 * (rank - 5)))
+	mat.set_shader_parameter(&"radius", 18.0 + 5.0 * (rank - 5))
+	mat.set_shader_parameter(&"strength", 0.85 + 0.25 * sin(t * 2.2))
+	mat.set_shader_parameter(&"rainbow", 0.0)
+	mat.set_shader_parameter(&"time", t)
 
 
 func _paint_plate(ci: Control) -> void:
@@ -424,7 +540,7 @@ func _paint_plate(ci: Control) -> void:
 	# 이름 + 영문 이름 + 별명
 	Gt.title(ci, Vector2(x, top + 72), data.display_name, 42)
 	Gt.text(ci, Vector2(x + Gt.width(data.display_name, 42) + 8, top + 70), Gt.roman(viewing), 14, Color("ffe36b"), 0, true, 5, Gt.INK, true)
-	Gt.title(ci, Vector2(x + 2, top + 96), data.title, 15)
+	Gt.title(ci, Vector2(x + 2, top + 96), "스킨 「%s」 · %s" % [Skins.name_of(viewing), Skins.bonus_text(viewing)] if Skins.has_skin(viewing) else data.title, 15)
 	# 속성 꼬리표 + 공격 방식 꼬리표
 	var el_name := CharacterData.ELEMENT_NAMES[data.element] + " 속성"
 	var chip := Rect2(x, top + 108, Gt.width(el_name, 14) + 44, 28)
@@ -601,10 +717,88 @@ func _paint_passive_header(ci: Control) -> void:
 	var m := Save.max_stars(viewing)
 	var w := ci.size.x
 	Gt.header(ci, Vector2(2, 23), "성장 효과", "STAR BONUS", 16)
-	# 승급 칸: 올린 별은 채워지고, 다 채우면 7성(무지개 별)
+	# 승급 칸: 올린 별은 채워지고, 다 채우면 7성(큰 빨간 별)
 	for i in m:
 		Gt.star(ci, Vector2(w - 12 - (m - 1 - i) * 20, 15), 7.5, Gt.STAR if i < stars else Color("c9c3d6"))
-	Gt.text(ci, Vector2(w - 20 - m * 20, 21), "또 뽑으면 별 +1 (공격·체력 +8%) · " + ("7성 달성!" if stars >= m else "7성까지 %d번" % (m - stars)), 11, Gt.NAVY_SOFT, 2)
+	Gt.text(ci, Vector2(w - 20 - m * 20, 21), "승급하면 효과가 열려요 · 별마다 공격·체력 +8%", 11, Gt.NAVY_SOFT, 2)
+
+
+## 별 조각: 지금 별 → 다음 별, 모은 조각 / 필요한 조각 막대
+func _paint_promote(ci: Control) -> void:
+	var r := Rect2(Vector2(0, 1), ci.size - Vector2(0, 4))
+	Gt.panel(ci, r)
+	var owned := Save.is_owned(viewing)
+	var rank := Save.rank_of(viewing)
+	var x := r.position.x + 12
+	if rank >= Save.MAX_RANK:
+		Gt.red_star(ci, Vector2(x + 12, r.get_center().y), 12)
+		Gt.text(ci, Vector2(x + 34, r.get_center().y + 6), "7성 달성! 이제 중복은 골드로 바뀌어요", 14, Gt.NAVY)
+		return
+	var cur := Gt.rank_stars(ci, Vector2(x, r.position.y + 16), rank, 6.0, true)
+	Gt.text(ci, Vector2(x + cur + 8, r.position.y + 21), "→", 13, Gt.NAVY_SOFT)
+	Gt.rank_stars(ci, Vector2(x + cur + 26, r.position.y + 16), rank + 1, 6.0, true)
+	var have := Save.shards_of(viewing) if owned else 0
+	var need := Save.promote_cost(viewing)
+	var bar := Rect2(Vector2(x, r.position.y + 30), Vector2(r.size.x - 150, 14))
+	Gt.bar(ci, bar, minf(1.0, have / float(maxi(need, 1))), Color("ff9a2e"))
+	Gt.text(ci, Vector2(bar.end.x, r.position.y + 21), "별 조각 %d / %d" % [have, need], 12, Gt.NAVY, 2)
+	if not owned:
+		Gt.text(ci, Vector2(bar.position.x, r.position.y + 21), "", 11, Gt.GRAY)
+
+
+## 스킨 동그라미 자리: 이름표의 속성·공격 방식 꼬리표 바로 오른쪽(_paint_plate와 같은 계산)
+func _skin_dot_pos() -> Vector2:
+	if viewing == &"":
+		return Vector2.ZERO  # 로비를 만드는 중(아직 캐릭터를 안 골랐을 때)
+	var data := Save.character(viewing)
+	var top := backdrop.size.y - PLATE_HEIGHT
+	var el_name := CharacterData.ELEMENT_NAMES[data.element] + " 속성"
+	var chip2_x := 14.0 + Gt.width(el_name, 14) + 44 + 6
+	var end := chip2_x + Gt.width(CharacterData.ATTACK_NAMES[data.attack_kind], 14) + 26
+	return Vector2(end + 6, top + 105)
+
+
+## 동그라미: 켜짐 분홍(옷걸이 + ON) · 꺼짐 회색(OFF) · 7성 전엔 자물쇠
+func _paint_skin_dot(ci: Control) -> void:
+	var c := ci.size / 2.0
+	var on := Skins.has_skin(viewing)
+	var open := Skins.unlocked(viewing)
+	ci.draw_circle(c + Vector2(0, 2), 15.0, Gt.INK)
+	ci.draw_circle(c, 15.0, Gt.INK)
+	ci.draw_circle(c, 13.0, Color("ff6b9a") if on else (Color("b8b0c8") if open else Color("8e88a0")))
+	ci.draw_circle(c + Vector2(0, -4), 8.0, Color(1, 1, 1, 0.25))
+	if not open:
+		Gt.lock(ci, c, 14, Color("efe9f6"))
+		return
+	# 옷걸이
+	ci.draw_arc(c + Vector2(0, -7), 2.2, PI, TAU * 1.0, 6, Color.WHITE, 1.6)
+	ci.draw_polyline(PackedVector2Array([c + Vector2(0, -5), c + Vector2(-8, 1), c + Vector2(8, 1), c + Vector2(0, -5)]), Color.WHITE, 1.8)
+	Gt.text(ci, c + Vector2(0, 11), "ON" if on else "OFF", 8, Color.WHITE, 1, true, 2, Gt.INK)
+
+
+## 스킨 켜기·끄기(켜면 색이 바뀌고 능력치가 오른다)
+func _on_skin_pressed() -> void:
+	if not Skins.unlocked(viewing):
+		_show_toast("7성이 되면 「%s」 스킨이 열려요 (%s)" % [Skins.name_of(viewing), Skins.bonus_text(viewing)])
+		return
+	Skins.toggle(viewing)
+	Game.sfx(&"powerup" if Skins.has_skin(viewing) else &"pickup", -4.0, 0.0)
+	_refresh_all()
+	_show_toast("「%s」 %s" % [Skins.name_of(viewing), ("착용! " + Skins.bonus_text(viewing)) if Skins.has_skin(viewing) else "벗음"])
+
+
+func _on_promote_pressed() -> void:
+	if not Save.is_owned(viewing):
+		_show_toast("미보유 캐릭터예요")
+		return
+	if Save.promote(viewing):
+		Game.sfx(&"levelup", -2.0, 0.0)
+		Game.flash(Color(1, 0.95, 0.6, 0.25), 0.25)
+		_bounce(portrait, 1.08)
+		_refresh_all()
+		_show_toast("%d성 승급!" % Save.rank_of(viewing))
+	else:
+		_show_toast("별 조각이 모자라요 (같은 캐릭터를 뽑으면 %d개)" % Save.shards_per_dup(viewing))
 
 
 func _paint_passive_row(ci: Control, index: int, text: String, unlocked: bool) -> void:
@@ -637,11 +831,19 @@ func _refresh_all() -> void:
 	var data := Save.character(viewing)
 	var owned := Save.is_owned(viewing)
 	portrait.texture = data.portraits[expression % data.portraits.size()]
+	aura_rect.texture = portrait.texture
+	Skins.apply(portrait.material as ShaderMaterial, viewing, Skins.has_skin(viewing))
 	portrait.modulate = Color.WHITE if owned else Color(0.55, 0.62, 0.75)
 	action_button.visible = owned and viewing != Save.selected
 	_refresh_level_button()
 	_refresh_passives()
-	for c: Control in [top_bar, backdrop, plate, stats_bar, skill_box, passive_header, roster_strip, tab_bar]:
+	promote_button.disabled = not Save.can_promote(viewing)
+	skin_dot.visible = Skins.exists(viewing)
+	skin_dot.position = _skin_dot_pos()
+	skin_dot.queue_redraw()
+	promote_button.visible = Save.rank_of(viewing) < Save.MAX_RANK
+	promote_button.queue_redraw()
+	for c: Control in [top_bar, backdrop, plate, stats_bar, skill_box, promote_box, passive_header, roster_strip, tab_bar]:
 		c.queue_redraw()
 	for id in cards:
 		cards[id].queue_redraw()
@@ -699,6 +901,7 @@ func _on_portrait_input(e: InputEvent) -> void:
 		expression += 1  # 일러스트를 누르면 표정이 바뀐다
 		var data := Save.character(viewing)
 		portrait.texture = data.portraits[expression % data.portraits.size()]
+		aura_rect.texture = portrait.texture
 		_bounce(portrait, 1.04)
 
 
@@ -736,6 +939,7 @@ func _on_level_up_pressed() -> void:
 		_refresh_all()
 		_bounce(portrait, 1.06)
 		_show_toast("레벨 업!  Lv.%d" % (lv + 1))
+		Game.sfx(&"levelup", -4.0, 0.0)
 
 
 ## 모험: 로비에 오기 전 있던 맵·자리에서 다시 시작(처음이거나 쓰러졌으면 마을)

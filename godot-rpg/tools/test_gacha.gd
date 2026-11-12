@@ -50,10 +50,11 @@ func _ready() -> void:
 	_check("확률이 대략 3% / 17% / 80%", absf(counts[5] / 40.0 - 3.0) < 1.5 and absf(counts[4] / 40.0 - 17.0) < 3.0)
 
 	_reset()
-	_check("이미 있는 캐릭터면 별 +1", Save.grant_character(&"kemo1") == "star" and Save.stars_of(&"kemo1") == 1)
+	_check("이미 있는 캐릭터면 별 조각 +10", Save.grant_character(&"kemo1") == "shard" and Save.shards_of(&"kemo1") == 10 and Save.stars_of(&"kemo1") == 0)
 	_check("처음 나온 캐릭터는 보유", Save.grant_character(&"fairy1") == "new" and Save.is_owned(&"fairy1"))
-	Save.owned["kemo2"]["stars"] = Save.MAX_STARS
-	_check("별이 다 차면 max", Save.grant_character(&"kemo2") == "max")
+	_check("★5도 중복 한 번에 조각 10", Save.grant_character(&"fairy1") == "shard" and Save.shards_of(&"fairy1") == 10)
+	Save.owned["kemo2"]["stars"] = Save.max_stars(&"kemo2")
+	_check("7성이면 골드로(max)", Save.grant_character(&"kemo2") == "max")
 
 	_reset()
 	Save.owned["kemo1"]["stars"] = 2
@@ -73,14 +74,17 @@ func _ready() -> void:
 	var overlay := menu.get_children().filter(func(n: Node) -> bool: return n is GachaResult)
 	_check("10회 소환 → 보석 50 남고 연출 화면이 뜸", Save.gems == 50 and overlay.size() == 1)
 
-	# 별 승급: ★3은 4번 더 얻으면 7성(무지개 별), 그다음은 골드로
-	Save.owned["kemo3"] = {"level": 1, "stars": 0}
+	# 별 승급: 조각을 모아 직접 올린다(4성 10 · 5성 20 · 6성 30 · 7성 50)
+	Save.owned["kemo3"] = {"level": 1, "stars": 0, "shards": 0}
 	var atk0 := Save.atk_of(&"kemo3")
-	for k in 4:
-		Save.grant_character(&"kemo3")
-	_check("★3 캐릭터를 4번 더 얻으면 7성 (%d성)" % Save.rank_of(&"kemo3"), Save.rank_of(&"kemo3") == 7 and Save.passives_unlocked(&"kemo3") == Save.MAX_STARS)
-	_check("7성이면 더 못 올리고(max) 공격력은 올랐다 (%d → %d)" % [atk0, Save.atk_of(&"kemo3")], Save.grant_character(&"kemo3") == "max" and Save.atk_of(&"kemo3") > atk0)
-	_check("★5는 2번이면 7성", Save.max_stars(&"fairy1") == 2)
+	_check("조각 0개로는 승급 못 함", not Save.promote(&"kemo3") and Save.rank_of(&"kemo3") == 3)
+	Save.grant_character(&"kemo3")
+	_check("중복 1번(조각 10) → 4성 승급", Save.promote(&"kemo3") and Save.rank_of(&"kemo3") == 4 and Save.shards_of(&"kemo3") == 0)
+	_check("다음 승급은 20개", Save.promote_cost(&"kemo3") == 20)
+	Save.owned["kemo3"]["shards"] = 100
+	while Save.promote(&"kemo3"):
+		pass
+	_check("7성까지(남은 조각 %d) · 공격력 올랐다 (%d → %d)" % [Save.shards_of(&"kemo3"), atk0, Save.atk_of(&"kemo3")], Save.rank_of(&"kemo3") == 7 and Save.shards_of(&"kemo3") == 0 and Save.atk_of(&"kemo3") > atk0)
 	print("결과: ", "통과" if fails == 0 else "실패 %d개" % fails)
 	get_tree().quit(fails)
 

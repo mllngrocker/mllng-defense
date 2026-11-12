@@ -14,6 +14,21 @@ const SFX: Dictionary[StringName, AudioStream] = {
 	&"charged": preload("res://assets/ninja/sfx/charged.wav"),
 	&"heavy": preload("res://assets/ninja/sfx/heavy.wav"),
 	&"boom": preload("res://assets/ninja/sfx/boom.wav"),
+	&"coin": preload("res://assets/ninja/sfx/coin.wav"),
+	&"success": preload("res://assets/ninja/sfx/success.wav"),
+	&"levelup": preload("res://assets/ninja/sfx/levelup.wav"),
+	&"crit": preload("res://assets/ninja/sfx/crit.wav"),
+	&"skill_fire": preload("res://assets/ninja/sfx/skill_fire.wav"),
+	&"skill_water": preload("res://assets/ninja/sfx/skill_water.wav"),
+	&"skill_wind": preload("res://assets/ninja/sfx/skill_wind.wav"),
+	&"skill_earth": preload("res://assets/ninja/sfx/skill_earth.wav"),
+	&"skill_light": preload("res://assets/ninja/sfx/skill_light.wav"),
+	&"skill_dark": preload("res://assets/ninja/sfx/skill_dark.wav"),
+	&"alert": preload("res://assets/ninja/sfx/alert.wav"),
+	&"heal": preload("res://assets/ninja/sfx/heal.wav"),
+	&"powerup": preload("res://assets/ninja/sfx/powerup.wav"),
+	&"burn": preload("res://assets/ninja/sfx/burn.wav"),
+	&"hit_heavy": preload("res://assets/ninja/sfx/hit_heavy.wav"),
 }
 const VOICES := 8
 
@@ -25,6 +40,10 @@ var hitstop_enabled := true
 var next_spawn := ""
 ## 로비에서 모험으로 돌아올 때 세울 자리(없으면 Vector2.INF)
 var resume_pos := Vector2.INF
+## 일일 던전 중이면 종류("gold"·"gear"·"book"), 아니면 빈 값
+var dungeon := ""
+## 퀘스트 자동 이동 중이면 {goal: 맵 id, kind, target}(Travel), 아니면 빈 값
+var travel: Dictionary = {}
 var _voices: Array[AudioStreamPlayer] = []
 var _next_voice := 0
 
@@ -80,6 +99,30 @@ func go_to(scene_path: String, spawn: String) -> void:
 
 
 ## 맞는 순간 게임을 아주 잠깐 거의 멈춰서 타격감을 준다.
+## 화면 전체를 잠깐 색으로 번쩍(치명타·보스 내려치기·레벨 업)
+var _flash_rect: ColorRect
+
+
+func flash(color: Color, duration := 0.12) -> void:
+	if not bool(Save.settings.get("shake", true)):
+		return
+	if not is_instance_valid(_flash_rect):
+		var layer := CanvasLayer.new()
+		layer.layer = 60
+		add_child(layer)
+		_flash_rect = ColorRect.new()
+		_flash_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+		_flash_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		layer.add_child(_flash_rect)
+	_flash_rect.color = color
+	var tw := _flash_rect.create_tween()
+	tw.tween_property(_flash_rect, ^"color:a", 0.0, duration)
+
+
+## 속성 → 스킬 쓸 때 소리
+const ELEMENT_SFX: Array[StringName] = [&"skill_fire", &"skill_water", &"skill_wind", &"skill_earth", &"skill_light", &"skill_dark"]
+
+
 func hitstop(duration: float) -> void:
 	if not hitstop_enabled:
 		return

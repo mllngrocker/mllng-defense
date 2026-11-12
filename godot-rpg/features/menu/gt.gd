@@ -41,7 +41,8 @@ const PINK := Color("ff6b9a")
 const GREEN := Color("46c46a")
 const STAR := Color("ffd23a")
 ## 등급별 별 색: 3성 노랑, 4성 주황, 5성 보라
-const STAR_BY_RARITY := {3: Color("ffd23a"), 4: Color("ff8a2a"), 5: Color("c56bff"), 6: Color("ff4f7a")}
+## 별 등급 색(별과 로비 아우라가 같은 색): 3성 노랑 · 4성 주황 · 5성 보라 · 6성 파랑 · 7성 빨강
+const STAR_BY_RARITY := {3: Color("ffd23a"), 4: Color("ff8a2a"), 5: Color("c56bff"), 6: Color("3fa9ff"), 7: Color("ff2a3a")}
 const SHADOW := Color(0.18, 0.06, 0.2, 0.28)
 ## 등급 색: ★3 하늘, ★4 보라, ★5 금
 const RARITY: Dictionary[int, Color] = {3: Color("5db8ff"), 4: Color("b77cff"), 5: Color("ffc531")}
@@ -264,7 +265,15 @@ static func star(ci: CanvasItem, c: Vector2, r: float, color := STAR) -> void:
 
 
 ## 반짝이(네 갈래 별빛)
-## 무지개 별(7성): 꼭짓점마다 무지개색이 번지는 큰 별 하나
+## 7성 별: 빛나는 큰 빨간 별 하나
+static func red_star(ci: CanvasItem, c: Vector2, r: float) -> void:
+	var col: Color = STAR_BY_RARITY[7]
+	ci.draw_circle(c, r * 1.25, Color(col, 0.25))
+	star(ci, c, r, col)
+	ci.draw_circle(c + Vector2(-r * 0.18, -r * 0.2), r * 0.16, Color(1, 1, 1, 0.75))
+
+
+## (예전) 무지개 별
 static func rainbow_star(ci: CanvasItem, c: Vector2, r: float) -> void:
 	var pts := star_pts(c, r)
 	var out := star_pts(c, r + 2.0)
@@ -279,11 +288,11 @@ static func rainbow_star(ci: CanvasItem, c: Vector2, r: float) -> void:
 	ci.draw_circle(c + Vector2(-r * 0.18, -r * 0.2), r * 0.16, Color(1, 1, 1, 0.8))
 
 
-## 별 등급 줄(가운데 맞춤): 3~6성은 그 수만큼 등급색 별, 7성은 무지개 별 하나. 그린 폭을 돌려준다
+## 별 등급 줄(가운데 맞춤): 3~6성은 그 수만큼 등급색 별, 7성은 큰 빨간 별 하나. 그린 폭을 돌려준다
 static func rank_stars(ci: CanvasItem, c: Vector2, rank: int, r: float, left := false) -> float:
 	if rank >= 7:
 		var big := r * 1.45
-		rainbow_star(ci, c + Vector2(big if left else 0.0, 0), big)
+		red_star(ci, c + Vector2(big if left else 0.0, 0), big)
 		return big * 2.0
 	var gap := r * 2.15
 	var col: Color = STAR_BY_RARITY.get(rank, STAR)

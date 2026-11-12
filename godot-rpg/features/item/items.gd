@@ -7,12 +7,15 @@ extends RefCounted
 ## id → [이름, 설명, 아이콘(Gt.icon 이름)]
 const DATA: Dictionary[StringName, Array] = {
 	&"return_scroll": ["마을 귀환서", "마지막으로 들른 마을로 순식간에 돌아간다", &"scroll"],
+	&"stone": ["강화석", "장비 강화에 쓴다 · 장비를 분해하면 나온다(사용은 로비 장비 창에서)", &"gem_yellow"],
 	&"potion": ["회복 물약", "체력을 50% 회복한다 · 자동 사냥 중엔 체력이 적으면 알아서 마신다", &"potion"],
 }
 const BOOKS: Dictionary[String, Array] = {
 	"training": ["트레이닝 북", "스킬 포인트 +1 · 로비 아바타의 스킬 창에서 쓴다", &"book"],
 	"master": ["마스터 북", "오의를 열고 스킬 상한을 10으로 · 로비 스킬 창에서 쓴다", &"book"],
 }
+## 가방 창에서 바로 쓸 수 있는 것(강화석은 장비 창에서 쓴다)
+const USABLE: Array[StringName] = [&"return_scroll", &"potion"]
 ## 마을 맵(귀환서로 돌아갈 수 있는 곳)
 const TOWNS: Array[String] = ["village", "desert_town", "snow_town", "temple_town", "lava_town", "sky_town", "root_town", "mist_town"]
 ## 몬스터가 떨어뜨릴 확률(보스는 아래 BOSS_DROP)
@@ -39,7 +42,7 @@ static func use(id: StringName, tree: SceneTree) -> bool:
 			if not Save.use_item(id):
 				return false
 			player.heal(ceili(player.max_hp * POTION_HEAL))
-			Game.sfx(&"pickup", -2.0, 0.0)
+			Game.sfx(&"heal", -2.0, 0.0)
 			return true
 		&"return_scroll":
 			if player == null or player.hp <= 0:

@@ -13,6 +13,11 @@ const GRADE_COLORS: Array[Color] = [Color.WHITE, Color("5fc46a"), Color("4a9cf0"
 const STAT_NAMES := {"hp": "체력", "atk": "공격력", "crit": "치명타", "speed": "이동 속도", "gold": "골드 획득"}
 const MAX_REFINE := 5
 const MAXED_GOLD: Array[int] = [0, 300, 1500, 8000, 40000]  # 재련이 다 찬 장비를 또 얻으면 주는 골드
+## 분해: 등급별 강화석(재련 1마다 한 개 더 분해한 셈) · 강화: 강화석으로 재련 +1(다음 재련 수만큼 비싸진다)
+const STONES_FROM: Array[int] = [0, 2, 6, 20, 60]
+const UPGRADE_COST: Array[int] = [0, 5, 12, 30, 80]
+## 합성: 같은 등급 장비 3개(재련 +1도 한 개로 센다) → 한 등급 위 장비 하나
+const SYNTH_NEED := 3
 ## 몬스터가 떨어뜨릴 확률, 등급 가중치(일반 몬스터 / 보스)
 const DROP_CHANCE := 0.02
 const MOB_WEIGHTS: Array[float] = [0.0, 60.0, 28.0, 10.0, 2.0]

@@ -28,7 +28,12 @@ func _ready() -> void:
 	Game.resume_pos = Vector2.INF
 	if map_id() in Items.TOWNS:
 		Save.last_town = map_id()  # 귀환서가 데려갈 마을
-	Save.place = {"map": scene_file_path, "x": player.global_position.x, "y": player.global_position.y}
+	if Game.dungeon != "":
+		var dd := DungeonDirector.new()
+		dd.name = "Dungeon"
+		add_child(dd)
+	else:
+		Save.place = {"map": scene_file_path, "x": player.global_position.x, "y": player.global_position.y}
 	if Save.pet != "" and Pets.DATA.has(StringName(Save.pet)):
 		var pet := Pet.new()
 		pet.name = "Pet"
@@ -49,6 +54,12 @@ func _ready() -> void:
 	if map_title != "":
 		Events.map_entered.emit.call_deferred(map_title)
 	Quests.track.call_deferred("reach", map_id())
+	# 30초마다 저장(웹에서 창을 그냥 닫아도 방치 보상 시간이 맞게)
+	var autosave := Timer.new()
+	autosave.wait_time = 30.0
+	autosave.autostart = true
+	autosave.timeout.connect(remember_place)
+	add_child(autosave)
 	# 처음 온 맵이면 이야기 장면(맵 이름 띠가 보인 뒤)
 	get_tree().create_timer(1.0, false).timeout.connect(func() -> void: StoryBox.play(self, "enter_" + map_id()))
 
@@ -112,7 +123,7 @@ func nav_path(a: Vector2, b: Vector2) -> PackedVector2Array:
 
 ## 지금 맵·자리를 기억한다(로비에 갔다 와도 여기서 다시 시작)
 func remember_place() -> void:
-	if is_instance_valid(player) and player.hp > 0:
+	if is_instance_valid(player) and player.hp > 0 and Game.dungeon == "":
 		Save.place = {"map": scene_file_path, "x": player.global_position.x, "y": player.global_position.y}
 	Save.save_game()
 
@@ -125,6 +136,8 @@ func map_id() -> String:
 
 ## 쓰러진 몬스터를 delay초 뒤 같은 자리에 다시 놓는다(용사가 너무 가까우면 떨어질 때까지 기다림)
 func schedule_respawn(path: String, pos: Vector2, delay: float) -> void:
+	if Game.dungeon != "":
+		return  # 던전에선 감독이 몬스터를 불러낸다
 	await get_tree().create_timer(delay, false).timeout
 	while is_inside_tree() and is_instance_valid(player) and player.global_position.distance_to(pos) < RESPAWN_CLEAR:
 		await get_tree().create_timer(2.0, false).timeout
@@ -138,6 +151,9 @@ func schedule_respawn(path: String, pos: Vector2, delay: float) -> void:
 
 ## 쓰러지면 잠시 뒤 마을 광장에서 다시 일어난다(체력 가득)
 func _on_player_died() -> void:
+	if Game.dungeon != "" and has_node(^"Dungeon"):
+		(get_node(^"Dungeon") as DungeonDirector).finish(false)
+		return
 	music.stop()
 	Save.place = {}  # 쓰러지면 마을에서 다시
 	Save.save_game()

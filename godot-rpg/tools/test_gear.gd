@@ -32,6 +32,17 @@ func _ready() -> void:
 		Save.give_gear(&"ring1")
 	var g := Save.gold
 	_check("재련이 다 차면 골드로", Save.gear_refine(&"ring1") == Gear.MAX_REFINE and Save.give_gear(&"ring1") == "max" and Save.gold > g)
+	# 분해·강화·합성
+	Save.gear = {"ring2": 1, "neck2": 0, "boots2": 0}
+	Save.gear_equip = {"kemo1": {"boots": "boots2"}}
+	Save.items["stone"] = 0
+	_check("남이 낀 장비는 분해 못 함", Save.dismantle_gear(&"boots2") == 0 and Save.has_gear(&"boots2"))
+	_check("합성 재료: 안 낀 희귀 장비 3개(재련 +1 포함)", Save.synth_material(2) == 3)
+	var got := Save.synth_gear(&"ring2")
+	_check("희귀 3개 → 영웅 장비 (%s)" % got, got != &"" and Gear.grade_of(got) == 3 and not Save.has_gear(&"ring2") and not Save.has_gear(&"neck2") and Save.has_gear(&"boots2"))
+	_check("분해 → 강화석 (영웅 %d개)" % Gear.STONES_FROM[3], Save.dismantle_gear(got) == Gear.STONES_FROM[3] * (1 + 0) and Save.item_count(&"stone") == Gear.STONES_FROM[3])
+	Save.gear["armor1"] = 0
+	_check("강화석으로 강화 → 재련 +1", Save.upgrade_gear(&"armor1") and Save.gear_refine(&"armor1") == 1 and Save.item_count(&"stone") == Gear.STONES_FROM[3] - Gear.UPGRADE_COST[1])
 	var low := 0
 	var boss_low := 0
 	for i in 400:

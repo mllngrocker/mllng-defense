@@ -118,6 +118,21 @@ const DAILY: Array[Dictionary] = [
 	{"id": "gold", "title": "골드 1,000 모으기", "type": "gold", "target": "", "count": 1000, "gold": 0, "gems": 20},
 ]
 const DAILY_BONUS_GEMS := 100
+const DUNGEON_PER_DAY := 3
+
+
+## 오늘 남은 일일 던전 입장(세 던전 합쳐 하루 3번)
+func dungeon_left() -> int:
+	_check_day()
+	return int(Save.quest.get("dungeon", DUNGEON_PER_DAY))
+
+
+func use_dungeon() -> bool:
+	if dungeon_left() <= 0:
+		return false
+	Save.quest["dungeon"] = dungeon_left() - 1
+	changed.emit()
+	return true
 
 
 func _ready() -> void:
@@ -141,6 +156,8 @@ func _ensure() -> void:
 		q["claimed"] = {}
 	if not q.has("bonus"):
 		q["bonus"] = false
+	if not q.has("visited"):
+		q["visited"] = {}  # 한 번이라도 가 본 맵(도착 퀘스트는 나중에 와도 바로 완료)
 
 
 func _today() -> String:
@@ -156,6 +173,7 @@ func _check_day() -> void:
 		q["daily"] = {}
 		q["claimed"] = {}
 		q["bonus"] = false
+		q["dungeon"] = DUNGEON_PER_DAY
 
 
 # ── 메인 ──
@@ -179,6 +197,10 @@ func main_progress() -> int:
 			return _max_level()
 		"equip":
 			return 1 if not Save.equip.is_empty() else 0
+		"reach":
+			return 1 if (Save.quest["visited"] as Dictionary).has(String(q["target"])) else 0
+		"boss":
+			return 1 if boss_defeated(String(q["target"])) else 0
 	return int(Save.quest["progress"])
 
 
@@ -281,14 +303,16 @@ func has_reward() -> bool:
 ## 게임에서 일어난 일을 알린다. 메인·일일 진행도가 오르고, 새로 다 채운 퀘스트가 있으면 completed 신호.
 func track(type: String, target := "", amount := 1) -> void:
 	_check_day()
+	if type == "reach" and target != "":
+		(Save.quest["visited"] as Dictionary)[target] = true
 	var q := current()
 	if not q.is_empty() and String(q["type"]) == type and not main_done():
 		if _matches(String(q["target"]), target):
-			if type not in ["level", "equip"]:
+			if type not in ["level", "equip", "reach", "boss"]:
 				Save.quest["progress"] = int(Save.quest["progress"]) + amount
 			if main_done():
 				completed.emit(q["title"])
-				Game.sfx(&"charged", -2.0, 0.0)
+				Game.sfx(&"success", -2.0, 0.0)
 	for d in DAILY:
 		if String(d["type"]) == type and not daily_done(d) and _matches(String(d["target"]), target):
 			Save.quest["daily"][d["id"]] = int(Save.quest["daily"].get(d["id"], 0)) + amount

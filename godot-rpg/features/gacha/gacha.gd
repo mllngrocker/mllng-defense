@@ -20,7 +20,7 @@ static func pool(rarity: int) -> Array[StringName]:
 	return out
 
 
-## count번 뽑는다(보석은 미리 낸 상태여야 함). 결과마다 {id, rarity, result("new"/"star"/"max"), stars, gold}
+## count번 뽑는다(보석은 미리 낸 상태여야 함). 결과마다 {id, rarity, result("new"/"shard"/"max"), stars, shards, gold}
 static func pull(count: int, rng: RandomNumberGenerator) -> Array[Dictionary]:
 	var results: Array[Dictionary] = []
 	var got_4 := false
@@ -37,8 +37,9 @@ static func pull(count: int, rng: RandomNumberGenerator) -> Array[Dictionary]:
 		if result == "max":
 			gold = MAXED_GOLD[rarity]
 			Save.add_gold(gold)
-		results.append({"id": id, "rarity": rarity, "result": result, "stars": Save.stars_of(id), "gold": gold})
+		results.append({"id": id, "rarity": rarity, "result": result, "stars": Save.stars_of(id), "shards": Save.shards_per_dup(id), "gold": gold})
 	Quests.track("pull", "", count)
+	Save.add_stat("pulls", count)
 	Save.save_game()
 	return results
 
@@ -62,6 +63,7 @@ static func pull_weapons(count: int, rng: RandomNumberGenerator) -> Array[Dictio
 			Save.add_gold(gold)
 		results.append({"weapon": w, "rarity": rarity, "result": result, "refine": Save.refine_of(w), "gold": gold})
 	Quests.track("pull", "", count)
+	Save.add_stat("pulls", count)
 	Save.save_game()
 	return results
 

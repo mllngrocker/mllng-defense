@@ -31,6 +31,7 @@ var _note := ""  # 가운데 알림 띠(퀘스트 완료·보상)
 var _note_sub := ""
 var _note_t := 99.0
 var tracker: DrawBox
+var _was_travel := false
 
 @onready var canvas: Control = $Canvas
 @onready var message: Label = $Message
@@ -57,7 +58,7 @@ func _ready() -> void:
 	Events.boss_hp.connect(_on_boss_hp)
 	Events.notice.connect(_show_note)
 	Quests.completed.connect(func(title: String) -> void: _show_note("퀘스트 완료!", title))
-	Quests.changed.connect(func() -> void: tracker.queue_redraw())
+	Quests.changed.connect(_fit_tracker)
 	var ls := message.label_settings.duplicate() as LabelSettings
 	ls.font = Gt.BOLD
 	ls.outline_color = Gt.INK
@@ -78,8 +79,9 @@ func _process(delta: float) -> void:
 		if _boss_gone_t > 2.0:
 			_boss_name = ""
 		canvas.queue_redraw()
-	if Quests.main_done():
-		tracker.queue_redraw()  # 완료된 퀘스트는 반짝인다
+	if Quests.main_done() or Travel.active() != _was_travel:
+		_was_travel = Travel.active()
+		tracker.queue_redraw()  # 완료된 퀘스트는 반짝인다 · 자동 이동 표시
 	if _cutin_t < CUTIN_TIME:
 		_cutin_t += delta
 		canvas.queue_redraw()
@@ -257,15 +259,73 @@ func _add_tracker() -> void:
 		if mb and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 			_on_tracker_pressed())
 	add_child(tracker)
+	_fit_tracker()
 
 
+## 퀘스트 카드 높이를 설명 줄 수에 맞춘다(설명이 잘리지 않게)
+func _fit_tracker() -> void:
+	if not is_instance_valid(tracker):
+		return
+	tracker.size.y = _tracker_height()
+	tracker.queue_redraw()
+
+
+func _tracker_lines() -> Array[String]:
+	var q := Quests.current()
+	if q.is_empty() or Quests.main_done():
+		return []
+	return _wrap(String(q["desc"]), 11, TRACKER.size.x - 28.0)
+
+
+func _tracker_height() -> float:
+	var q := Quests.current()
+	var h := 38.0 + _tracker_lines().size() * 15.0
+	if not q.is_empty() and not Quests.main_done() and int(q["count"]) > 1:
+		h += 20.0  # 진행 막대
+	if q.is_empty() or Quests.main_done():
+		h = 66.0
+	return maxf(h + 6.0, 66.0)
+
+
+## 글을 폭에 맞춰 여러 줄로 나눈다(띄어쓰기 기준, 너무 긴 낱말은 글자 단위)
+func _wrap(text: String, font_size: int, width: float) -> Array[String]:
+	var lines: Array[String] = []
+	var line := ""
+	for word in text.split(" "):
+		var next := word if line == "" else line + " " + word
+		if Gt.width(next, font_size, false) <= width:
+			line = next
+			continue
+		if line != "":
+			lines.append(line)
+		line = ""
+		for ch in word:
+			if Gt.width(line + ch, font_size, false) > width and line != "":
+				lines.append(line)
+				line = ""
+			line += ch
+	if line != "":
+		lines.append(line)
+	return lines
+
+
+## 퀘스트 카드 누르기: 완료면 보상, 아니면 그 퀘스트 하러 자동 이동(한 번 더 누르면 멈춤)
 func _on_tracker_pressed() -> void:
 	var q := Quests.current()
 	if Quests.main_done():
 		Quests.claim_main()
 		_show_note("보상 획득!", Quests.reward_text(q))
+	elif Travel.active():
+		Travel.stop()
+		_show_note("자동 이동 멈춤", "")
 	elif not q.is_empty():
-		_show_note(q["title"], q["desc"])
+		var err := Travel.start(get_tree())
+		if err == "":
+			_show_note("자동 이동!", "%s · 조이스틱을 움직이면 멈춰요" % q["title"])
+			Game.sfx(&"pickup", -6.0, 0.0)
+		else:
+			_show_note(q["title"], err)
+	tracker.queue_redraw()
 
 
 func _paint_tracker(ci: Control) -> void:
@@ -283,7 +343,9 @@ func _paint_tracker(ci: Control) -> void:
 	ci.draw_rect(Rect2(r.position + Vector2(3, 6), Vector2(4, r.size.y - 12)), Color("7ccf5a") if done else Color("ff6fa8"))
 	var tag := Rect2(r.position + Vector2(12, 8), Vector2(48, 20))
 	Gt.skew_box(ci, tag, 6, Color("8cdf6a") if done else Color("ff8fb8"), Color("4fa83a") if done else Color("e04a86"), Gt.INK, 2.0)
-	Gt.text(ci, Vector2(tag.get_center().x, tag.position.y + 15), "완료!" if done else "메인", 11, Color.WHITE, 1)
+	Gt.text(ci, Vector2(tag.get_center().x, tag.position.y + 15), "완료!" if done else ("이동 중" if Travel.active() else "메인"), 11 if not Travel.active() or done else 10, Color.WHITE, 1)
+	if not done and not Travel.active() and not q.is_empty():
+		Gt.text(ci, Vector2(r.end.x - 10, r.position.y + 22), "눌러서 이동 ▶", 10, Color("ffd36b"), 2)
 	if q.is_empty():
 		Gt.title(ci, Vector2(tag.end.x + 8, r.position.y + 24), "모든 이야기를 마쳤어요!", 14)
 		Gt.text(ci, r.position + Vector2(12, 50), "일일 퀘스트는 로비 퀘스트 탭에서", 11, Color("e6d9f0"), 0, false)
@@ -291,15 +353,16 @@ func _paint_tracker(ci: Control) -> void:
 	Gt.title(ci, Vector2(tag.end.x + 8, r.position.y + 24), q["title"], 15)
 	if done:
 		Gt.text(ci, r.position + Vector2(12, 50), "눌러서 보상 받기 ▶ " + Quests.reward_text(q), 12, Color("fff3a0"), 0, true, 3, Gt.INK)
-	elif int(q["count"]) > 1:
+		return
+	# 설명(줄바꿈해서 전부) → 여러 번 하는 퀘스트는 아래에 진행 막대
+	var y := r.position.y + 46.0
+	for line in _tracker_lines():
+		Gt.text(ci, Vector2(r.position.x + 12, y), line, 11, Color("e6d9f0"), 0, false)
+		y += 15.0
+	if int(q["count"]) > 1:
 		var n := Quests.main_progress()
-		Gt.text(ci, Vector2(r.end.x - 12, r.position.y + 50), "%d / %d" % [n, int(q["count"])], 12, Color.WHITE, 2, true, 3, Gt.INK)
-		Gt.bar(ci, Rect2(r.position + Vector2(12, 40), Vector2(r.size.x - 84, 13)), n / float(q["count"]), Gt.YELLOW)
-	else:
-		var desc: String = q["desc"]
-		if desc.length() > 24:
-			desc = desc.substr(0, 23) + "…"
-		Gt.text(ci, r.position + Vector2(12, 50), desc, 11, Color("e6d9f0"), 0, false)
+		Gt.bar(ci, Rect2(Vector2(r.position.x + 12, y - 6), Vector2(r.size.x - 84, 12)), n / float(q["count"]), Gt.YELLOW)
+		Gt.text(ci, Vector2(r.end.x - 12, y + 5), "%d / %d" % [n, int(q["count"])], 12, Color.WHITE, 2, true, 3, Gt.INK)
 
 
 func _on_boss_hp(name: String, bhp: int, bmax: int) -> void:

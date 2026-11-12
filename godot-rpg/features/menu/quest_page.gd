@@ -9,6 +9,8 @@ var rows: Dictionary[String, DrawBox] = {}
 var row_buttons: Dictionary[String, GameButton] = {}
 var bonus_row: DrawBox
 var bonus_button: GameButton
+var dungeon_box: DrawBox
+var ach_dots: Array[DrawBox] = []
 
 
 func _ready() -> void:
@@ -32,6 +34,58 @@ func _ready() -> void:
 	main_button.pressed.connect(_on_main_claim)
 	main_card.add_child(main_button)
 	col.add_child(main_card)
+
+	# 업적 · 우편함 버튼(받을 게 있으면 빨간 점)
+	var arow := HBoxContainer.new()
+	arow.custom_minimum_size.y = 58
+	arow.add_theme_constant_override(&"separation", 8)
+	for spec: Array in [["업적", "achieve", Gt.Kind.YELLOW], ["우편함", "mail", Gt.Kind.BLUE]]:
+		var b := _button(spec[0], spec[2])
+		b.font_size = 18
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var m: String = spec[1]
+		b.pressed.connect(func() -> void:
+			var w := ListWindow.new()
+			w.mode = m
+			w.closed.connect(refresh)
+			var host: Node = self
+			while host.get_parent() is Control:
+				host = host.get_parent()
+			host.add_child(w))
+		var dot := DrawBox.new()
+		dot.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		dot.offset_left = -18
+		dot.offset_top = 2
+		dot.painter = func(ci: Control) -> void:
+			var n := Achievements.claimable() if m == "achieve" else Mail.unread()
+			if n > 0:
+				ci.draw_circle(Vector2(6, 6), 10.0, Gt.INK)
+				ci.draw_circle(Vector2(6, 6), 8.0, Color("ff3b4d"))
+				Gt.text(ci, Vector2(6, 11), str(n), 11, Color.WHITE, 1)
+		b.add_child(dot)
+		ach_dots.append(dot)
+		arow.add_child(b)
+	col.add_child(arow)
+
+	# 일일 던전: 세 던전 중 하나 골라 들어가기(하루 3번)
+	dungeon_box = _box(_paint_dungeon, 112)
+	var drow := HBoxContainer.new()
+	drow.set_anchors_preset(Control.PRESET_FULL_RECT)
+	drow.offset_left = 10
+	drow.offset_right = -10
+	drow.offset_top = 40
+	drow.offset_bottom = -10
+	drow.add_theme_constant_override(&"separation", 8)
+	dungeon_box.add_child(drow)
+	for k: String in DungeonDirector.KINDS:
+		var b := _button(DungeonDirector.KINDS[k][0], Gt.Kind.PINK if k == "gold" else (Gt.Kind.BLUE if k == "gear" else Gt.Kind.GREEN))
+		b.font_size = 15
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		b.pressed.connect(func() -> void:
+			if not DungeonDirector.enter(get_tree(), k):
+				toast_requested.emit("오늘 던전 입장을 다 썼어요 (내일 다시 3번)"))
+		drow.add_child(b)
+	col.add_child(dungeon_box)
 
 	var head := _box(func(ci: Control) -> void:
 		Gt.header(ci, Vector2(6, 26), "일일 퀘스트", "DAILY", 17)
@@ -96,6 +150,10 @@ func refresh() -> void:
 	bonus_button.label = "완료" if Save.quest.get("bonus", false) else "받기"
 	bonus_button.queue_redraw()
 	bonus_row.queue_redraw()
+	if dungeon_box:
+		dungeon_box.queue_redraw()
+	for d in ach_dots:
+		d.queue_redraw()
 
 
 func _on_main_claim() -> void:
@@ -146,6 +204,14 @@ func _paint_main(ci: Control) -> void:
 	if int(q["gems"]) > 0:
 		Gt.gem(ci, Vector2(x + 8, y), 9)
 		Gt.text(ci, Vector2(x + 22, y + 6), str(q["gems"]), 15, Gt.NAVY)
+
+
+func _paint_dungeon(ci: Control) -> void:
+	var r := Rect2(Vector2(0, 2), ci.size - Vector2(0, 4))
+	Gt.pbox(ci, r, Color("ffeedd"), Gt.INK, 2, true, true)
+	Gt.header(ci, r.position + Vector2(12, 28), "일일 던전", "DUNGEON", 16)
+	var left := Quests.dungeon_left()
+	Gt.text(ci, Vector2(r.end.x - 12, r.position.y + 26), "오늘 남은 입장 %d / %d · 60초 동안 몰려오는 몬스터" % [left, Quests.DUNGEON_PER_DAY], 11, Gt.PINK if left > 0 else Gt.GRAY, 2)
 
 
 func _paint_daily(ci: Control, d: Dictionary) -> void:

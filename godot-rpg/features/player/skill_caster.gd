@@ -12,6 +12,7 @@ const ROCK := preload("res://assets/ninja/fx/rock.png")
 const SPIRIT := preload("res://assets/ninja/fx/spirit.png")
 const BOOST := preload("res://assets/ninja/fx/boost.png")
 const SPARK := preload("res://assets/ninja/fx/spark.png")
+const CIRCLE := preload("res://assets/ninja/fx/circle.png")
 const SHIELD := preload("res://assets/ninja/fx/shield.png")
 const CIRCULAR := preload("res://assets/ninja/fx/circular_slash.png")
 const CLAW := preload("res://assets/ninja/fx/claw_double.png")
@@ -29,6 +30,8 @@ var cooldown := 0.0  # 고유기(a1) 남은 재사용 시간(예전 이름 그�
 var cds: Dictionary = {"a1": 0.0, "a2": 0.0, "a3": 0.0}  # 슬롯별 남은 재사용 시간
 var power := 1.0  # 지금 쓰는 스킬의 피해 배율(스킬 레벨·숙련·오의)
 var last_name := ""  # 컷인에 보일 이름
+var fx_scale := 1.0  # 별 등급 연출: 스킬 그림 크기 배율(5성부터)
+var fx_tint := Color.WHITE  # 별 색으로 살짝 물들이기
 var _orbit: Array[Sprite2D] = []  # 잎새 회오리 잎사귀
 var _orbit_t := 0.0
 
@@ -80,7 +83,8 @@ func try_cast(node := "a1") -> bool:
 	Events.skill_cast.emit(data)
 	Quests.track("skill")
 	player.flash(0.8)
-	Game.sfx(&"charged", -4.0, 0.0)
+	Game.sfx(Game.ELEMENT_SFX[clampi(data.element, 0, 5)], -3.0, 0.0)  # 속성마다 다른 소리
+	_awaken_fx(Save.rank_of(data.id) if owned else data.rarity)
 	match StringName(info["behavior"]):
 		&"kemo1": _gale_dash()
 		&"kemo2": _ice_rain()
@@ -97,6 +101,27 @@ func try_cast(node := "a1") -> bool:
 	return true
 
 
+## 별 등급 연출: 5성부터 스킬 그림이 커지고(×1.12 · 1.25 · 1.4) 별 색 충격파가 퍼진다. 7성은 화면이 붉게 번쩍이고 불꽃이 튄다.
+func _awaken_fx(rank: int) -> void:
+	fx_scale = 1.0
+	fx_tint = Color.WHITE
+	if rank < 5:
+		return
+	fx_scale = [1.12, 1.25, 1.4][clampi(rank - 5, 0, 2)]
+	fx_tint = Gt.STAR_BY_RARITY.get(mini(rank, 7), Color.WHITE)
+	var c := player.body_center()
+	var ring := fx(CIRCLE, 4, c, 14.0, 2.4, Color(fx_tint, 0.9))
+	ring.z_index = 4
+	if rank >= 6:
+		fx(CIRCLE, 4, c, 10.0, 3.6, Color(fx_tint.lightened(0.3), 0.7))
+	if rank >= 7:
+		Game.flash(Color(1, 0.15, 0.2, 0.22), 0.25)
+		Game.add_shake(6.0)
+		for i in 8:
+			var d := Vector2.from_angle(i * TAU / 8.0)
+			fx(SPARK, 10, c + d * 22.0, 20.0, 1.3, fx_tint, d.angle())
+
+
 # ── 도구 ──
 
 ## center에서 radius 안의 살아 있는 적(가까운 순, 최대 limit)
@@ -111,8 +136,8 @@ func enemies_in(center: Vector2, radius: float, limit := 99) -> Array[Node2D]:
 
 func fx(tex: Texture2D, frames: int, pos: Vector2, fps := 16.0, sc := 1.0, tint := Color.WHITE, rot := 0.0) -> Fx:
 	var f := Fx.spawn(player.fx_parent(), tex, frames, pos, fps)
-	f.scale = Vector2.ONE * sc
-	f.modulate = tint
+	f.scale = Vector2.ONE * sc * fx_scale  # 별이 높을수록 크게
+	f.modulate = tint.lerp(fx_tint, 0.25) if fx_tint != Color.WHITE else tint
 	f.rotation = rot
 	return f
 

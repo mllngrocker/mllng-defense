@@ -2,11 +2,11 @@ extends Control
 ## 휴대폰 터치 조작: 왼쪽 아래를 누른 채 끌면 조이스틱, 오른쪽 아래 큰 버튼은 공격(꾹 누르기 지원), 작은 버튼은 구르기.
 ## 터치를 입력 동작(move_*, attack, dash)으로 바꿔 준다. PC에서는 마우스 클릭도 터치로 받는다.
 
-const JOY_RADIUS := 52.0
+const JOY_RADIUS := 62.0
 const DEAD_ZONE := 0.12
 const FULL_AT := 0.55  # 이만큼만 밀어도 최고 속도
-const ATTACK_R := 58.0
-const DASH_R := 40.0
+const ATTACK_R := 66.0
+const DASH_R := 46.0
 const SKILL_R := 42.0
 
 var joy_index := -1
@@ -23,30 +23,30 @@ func _ready() -> void:
 
 
 func attack_center() -> Vector2:
-	return size - Vector2(96, 150)
+	return size - Vector2(104, 162)
 
 
 func dash_center() -> Vector2:
-	return attack_center() + Vector2(-82, 70)
+	return attack_center() + Vector2(-94, 80)
 
 
 ## 스킬 동그라미 3개는 공격 버튼을 둘러 반원으로(왼쪽 → 왼쪽 위 → 위)
 func skill_center() -> Vector2:
-	return attack_center() + Vector2(-110, -6)
+	return attack_center() + Vector2(-126, -6)
 
 
 ## 스킬 2·3(배운 경우만 보인다)
 func skill_center_of(node: String) -> Vector2:
 	match node:
 		"a2":
-			return attack_center() + Vector2(-80, -84)
+			return attack_center() + Vector2(-92, -96)
 		"a3":
-			return attack_center() + Vector2(0, -116)
+			return attack_center() + Vector2(0, -132)
 	return skill_center()
 
 
 func _skill_r(_node: String) -> float:
-	return 32.0
+	return 38.0
 
 
 func _has(node: String) -> bool:
@@ -55,7 +55,7 @@ func _has(node: String) -> bool:
 
 
 func joy_home() -> Vector2:
-	return Vector2(110, size.y - 150)
+	return Vector2(122, size.y - 162)
 
 
 func _input(event: InputEvent) -> void:
@@ -79,11 +79,11 @@ func _on_touch_down(index: int, pos: Vector2) -> void:
 		_press_button(index, &"attack")
 	elif pos.distance_to(dash_center()) < DASH_R * 1.3:
 		_press_button(index, &"dash")
-	elif pos.distance_to(skill_center()) < 32.0 * 1.35:
+	elif pos.distance_to(skill_center()) < _skill_r("a1") * 1.35:
 		_press_button(index, &"skill")
-	elif pos.distance_to(skill_center_of("a2")) < 32.0 * 1.35:
+	elif pos.distance_to(skill_center_of("a2")) < _skill_r("a2") * 1.35:
 		_press_button(index, &"skill2")
-	elif pos.distance_to(skill_center_of("a3")) < 32.0 * 1.35:
+	elif pos.distance_to(skill_center_of("a3")) < _skill_r("a3") * 1.35:
 		_press_button(index, &"skill3")
 	elif joy_index == -1 and pos.x < size.x * 0.6 and pos.y > size.y * 0.3:
 		joy_index = index
@@ -144,10 +144,10 @@ func _draw() -> void:
 		var d := Vector2.from_angle(i * PI / 2.0)
 		var tip := base + d * (JOY_RADIUS - 8.0)
 		draw_colored_polygon(PackedVector2Array([tip, tip - d * 10.0 + d.orthogonal() * 8.0, tip - d * 10.0 - d.orthogonal() * 8.0]), Color(1, 1, 1, alpha * 0.7))
-	draw_circle(knob + Vector2(0, 4), 29.0, Color(Gt.INK, alpha))
-	draw_circle(knob, 29.0, Color(Gt.INK, alpha))
-	draw_circle(knob, 26.0, Color(Gt.CREAM, alpha))
-	draw_circle(knob + Vector2(0, -4), 18.0, Color(1, 1, 1, alpha * 0.6))
+	draw_circle(knob + Vector2(0, 4), 34.0, Color(Gt.INK, alpha))
+	draw_circle(knob, 34.0, Color(Gt.INK, alpha))
+	draw_circle(knob, 31.0, Color(Gt.CREAM, alpha))
+	draw_circle(knob + Vector2(0, -5), 21.0, Color(1, 1, 1, alpha * 0.6))
 	# 공격 버튼(칼 그림)
 	var attack_down := &"attack" in button_touches.values()
 	var ac := attack_center() + (Vector2(0, 3) if attack_down else Vector2.ZERO)

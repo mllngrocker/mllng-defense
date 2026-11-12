@@ -55,6 +55,12 @@ var _auto_check := 0.0
 var _auto_think := 0.0
 var _auto_path := PackedVector2Array()
 var _auto_i := 0
+var _tr_path := PackedVector2Array()
+var _tr_i := 0
+var _tr_think := 0.0
+var _tr_best := INF
+var _tr_stuck := 0.0
+var _tr_goal_pos := Vector2.INF
 var _auto_best := INF
 var _auto_skip: Dictionary = {}  # 길이 막혀 못 가는 몬스터 → 무시할 남은 시간
 
@@ -72,6 +78,7 @@ func _ready() -> void:
 	hp = max_hp
 	atk = Save.atk_of(data.id) if Save.is_owned(data.id) else data.atk_at(level)
 	sprite.texture = data.walk_sheet
+	Skins.apply(sprite.material as ShaderMaterial, data.id, Skins.has_skin(data.id))  # 7성 스킨 색
 	sword_cs.shape = sword_cs.shape.duplicate()
 	style = STYLES[data.attack_kind].new() as AttackStyle
 	style.name = "Attack"
@@ -98,7 +105,12 @@ func _physics_process(delta: float) -> void:
 
 	# 조이스틱 세기를 그대로 쓴다(기본 데드존 0.5면 살짝 밀 때 안 움직여서 뻑뻑하다)
 	var input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down", 0.05)
-	if auto and input == Vector2.ZERO and dash_t <= 0.0:
+	if not Game.travel.is_empty():
+		if input != Vector2.ZERO:
+			Travel.stop()  # 손으로 움직이면 자동 이동은 멈춘다
+		elif dash_t <= 0.0:
+			input = _travel_drive(delta)
+	if auto and input == Vector2.ZERO and dash_t <= 0.0 and Game.travel.is_empty():
 		input = _auto_drive(delta)
 	style.physics(delta)
 	var move := input * data.move_speed * speed_mult * style.move_scale
@@ -253,6 +265,92 @@ func _auto_route(world: Node, node: Node2D, straight: float) -> Array:
 			length += path[k - 1].distance_to(path[k])
 		return [length * (1.0 if node.is_in_group(&"enemies") else 0.6), path]
 	return [straight + (400.0 if straight > 28.0 else 0.0), path]
+
+
+# ── 퀘스트 자동 이동(Travel) ──
+
+## 이번 걸음 방향. 목적지 맵이 아니면 다음 맵으로 가는 문으로, 목적지 맵이면 할 일(사람·보스) 앞으로.
+func _travel_drive(delta: float) -> Vector2:
+	var world := get_tree().get_first_node_in_group(&"world")
+	if world == null:
+		return Vector2.ZERO
+	var t: Dictionary = Game.travel
+	var here: String = world.call(&"map_id")
+	_tr_think -= delta
+	if _tr_think <= 0.0 or _tr_goal_pos == Vector2.INF:
+		_tr_think = 0.6
+		var goal := _travel_goal(world, here, t)
+		if goal == Vector2.INF:
+			return Vector2.ZERO
+		if goal.distance_to(_tr_goal_pos) > 4.0:
+			_tr_best = INF
+			_tr_stuck = 0.0
+		_tr_goal_pos = goal
+		_tr_path = world.call(&"nav_path", global_position, goal)
+		_tr_i = 1 if _tr_path.size() > 1 else 0
+	var d := global_position.distance_to(_tr_goal_pos)
+	# 다 왔으면 할 일
+	if here == String(t["goal"]):
+		var near := 70.0 if t["kind"] == "boss" else (18.0 if t["kind"] == "talk" else 9999.0)
+		if t["kind"] == "reach" or d < near:
+			_travel_arrive(String(t["kind"]))
+			return Vector2.ZERO
+	# 4초 넘게 가까워지지 않으면 포기
+	if d < _tr_best - 3.0:
+		_tr_best = d
+		_tr_stuck = 0.0
+	else:
+		_tr_stuck += delta
+		if _tr_stuck > 4.0:
+			Travel.stop("길이 막혀서 자동 이동을 멈췄어요")
+			return Vector2.ZERO
+	while _tr_i < _tr_path.size() and global_position.distance_to(_tr_path[_tr_i]) < 5.0:
+		_tr_i += 1
+	if _tr_i < _tr_path.size() - 1:
+		return (_tr_path[_tr_i] - global_position).normalized()
+	return (_tr_goal_pos - global_position).normalized()
+
+
+## 이 맵에서 향할 점: 다음 맵으로 가는 문 / 말 걸 사람 / 보스 / (처치는 아무 데나)
+func _travel_goal(world: Node, here: String, t: Dictionary) -> Vector2:
+	var goal := String(t["goal"])
+	if here != goal:
+		var r := Travel.route(here, goal)
+		if r.size() < 2:
+			Travel.stop("길이 막혀서 자동 이동을 멈췄어요")
+			return Vector2.INF
+		for n in world.find_children("*", "Portal", true, false):
+			var p := n as Portal
+			var to := p.target_scene.get_file().get_basename()
+			if ("field" if to == "world" else to) == r[1] and p.is_open():
+				return p.global_position
+		Travel.stop("문을 찾지 못했어요")
+		return Vector2.INF
+	match String(t["kind"]):
+		"talk":
+			for n in world.find_children("*", "Npc", true, false):
+				if (n as Npc).display_name == String(t["target"]):
+					return (n as Node2D).global_position + Vector2(0, 12)
+		"boss":
+			for e in get_tree().get_nodes_in_group(&"enemies"):
+				if (e as Enemy).kind_id() == String(t["target"]):
+					return (e as Node2D).global_position
+			return global_position  # 보스가 아직 안 나왔으면 제자리에서 기다리며 사냥
+	return global_position
+
+
+func _travel_arrive(kind: String) -> void:
+	_tr_goal_pos = Vector2.INF
+	match kind:
+		"reach":
+			Travel.stop("도착!")
+		"talk":
+			Travel.stop()
+		"boss", "kill":
+			auto = true  # 여기서부터는 자동 사냥
+			Save.settings["auto"] = true
+			get_tree().call_group(&"hud", &"_refresh_auto")
+			Travel.stop("도착! 자동 사냥 시작")
 
 
 # ── 공격 방식(AttackStyle)이 쓰는 도구 ──

@@ -9,6 +9,7 @@ const TOUCH_RANGE := 11.0
 const BAR_SHOW_TIME := 3.0
 const BAR_WIDTH := 16.0
 const SMOKE := preload("res://assets/ninja/fx/smoke.png")
+const SPARK := preload("res://assets/ninja/fx/spark.png")
 const HEART_PICKUP := preload("res://features/pickup/heart_pickup.tscn")
 
 @export var kind: Kind = Kind.WALKER
@@ -103,9 +104,19 @@ func take_hit(amount: int, from: Vector2, knock := 210.0, crit := false) -> void
 	queue_redraw()
 	_flash()
 	DamageNumber.spawn(_effects_parent(), global_position + Vector2(0, -10), amount, crit)
-	Game.sfx(&"hit", -2.0 if crit else -4.0)
-	Game.add_shake(3.0 if crit else 1.5)
-	Game.hitstop(0.07 if crit else 0.04)
+	# 타격감: 맞은 자리에 불꽃, 치명타는 묵직한 소리 + 화면 번쩍 + 더 긴 멈춤
+	var spark := Fx.spawn(_effects_parent(), SPARK, 10, global_position + Vector2(randf_range(-4, 4), -9), 28.0)
+	if spark:
+		spark.scale = Vector2.ONE * (1.4 if crit else 0.9)
+	if crit:
+		Game.sfx(&"crit", -1.0)
+		Game.flash(Color(1, 1, 0.9, 0.18), 0.1)
+	else:
+		Game.sfx(&"hit", -4.0)
+	if is_boss:
+		Game.sfx(&"hit_heavy", -8.0)
+	Game.add_shake(4.0 if crit else 1.5)
+	Game.hitstop(0.09 if crit else 0.04)
 	if hp <= 0:
 		_die()
 
@@ -119,12 +130,14 @@ func _die() -> void:
 	var kind := kind_id()
 	Events.enemy_died.emit(kind)
 	Quests.track("kill", kind)
+	Save.record_kill(kind)
 	if is_boss:
 		if not Quests.boss_defeated(kind):
 			Save.boss_reward(kind)
 			var world := get_tree().get_first_node_in_group(&"world")
 			get_tree().create_timer(2.5, false).timeout.connect(func() -> void: StoryBox.play(world, "boss_" + kind))
 		Quests.mark_boss(kind)
+		Game.sfx(&"success", -2.0, 0.0)  # 보스 처치 팡파르
 		Quests.track("boss", kind)
 	# 같은 자리에 잠시 뒤 다시 나타난다(맵이 맡는다)
 	if scene_file_path != "":

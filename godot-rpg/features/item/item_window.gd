@@ -65,7 +65,7 @@ func _gui_input(e: InputEvent) -> void:
 		return
 	var rows := _rows()
 	for i in rows.size():
-		if rows[i][0] == "item" and _use_btn(i).has_point(mb.position):
+		if rows[i][0] == "item" and rows[i][1] in Items.USABLE and _use_btn(i).has_point(mb.position):
 			_use(rows[i][1])
 			return
 
@@ -129,9 +129,10 @@ func _draw() -> void:
 		var tx := ic.end.x + 12
 		Gt.text(self, Vector2(tx, r.position.y + 28), info[0], 17, Gt.NAVY if n > 0 else Gt.GRAY)
 		var desc: String = info[1]
-		var right := r.end.x - (104 if is_item else 12)
+		var usable: bool = is_item and rows[i][1] in Items.USABLE
+		var right := r.end.x - (104 if usable else 12)
 		Gt.text(self, Vector2(tx, r.position.y + 50), desc if Gt.width(desc, 11, false) < right - tx else desc.split(" · ")[0], 11, Gt.NAVY_SOFT, 0, false)
-		if is_item:
+		if usable:
 			var b := _use_btn(i)
 			Gt.button(self, b, Gt.Kind.YELLOW if n > 0 else Gt.Kind.GRAY)
 			Gt.title(self, Vector2(b.get_center().x, b.position.y + 30), "사용", 17, Color.WHITE, 1)

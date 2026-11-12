@@ -425,6 +425,8 @@ const MORE_MAPS: Array[Dictionary] = [
 	{"path": "res://features/world/mist6.tscn", "title": "별을 삼킨 탑", "w": 48, "h": 30, "seed": 806, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
 			{"side": "west", "to": "res://features/world/mist5.tscn", "spawn": "east", "label": "◀ 별무리 절벽", "at": 14},
 		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["mist_lantern", 4, 6, 60], ["mist_snake", 3, 6, 60]], "temple": true, "rooms": 3, "tint": Color(0.7, 0.76, 1.0), "bosses": [["mist_apostle", Vector2i(36, 14)]]},
+	# ── 일일 던전 투기장(문 없음, 몬스터는 DungeonDirector가 불러낸다) ──
+	{"path": "res://features/world/dungeon.tscn", "title": "시련의 투기장", "w": 30, "h": 22, "seed": 901, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "rock", "gaps": [], "clearings": 1, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 4, "bushes": 0, "flowers": 0, "spawns": [], "crystals": 10, "tint": Color(0.86, 0.8, 1.0)},
 ]
 
 ## 지역 마을: 레몬 마을과 같은 집·광장 짜임에 땅·사람·말이 다르다. villagers 칸은 광장 기준
