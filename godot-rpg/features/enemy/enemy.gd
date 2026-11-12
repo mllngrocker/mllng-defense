@@ -90,13 +90,20 @@ func _physics_process(delta: float) -> void:
 			target.take_hit(damage, global_position)
 		if attack_frames > 0:
 			_attack_update(delta, to_player)
+		elif not is_boss and kind != Kind.HOPPER:
+			_move_update(delta, to_player)
 	else:
 		chasing = false
 		atk_t = -1.0
+		mv_state = 0
 
 	var move := Vector2.ZERO
 	if atk_t >= 0.0:
 		move = Vector2.ZERO  # 휘두르는 동안은 제자리(맞히는 순간 살짝 앞으로)
+	elif mv_state == 1:
+		move = Vector2.ZERO  # 예비 동작: 부르르 떨며 빨개진다(피할 틈)
+	elif mv_state == 2:
+		move = mv_dir * speed * 5.0  # 돌진
 	elif stun_t <= 0.0:
 		match kind:
 			Kind.HOPPER:
@@ -109,6 +116,67 @@ func _physics_process(delta: float) -> void:
 	knockback = knockback.move_toward(Vector2.ZERO, 600.0 * delta)
 	move_and_slide()
 	_animate(delta, move)
+
+
+## 예전 몬스터(걷기 그림만 있는)의 공격: 돌진(걷는·나는 몬스터) 또는 탄 뱉기(SPITTERS, 유령)
+## mv_state: 0 보통 · 1 예비 동작 · 2 돌진
+const SPITTERS := ["eye", "demon_eye", "lantern", "lantern_red", "flam", "flam2", "octopus", "red_octopus", "green_octopus",
+	"deep_octopus", "kappa", "kappa_red", "snake", "garden_snake", "mist_snake", "dragon", "dragon_y", "mist_octo", "mist_lantern"]
+const WINDUP := 0.45
+const LUNGE_TIME := 0.22
+var mv_state := 0
+var mv_t := 0.0
+var mv_cd := 1.5
+var mv_dir := Vector2.ZERO
+var _mv_hit := false
+var _mv_mod := Color.WHITE  # 예비 동작 전 색(색을 입힌 몬스터도 있어서)
+
+
+func _spitter() -> bool:
+	return kind == Kind.GHOST or SPITTERS.has(kind_id())
+
+
+func _move_update(delta: float, to_player: Vector2) -> void:
+	var dist := to_player.length()
+	if mv_state == 0:
+		mv_cd -= delta
+		if mv_cd > 0.0 or stun_t > 0.0 or not chasing:
+			return
+		var ok := (dist < 115.0 and dist > 20.0) if _spitter() else (dist < 64.0 and dist > 16.0)
+		if ok:
+			mv_state = 1
+			mv_t = 0.0
+			mv_dir = to_player.normalized()
+			_mv_hit = false
+			_mv_mod = sprite.modulate
+		return
+	mv_t += delta
+	if mv_state == 1:
+		sprite.offset.x = base_offset.x + sin(mv_t * 70.0) * 1.2
+		sprite.modulate = _mv_mod.lerp(Color(1.0, 0.4, 0.4, _mv_mod.a), mv_t / WINDUP)
+		if mv_t >= WINDUP:
+			sprite.offset.x = base_offset.x
+			sprite.modulate = _mv_mod
+			if _spitter():
+				var d := to_player.normalized() if dist > 1.0 else mv_dir
+				BossShot.fire(_effects_parent(), global_position + Vector2(0, -8), d * 105.0, roundi(damage * 0.9), Color("b06bff") if kind == Kind.GHOST else Color("ff8a3a"))
+				Game.sfx(&"ice_shot", -14.0)
+				_mv_end()
+			else:
+				mv_state = 2
+				mv_t = 0.0
+				mv_dir = to_player.normalized() if dist > 1.0 else mv_dir
+	elif mv_state == 2:
+		if not _mv_hit and dist < TOUCH_RANGE + 6.0:
+			_mv_hit = true
+			target.take_hit(roundi(damage * 1.4), global_position)
+		if mv_t >= LUNGE_TIME or stun_t > 0.0:
+			_mv_end()
+
+
+func _mv_end() -> void:
+	mv_state = 0
+	mv_cd = randf_range(2.2, 3.8)
 
 
 const ATTACK_RANGE := 30.0
@@ -156,6 +224,8 @@ func _burn_update(delta: float) -> void:
 		return
 	_burn_tick = 0.5
 	hp -= burn_dmg
+	if is_boss and get(&"boss_name") != null:
+		Events.boss_hp.emit(get(&"boss_name"), maxi(hp, 0), max_hp)  # 화상에도 보스 체력바가 바로 준다
 	DamageNumber.spawn(_effects_parent(), global_position + Vector2(randf_range(-5, 5), -14), burn_dmg, false, "%d", Color("ff8a3a"))
 	Fx.spawn(_effects_parent(), preload("res://assets/ninja/fx/flame.png"), 8, global_position + Vector2(0, -8), 18.0).scale = Vector2.ONE * 0.6
 	if hp <= 0:

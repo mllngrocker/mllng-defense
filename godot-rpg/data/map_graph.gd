@@ -13,7 +13,7 @@ const DATA := {
 				"y": 24.0
 			},
 			{
-				"boss": "black_gardener",
+				"boss": "kraken",
 				"to": "mist1",
 				"x": 872.0,
 				"y": 208.0
@@ -102,7 +102,7 @@ const DATA := {
 				"y": 368.0
 			},
 			{
-				"boss": "kraken",
+				"boss": "black_gardener",
 				"to": "lava1",
 				"x": 936.0,
 				"y": 368.0
@@ -131,6 +131,12 @@ const DATA := {
 				"to": "desert2",
 				"x": 616.0,
 				"y": 240.0
+			},
+			{
+				"boss": "mist_apostle",
+				"to": "garden1",
+				"x": 320.0,
+				"y": 24.0
 			}
 		],
 		"mobs": [],
@@ -178,6 +184,12 @@ const DATA := {
 				"to": "desert",
 				"x": 936.0,
 				"y": 528.0
+			},
+			{
+				"boss": "demon_lord",
+				"to": "root1",
+				"x": 304.0,
+				"y": 24.0
 			}
 		],
 		"mobs": [
@@ -194,7 +206,7 @@ const DATA := {
 		"doors": [
 			{
 				"boss": "",
-				"to": "root6",
+				"to": "desert_town",
 				"x": 24.0,
 				"y": 320.0
 			},
@@ -440,12 +452,6 @@ const DATA := {
 				"boss": "",
 				"to": "hell5",
 				"x": 24.0,
-				"y": 240.0
-			},
-			{
-				"boss": "demon_lord",
-				"to": "sky1",
-				"x": 584.0,
 				"y": 240.0
 			}
 		],
@@ -795,9 +801,15 @@ const DATA := {
 		"doors": [
 			{
 				"boss": "",
-				"to": "sky6",
+				"to": "forest",
 				"x": 24.0,
 				"y": 304.0
+			},
+			{
+				"boss": "root_worm",
+				"to": "sky1",
+				"x": 416.0,
+				"y": 24.0
 			},
 			{
 				"boss": "",
@@ -807,6 +819,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"horn_beast",
 			"root_larva",
 			"root_mole"
 		],
@@ -829,6 +842,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"root_ogre",
 			"root_larva_b",
 			"root_shroom"
 		],
@@ -851,6 +865,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"root_zombie",
 			"root_mollusc",
 			"root_shroom"
 		],
@@ -897,6 +912,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"horn_beast",
+			"root_ogre",
 			"root_beast",
 			"root_mollusc"
 		],
@@ -910,16 +927,12 @@ const DATA := {
 				"to": "root5",
 				"x": 24.0,
 				"y": 240.0
-			},
-			{
-				"boss": "root_worm",
-				"to": "garden1",
-				"x": 616.0,
-				"y": 240.0
 			}
 		],
 		"mobs": [
 			"root_worm",
+			"horn_beast",
+			"root_zombie",
 			"root_beast",
 			"root_larva_b"
 		],
@@ -1000,7 +1013,7 @@ const DATA := {
 		"doors": [
 			{
 				"boss": "",
-				"to": "hell6",
+				"to": "root1",
 				"x": 24.0,
 				"y": 320.0
 			},
@@ -1060,6 +1073,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"war_rooster",
+			"sky_knight",
 			"sky_spirit",
 			"gold_racoon"
 		],
@@ -1082,6 +1097,9 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"bird_man",
+			"sky_drake",
+			"sky_knight",
 			"sky_spirit",
 			"bamboo_y"
 		],
@@ -1104,6 +1122,9 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"bird_man",
+			"sky_fiend",
+			"sky_drake",
 			"gold_racoon",
 			"heart_green"
 		],
@@ -1117,16 +1138,12 @@ const DATA := {
 				"to": "sky5",
 				"x": 24.0,
 				"y": 240.0
-			},
-			{
-				"boss": "giant_soul",
-				"to": "root1",
-				"x": 744.0,
-				"y": 240.0
 			}
 		],
 		"mobs": [
 			"giant_soul",
+			"sky_fiend",
+			"sky_knight",
 			"sky_spirit",
 			"gold_racoon"
 		],

@@ -5,14 +5,14 @@
 
 [node name="GardenSpider" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 13500
+max_hp = 5703
 speed = 46.0
-damage = 195
+damage = 104
 chase_range = 120.0
 anim_fps = 7.0
-gold_reward = 380
+gold_reward = 221
 gem_chance = 0.3
-gem_reward = 70
+gem_reward = 41
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

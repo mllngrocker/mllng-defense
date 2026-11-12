@@ -5,14 +5,14 @@
 
 [node name="MistSkull" instance=ExtResource("1_base")]
 kind = 3
-max_hp = 16500
+max_hp = 4246
 speed = 38.0
-damage = 225
+damage = 93
 chase_range = 120.0
 anim_fps = 7.0
-gold_reward = 440
+gold_reward = 159
 gem_chance = 0.3
-gem_reward = 80
+gem_reward = 29
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

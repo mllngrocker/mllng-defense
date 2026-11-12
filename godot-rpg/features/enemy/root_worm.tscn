@@ -12,17 +12,17 @@ size = Vector2(44, 24)
 script = ExtResource("3_boss")
 boss_name = "뿌리 먹는 벌레왕"
 slam_radius = 90.0
-slam_damage = 380
+slam_damage = 450
 summon = ExtResource("4_minion")
 kind = 0
-max_hp = 200000
+max_hp = 280000
 speed = 26.0
-damage = 230
+damage = 270
 chase_range = 170.0
 anim_fps = 5.0
-gold_reward = 80000
+gold_reward = 120000
 gem_chance = 1.0
-gem_reward = 6000
+gem_reward = 8000
 drop_chance = 1.0
 
 [node name="Shadow" parent="." index="0"]

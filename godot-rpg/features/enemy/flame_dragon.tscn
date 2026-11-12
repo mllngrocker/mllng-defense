@@ -11,18 +11,18 @@ size = Vector2(36, 20)
 [node name="FlameDragon" instance=ExtResource("1_base")]
 script = ExtResource("3_boss")
 boss_name = "화염룡 이그니스"
-slam_radius = 72.0
-slam_damage = 200
+slam_radius = 86.0
+slam_damage = 300
 summon = ExtResource("4_minion")
 kind = 0
-max_hp = 73000
-speed = 22.0
-damage = 130
+max_hp = 150000
+speed = 24.0
+damage = 190
 chase_range = 150.0
 anim_fps = 5.0
-gold_reward = 20000
+gold_reward = 60000
 gem_chance = 1.0
-gem_reward = 1200
+gem_reward = 5000
 drop_chance = 1.0
 
 [node name="Shadow" parent="." index="0"]

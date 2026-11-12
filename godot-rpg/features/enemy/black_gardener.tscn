@@ -11,18 +11,18 @@ size = Vector2(44, 24)
 [node name="BlackGardener" instance=ExtResource("1_base")]
 script = ExtResource("3_boss")
 boss_name = "검은 정원사"
-slam_radius = 90.0
-slam_damage = 450
+slam_radius = 80.0
+slam_damage = 250
 summon = ExtResource("4_minion")
 kind = 0
-max_hp = 280000
-speed = 26.0
-damage = 270
+max_hp = 107000
+speed = 22.0
+damage = 160
 chase_range = 170.0
 anim_fps = 5.0
-gold_reward = 120000
+gold_reward = 35000
 gem_chance = 1.0
-gem_reward = 8000
+gem_reward = 2000
 drop_chance = 1.0
 
 [node name="Shadow" parent="." index="0"]

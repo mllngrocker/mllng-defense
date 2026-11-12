@@ -116,9 +116,10 @@ func _finisher(mult: float, knock: float) -> void:
 	spawn_fx(CUT_X, 4, c, aim.angle(), 24.0, 1.3 if _assassin() else 1.1, tint)
 	if _assassin():
 		spawn_fx(CLAW, 4, c, aim.angle() + 0.8, 22.0, 1.2, tint)
+		var line := 0.4 if Save.is_owned(data.id) and Save.rank_of(data.id) >= 7 else 0.3  # 7성이면 처형 범위 40%
 		for e: Node2D in player.get_tree().get_nodes_in_group(&"enemies"):
 			var hp := int(e.get(&"hp"))
-			if hp > 0 and e.global_position.distance_to(c) < 24.0 and hp <= int(e.get(&"max_hp")) * 0.3:
+			if hp > 0 and e.global_position.distance_to(c) < 24.0 and hp <= int(e.get(&"max_hp")) * line:
 				player.hit(e, mult, knock, player.global_position)  # 처형: 한 번 더(피해 2배)
 	# 방금 순간이동해서 칼 판정 영역이 아직 안 바뀌었으니 거리로 직접 맞힌다
 	for e: Node2D in player.get_tree().get_nodes_in_group(&"enemies"):

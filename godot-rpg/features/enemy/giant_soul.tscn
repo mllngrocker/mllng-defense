@@ -11,18 +11,18 @@ size = Vector2(44, 24)
 [node name="GiantSoul" instance=ExtResource("1_base")]
 script = ExtResource("3_boss")
 boss_name = "고대 거인의 혼"
-slam_radius = 86.0
-slam_damage = 300
+slam_radius = 92.0
+slam_damage = 520
 summon = ExtResource("4_minion")
 kind = 3
-max_hp = 150000
-speed = 24.0
-damage = 190
+max_hp = 340000
+speed = 28.0
+damage = 300
 chase_range = 170.0
 anim_fps = 5.0
-gold_reward = 60000
+gold_reward = 160000
 gem_chance = 1.0
-gem_reward = 5000
+gem_reward = 10000
 drop_chance = 1.0
 
 [node name="Shadow" parent="." index="0"]

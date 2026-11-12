@@ -5,13 +5,13 @@
 
 [node name="BirdMan" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 10619
+max_hp = 21605
 speed = 38.0
-damage = 150
+damage = 261
 chase_range = 120.0
-gold_reward = 336
+gold_reward = 515
 gem_chance = 0.3
-gem_reward = 55
+gem_reward = 84
 drop_chance = 0.3
 anim_fps = 9.0
 side_frames = 8

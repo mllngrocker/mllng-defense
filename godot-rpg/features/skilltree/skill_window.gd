@@ -264,7 +264,7 @@ func _paint_detail(ci: Control) -> void:
 	Gt.text(ci, Vector2(x, r.position.y + 56), info["desc"], 13, Gt.NAVY_SOFT, 0, false)
 	var effect := ""
 	if info["active"]:
-		effect = "피해 ×%.2f · 재사용 %.1f초" % [SkillTree.power(char_id, chosen), SkillTree.cooldown(char_id, chosen)]
+		effect = "피해 ×%.2f · 재사용 %.1f초 · 마나 %d" % [SkillTree.power(char_id, chosen), SkillTree.cooldown(char_id, chosen), SkillCaster.mp_cost(chosen, Save.character(char_id).attack_kind)]
 	else:
 		effect = "지금 +%d%% → 다음 +%d%%" % [int(info["per"]) * lv, int(info["per"]) * (lv + 1)]
 	Gt.text(ci, Vector2(x, r.position.y + 80), effect, 13, Color("c0392b"))

@@ -5,13 +5,13 @@
 
 [node name="PinkWitch" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 6670
+max_hp = 12339
 speed = 30.0
-damage = 112
+damage = 177
 chase_range = 120.0
-gold_reward = 252
+gold_reward = 367
 gem_chance = 0.35
-gem_reward = 40
+gem_reward = 58
 drop_chance = 0.3
 anim_fps = 8.0
 side_frames = 8

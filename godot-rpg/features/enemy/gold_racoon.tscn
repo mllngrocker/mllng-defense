@@ -5,14 +5,14 @@
 
 [node name="GoldRacoon" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 9234
+max_hp = 18787
 speed = 38.0
-damage = 150
+damage = 261
 chase_range = 120.0
 anim_fps = 7.0
-gold_reward = 280
+gold_reward = 430
 gem_chance = 0.3
-gem_reward = 55
+gem_reward = 84
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

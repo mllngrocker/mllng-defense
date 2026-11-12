@@ -23,6 +23,8 @@ const EXPLOSION := preload("res://assets/ninja/fx/explosion.png")
 const FLAME := preload("res://assets/ninja/fx/flame.png")
 const LEAF := preload("res://assets/ninja/fx/leaf.png")
 const SMOKE := preload("res://assets/ninja/fx/smoke.png")
+const ARROW := preload("res://assets/ninja/fx/arrow.png")
+const KUNAI := preload("res://assets/ninja/fx/kunai.png")
 
 var player: Player
 var data: CharacterData
@@ -122,6 +124,21 @@ func try_cast(node := "a1") -> bool:
 		&"elf4": _gale_charge()
 		&"devil2": _dark_wings()
 		&"haste": _haste()
+		&"leaf_blades": _leaf_blades()
+		&"forest_cyclone": _forest_cyclone()
+		&"light_feathers": _light_feathers()
+		&"star_fall": _star_fall()
+		&"kunai_fan": _kunai_fan()
+		&"shadow_chain": _shadow_chain()
+		&"ice_line": _ice_line()
+		&"blizzard_cloak": _blizzard_cloak()
+		&"arrow_rain": _arrow_rain()
+		&"piercing_volley": _piercing_volley()
+		&"wind_wave": _wind_wave()
+		&"storm_brand": _storm_brand()
+		&"tail_sweep": _tail_sweep()
+		&"tidal_wave": _tidal_wave()
+		&"thousand_cuts": _thousand_cuts()
 		&"devil3": _abyss_rain()
 		_: _flame_burst()
 	return true
@@ -608,3 +625,241 @@ func _haste() -> void:
 	fx(SMOKE, 6, c, 20.0, 1.4, Color(0.75, 0.15, 0.3))
 	fx(CIRCLE, 4, c, 14.0, 2.0, Color(0.9, 0.2, 0.35, 0.8))
 	Game.sfx(&"powerup", -2.0, 0.0)
+
+
+# ── 엘프·마족 2·3번째 스킬 ──
+
+func _shoot(tex: Texture2D, frames: int, from: Vector2, d: Vector2, o: Dictionary, tint: Color) -> void:
+	var opts := {"speed": 220.0, "tex": tex, "frames": frames, "angle_offset": 0.0, "radius": 8.0,
+		"mult": 1.0, "knock": 100.0, "pierce": 2, "range": 170.0, "scale": 1.3, "hit_tex": SPARK, "hit_frames": 10}
+	opts.merge(o, true)
+	opts["mult"] = float(opts["mult"]) * power
+	var pr := Projectile.spawn(player, from, d, opts)
+	pr.sprite.modulate = tint
+
+
+## 가까운 적 count명에게 차례로 순간이동하며 벤다(무적)
+func _blink_chain(count: int, tint: Color, mult: float, gap: float) -> void:
+	var targets := enemies_in(player.global_position, 150.0, count)
+	player.lock_for_skill(0.15 + targets.size() * gap, Vector2.ZERO, true)
+	for e in targets:
+		if not alive():
+			return
+		if not is_instance_valid(e) or e.get(&"hp") <= 0:
+			continue
+		fx(SMOKE, 6, player.body_center(), 22.0, 0.8, tint)
+		player.global_position = e.global_position + Vector2.from_angle(randf() * TAU) * 13.0
+		fx(CUT_X, 4, e.global_position + Vector2(0, -8), 26.0, 1.2, tint, randf() * TAU)
+		hit_all([e], mult, 140.0, player.global_position)
+		Game.sfx(&"slash", -2.0)
+		await wait(gap)
+
+
+## 핀 2: 잎새 칼날 — 앞으로 잎사귀 칼날 5개를 두 번 날린다
+func _leaf_blades() -> void:
+	var dir := player.aim(150.0)
+	for w in 2:
+		if not alive():
+			return
+		for k in 5:
+			_shoot(LEAF, 6, player.body_center(), dir.rotated((k - 2) * 0.12), {"speed": 260.0, "mult": 1.0, "pierce": 3, "hit_tex": CUT_X, "hit_frames": 4}, Color(0.6, 1.0, 0.6))
+		Game.sfx(&"slash", -4.0)
+		await wait(0.18)
+
+
+## 핀 3: 숲의 회오리 — 큰 회오리가 앞으로 천천히 나아가며 닿는 적을 계속 벤다
+func _forest_cyclone() -> void:
+	var dir := player.aim(160.0)
+	var p := player.body_center()
+	for i in 10:
+		if not alive():
+			return
+		p += dir * 14.0
+		fx(CIRCULAR, 4, p, 20.0, 2.2, Color(0.5, 1.0, 0.55, 0.9), i * 0.7)
+		fx(LEAF, 6, p + Vector2(randf_range(-10, 10), randf_range(-8, 8)), 18.0, 1.2, Color(0.6, 1.0, 0.5))
+		hit_all(enemies_in(p, 34.0), 0.8, 90.0, p - dir * 10.0)
+		if i % 2 == 0:
+			Game.sfx(&"slash", -8.0)
+		await wait(0.1)
+
+
+## 리아 2: 빛의 깃털 — 빛나는 깃털 10개가 사방으로 퍼진다
+func _light_feathers() -> void:
+	var c := player.body_center()
+	fx(SPARK, 10, c, 16.0, 1.6, Color(1.0, 0.95, 0.6))
+	for k in 10:
+		_shoot(SPIRIT, 5, c, Vector2.from_angle(k * TAU / 10.0), {"speed": 170.0, "mult": 1.2, "pierce": 99, "range": 140.0}, Color(1.0, 0.95, 0.55))
+	Game.sfx(&"ice_shot", -2.0)
+
+
+## 리아 3: 별빛 낙하 — 큰 별빛 기둥 세 번 + 체력 10% 회복
+func _star_fall() -> void:
+	for w in 3:
+		if not alive():
+			return
+		var targets := enemies_in(player.global_position, 170.0, 3)
+		var p := targets[0].global_position if not targets.is_empty() else player.global_position + player.aim(1.0) * 60.0
+		var f := fx(THUNDER, 8, p + Vector2(0, -28), 16.0, 2.6, Color(1.0, 1.0, 0.7))
+		f.z_index = 8
+		fx(CIRCLE, 4, p, 12.0, 2.6, Color(1.0, 0.95, 0.6, 0.8))
+		hit_all(enemies_in(p, 52.0), 2.4, 260.0, p + Vector2(0, -1))
+		Game.add_shake(6.0)
+		Game.sfx(&"boom", -2.0)
+		await wait(0.3)
+	if alive():
+		player.heal(maxi(1, roundi(player.max_hp * 0.1)))
+		Game.sfx(&"heal", -2.0, 0.0)
+
+
+## 레비 2: 표창 부채 — 쿠나이 7개를 부채꼴로(꿰뚫음)
+func _kunai_fan() -> void:
+	var dir := player.aim(150.0)
+	for k in 7:
+		_shoot(KUNAI, 1, player.body_center(), dir.rotated((k - 3) * 0.16), {"speed": 300.0, "mult": 1.1, "pierce": 2, "range": 160.0, "scale": 1.4}, Color(0.75, 1.0, 0.5))
+	player.squash(Vector2(1.1, 0.9), 0.1)
+	Game.sfx(&"slash", -3.0)
+
+
+## 레비 3: 그림자 연쇄 — 적 6명에게 빠르게 순간이동하며 벤다
+func _shadow_chain() -> void:
+	await _blink_chain(6, Color(0.55, 0.9, 0.4), 2.0, 0.11)
+
+
+## 카일 2: 얼음 길 — 앞으로 얼음이 줄지어 솟고, 맞은 적은 1초 언다
+func _ice_line() -> void:
+	var dir := player.aim(150.0)
+	var o := player.global_position
+	var hit: Array[Node2D] = []
+	for i in 7:
+		if not alive():
+			return
+		var p := o + dir * (20.0 + i * 20.0)
+		fx(ICE_BURST, 10, p + Vector2(0, -8), 22.0, 1.2, Color(0.75, 0.9, 1.0))
+		for e in enemies_in(p, 20.0):
+			if not hit.has(e):
+				hit.append(e)
+		Game.sfx(&"ice_shot", -10.0)
+		await wait(0.05)
+	hit_all(hit, 2.0, 60.0, o)
+	_bind(hit, 1.0, Color(0.6, 0.85, 1.0))
+
+
+## 카일 3: 눈보라 망토 — 3초 동안 몸 주위로 눈보라가 돌며 닿는 적을 베고 느리게 한다
+func _blizzard_cloak() -> void:
+	for tick in 12:
+		if not alive():
+			return
+		var c := player.body_center()
+		for k in 3:
+			var a := tick * 0.9 + k * TAU / 3.0
+			fx(ICE_BURST, 10, c + Vector2.from_angle(a) * Vector2(34, 22), 26.0, 0.7, Color(0.8, 0.95, 1.0))
+		var near := enemies_in(c, 44.0)
+		hit_all(near, 0.7, 60.0, c)
+		_bind(near, 0.4, Color(0.6, 0.85, 1.0))
+		if tick % 3 == 0:
+			Game.sfx(&"ice_shot", -10.0)
+		await wait(0.25)
+
+
+## 엘린 2: 화살비 — 적들 위로 화살이 쏟아진다
+func _arrow_rain() -> void:
+	for w in 5:
+		if not alive():
+			return
+		var targets := enemies_in(player.global_position, 160.0, 6)
+		for k in 6:
+			var p: Vector2 = targets[k % targets.size()].global_position if not targets.is_empty() else player.global_position + Vector2.from_angle(randf() * TAU) * randf_range(20, 90)
+			p += Vector2(randf_range(-10, 10), randf_range(-8, 8))
+			var f := fx(ARROW, 1, p + Vector2(0, -10), 10.0, 1.4, Color(0.85, 1.0, 0.6), PI / 2.0)
+			f.z_index = 6
+			fx(SPARK, 10, p, 22.0, 0.5, Color(0.85, 1.0, 0.6))
+		hit_all(targets, 0.6, 30.0, player.global_position)
+		Game.sfx(&"slash", -12.0)
+		await wait(0.16)
+
+
+## 엘린 3: 꿰뚫는 일제 사격 — 꿰뚫는 큰 화살 5발을 세 번
+func _piercing_volley() -> void:
+	var dir := player.aim(200.0)
+	player.lock_for_skill(0.5, Vector2.ZERO, true)
+	for w in 3:
+		if not alive():
+			return
+		for k in 5:
+			_shoot(ARROW, 1, player.body_center(), dir.rotated((k - 2) * 0.1), {"speed": 360.0, "mult": 1.6, "pierce": 99, "range": 230.0, "scale": 1.9, "knock": 180.0}, Color(1.0, 1.0, 0.6))
+		Game.sfx(&"slash", -2.0)
+		Game.add_shake(2.0)
+		await wait(0.17)
+
+
+## 로웬 2: 바람 가르기 — 거대한 바람 칼날이 앞으로 날아가 꿰뚫는다
+func _wind_wave() -> void:
+	var dir := player.aim(160.0)
+	_shoot(SPIRIT, 5, player.body_center(), dir, {"speed": 200.0, "mult": 2.6, "pierce": 99, "range": 200.0, "scale": 2.6, "radius": 16.0, "knock": 260.0}, Color(0.55, 1.0, 0.75))
+	fx(SLASH_DOUBLE, 4, player.body_center() + dir * 16.0, 20.0, 1.8, Color(0.6, 1.0, 0.75), dir.angle())
+	player.squash(Vector2(1.2, 0.85))
+	Game.sfx(&"slash", 0.0)
+
+
+## 로웬 3: 폭풍 낙인 — 높이 뛰어올라(무적) 내려찍으며 넓은 충격파와 번개 고리
+func _storm_brand() -> void:
+	var dir := player.aim(90.0)
+	player.lock_for_skill(0.35, dir * 220.0, true)
+	player.squash(Vector2(0.8, 1.25), 0.3)
+	Game.sfx(&"dash", -2.0)
+	await wait(0.35)
+	if not alive():
+		return
+	var c := player.global_position
+	fx(EXPLOSION, 9, c + Vector2(0, -6), 18.0, 2.4, Color(0.6, 1.0, 0.75))
+	for k in 8:
+		var p := c + Vector2.from_angle(k * TAU / 8.0) * 50.0
+		var f := fx(THUNDER, 8, p + Vector2(0, -20), 20.0, 1.3, Color(0.7, 1.0, 0.8))
+		f.z_index = 8
+	hit_all(enemies_in(c, 70.0), 3.2, 380.0, c)
+	Game.add_shake(10.0)
+	Game.sfx(&"boom", 2.0)
+
+
+## 벨라 3: 천 개의 칼날 — 적 8명 사이를 붉은 잔상으로 누빈 뒤 한가운데서 터진다
+func _thousand_cuts() -> void:
+	await _blink_chain(8, Color(0.8, 0.15, 0.3), 1.8, 0.07)
+	if not alive():
+		return
+	var c := player.body_center()
+	fx(EXPLOSION, 9, c, 18.0, 2.0, Color(0.75, 0.1, 0.3))
+	hit_all(enemies_in(c, 60.0), 2.2, 300.0, c)
+	Game.add_shake(8.0)
+	Game.sfx(&"boom", 0.0)
+
+
+## 실바 2: 용꼬리 휩쓸기 — 꼬리로 두 바퀴 크게 휩쓸어 날려 보낸다
+func _tail_sweep() -> void:
+	for k in 2:
+		if not alive():
+			return
+		var c := player.body_center()
+		fx(CIRCULAR, 4, c, 18.0, 2.6, Color(0.5, 0.95, 1.0), k * PI)
+		fx(WATER_SPLASH, 10, c + Vector2(0, 6), 20.0, 1.6, Color(0.5, 0.95, 0.9))
+		hit_all(enemies_in(c, 50.0), 1.6, 420.0, c)
+		player.squash(Vector2(1.2, 0.85), 0.12)
+		Game.sfx(&"slash", 0.0)
+		Game.add_shake(4.0)
+		await wait(0.22)
+
+
+## 실바 3: 해일 — 넓은 물기둥 띠가 앞으로 밀려가며 휩쓴다
+func _tidal_wave() -> void:
+	var dir := player.aim(150.0)
+	var side := dir.orthogonal()
+	var o := player.global_position
+	for i in 7:
+		if not alive():
+			return
+		for k: int in [-1, 0, 1]:
+			var p := o + dir * (24.0 + i * 20.0) + side * (k * 22.0)
+			fx(WATER_PILLAR, 9, p + Vector2(0, -14), 20.0, 1.0, Color(0.5, 0.9, 1.0))
+			hit_all(enemies_in(p, 20.0), 0.9, 160.0, p - dir * 12.0)
+		Game.sfx(&"ice_shot", -8.0)
+		Game.add_shake(2.0)
+		await wait(0.08)

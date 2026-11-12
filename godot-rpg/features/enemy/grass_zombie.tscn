@@ -5,13 +5,13 @@
 
 [node name="GrassZombie" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 15525
+max_hp = 6558
 speed = 38.0
-damage = 195
+damage = 104
 chase_range = 120.0
-gold_reward = 456
+gold_reward = 265
 gem_chance = 0.3
-gem_reward = 70
+gem_reward = 41
 drop_chance = 0.3
 anim_fps = 7.0
 side_frames = 8

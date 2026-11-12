@@ -5,14 +5,14 @@
 
 [node name="RootBeast" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 10500
+max_hp = 13437
 speed = 38.0
-damage = 165
+damage = 195
 chase_range = 120.0
 anim_fps = 7.0
-gold_reward = 320
+gold_reward = 378
 gem_chance = 0.3
-gem_reward = 60
+gem_reward = 71
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

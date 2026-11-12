@@ -5,14 +5,14 @@
 
 [node name="Flam" instance=ExtResource("1_base")]
 kind = 3
-max_hp = 3440
+max_hp = 6571
 speed = 34.0
-damage = 79
+damage = 109
 chase_range = 120.0
 anim_fps = 7.0
-gold_reward = 150
+gold_reward = 270
 gem_chance = 0.3
-gem_reward = 30
+gem_reward = 54
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

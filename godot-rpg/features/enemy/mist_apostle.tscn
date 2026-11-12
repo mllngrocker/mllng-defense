@@ -11,18 +11,18 @@ size = Vector2(44, 24)
 [node name="MistApostle" instance=ExtResource("1_base")]
 script = ExtResource("3_boss")
 boss_name = "안개의 사도"
-slam_radius = 92.0
-slam_damage = 520
+slam_radius = 72.0
+slam_damage = 200
 summon = ExtResource("4_minion")
 kind = 0
-max_hp = 340000
-speed = 28.0
-damage = 300
+max_hp = 73000
+speed = 22.0
+damage = 130
 chase_range = 170.0
 anim_fps = 5.0
-gold_reward = 160000
+gold_reward = 20000
 gem_chance = 1.0
-gem_reward = 10000
+gem_reward = 1200
 drop_chance = 1.0
 
 [node name="Shadow" parent="." index="0"]

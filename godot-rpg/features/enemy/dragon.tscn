@@ -5,14 +5,14 @@
 
 [node name="Dragon" instance=ExtResource("1_base")]
 kind = 2
-max_hp = 6612
+max_hp = 12629
 speed = 40.0
-damage = 127
+damage = 176
 chase_range = 130.0
 anim_fps = 7.0
-gold_reward = 210
+gold_reward = 378
 gem_chance = 0.35
-gem_reward = 40
+gem_reward = 72
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

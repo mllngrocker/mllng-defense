@@ -5,13 +5,13 @@
 
 [node name="Shade" instance=ExtResource("1_base")]
 kind = 3
-max_hp = 18975
+max_hp = 4883
 speed = 42.0
-damage = 225
+damage = 93
 chase_range = 120.0
-gold_reward = 528
+gold_reward = 191
 gem_chance = 0.3
-gem_reward = 80
+gem_reward = 29
 drop_chance = 0.3
 anim_fps = 14.0
 side_frames = 24
