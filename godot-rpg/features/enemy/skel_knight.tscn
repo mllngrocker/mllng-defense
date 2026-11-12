@@ -15,10 +15,11 @@ gem_reward = 30
 drop_chance = 0.3
 anim_fps = 6.0
 side_frames = 4
+attack_frames = 8
 
 [node name="Sprite" parent="." index="1"]
 texture = ExtResource("2_tex")
 scale = Vector2(0.5098, 0.5098)
-offset = Vector2(0, -24.5)
-hframes = 4
+offset = Vector2(0, -27.5)
+hframes = 12
 vframes = 1

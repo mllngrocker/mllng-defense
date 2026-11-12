@@ -63,7 +63,7 @@ func _ready() -> void:
 		Save.quest["daily"][d["id"]] = int(d["count"])
 		Quests.claim_daily(d["id"])
 	var before := Save.gems
-	_check("일일 전부 받으면 보너스 보석 100", Quests.claim_bonus() and Save.gems == before + 100)
+	_check("일일 전부 받으면 보너스 보석 %d" % Quests.DAILY_BONUS_GEMS, Quests.claim_bonus() and Save.gems == before + Quests.DAILY_BONUS_GEMS)
 	Save.quest["day"] = "2000-01-01"
 	Quests._check_day()
 	_check("날짜가 바뀌면 일일 퀘스트 초기화", not Quests.daily_done(hunt) and not Quests.daily_claimed(hunt) and not Save.quest["bonus"])

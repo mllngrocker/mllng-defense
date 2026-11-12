@@ -225,7 +225,7 @@ func _paint_detail(ci: Control) -> void:
 		Gt.star(ci, Vector2(x + 8 + i * 18, r.position.y + 20), 7)
 	var enh := Save.enhance_of(w)
 	Gt.text(ci, Vector2(x, r.position.y + 50), Weapons.name_of(w) + ("  +%d강" % enh if enh > 0 else "") + ("  (재련 %d)" % refine if refine > 0 else ""), 20, Gt.NAVY)
-	Gt.text(ci, Vector2(x, r.position.y + 72), Weapons.desc_of(w), 12, Gt.NAVY_SOFT, 0, false)
+	Gt.text(ci, Vector2(x, r.position.y + 72), Weapons.kind_text(w), 12, Color("2f7d4f"), 0, false)
 	var y := r.position.y + 98
 	Gt.icon(ci, &"sword", Vector2(x + 8, y - 5), 18)
 	Gt.text(ci, Vector2(x + 20, y), "공격력 +%d" % Weapons.atk_of(w, refine, Save.enhance_of(w)), 14, Gt.NAVY)

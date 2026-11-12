@@ -127,7 +127,7 @@ func _on_enemy_died(_k: String) -> void:
 func _on_mob_gone(e: Enemy) -> void:
 	if done or not is_instance_valid(e) or e.hp > 0:
 		return
-	gold += e.gold_reward
+	gold += e.gold_reward if e.is_boss else maxi(1, roundi(e.gold_reward * Enemy.GOLD_MULT))  # 실제로 받은 만큼
 	if kind == "gear" and randf() < 0.2:
 		var g := Gear.roll(false)
 		gear_got.append(g)

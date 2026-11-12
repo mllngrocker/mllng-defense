@@ -14,11 +14,12 @@ const MAX_RANK := 7
 const STAR_BONUS := 0.08  # 승급한 별 1개마다 공격력·체력 +8%
 ## 별 조각: 같은 캐릭터를 또 뽑으면 조각 10개. 조각을 모아 로비에서 직접 승급
 const SHARDS_PER_DUP := {3: 10, 4: 10, 5: 10}
-## 그 별 등급으로 올리는 데 드는 조각(높을수록 비싸다): 4성 10 · 5성 20 · 6성 30 · 7성 50
-const PROMOTE_COST := {4: 10, 5: 20, 6: 30, 7: 50}
+## 그 별 등급으로 올리는 데 드는 조각(높을수록 비싸다): 4성 30 · 5성 60 · 6성 100 · 7성 150
+const PROMOTE_COST := {4: 30, 5: 60, 6: 100, 7: 150}
 const WELCOME_GEMS := 500  # 처음 시작할 때 주는 보석
 
 signal gold_changed(gold: int)
+signal leveled(id: StringName, level: int)  # 경험치로 레벨이 올랐을 때
 signal gems_changed(gems: int)
 signal equip_changed
 
@@ -180,13 +181,13 @@ func skill_cap(id: StringName) -> int:
 	return SkillTree.MASTER_LV if master.has(String(id)) else SkillTree.MAX_LV
 
 
-## 남은 스킬 포인트 = (레벨 - 1) + 트레이닝 북 - 쓴 포인트(고유기 첫 1레벨은 공짜)
+## 남은 스킬 포인트 = 레벨 + 트레이닝 북 - 쓴 포인트(고유기 첫 1레벨은 공짜)
 func skill_points(id: StringName) -> int:
 	var spent := 0
 	var d: Dictionary = skill_lv.get(String(id), {})
 	for k: String in d:
 		spent += int(d[k]) - (1 if k == "a1" else 0)
-	return level_of(id) - 1 + int(skill_bonus.get(String(id), 0)) - spent
+	return level_of(id) + int(skill_bonus.get(String(id), 0)) - spent
 
 
 ## 이 노드를 올릴 수 있는지(안 되면 이유 문자열)
@@ -194,13 +195,12 @@ func skill_block(id: StringName, node: String) -> String:
 	if not is_owned(id):
 		return "미보유 캐릭터"
 	var lv := skill_level(id, node)
-	if node == "a3" and not master.has(String(id)):
-		return "마스터 북으로 봉인을 풀어야 해요"
 	if lv >= skill_cap(id):
-		return "최대 레벨" if lv >= SkillTree.MASTER_LV else "마스터 북으로 상한을 10까지 올릴 수 있어요"
-	var req := SkillTree.requires(node)
-	if req[0] != "" and skill_level(id, req[0]) < int(req[1]):
-		return "%s Lv.%d 필요" % [SkillTree.info(id, req[0])["name"], req[1]]
+		return "최대 레벨" if lv >= SkillTree.MASTER_LV else "마스터 북으로 상한을 15까지 올릴 수 있어요"
+	if lv == 0:
+		var g := SkillTree.gate(id, node)
+		if g != "":
+			return g
 	if skill_points(id) <= 0:
 		return "스킬 포인트가 없어요"
 	return ""
@@ -561,23 +561,37 @@ func hp_of(id: StringName, level := -1) -> int:
 	return roundi(character(id).hp_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) * (1.0 + pet_bonus("hp")) * (1.0 + gear_bonus(id, "hp")) * (1.0 + dex_bonus("hp") + Skins.bonus(id, "hp")) * (1.0 + 0.03 * skill_level(id, "p2")))
 
 
-func level_up_cost(level: int) -> int:
-	return 30 + level * 12 + roundi(level * level * 1.6)  # 레벨마다 몬스터 약 60~90마리(예전 100마리 남짓)
+## 다음 레벨까지 필요한 경험치(몬스터 경험치 = 그 몬스터 골드 보상과 같다). 레벨마다 그 지역 몬스터 약 150마리
+func exp_need(level: int) -> int:
+	return roundi((30 + level * 12 + level * level * 1.6) * 2.4)
 
 
-## 골드를 내고 레벨을 1 올린다. 성공하면 true.
-func try_level_up(id: StringName) -> bool:
-	var lv := level_of(id)
-	var cost := level_up_cost(lv)
-	if not is_owned(id) or lv >= MAX_LEVEL or gold < cost:
-		return false
-	gold -= cost
-	owned[String(id)]["level"] = lv + 1
-	gold_changed.emit(gold)
-	Quests.track("levelup")
-	Quests.track("level")
-	save_game()
-	return true
+func exp_of(id: StringName) -> int:
+	return int((owned.get(String(id), {}) as Dictionary).get("exp", 0))
+
+
+## 경험치를 얻는다(몬스터를 잡은 캐릭터). 넘치면 여러 번 오른다. 오른 레벨 수를 돌려준다.
+func add_exp(id: StringName, amount: int) -> int:
+	if not is_owned(id) or amount <= 0:
+		return 0
+	var e: Dictionary = owned[String(id)]
+	var lv := int(e.get("level", 1))
+	if lv >= MAX_LEVEL:
+		return 0
+	var xp := int(e.get("exp", 0)) + amount
+	var ups := 0
+	while lv < MAX_LEVEL and xp >= exp_need(lv):
+		xp -= exp_need(lv)
+		lv += 1
+		ups += 1
+	e["level"] = lv
+	e["exp"] = 0 if lv >= MAX_LEVEL else xp
+	if ups > 0:
+		for i in ups:
+			Quests.track("levelup")
+		Quests.track("level")
+		leveled.emit(id, lv)
+	return ups
 
 
 func add_gold(amount: int) -> void:

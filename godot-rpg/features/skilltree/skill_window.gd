@@ -107,7 +107,7 @@ func _refresh() -> void:
 	train_button.label = "트레이닝 북 ×%d" % int(Save.books.get("training", 0))
 	train_button.disabled = int(Save.books.get("training", 0)) <= 0
 	var sealed := not Save.master.has(String(char_id))
-	master_button.label = ("봉인 해제 ×%d" if sealed else "봉인 해제됨 ×%d") % int(Save.books.get("master", 0))
+	master_button.label = ("상한 15로 ×%d" if sealed else "상한 15 해제됨 ×%d") % int(Save.books.get("master", 0))
 	master_button.disabled = not sealed or int(Save.books.get("master", 0)) <= 0
 	reset_button.sublabel = str(1000 * Save.level_of(char_id))
 	reset_button.sub_icon = GameButton.SubIcon.COIN
@@ -237,7 +237,7 @@ func _draw_node(ci: Control, node: String, r: Rect2) -> void:
 	var lv := Save.skill_level(char_id, node)
 	var cap := Save.skill_cap(char_id)
 	var req := SkillTree.requires(node)
-	var locked: bool = (req[0] != "" and Save.skill_level(char_id, req[0]) < int(req[1])) or (node == "a3" and not Save.master.has(String(char_id)))
+	var locked: bool = lv == 0 and SkillTree.gate(char_id, node) != ""
 	if node == chosen:
 		Gt.round_grad(ci, r.grow(6), 8, Color(1, 0.9, 0.4, 0.5 + 0.2 * sin(t * 5.0)), Color(1, 0.7, 0.2, 0.3))
 	Gt.pbox(ci, r.grow(3), Color("e8c06a") if lv > 0 else Color("6a7a90"), Gt.INK, 2, false, false)

@@ -74,14 +74,15 @@ func _ready() -> void:
 	var overlay := menu.get_children().filter(func(n: Node) -> bool: return n is GachaResult)
 	_check("10회 소환 → 보석 50 남고 연출 화면이 뜸", Save.gems == 50 and overlay.size() == 1)
 
-	# 별 승급: 조각을 모아 직접 올린다(4성 10 · 5성 20 · 6성 30 · 7성 50)
+	# 별 승급: 조각을 모아 직접 올린다(4성 30 · 5성 60 · 6성 100 · 7성 150)
 	Save.owned["kemo3"] = {"level": 1, "stars": 0, "shards": 0}
 	var atk0 := Save.atk_of(&"kemo3")
 	_check("조각 0개로는 승급 못 함", not Save.promote(&"kemo3") and Save.rank_of(&"kemo3") == 3)
-	Save.grant_character(&"kemo3")
-	_check("중복 1번(조각 10) → 4성 승급", Save.promote(&"kemo3") and Save.rank_of(&"kemo3") == 4 and Save.shards_of(&"kemo3") == 0)
-	_check("다음 승급은 20개", Save.promote_cost(&"kemo3") == 20)
-	Save.owned["kemo3"]["shards"] = 100
+	for i in 3:
+		Save.grant_character(&"kemo3")
+	_check("중복 3번(조각 30) → 4성 승급", Save.promote(&"kemo3") and Save.rank_of(&"kemo3") == 4 and Save.shards_of(&"kemo3") == 0)
+	_check("다음 승급은 60개", Save.promote_cost(&"kemo3") == 60)
+	Save.owned["kemo3"]["shards"] = 310
 	while Save.promote(&"kemo3"):
 		pass
 	_check("7성까지(남은 조각 %d) · 공격력 올랐다 (%d → %d)" % [Save.shards_of(&"kemo3"), atk0, Save.atk_of(&"kemo3")], Save.rank_of(&"kemo3") == 7 and Save.shards_of(&"kemo3") == 0 and Save.atk_of(&"kemo3") > atk0)

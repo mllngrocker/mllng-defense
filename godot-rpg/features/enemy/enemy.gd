@@ -6,6 +6,9 @@ extends CharacterBody2D
 enum Kind { WALKER, HOPPER, FLYER, GHOST }
 
 const TOUCH_RANGE := 11.0
+const GOLD_MULT := 0.5  # 일반 몬스터 골드 배율
+const GEM_CHANCE_MULT := 0.2  # 일반 몬스터 보석 확률 배율
+const GEM_MULT := 0.3  # 일반 몬스터 보석 개수 배율
 const BAR_SHOW_TIME := 3.0
 const BAR_WIDTH := 16.0
 const SMOKE := preload("res://assets/ninja/fx/smoke.png")
@@ -24,6 +27,8 @@ const HEART_PICKUP := preload("res://features/pickup/heart_pickup.tscn")
 @export var gem_reward: int = 5
 ## 0보다 크면 옆모습 한 줄 시트(걷기 칸 수). 방향은 좌우 뒤집기로
 @export var side_frames: int = 0
+## 0보다 크면 걷기 칸 뒤에 공격 칸이 이어진다: 가까이 오면 멈춰서 휘두르고, 휘두르는 순간 닿으면 더 아프다
+@export var attack_frames: int = 0
 
 var hp: int
 var home: Vector2
@@ -38,6 +43,9 @@ var hop_t := 0.0
 var hop_vec := Vector2.ZERO
 var stun_t := 0.0
 var knockback := Vector2.ZERO
+var atk_t := -1.0  # 공격 동작 진행(초), -1이면 공격 중 아님
+var atk_cd := 0.0
+var _atk_hit := false
 var bar_t := 0.0  # 맞은 뒤 잠깐 체력바를 보여 준다
 ## 보스면 true(Boss가 바꾼다): 체력바는 HUD 위쪽에 크게, 다시 나타나는 데 오래 걸린다
 var is_boss := false
@@ -77,11 +85,16 @@ func _physics_process(delta: float) -> void:
 		chasing = dist < (chase_range * 1.5 if chasing else chase_range)
 		if dist < TOUCH_RANGE:
 			target.take_hit(damage, global_position)
+		if attack_frames > 0:
+			_attack_update(delta, to_player)
 	else:
 		chasing = false
+		atk_t = -1.0
 
 	var move := Vector2.ZERO
-	if stun_t <= 0.0:
+	if atk_t >= 0.0:
+		move = Vector2.ZERO  # 휘두르는 동안은 제자리(맞히는 순간 살짝 앞으로)
+	elif stun_t <= 0.0:
 		match kind:
 			Kind.HOPPER:
 				move = _hop(delta, to_player)
@@ -93,6 +106,31 @@ func _physics_process(delta: float) -> void:
 	knockback = knockback.move_toward(Vector2.ZERO, 600.0 * delta)
 	move_and_slide()
 	_animate(delta, move)
+
+
+const ATTACK_RANGE := 30.0
+const ATTACK_TIME := 0.7  # 공격 동작 전체 길이(초)
+const ATTACK_HIT := 0.55  # 이 비율쯤에서 맞힌다
+
+
+## 가까이 붙으면 공격 동작: 앞부분은 예비 동작(피할 틈), 중간에 한 번 크게 친다
+func _attack_update(delta: float, to_player: Vector2) -> void:
+	atk_cd -= delta
+	if atk_t < 0.0:
+		if atk_cd <= 0.0 and stun_t <= 0.0 and to_player.length() < ATTACK_RANGE:
+			atk_t = 0.0
+			_atk_hit = false
+			sprite.flip_h = to_player.x < 0.0
+		return
+	atk_t += delta
+	if not _atk_hit and atk_t >= ATTACK_TIME * ATTACK_HIT:
+		_atk_hit = true
+		knockback = to_player.normalized() * 90.0
+		if to_player.length() < ATTACK_RANGE + 8.0:
+			target.take_hit(roundi(damage * 1.5), global_position)
+	if atk_t >= ATTACK_TIME:
+		atk_t = -1.0
+		atk_cd = randf_range(1.0, 1.8)
 
 
 func take_hit(amount: int, from: Vector2, knock := 210.0, crit := false) -> void:
@@ -144,15 +182,19 @@ func _die() -> void:
 	# 같은 자리에 잠시 뒤 다시 나타난다(맵이 맡는다)
 	if scene_file_path != "":
 		get_tree().call_group(&"world", &"schedule_respawn", scene_file_path, home, 90.0 if is_boss else randf_range(10.0, 16.0))
-	Save.add_gold(gold_reward)
+	# 보상 조정: 일반 몬스터는 골드 절반, 보석은 확률 1/5 · 개수 30%(보스는 그대로). 경험치는 원래 값
+	var gold_got := gold_reward if is_boss else maxi(1, roundi(gold_reward * GOLD_MULT))
+	Save.add_gold(gold_got)
+	Save.add_exp(Save.selected, gold_reward * (3 if is_boss else 1))  # 경험치: 잡은 캐릭터에게
 	Game.sfx(&"kill", -2.0)
 	Game.add_shake(3.0)
 	var world := _effects_parent()
 	Fx.spawn(world, SMOKE, 6, global_position + Vector2(0, -6), 16.0)
-	DamageNumber.spawn(world, global_position + Vector2(0, -2), gold_reward, false, "+%dG", Color("ffd54f"))
-	if randf() < gem_chance:
-		Save.add_gems(gem_reward)
-		DamageNumber.spawn(world, global_position + Vector2(0, 6), gem_reward, false, "+%d보석", Color("ff8ad8"))
+	DamageNumber.spawn(world, global_position + Vector2(0, -2), gold_got, false, "+%dG", Color("ffd54f"))
+	if randf() < (gem_chance if is_boss else gem_chance * GEM_CHANCE_MULT):
+		var gems := gem_reward if is_boss else maxi(1, roundi(gem_reward * GEM_MULT))
+		Save.add_gems(gems)
+		DamageNumber.spawn(world, global_position + Vector2(0, 6), gems, false, "+%d보석", Color("ff8ad8"))
 	if is_boss:
 		ItemPickup.spawn_gear.call_deferred(world, Gear.roll(true), global_position + Vector2(0, 10))  # 보스는 희귀 이상 장비 하나
 	elif randf() < Gear.DROP_CHANCE:
@@ -222,7 +264,9 @@ func _animate(delta: float, move: Vector2) -> void:
 		else:
 			dir_col = 0 if move.y > 0.0 else 1
 	anim_t += delta
-	if side_frames > 0:
+	if atk_t >= 0.0:
+		sprite.frame = side_frames + mini(int(atk_t / ATTACK_TIME * attack_frames), attack_frames - 1)
+	elif side_frames > 0:
 		sprite.frame = int(anim_t * anim_fps) % side_frames
 		if absf(move.x) > 1.0:
 			sprite.flip_h = move.x < 0.0

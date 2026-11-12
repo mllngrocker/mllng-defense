@@ -41,6 +41,10 @@ var skin_dot: DrawBox
 const AURA_COLORS := Gt.STAR_BY_RARITY
 const AURA_FROM := 5
 var promote_box: DrawBox
+var bg_fx: DrawBox
+var _frame := 0
+var _drawn_top := Color.BLACK
+var _drawn_bottom := Color.BLACK
 var promote_button: GameButton
 var level_button: GameButton
 var passive_header: DrawBox
@@ -76,12 +80,19 @@ func _process(delta: float) -> void:
 	var k := minf(1.0, delta * 6.0)
 	sky_top = sky_top.lerp(sky[0], k)
 	sky_bottom = sky_bottom.lerp(sky[1], k)
-	bg_box.queue_redraw()  # 떠다니는 장식
+	# 휴대폰에서 버벅이지 않게: 무늬 배경은 색이 바뀔 때만, 카드는 4프레임에 한 번만 다시 그린다
+	_frame += 1
+	if not sky_top.is_equal_approx(_drawn_top) or not sky_bottom.is_equal_approx(_drawn_bottom):
+		_drawn_top = sky_top
+		_drawn_bottom = sky_bottom
+		bg_box.queue_redraw()
+	bg_fx.queue_redraw()  # 떠다니는 빛(가벼움)
 	if avatar_page.visible:
 		backdrop.queue_redraw()  # 햇살이 천천히 돈다
 		_update_aura()
-		for c: Control in cards.values():
-			c.queue_redraw()  # 4·5성 카드 빛이 숨 쉬듯
+		if _frame % 4 == 0:
+			for c: Control in cards.values():
+				c.queue_redraw()  # 4·5성 카드 빛이 숨 쉬듯
 
 
 # ── 화면 만들기 ──
@@ -90,6 +101,10 @@ func _build() -> void:
 	bg_box = _box(func(ci: Control) -> void: Gt.background(ci, Rect2(Vector2.ZERO, ci.size), t, sky_top, sky_bottom), 0)
 	bg_box.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg_box)
+	bg_fx = _box(func(ci: Control) -> void: Gt.background_fx(ci, Rect2(Vector2.ZERO, ci.size), t), 0)
+	bg_fx.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg_fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(bg_fx)
 	var col := VBoxContainer.new()
 	col.set_anchors_preset(Control.PRESET_FULL_RECT)
 	col.add_theme_constant_override(&"separation", 0)
@@ -120,20 +135,20 @@ func _build() -> void:
 			sw.closed.connect(_refresh_all)
 			add_child(sw))
 	avatar_page.add_child(_pad(skill_box, 10, 2, 10, 2))
-	# 별 조각 막대 + 승급 버튼
-	promote_box = _box(_paint_promote, 54)
+	# 승급은 레벨 칸 오른쪽 버튼(레벨은 몬스터 경험치로 오르니 레벨 업 버튼 자리를 쓴다)
+	promote_box = _box(_paint_promote, 0)  # 예전 승급 줄(화면엔 안 넣음)
 	promote_button = GameButton.new()
 	promote_button.label = "승급"
 	promote_button.kind = Gt.Kind.YELLOW
-	promote_button.font_size = 17
+	promote_button.font_size = 20
 	promote_button.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
-	promote_button.offset_left = -112
-	promote_button.offset_top = 6
-	promote_button.offset_right = -8
-	promote_button.offset_bottom = -6
+	promote_button.offset_left = -150
+	promote_button.offset_top = 14
+	promote_button.offset_right = -14
+	promote_button.offset_bottom = -10
 	promote_button.pressed.connect(_on_promote_pressed)
-	promote_box.add_child(promote_button)
-	avatar_page.add_child(_pad(promote_box, 10, 2, 10, 2))
+	stats_bar.add_child(promote_button)
+	level_button.visible = false
 	avatar_page.add_child(_pad(_build_passives(), 10, 4, 10, 6))
 	shop_page = ShopPage.new()
 	shop_page.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -663,8 +678,9 @@ func _paint_stats(ci: Control) -> void:
 	Gt.text(ci, Vector2(lv_tag.get_center().x, lv_tag.position.y + 15), "LV", 12, Color.WHITE, 1)
 	Gt.text(ci, r.position + Vector2(52, 31), "%d" % lv, 22, Gt.NAVY)
 	Gt.text(ci, r.position + Vector2(56 + Gt.width(str(lv), 22), 31), "/%d" % Save.MAX_LEVEL, 12, Gt.GRAY)
-	Gt.bar(ci, Rect2(r.position + Vector2(12, 44), Vector2(92, 12)), lv / float(Save.MAX_LEVEL), Gt.GREEN)
-	Gt.text(ci, r.position + Vector2(13, 74), "최대 Lv.%d" % Save.MAX_LEVEL, 11, Gt.NAVY_SOFT, 0, false)
+	var xr := 1.0 if maxed else Save.exp_of(viewing) / float(Save.exp_need(lv))
+	Gt.bar(ci, Rect2(r.position + Vector2(12, 44), Vector2(92, 12)), xr, Gt.GREEN)
+	Gt.text(ci, r.position + Vector2(13, 74), "최대 레벨" if maxed else "EXP %.1f%%" % (xr * 100.0), 11, Gt.NAVY_SOFT, 0, false)
 	# 점선 칸막이
 	var y := r.position.y + 12.0
 	while y < r.end.y - 12.0:
@@ -836,10 +852,16 @@ func _refresh_all() -> void:
 	_refresh_level_button()
 	_refresh_passives()
 	promote_button.disabled = not Save.can_promote(viewing)
+	if Save.rank_of(viewing) >= Save.MAX_RANK:
+		promote_button.label = "7성 달성"
+		promote_button.sublabel = "중복은 골드로"
+		promote_button.disabled = true
+	else:
+		promote_button.label = "%d성 승급" % (Save.rank_of(viewing) + 1)
+		promote_button.sublabel = "별 조각 %d / %d" % [Save.shards_of(viewing) if owned else 0, Save.promote_cost(viewing)]
 	skin_dot.visible = Skins.exists(viewing)
 	skin_dot.position = _skin_dot_pos()
 	skin_dot.queue_redraw()
-	promote_button.visible = Save.rank_of(viewing) < Save.MAX_RANK
 	promote_button.queue_redraw()
 	for c: Control in [top_bar, backdrop, plate, stats_bar, skill_box, promote_box, passive_header, roster_strip, tab_bar]:
 		c.queue_redraw()
@@ -859,10 +881,11 @@ func _refresh_level_button() -> void:
 		level_button.label = "최대 레벨"
 		level_button.disabled = true
 	else:
-		var cost := Save.level_up_cost(lv)
-		level_button.label = "레벨 업"
-		level_button.sublabel = _comma(cost)
-		level_button.sublabel_color = Color.TRANSPARENT if Save.gold >= cost else Color("ff8080")
+		# 레벨은 몬스터를 잡아 오른다: 버튼은 남은 경험치를 보여 주고, 누르면 안내
+		level_button.label = "경험치"
+		level_button.sub_icon = GameButton.SubIcon.NONE
+		level_button.sublabel = "%s / %s" % [_comma(Save.exp_of(viewing)), _comma(Save.exp_need(lv))]
+		level_button.sublabel_color = Color.TRANSPARENT
 		level_button.disabled = false
 	level_button.queue_redraw()
 
@@ -929,15 +952,7 @@ func _select(id: StringName) -> void:
 
 
 func _on_level_up_pressed() -> void:
-	var lv := Save.level_of(viewing)
-	if Save.gold < Save.level_up_cost(lv):
-		_show_toast("골드가 부족해요")
-		return
-	if Save.try_level_up(viewing):
-		_refresh_all()
-		_bounce(portrait, 1.06)
-		_show_toast("레벨 업!  Lv.%d" % (lv + 1))
-		Game.sfx(&"levelup", -4.0, 0.0)
+	_show_toast("몬스터를 잡으면 출전 캐릭터의 경험치가 올라요")
 
 
 ## 모험: 로비에 오기 전 있던 맵·자리에서 다시 시작(처음이거나 쓰러졌으면 마을)

@@ -16,5 +16,13 @@ func _ready() -> void:
 		var e := (load("res://features/enemy/%s.tscn" % NEW[i]) as PackedScene).instantiate() as Node2D
 		e.position = p.position + Vector2(-105 + (i % 8) * 30, -40 + (i / 8) * 45)
 		world.add_child(e)
-		e.set_physics_process(false)
-		e.chasing = false
+		if "--attack" in OS.get_cmdline_user_args():
+			e.position = p.position + Vector2.from_angle(i * TAU / NEW.size()) * 26.0  # 붙어서 공격 동작 보기
+			e.max_hp = 999999
+			e.hp = 999999
+		else:
+			e.set_physics_process(false)
+			e.chasing = false
+	if "--attack" in OS.get_cmdline_user_args():
+		(p as Player).hp = 999999
+		(p as Player).max_hp = 999999

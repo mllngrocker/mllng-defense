@@ -402,7 +402,8 @@ static func damask(ci: CanvasItem, c: Vector2, s: float, color: Color) -> void:
 
 
 ## 배경: 속성색이 섞인 라벤더 그라데이션 + 다마스크 무늬 + 빛망울 + 반짝이
-static func background(ci: CanvasItem, r: Rect2, t: float, top := Color("74cbff"), bottom := Color("d9f3ff")) -> void:
+## 로비 배경 무늬(움직이지 않음). 움직이는 빛은 background_fx
+static func background(ci: CanvasItem, r: Rect2, _t: float, top := Color("74cbff"), bottom := Color("d9f3ff")) -> void:
 	grad(ci, r, top.lerp(Color("efe0fb"), 0.55), bottom.lerp(Color("fff1f8"), 0.55))
 	var w := r.size.x
 	var h := r.size.y
@@ -418,6 +419,12 @@ static func background(ci: CanvasItem, r: Rect2, t: float, top := Color("74cbff"
 			x += step
 		y += step / 2.0
 		row += 1
+
+
+## 배경 위에서 움직이는 것만(떠다니는 빛·반짝임): 무늬는 가만히 있으니 매 프레임 다시 그릴 필요가 없다
+static func background_fx(ci: CanvasItem, r: Rect2, t: float) -> void:
+	var w := r.size.x
+	var h := r.size.y
 	for i in 8:
 		var p := r.position + Vector2(fposmod(i * 131.0 + t * 6.0 * (1 + i % 3), w + 120.0) - 60.0, fmod(i * 197.0, h))
 		ci.draw_circle(p, 26.0 + (i % 3) * 14.0, Color(1, 1, 1, 0.08 + 0.03 * (i % 2)))

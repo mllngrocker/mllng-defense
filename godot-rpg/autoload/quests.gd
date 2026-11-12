@@ -33,7 +33,7 @@ const MAIN: Array[Dictionary] = [
 	{"title": "무기 장착하기", "desc": "아바타 탭의 무기 칸을 눌러 무기를 장착하자.", "type": "equip", "target": "", "count": 1, "gold": 300, "gems": 0},
 	{"title": "꽃바람 언덕으로", "desc": "초록 초원 동쪽 문을 지나 꽃바람 언덕에 가 보자.", "type": "reach", "target": "hill", "count": 1, "gold": 200, "gems": 30},
 	{"title": "버섯 소동", "desc": "버섯 몬스터를 8마리 물리치자. 언덕에 많이 산다.", "type": "kill", "target": "mushroom", "count": 8, "gold": 300, "gems": 30},
-	{"title": "성장하기", "desc": "골드로 레벨을 올려 아무 캐릭터나 레벨 5를 만들자.", "type": "level", "target": "", "count": 5, "gold": 300, "gems": 50},
+	{"title": "성장하기", "desc": "몬스터를 잡아 경험치를 모아 아무 캐릭터나 레벨 5를 만들자.", "type": "level", "target": "", "count": 5, "gold": 300, "gems": 50},
 	{"title": "어스름 숲으로", "desc": "언덕 동쪽 문을 지나 어두운 숲에 들어가 보자.", "type": "reach", "target": "forest", "count": 1, "gold": 300, "gems": 30},
 	{"title": "스킬 연습", "desc": "전투에서 스킬(E 키 / 노란 버튼)을 5번 써 보자.", "type": "skill", "target": "", "count": 5, "gold": 200, "gems": 30},
 	{"title": "숲의 주인", "desc": "어스름 숲 북동쪽 깊은 곳의 킹 슬라임을 물리치자. 사막 길이 열린다!", "type": "boss", "target": "king_slime", "count": 1, "gold": 800, "gems": 150},
@@ -114,10 +114,10 @@ const DAILY: Array[Dictionary] = [
 	{"id": "hunt", "title": "몬스터 30마리 물리치기", "type": "kill", "target": "", "count": 30, "gold": 0, "gems": 30},
 	{"id": "skill", "title": "스킬 5번 쓰기", "type": "skill", "target": "", "count": 5, "gold": 0, "gems": 20},
 	{"id": "pull", "title": "소환 1번 하기", "type": "pull", "target": "", "count": 1, "gold": 0, "gems": 30},
-	{"id": "levelup", "title": "레벨 업 1번 하기", "type": "levelup", "target": "", "count": 1, "gold": 300, "gems": 0},
+	{"id": "levelup", "title": "레벨 1번 올리기", "type": "levelup", "target": "", "count": 1, "gold": 300, "gems": 0},
 	{"id": "gold", "title": "골드 1,000 모으기", "type": "gold", "target": "", "count": 1000, "gold": 0, "gems": 20},
 ]
-const DAILY_BONUS_GEMS := 100
+const DAILY_BONUS_GEMS := 50
 const DUNGEON_PER_DAY := 3
 
 

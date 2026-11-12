@@ -54,7 +54,7 @@ func has_skill(node: String) -> bool:
 		return true
 	if not Save.is_owned(data.id):
 		return false
-	return Save.skill_level(data.id, node) > 0 and (node != "a3" or Save.master.has(String(data.id)))
+	return Save.skill_level(data.id, node) > 0
 
 
 func _physics_process(delta: float) -> void:
@@ -97,14 +97,14 @@ func try_cast(node := "a1") -> bool:
 		&"maid4": _shadow_raid()
 		&"fairy1": _petal_storm()
 		&"scarlet": _shadow_raid()
-		&"elf1": _leaf_whirl()
-		&"elf2": _judgement()
-		&"devil4": _petal_storm()
-		&"devil1": _earth_split()
-		&"elf3": _water_pillars()
-		&"elf4": _gale_dash()
-		&"devil2": _shadow_raid()
-		&"devil3": _ice_rain()
+		&"elf1": _wind_dance()
+		&"elf2": _light_rain()
+		&"devil4": _feather_storm()
+		&"devil1": _frost_crack()
+		&"elf3": _thorn_rise()
+		&"elf4": _gale_charge()
+		&"devil2": _dark_wings()
+		&"devil3": _abyss_rain()
 		_: _flame_burst()
 	return true
 
@@ -153,7 +153,7 @@ func fx(tex: Texture2D, frames: int, pos: Vector2, fps := 16.0, sc := 1.0, tint 
 func hit_all(list: Array, mult: float, knock: float, from: Vector2) -> void:
 	for e: Variant in list:
 		if is_instance_valid(e) and e.get(&"hp") > 0:
-			player.hit(e, mult * power, knock, from)
+			player.hit(e, mult * power * Weapons.mod(player.weapon, "skill"), knock, from)
 
 
 func wait(sec: float) -> void:
@@ -362,3 +362,220 @@ func _petal_storm() -> void:
 		pr.sprite.modulate = Color(1.0, 0.7, 0.9)
 	Game.sfx(&"ice_shot", 0.0, 0.0)
 	player.squash(Vector2(0.85, 1.15))
+
+
+# ── 엘프·마족 8명 전용 스킬 ──
+
+## 적을 잠깐 묶는다(맞으면 0.3초로 덮이므로 hit 다음에 부른다)
+func _bind(list: Array, sec: float, tint: Color) -> void:
+	for e: Variant in list:
+		if is_instance_valid(e) and e.get(&"hp") > 0:
+			e.stun_t = maxf(float(e.stun_t), sec)
+			var sp := e.get_node_or_null(^"Sprite") as Sprite2D
+			if sp:
+				sp.modulate = tint
+				e.create_tween().tween_property(sp, ^"modulate", Color.WHITE, sec)
+
+
+## 핀: 질풍 난무 — 세 번 회전하며 돌 때마다 바람 칼날 8개를 사방으로 날린다
+func _wind_dance() -> void:
+	player.lock_for_skill(0.9, Vector2.ZERO, true)
+	for spin in 3:
+		if not alive():
+			return
+		var c := player.body_center()
+		fx(CIRCULAR, 4, c, 20.0, 2.0, Color(0.55, 1.0, 0.65), spin * 0.8)
+		player.squash(Vector2(1.2, 0.85), 0.12)
+		for i in 8:
+			var d := Vector2.from_angle(i * TAU / 8.0 + spin * 0.4)
+			var pr := Projectile.spawn(player, c + d * 10.0, d, {
+				"speed": 210.0, "tex": LEAF, "frames": 6, "angle_offset": 0.0, "radius": 8.0,
+				"mult": 0.7, "knock": 90.0, "pierce": 3, "range": 120.0, "scale": 1.3,
+				"hit_tex": CUT_X, "hit_frames": 4,
+			})
+			pr.sprite.modulate = Color(0.6, 1.0, 0.7)
+		hit_all(enemies_in(c, 34.0), 0.8, 140.0, c)
+		Game.sfx(&"slash", -2.0)
+		await wait(0.28)
+
+
+## 리아: 성광의 비 — 1.2초 동안 빛줄기가 쏟아지고, 마지막에 큰 빛기둥과 함께 체력을 조금 회복
+func _light_rain() -> void:
+	fx(SHIELD, 6, player.body_center() + Vector2(0, -6), 12.0, 1.6, Color(1.0, 0.95, 0.6))
+	for k in 10:
+		if not alive():
+			return
+		var targets := enemies_in(player.global_position, 150.0, 8)
+		var p: Vector2
+		if not targets.is_empty() and k % 3 != 2:
+			p = targets[k % targets.size()].global_position + Vector2(randf_range(-8, 8), randf_range(-6, 6))
+		else:
+			p = player.global_position + Vector2.from_angle(randf() * TAU) * randf_range(20, 110)
+		var f := fx(THUNDER, 8, p + Vector2(0, -20), 22.0, 1.2, Color(1.0, 0.95, 0.55))
+		f.z_index = 8
+		fx(SPARK, 10, p, 20.0, 0.8, Color(1.0, 0.95, 0.7))
+		hit_all(enemies_in(p, 22.0), 0.9, 60.0, p + Vector2(0, -1))
+		Game.sfx(&"boom", -12.0)
+		await wait(0.12)
+	if alive():
+		var c := player.global_position
+		var big := fx(THUNDER, 8, c + Vector2(0, -26), 16.0, 2.4, Color(1.0, 1.0, 0.75))
+		big.z_index = 8
+		fx(CIRCLE, 4, player.body_center(), 12.0, 3.0, Color(1.0, 0.95, 0.6, 0.8))
+		hit_all(enemies_in(c, 70.0), 2.0, 260.0, c)
+		player.heal(maxi(1, roundi(player.max_hp * 0.05)))
+		Game.add_shake(6.0)
+		Game.sfx(&"heal", -2.0, 0.0)
+
+
+## 레비: 깃털 폭풍 — 검은 깃털 7개를 부채꼴로 두 번 흩뿌린다(두 번째는 엇갈리게)
+func _feather_storm() -> void:
+	var dir := player.aim(150.0)
+	for wave in 2:
+		if not alive():
+			return
+		var c := player.body_center()
+		fx(SMOKE, 6, c, 18.0, 1.0, Color(0.3, 0.45, 0.25))
+		for k in 7:
+			var d := dir.rotated((k - 3) * 0.2 + wave * 0.1)
+			var pr := Projectile.spawn(player, c + d * 8.0, d, {
+				"speed": 230.0, "tex": LEAF, "frames": 6, "angle_offset": 0.0, "radius": 8.0,
+				"mult": 0.9, "knock": 120.0, "pierce": 2, "range": 170.0, "scale": 1.2,
+				"hit_tex": CLAW, "hit_frames": 4,
+			})
+			pr.sprite.modulate = Color(0.25, 0.3, 0.2)
+		player.squash(Vector2(0.85, 1.15), 0.1)
+		Game.sfx(&"ice_shot", -2.0)
+		await wait(0.25)
+
+
+## 카일: 빙결 균열 — 땅을 내려쳐 네 방향으로 얼음이 갈라지고, 맞은 적은 1.5초 얼어붙는다
+func _frost_crack() -> void:
+	player.lock_for_skill(0.4, Vector2.ZERO, true)
+	player.squash(Vector2(0.85, 1.2), 0.15)
+	await wait(0.15)
+	if not alive():
+		return
+	player.squash(Vector2(1.3, 0.75))
+	Game.sfx(&"heavy", 0.0)
+	Game.add_shake(7.0)
+	var o := player.global_position
+	fx(ICE_BURST, 10, o + Vector2(0, -8), 20.0, 1.8)
+	var hit: Array[Node2D] = []
+	for step in 5:
+		for d: Vector2 in [Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN]:
+			var p := o + d * (22.0 + step * 20.0)
+			fx(ICE_BURST, 10, p + Vector2(0, -8), 24.0, 0.9 + step * 0.05, Color(0.75, 0.9, 1.0))
+			for e in enemies_in(p, 18.0):
+				if not hit.has(e):
+					hit.append(e)
+		Game.sfx(&"ice_shot", -8.0)
+		await wait(0.05)
+	if not alive():
+		return
+	hit_all(hit, 2.2, 40.0, o)
+	_bind(hit, 1.5, Color(0.6, 0.85, 1.0))
+
+
+## 엘린: 가시덩굴 솟음 — 적 6명 발밑에서 덩굴이 솟아 2초 묶고, 다시 한 번 찌른다
+func _thorn_rise() -> void:
+	var targets := enemies_in(player.global_position, 160.0, 6)
+	if targets.is_empty():
+		fx(ROCK_SPIKE, 10, player.global_position + player.aim(1.0) * 40.0 + Vector2(0, -16), 20.0, 1.1, Color(0.55, 0.9, 0.35))
+		return
+	for e in targets:
+		if is_instance_valid(e):
+			fx(ROCK_SPIKE, 10, e.global_position + Vector2(0, -16), 20.0, 1.1, Color(0.55, 0.9, 0.35))
+			fx(LEAF, 6, e.global_position + Vector2(0, -6), 14.0, 1.2, Color(0.6, 1.0, 0.4))
+	Game.sfx(&"heavy", -4.0)
+	hit_all(targets, 1.4, 0.0, player.global_position)
+	_bind(targets, 2.0, Color(0.7, 1.0, 0.55))
+	await wait(0.7)
+	if not alive():
+		return
+	for e in targets:
+		if is_instance_valid(e) and e.get(&"hp") > 0:
+			fx(ROCK_SPIKE, 10, e.global_position + Vector2(0, -16), 24.0, 1.4, Color(0.4, 0.8, 0.3))
+	hit_all(targets, 1.6, 200.0, player.global_position)
+	Game.sfx(&"boom", -6.0)
+
+
+## 로웬: 질풍 돌격 — 가까운 적을 향해 세 번 연달아 돌진하며 벤다(마지막은 크게)
+func _gale_charge() -> void:
+	for k in 3:
+		if not alive():
+			return
+		var near := enemies_in(player.global_position, 140.0, 1)
+		var dir := player.aim(1.0)
+		if not near.is_empty():
+			dir = player.global_position.direction_to(near[0].global_position)
+		var start := player.global_position
+		player.lock_for_skill(0.16, dir * 520.0, true)
+		Game.sfx(&"dash", -2.0)
+		for i in 3:
+			fx(SMOKE, 6, start + dir * (i * 18.0), 18.0, 0.7, Color(0.7, 1.0, 0.8, 0.8))
+		await wait(0.16)
+		if not alive():
+			return
+		var end := player.global_position
+		var hits: Array[Node2D] = []
+		for e: Node2D in enemies_in((start + end) / 2.0, start.distance_to(end) / 2.0 + 26.0):
+			if Geometry2D.get_closest_point_to_segment(e.global_position, start, end).distance_to(e.global_position) < 26.0:
+				hits.append(e)
+		var last := k == 2
+		fx(SLASH_DOUBLE, 4, end + Vector2(0, -8), 22.0, 1.6 if last else 1.2, Color(0.6, 1.0, 0.75), dir.angle())
+		hit_all(hits, 2.6 if last else 1.2, 360.0 if last else 80.0, start)
+		Game.add_shake(8.0 if last else 3.0)
+		Game.sfx(&"slash", 0.0)
+		await wait(0.06)
+
+
+## 벨라: 칠흑의 날개 — 날개를 펼쳐(무적) 어둠 구슬 8개가 나선으로 퍼진 뒤 한가운데서 터진다
+func _dark_wings() -> void:
+	player.lock_for_skill(1.1, Vector2.ZERO, true)
+	var c := player.body_center()
+	fx(AURA, 5, c + Vector2(0, 4), 12.0, 1.8, Color(0.75, 0.2, 0.35))
+	fx(CLAW, 4, c + Vector2(-14, -6), 14.0, 1.6, Color(0.5, 0.1, 0.2), -0.5)
+	fx(CLAW, 4, c + Vector2(14, -6), 14.0, 1.6, Color(0.5, 0.1, 0.2), PI + 0.5)
+	Game.sfx(&"charge", -4.0, 0.0)
+	for k in 8:
+		var d := Vector2.from_angle(k * TAU / 8.0)
+		var pr := Projectile.spawn(player, c + d * 12.0, d.rotated(0.6), {
+			"speed": 120.0, "tex": SPIRIT, "frames": 5, "angle_offset": 0.0, "radius": 10.0,
+			"mult": 1.0, "knock": 100.0, "pierce": 99, "range": 110.0, "scale": 1.3,
+			"hit_tex": SPARK, "hit_frames": 10,
+		})
+		pr.sprite.modulate = Color(0.85, 0.2, 0.4)
+	await wait(0.8)
+	if not alive():
+		return
+	c = player.body_center()
+	fx(EXPLOSION, 9, c, 18.0, 2.2, Color(0.7, 0.15, 0.4))
+	fx(CIRCLE, 4, c, 12.0, 3.2, Color(0.9, 0.25, 0.45, 0.8))
+	hit_all(enemies_in(c, 75.0), 3.0, 380.0, c)
+	Game.add_shake(9.0)
+	Game.sfx(&"boom", 0.0)
+
+
+## 실바: 심연의 비 — 꼬리로 한 바퀴 휩쓸어 밀어낸 뒤, 주변에 깊은 바다 물방울이 네 번 쏟아진다
+func _abyss_rain() -> void:
+	var c := player.body_center()
+	fx(CIRCULAR, 4, c, 18.0, 2.2, Color(0.45, 0.9, 1.0))
+	hit_all(enemies_in(c, 44.0), 1.2, 300.0, c)
+	Game.sfx(&"slash", 0.0)
+	for wave in 4:
+		await wait(0.22)
+		if not alive():
+			return
+		var targets := enemies_in(player.global_position, 140.0, 5)
+		var spots: Array[Vector2] = []
+		for e in targets:
+			spots.append(e.global_position)
+		while spots.size() < 5:
+			spots.append(player.global_position + Vector2.from_angle(randf() * TAU) * randf_range(30, 110))
+		for p in spots:
+			fx(WATER_SPLASH, 10, p, 20.0, 1.1, Color(0.5, 0.95, 0.9))
+			fx(WATER_PILLAR, 9, p + Vector2(0, -14), 22.0, 0.8, Color(0.55, 0.9, 1.0))
+		hit_all(targets, 1.0, 70.0, player.global_position)
+		Game.sfx(&"ice_shot", -4.0)
+		Game.add_shake(2.5)

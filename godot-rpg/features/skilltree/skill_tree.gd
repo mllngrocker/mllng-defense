@@ -1,11 +1,13 @@
 class_name SkillTree
 extends RefCounted
 ## 캐릭터별 스킬 트리: 액티브 3개(a1 고유기 → a2 → a3 오의) + 패시브 4개(p1 공격 → p4 스킬 숙련, p2 체력, p3 급소).
-## 스킬 포인트: 레벨 1마다 1점 + 트레이닝 북 1권마다 1점. 레벨 상한은 5, 마스터 북으로 봉인을 풀면 10이고 오의(a3)가 열린다.
+## 스킬 포인트: 레벨 1마다 1점 + 트레이닝 북 1권마다 1점. 스킬 레벨 상한은 10, 마스터 북으로 15까지.
+## 메이플처럼 단계가 있다: 2번째 액티브는 캐릭터 Lv.30 + 고유기 Lv.10 + 패시브 합 20,
+## 오의(3번째)는 Lv.70 + 2번째 Lv.10 + 패시브 합 30이어야 배운다(GATE).
 ## 액티브 동작은 SkillCaster의 10가지 중에서 고른다(behavior). 그림은 assets/vendor/skill_icons/<icon>.png(없으면 속성 기호).
 
-const MAX_LV := 5
-const MASTER_LV := 10
+const MAX_LV := 10
+const MASTER_LV := 15
 const TRAINING_GEMS := 150  # 트레이닝 북 1권 값(보석)
 const MASTER_GEMS := 800  # 마스터 북 1권 값(보석)
 const ICON_DIR := "res://assets/vendor/skill_icons/%s.png"
@@ -13,13 +15,16 @@ const ICON_DIR := "res://assets/vendor/skill_icons/%s.png"
 ## 노드 순서(그리는 자리): [id, 칸(열, 줄), 앞선 노드, 앞선 노드에 필요한 레벨]
 const LAYOUT := [
 	["a1", Vector2i(0, 0), "", 0],
-	["a2", Vector2i(1, 0), "a1", 3],
-	["a3", Vector2i(2, 0), "a2", 3],
+	["a2", Vector2i(1, 0), "a1", 10],
+	["a3", Vector2i(2, 0), "a2", 10],
 	["p1", Vector2i(0, 1), "", 0],
 	["p4", Vector2i(1, 1), "p1", 5],
 	["p2", Vector2i(0, 2), "", 0],
 	["p3", Vector2i(1, 2), "", 0],
 ]
+
+## 액티브 단계 조건: 노드 → [캐릭터 레벨, 패시브 레벨 합]
+const GATE := {"a2": [30, 20], "a3": [70, 30]}
 
 ## 패시브는 모두 같다: id → [이름, 설명(%d = 레벨당 수치), 레벨당 값, 그림]
 const PASSIVES := {
@@ -66,6 +71,28 @@ static func info(char_id: StringName, node: String) -> Dictionary:
 		_:
 			var p: Array = PASSIVES[node]
 			return {"name": p[0], "desc": p[1] % (int(p[2])), "per": p[2], "icon": p[3], "active": false}
+
+
+## 패시브 4개 레벨 합
+static func passive_sum(char_id: StringName) -> int:
+	var n := 0
+	for p: String in PASSIVES:
+		n += Save.skill_level(char_id, p)
+	return n
+
+
+## 이 노드를 아직 못 배우는 이유(배울 수 있으면 ""): 캐릭터 레벨 → 앞선 스킬 레벨 → 패시브 합
+static func gate(char_id: StringName, node: String) -> String:
+	if GATE.has(node):
+		var g: Array = GATE[node]
+		if Save.level_of(char_id) < int(g[0]):
+			return "캐릭터 Lv.%d부터 배울 수 있어요" % g[0]
+	var req := requires(node)
+	if req[0] != "" and Save.skill_level(char_id, req[0]) < int(req[1]):
+		return "%s Lv.%d 필요" % [info(char_id, req[0])["name"], req[1]]
+	if GATE.has(node) and passive_sum(char_id) < int(GATE[node][1]):
+		return "패시브 합 %d 필요 (지금 %d)" % [GATE[node][1], passive_sum(char_id)]
+	return ""
 
 
 static func requires(node: String) -> Array:

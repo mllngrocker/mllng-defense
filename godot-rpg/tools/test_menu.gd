@@ -20,12 +20,13 @@ func _ready() -> void:
 	_check("시작 보유 3명", Save.STARTERS.all(func(id: StringName) -> bool: return Save.is_owned(id)))
 	_check("★5 플로라는 미보유", not Save.is_owned(&"fairy1"))
 
-	menu._on_level_up_pressed()
-	_check("골드 0이면 레벨 업 안 됨", Save.level_of(&"kemo1") == 1)
 	Save.add_gold(1000)
-	var cost := Save.level_up_cost(1)
 	menu._on_level_up_pressed()
-	_check("골드가 있으면 레벨 업 (Lv.2, 골드 -%d)" % cost, Save.level_of(&"kemo1") == 2 and Save.gold == 1000 - cost)
+	_check("골드로는 레벨이 안 오름", Save.level_of(&"kemo1") == 1 and Save.gold == 1000)
+	Save.add_exp(&"kemo1", Save.exp_need(1) - 1)
+	_check("경험치가 모자라면 그대로", Save.level_of(&"kemo1") == 1)
+	Save.add_exp(&"kemo1", 1 + Save.exp_need(2))
+	_check("경험치가 넘치면 여러 레벨 (Lv.3)", Save.level_of(&"kemo1") == 3 and Save.exp_of(&"kemo1") == 0)
 
 	menu._preview(&"kemo3")
 	_check("다른 캐릭터를 보면 출전 버튼이 보임", menu.action_button.visible)

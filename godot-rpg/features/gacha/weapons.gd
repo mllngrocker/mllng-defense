@@ -67,6 +67,29 @@ const DATA: Dictionary[StringName, Array] = {
 	&"gardener_scythe": ["검은 정원사의 낫", 5, 400, 0.22, "검은 씨앗을 거두던 낫. 이제는 생명을 지킨다", true],
 	&"mist_blade": ["안개를 가르는 검", 5, 520, 0.24, "사도의 가면이 깨지며 남은 푸른 검", true],
 }
+## 무기 종류: 공격 느낌이 달라진다. [이름, 효과 설명, {배율}]
+## speed 공격 속도 · dmg 평타 피해 · area 칼 판정 크기 · range 발사체 거리 · knock 밀쳐내기 · skill 스킬 피해
+const KINDS := {
+	"sword": ["검", "균형 잡힌 기본 무기", {}],
+	"dagger": ["단검", "공격 속도 +20% · 피해 -10%", {"speed": 1.2, "dmg": 0.9}],
+	"blunt": ["둔기", "공격 속도 -15% · 피해 +20% · 밀쳐내기 +40%", {"speed": 0.85, "dmg": 1.2, "knock": 1.4}],
+	"spear": ["창", "공격 범위 +25% · 발사체 거리 +15%", {"area": 1.25, "range": 1.15}],
+	"bow": ["활·새총", "발사체 거리 +35% · 공격 속도 +5%", {"range": 1.35, "speed": 1.05}],
+	"staff": ["지팡이", "스킬 피해 +15%", {"skill": 1.15}],
+	"fan": ["부채", "공격 범위 +30% · 밀쳐내기 +20% · 피해 -5%", {"area": 1.3, "knock": 1.2, "dmg": 0.95}],
+}
+## 무기 → 종류(없으면 검)
+const KIND_OF := {
+	&"fire_dagger": "dagger", &"dagger": "dagger", &"sickle": "dagger", &"crystal_fang": "dagger", &"frost_feather": "dagger",
+	&"dragon_axe": "blunt", &"war_hammer": "blunt", &"axe": "blunt", &"club": "blunt", &"mace": "blunt", &"slime_scepter": "blunt",
+	&"cyclops_maul": "blunt", &"hand_axe": "blunt", &"iron_hammer": "blunt", &"gold_axes": "blunt", &"crystal_flail": "blunt", &"platinum_axe": "blunt",
+	&"thunder_spear": "spear", &"spear": "spear", &"sea_trident": "spear", &"ignis_spear": "spear", &"giant_heart": "spear", &"root_lance": "spear",
+	&"gardener_scythe": "spear", &"harpoon": "spear", &"frost_trident": "spear", &"gold_spear": "spear", &"holy_lance": "spear", &"jade_glaive": "spear",
+	&"longbow": "bow", &"bow": "bow", &"slingshot": "bow",
+	&"fairy_wand": "staff", &"tome": "staff", &"wand": "staff", &"amber_staff": "staff", &"ruby_staff": "staff", &"sun_scepter": "staff",
+	&"red_fan": "fan", &"violet_fan": "fan",
+}
+
 const MAX_ENHANCE := 20
 const ENHANCE_BONUS := 0.08  # 강화 1마다 공격력 +8%
 
@@ -129,6 +152,23 @@ static func name_of(id: StringName) -> String:
 
 static func rarity_of(id: StringName) -> int:
 	return DATA[id][1]
+
+
+static func kind_of(id: StringName) -> String:
+	return KIND_OF.get(id, "sword")
+
+
+## 무기 종류 배율(key: speed·dmg·area·range·knock·skill). 무기가 없으면 1
+static func mod(id: StringName, key: String) -> float:
+	if id == &"" or not DATA.has(id):
+		return 1.0
+	return float((KINDS[kind_of(id)][2] as Dictionary).get(key, 1.0))
+
+
+## "둔기 · 공격 속도 -15% …"
+static func kind_text(id: StringName) -> String:
+	var k: Array = KINDS[kind_of(id)]
+	return "%s · %s" % [k[0], k[1]]
 
 
 static func desc_of(id: StringName) -> String:

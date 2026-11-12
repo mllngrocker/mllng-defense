@@ -17,20 +17,29 @@ func _ready() -> void:
 	Save.books = {"training": 0, "master": 0}
 	Save.gold = 100000
 	Save.gems = 5000
-	_check("레벨 10 → 스킬 포인트 9", Save.skill_points(id) == 9)
-	_check("두 번째 스킬은 고유기 Lv.3 전엔 못 배움", Save.skill_block(id, "a2") != "")
-	Save.learn_skill(id, "a1")
-	Save.learn_skill(id, "a1")
-	_check("고유기 Lv.3 → 두 번째 스킬 배우기", Save.learn_skill(id, "a2") and Save.skill_level(id, "a2") == 1)
+	_check("레벨 10 → 스킬 포인트 10", Save.skill_points(id) == 10)
+	_check("두 번째 스킬은 캐릭터 Lv.30 전엔 못 배움", Save.skill_block(id, "a2").contains("Lv.30"))
 	var atk := Save.atk_of(id)
 	Save.learn_skill(id, "p1")
 	_check("공격 수련 → 공격력 상승 (%d → %d)" % [atk, Save.atk_of(id)], Save.atk_of(id) >= atk)
-	_check("오의는 마스터 북 전엔 잠김", Save.skill_block(id, "a3").contains("마스터"))
+	Save.owned[String(id)]["level"] = 30
+	_check("Lv.30이어도 고유기 Lv.10 전엔 못 배움", Save.skill_block(id, "a2").contains("Lv.10"))
+	for i in 9:
+		Save.learn_skill(id, "a1")
+	_check("고유기 Lv.10이어도 패시브 합 20 전엔 못 배움", Save.skill_block(id, "a2").contains("패시브"))
+	for p in ["p1", "p2"]:
+		while Save.skill_level(id, p) < 10:
+			Save.learn_skill(id, p)
+	_check("Lv.30 + 고유기 10 + 패시브 20 → 두 번째 스킬", Save.learn_skill(id, "a2") and Save.skill_level(id, "a2") == 1)
+	Save.owned[String(id)]["level"] = 90
+	_check("오의는 두 번째 Lv.10 전엔 잠김", Save.skill_block(id, "a3").contains("Lv.10"))
+	while Save.skill_level(id, "a2") < 10:
+		Save.learn_skill(id, "a2")
+	while Save.skill_level(id, "p3") < 10:
+		Save.learn_skill(id, "p3")
+	_check("Lv.70 + 두 번째 10 + 패시브 30 → 오의", Save.learn_skill(id, "a3"))
 	_check("보석으로 마스터 북 사기", Save.buy_book("master") and int(Save.books["master"]) == 1)
-	_check("마스터 북 → 봉인 해제, 상한 10", Save.use_master_book(id) and Save.skill_cap(id) == 10)
-	Save.learn_skill(id, "a2")
-	Save.learn_skill(id, "a2")
-	_check("두 번째 Lv.3 → 오의 배우기", Save.learn_skill(id, "a3"))
+	_check("마스터 북 → 상한 15", Save.use_master_book(id) and Save.skill_cap(id) == 15)
 	var before := Save.skill_points(id)
 	Save.buy_book("training")
 	_check("트레이닝 북 → 포인트 +1", Save.use_training_book(id) and Save.skill_points(id) == before + 1)
@@ -45,7 +54,7 @@ func _ready() -> void:
 	world.queue_free()
 	await get_tree().process_frame
 	var spent_gold := Save.gold
-	_check("초기화 → 포인트 돌려받음", Save.reset_skills(id) and Save.skill_points(id) == 9 + 1 and Save.gold < spent_gold)
+	_check("초기화 → 포인트 돌려받음", Save.reset_skills(id) and Save.skill_points(id) == 90 + 1 and Save.gold < spent_gold)
 	# 스킬 창
 	var sw := SkillWindow.new()
 	sw.char_id = id

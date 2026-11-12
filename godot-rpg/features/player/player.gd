@@ -33,6 +33,7 @@ var level := 1
 var max_hp := 100
 var hp := 100
 var atk := 10
+var weapon: StringName = &""  # 장착 무기(종류에 따라 공격 속도·범위·피해가 달라진다)
 var dir: Dir = Dir.DOWN
 var style: AttackStyle
 var anim_t := 0.0
@@ -77,6 +78,8 @@ func _ready() -> void:
 	max_hp = Save.hp_of(data.id) if Save.is_owned(data.id) else data.hp_at(level)
 	hp = max_hp
 	atk = Save.atk_of(data.id) if Save.is_owned(data.id) else data.atk_at(level)
+	weapon = StringName(Save.equip.get(String(data.id), "")) if Save.is_owned(data.id) else &""
+	Save.leveled.connect(_on_leveled)
 	sprite.texture = data.walk_sheet
 	Skins.apply(sprite.material as ShaderMaterial, data.id, Skins.has_skin(data.id))  # 7성 스킨 색
 	sword_cs.shape = sword_cs.shape.duplicate()
@@ -112,7 +115,7 @@ func _physics_process(delta: float) -> void:
 			input = _travel_drive(delta)
 	if auto and input == Vector2.ZERO and dash_t <= 0.0 and Game.travel.is_empty():
 		input = _auto_drive(delta)
-	style.physics(delta)
+	style.physics(delta * Weapons.mod(weapon, "speed"))
 	var move := input * data.move_speed * speed_mult * style.move_scale
 	if dash_t <= 0.0 and skill_lock_t <= 0.0:
 		if Input.is_action_just_pressed(&"skill"):
@@ -153,6 +156,18 @@ func _physics_process(delta: float) -> void:
 	knockback = knockback.move_toward(Vector2.ZERO, 700.0 * delta)
 	move_and_slide()
 	_animate(delta, input != Vector2.ZERO and not style.busy)
+
+
+## 몬스터 경험치로 레벨이 오르면: 능력치 다시 계산 + 체력 모두 회복 + 빛 기둥
+func _on_leveled(id: StringName, lv: int) -> void:
+	if id != data.id or not is_inside_tree():
+		return
+	refresh_stats()
+	hp = max_hp
+	Events.player_hp_changed.emit(hp, max_hp)
+	Game.sfx(&"levelup", -2.0, 0.0)
+	Fx.spawn(fx_parent(), preload("res://assets/ninja/fx/boost.png"), 8, body_center(), 16.0).scale = Vector2.ONE * 1.6
+	DamageNumber.spawn(fx_parent(), global_position + Vector2(0, -34), lv, true, "LEVEL UP!  Lv.%d", Color("ffe066"))
 
 
 ## 레벨 업·장비·펫이 바뀌면(가방 창) 능력치를 다시 계산한다. 체력은 비율을 지킨다.
@@ -372,8 +387,9 @@ func aim(max_range: float) -> Vector2:
 ## 칼 판정 영역을 지금 방향 앞쪽에 둔다(크기·거리는 공격마다).
 func point_sword(radius: float, reach: float) -> void:
 	sword.rotation = SWORD_ROT[dir]
-	(sword_cs.shape as CircleShape2D).radius = radius
-	sword_cs.position = Vector2(0, reach)
+	var area := Weapons.mod(weapon, "area")
+	(sword_cs.shape as CircleShape2D).radius = radius * area
+	sword_cs.position = Vector2(0, reach * area)
 
 
 ## 칼 판정 안에 있는 모든 대상에게 피해. 맞힌 수를 돌려준다.
@@ -381,7 +397,7 @@ func strike(mult: float, knock: float) -> int:
 	var hits := 0
 	for body in sword.get_overlapping_bodies():
 		if body.has_method(&"take_hit"):
-			hit(body, mult, knock, global_position)
+			hit(body, mult * Weapons.mod(weapon, "dmg"), knock, global_position)
 			hits += 1
 	return hits
 
@@ -389,6 +405,7 @@ func strike(mult: float, knock: float) -> int:
 ## 대상 하나에게 공격력 × 배율 피해(치명타 판정 포함).
 func hit(body: Node2D, mult: float, knock: float, from: Vector2) -> void:
 	var amount := float(atk) * mult * randf_range(0.9, 1.1)
+	knock *= Weapons.mod(weapon, "knock")
 	var crit := randf() < (Save.crit_of(data.id) if Save.is_owned(data.id) else CRIT_CHANCE)
 	if crit:
 		amount *= CRIT_MULT

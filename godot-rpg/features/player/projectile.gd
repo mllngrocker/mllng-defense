@@ -20,6 +20,7 @@ static func spawn(p: Player, from: Vector2, dir: Vector2, o: Dictionary) -> Proj
 	pr.opts = o
 	pr.velocity = dir * float(o["speed"])
 	pr.pierce = int(o["pierce"])
+	o["range"] = float(o["range"]) * Weapons.mod(p.weapon, "range")
 	pr.collision_layer = 0
 	pr.collision_mask = 1 | 4 | 8
 	pr.monitorable = false
