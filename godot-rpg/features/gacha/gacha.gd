@@ -1,14 +1,14 @@
 class_name Gacha
 extends RefCounted
-## 뽑기 규칙: 등급 확률(★5 3% · ★4 17% · ★3 80%), 10회 뽑기는 ★4 이상 1개 확정,
+## 뽑기 규칙: 등급 확률(★5 1% · ★4 9% · ★3 90%), 10회 뽑기는 ★4 이상 1개 확정,
 ## ★5가 50번 안 나오면 50번째에 확정(천장). 같은 캐릭터면 별 +1, 별이 다 찼으면 골드로 바꿔 준다.
 ## 무기 뽑기(pull_weapons)도 확률·확정·천장 규칙은 같고 천장은 따로 센다(Save.pity_w). 같은 무기면 재련 +1.
 
 const COST_ONE := 50
 const COST_TEN := 450
-const RATE_5 := 0.03
-const RATE_4 := 0.17
-const PITY_5 := 50
+const RATE_5 := 0.01
+const RATE_4 := 0.09
+const PITY_5 := 100
 const MAXED_GOLD: Dictionary[int, int] = {3: 300, 4: 800, 5: 2000}
 
 

@@ -15,3 +15,4 @@ git에 올리지 않는 소재(`assets/_zips`, `assets/_raw`, `assets/vendor`)�
 - Atari Boy「Myth of Pixel - Water Temple」무료 (https://atari-boy.itch.io/myth-of-pixel-pack-dungeon-asset-water-temple) — 나루터 신전 섬·봉인된 문·물 쏟는 석상(`assets/vendor/watertemple/`). 개인·상업 사용 OK, 수정 OK, 재배포·재판매 금지, 출처 표기 선택
 - BeyonderBoy「Cosmo Pixels - Top Down Lava Tileset」무료판 (https://beyonderboy.itch.io/top-down-lava-tileset-16x16) — 나중 지옥 맵용(`assets/vendor/lava/`). 어떤 프로젝트에도 사용·수정 OK, 재판매 금지, 출처 표기 선택
 - 沼から現れた フリーモンスター — 沼から現れた (http://kb147.web.fc2.com/)
+- スノーショップ「魔族☆立ち絵＆歩行グラ」(https://booth.pm/ja/items/5513621)·「エルフ☆立ち絵＆歩行グラ」(https://booth.pm/ja/items/5813207) — `assets/snowshop/devil*`·`elf*` (같은 작가 약관: 상업 이용·수정 OK)

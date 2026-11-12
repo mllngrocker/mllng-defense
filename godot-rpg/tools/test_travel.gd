@@ -37,6 +37,20 @@ func _ready() -> void:
 	player.max_hp = 999999
 	player.hp = 999999
 	_check("자동 이동 시작", Travel.start(get_tree()) == "" and Game.travel["goal"] == "hill")
+	# 가는 도중 구르기: 구른 뒤에 뒤로 돌아가지 않아야 한다
+	for i in 50:
+		await get_tree().physics_frame
+	var dir := player.velocity.normalized()
+	player._start_dash(dir)
+	for i in 12:
+		await get_tree().physics_frame
+	var p0 := player.global_position
+	var back := 0
+	for i in 20:
+		await get_tree().physics_frame
+		if (player.global_position - p0).dot(dir) < -2.0:
+			back += 1
+	_check("구른 뒤에도 앞으로 계속 간다 (뒤로 간 프레임 %d)" % back, back == 0)
 	var seen: Array[String] = []
 	for i in 60 * 120:
 		await get_tree().physics_frame

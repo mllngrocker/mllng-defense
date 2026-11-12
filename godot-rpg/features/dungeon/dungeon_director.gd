@@ -6,7 +6,7 @@ extends Node
 
 const SCENE := "res://features/world/dungeon.tscn"
 const TIME := 60.0
-const MAX_ALIVE := 14
+const MAX_ALIVE := 26  # 한꺼번에 살아 있는 몬스터 최대 수
 const KINDS := {
 	"gold": ["골드 던전", "처치 골드 3배", &"coin"],
 	"gear": ["장비 던전", "처치마다 20% 장비", &"slot_armor"],
@@ -70,11 +70,11 @@ func _physics_process(delta: float) -> void:
 		return
 	_spawn_t -= delta
 	if _spawn_t <= 0.0:
-		_spawn_t = 1.8
+		_spawn_t = 1.2
 		_wave()
 
 
-## 용사 둘레 빈 칸에 몬스터 3마리
+## 용사 둘레 빈 칸에 몬스터 5마리(1.2초마다)
 func _wave() -> void:
 	var still: Array = []
 	for e in _alive:
@@ -86,7 +86,7 @@ func _wave() -> void:
 		return
 	var tier := clampi((Save.quest.get("bosses", {}) as Dictionary).size(), 0, TIER_MOBS.size() - 1)
 	var ents := _world.get_node(^"Entities")
-	for i in mini(3, MAX_ALIVE - _alive.size()):
+	for i in mini(5, MAX_ALIVE - _alive.size()):
 		var pos := _free_spot(player.global_position)
 		if pos == Vector2.INF:
 			continue

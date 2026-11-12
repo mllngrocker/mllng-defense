@@ -208,8 +208,7 @@ func _auto_drive(delta: float) -> Vector2:
 		_auto_check = 0.0
 		return Vector2.ZERO if d <= reach else v.normalized() * 0.6
 	# 길 따라 걷기: 지나온 점은 넘기고 다음 점으로
-	while _auto_i < _auto_path.size() and global_position.distance_to(_auto_path[_auto_i]) < 5.0:
-		_auto_i += 1
+	_auto_i = _skip_passed(_auto_path, _auto_i)
 	if _auto_i < _auto_path.size() - 1:
 		return (_auto_path[_auto_i] - global_position).normalized()
 	return v.normalized()  # 마지막 칸(또는 길 없음)은 곧장
@@ -304,8 +303,7 @@ func _travel_drive(delta: float) -> Vector2:
 		if _tr_stuck > 4.0:
 			Travel.stop("길이 막혀서 자동 이동을 멈췄어요")
 			return Vector2.ZERO
-	while _tr_i < _tr_path.size() and global_position.distance_to(_tr_path[_tr_i]) < 5.0:
-		_tr_i += 1
+	_tr_i = _skip_passed(_tr_path, _tr_i)
 	if _tr_i < _tr_path.size() - 1:
 		return (_tr_path[_tr_i] - global_position).normalized()
 	return (_tr_goal_pos - global_position).normalized()
@@ -452,8 +450,27 @@ func heal(amount: int) -> void:
 
 # ── 내부 ──
 
+## 길 따라가기: 이미 지나친 점은 건너뛴다(구르기로 앞질러도 뒤로 돌아가지 않게).
+## 남은 점 중 가장 가까운 점을 찾아, 거기에 거의 닿았거나 그다음 점이 더 가까우면 그다음으로.
+func _skip_passed(path: PackedVector2Array, i: int) -> int:
+	if i >= path.size():
+		return i
+	var best := i
+	var best_d := INF
+	for k in range(i, path.size()):
+		var d := global_position.distance_to(path[k])
+		if d < best_d:
+			best_d = d
+			best = k
+	if best_d < 8.0 or (best + 1 < path.size() and global_position.distance_to(path[best + 1]) < path[best].distance_to(path[best + 1])):
+		best += 1
+	return best
+
+
 func _start_dash(input: Vector2) -> void:
 	style.cancel()
+	_tr_think = 0.0  # 구르고 나면 길을 바로 다시 찾는다
+	_auto_think = 0.0
 	dash_vec = input.normalized() if input != Vector2.ZERO else DIR_VEC[dir]
 	dash_t = DASH_TIME
 	dash_cd = DASH_COOLDOWN

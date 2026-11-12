@@ -5,7 +5,8 @@ const PATH := "user://save.json"
 const VERSION := 1
 const STARTERS: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3"]
 ## 아바타 화면에 보이는 순서(전체 캐릭터, ★3 → ★5)
-const ROSTER: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3", &"fairy3", &"fairy2", &"maid2", &"maid3", &"maid1", &"maid4", &"fairy1", &"scarlet"]
+const ROSTER: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3", &"fairy3", &"fairy2", &"maid2", &"maid3", &"maid1", &"maid4", &"fairy1", &"scarlet",
+	&"elf1", &"elf2", &"devil4", &"devil1", &"elf3", &"devil3", &"elf4", &"devil2"]
 const MAX_LEVEL := 150  # 2부에서 100 → 150
 const MAX_STARS := 6  # 성장 효과 줄 수(별 승급으로 차례로 열린다)
 ## 별 등급: 타고난 등급(★3~5)에 중복으로 얻은 별을 더한다. 최대 7성(큰 빨간 별 하나로 보인다)
@@ -123,11 +124,11 @@ func rank_of(id: StringName) -> int:
 	return character(id).rarity + (stars_of(id) if is_owned(id) else 0)
 
 
-## 열린 성장 효과 수(6줄): 7성이면 모두, 그 전엔 올린 별에 비례
+## 열린 성장 효과 수(6줄): 줄마다 필요한 별이 2성·3성·…·7성. 5성이면 4줄, 7성이면 모두
 func passives_unlocked(id: StringName) -> int:
-	var m := max_stars(id)
-	var s := stars_of(id)
-	return MAX_STARS if s >= m else floori(MAX_STARS * s / float(m))
+	if not is_owned(id):
+		return 0
+	return clampi(rank_of(id) - 1, 0, MAX_STARS)
 
 
 ## 레벨·별·장착 무기를 반영한 공격력

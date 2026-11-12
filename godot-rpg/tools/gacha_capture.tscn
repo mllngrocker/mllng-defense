@@ -1,6 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://tools/gacha_capture.gd" id="1_script"]
+[ext_resource type="Script" path="res://tools/gacha_capture.gd" id="1"]
 
 [node name="GachaCapture" type="Node"]
-script = ExtResource("1_script")
+script = ExtResource("1")

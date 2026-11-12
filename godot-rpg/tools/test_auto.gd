@@ -49,6 +49,10 @@ func _physics_process(_delta: float) -> void:
 		_check("자동으로 움직였다 (%.0f칸)" % (player.global_position.distance_to(start_pos) / 16.0), player.global_position.distance_to(start_pos) > 32.0)
 		_check("자동으로 몬스터를 잡았다 (%d마리)" % kills, kills >= 2)
 		player.auto = false
+		for e in get_tree().get_nodes_in_group(&"enemies"):
+			e.queue_free()  # 몬스터에 맞아 밀려나는 건 빼고 잰다
+		for i in 20:
+			await get_tree().physics_frame
 		var before := player.global_position
 		for i in 30:
 			await get_tree().physics_frame

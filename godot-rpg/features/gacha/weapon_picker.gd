@@ -95,6 +95,11 @@ func _ready() -> void:
 	_refresh()
 
 
+func _process(_delta: float) -> void:
+	if cards.has(chosen):
+		cards[chosen].queue_redraw()  # 고른 카드 빛이 숨 쉬듯
+
+
 func _button(text: String, kind: int) -> GameButton:
 	var b := GameButton.new()
 	b.label = text
@@ -182,10 +187,15 @@ func _paint_panel(ci: Control) -> void:
 
 
 func _paint_card(ci: Control, w: StringName) -> void:
-	var r := Rect2(Vector2(3, 5), ci.size - Vector2(6, 8))
-	if w == chosen:
-		Gt.pbox(ci, r.grow(3), Gt.YELLOW, Gt.INK, 2, false, false)
+	var r := Rect2(Vector2(6, 9), ci.size - Vector2(12, 20))
+	var sel := w == chosen
+	if sel:
+		r.position.y -= 5  # 고른 카드는 살짝 떠오른다
 	Weapons.draw_card(ci, w, r, true, Save.refine_of(w))
+	if sel:
+		Gt.selected_frame(ci, r, Time.get_ticks_msec() / 1000.0)
+	else:
+		Gt.dim_other(ci, r)
 	var holder := Save.holder_of(w)
 	if holder != &"":
 		# 끼고 있는 캐릭터 얼굴(오른쪽 위)

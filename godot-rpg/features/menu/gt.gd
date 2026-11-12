@@ -61,6 +61,7 @@ enum Kind { YELLOW, BLUE, WHITE, PINK, GRAY, NAVY, GREEN }
 const ROMAN: Dictionary[StringName, String] = {
 	&"kemo1": "SHIRO", &"kemo2": "MIZUHA", &"kemo3": "KARA", &"fairy3": "LEAF", &"fairy2": "AQUA",
 	&"maid2": "BERRY", &"maid3": "LEMON", &"maid1": "LINEN", &"maid4": "COTTON", &"fairy1": "FLORA", &"scarlet": "SCARLET",
+	&"elf1": "FINN", &"elf2": "RIA", &"devil4": "LEVI", &"devil1": "KAIL", &"elf3": "ELIN", &"elf4": "ROWEN", &"devil2": "BELLA", &"devil3": "SILVA",
 }
 
 
@@ -352,8 +353,24 @@ static func button(ci: CanvasItem, r: Rect2, kind: int, down := false) -> void:
 	round_grad(ci, Rect2(inner.position + Vector2(3, 2), Vector2(inner.size.x - 6, inner.size.y * 0.42)), maxf(rad - 6.0, 0.0), Color(1, 1, 1, 0.45), Color(1, 1, 1, 0.06))
 	if b.size.x > b.size.y * 2.6:
 		var gem_c: Color = Color("ff5d8f") if kind == Kind.YELLOW else c[0].lightened(0.1)
-		for x in [b.position.x + 1.0, b.end.x - 1.0]:
-			orb(ci, Vector2(x, b.get_center().y), minf(b.size.y * 0.2, 9.0), gem_c)
+		var orb_r := minf(b.size.y * 0.2, 9.0)
+		for x in [b.position.x + orb_r + 3.0, b.end.x - orb_r - 3.0]:  # 안쪽에 그려 옆 버튼과 안 겹친다
+			orb(ci, Vector2(x, b.get_center().y), orb_r, gem_c)
+
+
+## 고른 카드 표시: 하늘색 빛 테두리(숨 쉬듯) + 아래 "선택" 꼬리표. 나머지 카드는 dim_other로 살짝 어둡게.
+static func selected_frame(ci: CanvasItem, r: Rect2, t: float) -> void:
+	var p := 0.5 + 0.5 * sin(t * 5.0)
+	for i in 3:
+		round_line(ci, r.grow(3.0 + i * 2.5), 8.0 + i * 2.0, Color(0.45, 0.9, 1.0, (0.85 - i * 0.25) * (0.7 + 0.3 * p)), 3.0)
+	var tag := Rect2(Vector2(r.get_center().x - 26, r.end.y - 4), Vector2(52, 20))
+	round_grad(ci, tag, 8, Color("7fe6ff"), Color("2fa8e0"))
+	round_line(ci, tag, 8, INK, 2.0)
+	text(ci, Vector2(tag.get_center().x, tag.position.y + 15), "선택", 12, Color.WHITE, 1, true, 3, INK)
+
+
+static func dim_other(ci: CanvasItem, r: Rect2) -> void:
+	round_grad(ci, r, 6, Color(0.1, 0.06, 0.15, 0.32), Color(0.1, 0.06, 0.15, 0.32))
 
 
 ## 보석 구슬(금테 + 반사광)

@@ -31,7 +31,6 @@ var portrait: TextureRect
 var plate: DrawBox
 var action_button: GameButton
 var gear_slots: Array[Control] = []
-var gear_cols: Array[VBoxContainer] = []
 var cards: Dictionary[StringName, DrawBox] = {}
 var roster_strip: DrawBox
 var stats_bar: DrawBox
@@ -67,6 +66,7 @@ func _ready() -> void:
 	sky_top = sky[0]
 	sky_bottom = sky[1]
 	_refresh_all()
+	_update_aura()  # 첫 화면부터 별 색 아우라(잠깐 다른 색이 비치지 않게)
 	IdleReward.try_show.call_deferred(self)  # 꺼 둔 사이 쌓인 방치 보상
 
 
@@ -223,10 +223,7 @@ func _build_portrait_area() -> Control:
 
 ## 장비 칸 4개: 왼쪽 위 무기·옷, 오른쪽 위 장신구·신발. 장비 시스템이 생기면 등급 색·레벨을 채운다.
 func _build_gear_slots() -> void:
-	var left := _gear_column(Control.PRESET_TOP_LEFT)
-	var right := _gear_column(Control.PRESET_TOP_RIGHT)
 	for i in GEAR_SLOTS.size():
-		var col := left if i < 3 else right
 		var slot := _box(_paint_gear_slot.bind(i), 0)
 		gear_slots.append(slot)
 		slot.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -245,30 +242,28 @@ func _build_gear_slots() -> void:
 		slot.resized.connect(func() -> void: slot.pivot_offset = slot.size / 2.0)
 		if i == PET_SLOT:
 			slot.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST  # 펫 도트가 뭉개지지 않게
-		col.add_child(slot)
+		backdrop.add_child(slot)
 	backdrop.resized.connect(_layout_gear)
 
 
-func _gear_column(preset: Control.LayoutPreset) -> VBoxContainer:
-	var col := VBoxContainer.new()
-	col.set_anchors_preset(preset)
-	col.offset_top = GEAR_MARGIN
-	col.add_theme_constant_override(&"separation", GEAR_GAP)
-	backdrop.add_child(col)
-	gear_cols.append(col)
-	return col
-
-
-## 칸 크기를 화면 높이에 맞춘다: 위 여백부터 이름표(별) 바로 위까지 2칸이 꽉 차게.
+## 장비 칸 6개를 ┌ ┐ 모양으로: 왼쪽 위 [무기][신발], 그 아래 [옷] / 오른쪽 위 [반지][펫], 그 아래 [목걸이].
+## 두 줄만 쓰니 아래 이름표(별·이름·전투력)를 가리지 않는다. 칸 크기는 화면 높이에 맞춘다.
 func _layout_gear() -> void:
 	var avail := backdrop.size.y - GEAR_MARGIN - PLATE_HEIGHT
-	var s := clampf((avail - GEAR_GAP * 2) / 3.0, 54.0, 84.0)
-	for slot in gear_slots:
+	var s := clampf((avail - GEAR_GAP) / 2.0, 52.0, 74.0)
+	var w := backdrop.size.x
+	var m := GEAR_MARGIN
+	var step := s + GEAR_GAP
+	# 칸 번호: 0 무기 · 1 옷 · 2 신발 · 3 펫 · 4 목걸이 · 5 반지
+	var spots := {
+		0: Vector2(m, m), 2: Vector2(m + step, m), 1: Vector2(m, m + step),
+		3: Vector2(w - m - s, m), 5: Vector2(w - m - s - step, m), 4: Vector2(w - m - s, m + step),
+	}
+	for i in gear_slots.size():
+		var slot := gear_slots[i]
 		slot.custom_minimum_size = Vector2(s, s)
-	gear_cols[0].offset_left = GEAR_MARGIN
-	gear_cols[0].offset_right = GEAR_MARGIN + s
-	gear_cols[1].offset_left = -GEAR_MARGIN - s
-	gear_cols[1].offset_right = -GEAR_MARGIN
+		slot.size = Vector2(s, s)
+		slot.position = spots[i]
 
 
 func _build_roster() -> Control:
@@ -806,9 +801,11 @@ func _paint_passive_row(ci: Control, index: int, text: String, unlocked: bool) -
 	Gt.pbox(ci, r, Gt.CREAM if unlocked else Color("e9e4da"), Gt.INK, 2, unlocked, unlocked)
 	var tag := Rect2(r.position + Vector2(8, 7), Vector2(78, r.size.y - 14))
 	Gt.tag(ci, tag, Gt.BLUE if unlocked else Color("b9b3c6"))
-	var n := index + 1
-	for i in n:
-		Gt.star(ci, Vector2(tag.get_center().x + (i - (n - 1) / 2.0) * 10.5, tag.get_center().y), 4.5, Gt.STAR if unlocked else Color("e2dfe8"))
+	# 이 줄이 열리는 별 등급(2성 ~ 7성): "N성" 글자 + 그 등급 색 별
+	var need := index + 2
+	var col: Color = Gt.STAR_BY_RARITY.get(mini(need, 7), Gt.STAR) if unlocked else Color("e2dfe8")
+	Gt.star(ci, Vector2(tag.position.x + 16, tag.get_center().y), 7.0, col)
+	Gt.text(ci, Vector2(tag.position.x + 46, tag.get_center().y + 6), "%d성" % need, 14, Color.WHITE, 1, true, 3, Gt.INK)
 	Gt.text(ci, Vector2(tag.end.x + 12, r.get_center().y + 5), text, 14, Gt.NAVY if unlocked else Gt.GRAY)
 	if unlocked:
 		Gt.text(ci, Vector2(r.end.x - 14, r.get_center().y + 5), "적용 중", 12, Gt.GREEN, 2)
@@ -833,6 +830,7 @@ func _refresh_all() -> void:
 	portrait.texture = data.portraits[expression % data.portraits.size()]
 	aura_rect.texture = portrait.texture
 	Skins.apply(portrait.material as ShaderMaterial, viewing, Skins.has_skin(viewing))
+	_update_aura()
 	portrait.modulate = Color.WHITE if owned else Color(0.55, 0.62, 0.75)
 	action_button.visible = owned and viewing != Save.selected
 	_refresh_level_button()

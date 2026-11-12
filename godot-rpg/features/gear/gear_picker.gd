@@ -76,7 +76,7 @@ func _ready() -> void:
 	col.add_child(detail)
 	var tools := HBoxContainer.new()
 	tools.custom_minimum_size.y = 58
-	tools.add_theme_constant_override(&"separation", 8)
+	tools.add_theme_constant_override(&"separation", 10)
 	col.add_child(tools)
 	upgrade_button = _button("강화", Gt.Kind.GREEN)
 	upgrade_button.font_size = 17
@@ -124,12 +124,15 @@ func _refresh() -> void:
 	var anyone := Save.gear_holder(chosen) != &""
 	var maxed := Save.gear_refine(chosen) >= Gear.MAX_REFINE
 	upgrade_button.disabled = not have or maxed
-	upgrade_button.label = "강화 최대" if maxed else "강화 (강화석 %d)" % Save.upgrade_cost(chosen)
+	upgrade_button.label = "강화 최대" if maxed else "강화"
+	upgrade_button.sublabel = "" if maxed else "강화석 %d" % Save.upgrade_cost(chosen)
 	dismantle_button.disabled = not have or anyone
-	dismantle_button.label = "착용 중" if have and anyone else "분해 (+%d)" % (Gear.STONES_FROM[Gear.grade_of(chosen)] * (1 + Save.gear_refine(chosen)))
+	dismantle_button.label = "착용 중" if have and anyone else "분해"
+	dismantle_button.sublabel = "" if have and anyone else "강화석 +%d" % (Gear.STONES_FROM[Gear.grade_of(chosen)] * (1 + Save.gear_refine(chosen)))
 	var grade := Gear.grade_of(chosen)
 	synth_button.disabled = not have or anyone or grade >= 4 or Save.synth_material(grade) < Gear.SYNTH_NEED
-	synth_button.label = "합성 최대" if grade >= 4 else ("착용 중" if have and anyone else "합성 %d/%d" % [mini(Save.synth_material(grade), Gear.SYNTH_NEED), Gear.SYNTH_NEED])
+	synth_button.label = "합성 최대" if grade >= 4 else ("착용 중" if have and anyone else "합성")
+	synth_button.sublabel = "" if grade >= 4 or (have and anyone) else "재료 %d/%d" % [mini(Save.synth_material(grade), Gear.SYNTH_NEED), Gear.SYNTH_NEED]
 	for b: GameButton in [upgrade_button, dismantle_button, synth_button]:
 		b.queue_redraw()
 	detail.queue_redraw()
@@ -191,6 +194,8 @@ func _process(delta: float) -> void:
 	if _toast_t > 0.0:
 		_toast_t -= delta
 		queue_redraw()
+	if cards.has(chosen):
+		cards[chosen].queue_redraw()  # 고른 카드 빛이 숨 쉬듯
 
 
 func _close() -> void:
@@ -215,13 +220,18 @@ func _paint_panel(ci: Control) -> void:
 
 
 func _paint_card(ci: Control, g: StringName) -> void:
-	var r := Rect2(Vector2(2, 6), ci.size - Vector2(4, 12))
+	var r := Rect2(Vector2(6, 10), ci.size - Vector2(12, 24))
 	var have := Save.has_gear(g)
-	if g == chosen:
-		Gt.pbox(ci, r.grow(4), Gt.YELLOW, Gt.INK, 2, false, false)
+	var sel := g == chosen
+	if sel:
+		r.position.y -= 6  # 고른 카드는 살짝 떠오른다
 	Gear.draw_card(ci, g, r, true, Save.gear_refine(g) if have else -1, not have)
 	if not have:
 		Gt.lock(ci, r.get_center() + Vector2(0, -r.size.y * 0.1), 22, Color("d8d2e2"))
+	if sel:
+		Gt.selected_frame(ci, r, Time.get_ticks_msec() / 1000.0)
+	else:
+		Gt.dim_other(ci, r)
 	var holder := Save.gear_holder(g)
 	if holder != &"":
 		var tag := Rect2(r.position + Vector2(-2, -6), Vector2(Gt.width("착용", 11) + 16, 20))

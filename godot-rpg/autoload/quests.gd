@@ -274,6 +274,32 @@ func claim_bonus() -> bool:
 	return true
 
 
+## 모두 받기: 끝난 메인(이어서 끝난 것까지)·일일·보너스를 한 번에. 받은 개수를 돌려준다
+func claim_all() -> int:
+	var n := 0
+	for i in 20:
+		if not claim_main():
+			break
+		n += 1
+	for d in DAILY:
+		if claim_daily(String(d["id"])):
+			n += 1
+	if claim_bonus():
+		n += 1
+	return n
+
+
+## 받을 수 있는 것이 몇 개인지(메인 1 + 일일 + 보너스)
+func claimable_count() -> int:
+	var n := 1 if main_done() else 0
+	for d in DAILY:
+		if daily_done(d) and not daily_claimed(d):
+			n += 1
+	if all_daily_claimed() and not bool(Save.quest.get("bonus", false)):
+		n += 1
+	return n
+
+
 # ── 보스 처치 기록(길 열림 판단) ──
 
 func boss_defeated(kind: String) -> bool:

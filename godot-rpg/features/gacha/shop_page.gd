@@ -228,7 +228,7 @@ func _paint_modes(ci: Control) -> void:
 
 
 func _paint_rates(ci: Control) -> void:
-	var chips := [[5, "3%"], [4, "17%"], [3, "80%"]]
+	var chips := [[5, "1%"], [4, "9%"], [3, "90%"]]
 	var gap := 8.0
 	var w := (ci.size.x - gap * 2.0) / 3.0
 	for i in chips.size():

@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://features/character/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/elf2_walk.png" id="2_walk"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/elf-face.png" id="3_faces"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/elf2-1.png" id="p1"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/elf2-2.png" id="p2"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/elf2-3.png" id="p3"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/elf2-4.png" id="p4"]
+
+[sub_resource type="AtlasTexture" id="face"]
+atlas = ExtResource("3_faces")
+region = Rect2(0, 144, 144, 144)
+
+[resource]
+script = ExtResource("1_script")
+id = &"elf2"
+display_name = "리아"
+title = "잎사귀의 빛 사제"
+rarity = 3
+element = 4
+attack_kind = 1
+walk_sheet = ExtResource("2_walk")
+face = SubResource("face")
+portraits = Array[Texture2D]([ExtResource("p1"), ExtResource("p2"), ExtResource("p3"), ExtResource("p4")])
+card_crop = Rect2(162, 80, 300, 375)
+trail_color = Color(1, 0.95, 0.6, 1)
+base_atk = 16
+atk_growth = 3.2
+base_hp = 130
+hp_growth = 15.0
+move_speed = 70.0
+skill_name = "성광의 비"
+skill_desc = "하늘에서 빛줄기를 내리쳐 넓은 범위를 정화한다"
+skill_cooldown = 9.0
+star_passives = Array[String](["빛 구슬 피해 +15%", "체력 +10%", "모아 쏘기 시간 -20%", "스킬 피해 +15%", "공격할 때마다 체력 1% 회복", "보스에게 주는 피해 +10%"])

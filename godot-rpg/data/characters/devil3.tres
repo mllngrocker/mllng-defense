@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://features/character/character_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/devil3_walk.png" id="2_walk"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/devil-face.png" id="3_faces"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/devil3-1.png" id="p1"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/devil3-2.png" id="p2"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/devil3-3.png" id="p3"]
+[ext_resource type="Texture2D" path="res://assets/snowshop/devil3-4.png" id="p4"]
+
+[sub_resource type="AtlasTexture" id="face"]
+atlas = ExtResource("3_faces")
+region = Rect2(0, 288, 144, 144)
+
+[resource]
+script = ExtResource("1_script")
+id = &"devil3"
+display_name = "실바"
+title = "은빛 용꼬리 마족"
+rarity = 4
+element = 1
+attack_kind = 0
+walk_sheet = ExtResource("2_walk")
+face = SubResource("face")
+portraits = Array[Texture2D]([ExtResource("p1"), ExtResource("p2"), ExtResource("p3"), ExtResource("p4")])
+card_crop = Rect2(103, 40, 270, 338)
+trail_color = Color(0.5, 1, 0.85, 1)
+base_atk = 20
+atk_growth = 3.7
+base_hp = 155
+hp_growth = 17.0
+move_speed = 76.0
+skill_name = "심연의 비"
+skill_desc = "깊은 바다의 물방울을 비처럼 퍼부어 적을 꿰뚫는다"
+skill_cooldown = 8.0
+star_passives = Array[String](["연타 피해 +20%", "치명타 확률 +8%", "꼬리로 휩쓸면 적을 밀어낸다", "공격력 +20%", "물 속성 스킬 피해 +25%", "적 처치 시 체력 3% 회복"])

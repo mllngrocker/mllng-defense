@@ -97,6 +97,14 @@ func try_cast(node := "a1") -> bool:
 		&"maid4": _shadow_raid()
 		&"fairy1": _petal_storm()
 		&"scarlet": _shadow_raid()
+		&"elf1": _leaf_whirl()
+		&"elf2": _judgement()
+		&"devil4": _petal_storm()
+		&"devil1": _earth_split()
+		&"elf3": _water_pillars()
+		&"elf4": _gale_dash()
+		&"devil2": _shadow_raid()
+		&"devil3": _ice_rain()
 		_: _flame_burst()
 	return true
 

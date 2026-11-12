@@ -10,6 +10,7 @@ var row_buttons: Dictionary[String, GameButton] = {}
 var bonus_row: DrawBox
 var bonus_button: GameButton
 var dungeon_box: DrawBox
+var claim_all_button: GameButton
 var ach_dots: Array[DrawBox] = []
 
 
@@ -88,8 +89,24 @@ func _ready() -> void:
 	col.add_child(dungeon_box)
 
 	var head := _box(func(ci: Control) -> void:
-		Gt.header(ci, Vector2(6, 26), "일일 퀘스트", "DAILY", 17)
-		Gt.text(ci, Vector2(ci.size.x - 6, 25), "매일 자정에 새로 시작", 12, Gt.NAVY_SOFT, 2, false), 36)
+		Gt.header(ci, Vector2(6, 30), "일일 퀘스트", "DAILY", 17)
+		Gt.text(ci, Vector2(ci.size.x - 138, 30), "매일 자정에 새로 시작", 11, Gt.NAVY_SOFT, 2, false), 46)
+	# 모두 받기: 끝난 메인·일일·보너스를 한 번에
+	claim_all_button = _button("모두 받기", Gt.Kind.GREEN)
+	claim_all_button.font_size = 15
+	claim_all_button.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
+	claim_all_button.offset_left = -126
+	claim_all_button.offset_right = 0
+	claim_all_button.offset_top = 4
+	claim_all_button.offset_bottom = -2
+	claim_all_button.pressed.connect(func() -> void:
+		var n := Quests.claim_all()
+		if n > 0:
+			Game.sfx(&"coin", -2.0, 0.0)
+			toast_requested.emit("보상 %d개를 모두 받았어요!" % n)
+		else:
+			toast_requested.emit("받을 보상이 없어요"))
+	head.add_child(claim_all_button)
 	col.add_child(head)
 
 	var scroll := ScrollContainer.new()
@@ -152,6 +169,9 @@ func refresh() -> void:
 	bonus_row.queue_redraw()
 	if dungeon_box:
 		dungeon_box.queue_redraw()
+	if claim_all_button:
+		claim_all_button.disabled = Quests.claimable_count() == 0
+		claim_all_button.queue_redraw()
 	for d in ach_dots:
 		d.queue_redraw()
 

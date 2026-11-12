@@ -39,7 +39,7 @@ func _ready() -> void:
 	_reset()
 	Save.pity = Gacha.PITY_5 - 1
 	var p := Gacha.pull(1, rng)
-	_check("50번째는 ★5 확정, 천장 초기화", int(p[0]["rarity"]) == 5 and Save.pity == 0)
+	_check("100번째는 ★5 확정, 천장 초기화", int(p[0]["rarity"]) == 5 and Save.pity == 0)
 
 	var counts := {3: 0, 4: 0, 5: 0}
 	_reset()
@@ -47,7 +47,7 @@ func _ready() -> void:
 		Save.pity = 0
 		counts[Gacha._roll_rarity(rng, false)] += 1
 	print("    확률 (4000번): ★5 %.1f%% · ★4 %.1f%% · ★3 %.1f%%" % [counts[5] / 40.0, counts[4] / 40.0, counts[3] / 40.0])
-	_check("확률이 대략 3% / 17% / 80%", absf(counts[5] / 40.0 - 3.0) < 1.5 and absf(counts[4] / 40.0 - 17.0) < 3.0)
+	_check("확률이 대략 1% / 9% / 90%", absf(counts[5] / 40.0 - 1.0) < 0.8 and absf(counts[4] / 40.0 - 9.0) < 2.5)
 
 	_reset()
 	_check("이미 있는 캐릭터면 별 조각 +10", Save.grant_character(&"kemo1") == "shard" and Save.shards_of(&"kemo1") == 10 and Save.stars_of(&"kemo1") == 0)
