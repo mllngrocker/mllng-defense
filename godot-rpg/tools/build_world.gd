@@ -1762,6 +1762,8 @@ func _scatter_props(parent: Node, start: Vector2i) -> void:
 	if cfg["ground"] == FOREST_GROUND:
 		smalls.append_array(FOREST)  # 숲은 짙은 나무를 섞는다
 	_scatter(start, int(cfg["big_trees"]), 1500, func(c: Vector2i) -> bool:
+		if snowy:
+			return _place_snow_cluster(parent, c)  # 눈 숲 덩어리 그림은 모서리가 네모나게 잘려서 전나무 두세 그루로
 		return _place_prop(parent, c, bigs[rng.randi() % bigs.size()], Vector2(18, 8), "BigTree"))
 	_scatter(start, int(cfg["trees"]), 4000, func(c: Vector2i) -> bool:
 		return _place_prop(parent, c, smalls[rng.randi() % smalls.size()], Vector2(12, 7), "Tree"))
@@ -1796,6 +1798,19 @@ func _scatter_props(parent: Node, start: Vector2i) -> void:
 			_sprite_prop(parent, desert_tex, Rect2i(POTS[rng.randi() % POTS.size()], Vector2i.ONE), Vector2(c * T) + Vector2(T / 2.0, T - 2.0), Vector2.ZERO, "Pot")
 			_block(c, Vector2i.ONE)
 			return true)
+
+
+## 전나무 두세 그루를 겹쳐 세운 무리(뒤 나무가 먼저, 앞 나무가 아래쪽에서 가린다)
+func _place_snow_cluster(parent: Node, c: Vector2i) -> bool:
+	if not _area_free(c - Vector2i.ONE, Vector2i(7, 6), true):
+		return false
+	var spots := [Vector2(1.6, 2.4), Vector2(3.6, 2.9), Vector2(2.5, 4.0)]
+	var n := 2 + rng.randi() % 2
+	for i in n:
+		var p: Vector2 = spots[i]
+		_prop(parent, SNOW_TREES[rng.randi() % SNOW_TREES.size()], Vector2(c * T) + p * T + Vector2(rng.randf_range(-2, 2), 0), Vector2(12, 7), "BigTree")
+	_block(c, Vector2i(5, 4))
+	return true
 
 
 ## 한 칸짜리 장식(꽃·뼈 등, 부딪힘 없음)

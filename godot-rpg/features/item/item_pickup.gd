@@ -60,7 +60,7 @@ func _draw() -> void:
 		Gt.icon(self, Gear.SLOT_ICONS[Gear.slot_of(gear_id)], c, 10.0)
 		return
 	draw_circle(c, 8.5 + sin(_t * 4.0), Color(1, 0.95, 0.6, 0.35))  # 반짝이는 빛
-	Gt.icon(self, Items.icon_of(item_id), c, 13.0)
+	Gt.icon(self, Items.icon_of(item_id), c, 13.0, Items.tint_of(item_id))
 
 
 func _on_body_entered(body: Node2D) -> void:

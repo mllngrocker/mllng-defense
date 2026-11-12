@@ -42,7 +42,7 @@ func _physics_process(delta: float) -> void:
 	if target == null or player.hp <= 0:
 		return
 	var to := target.global_position - player.global_position
-	if to.length() > (90.0 if Save.current().attack_kind == CharacterData.AttackKind.MAGIC else 22.0):
+	if to.length() > (90.0 if Save.current().attack_kind in [CharacterData.AttackKind.MAGIC, CharacterData.AttackKind.BOW] else 22.0):
 		if to.x < -4.0:
 			Input.action_press(&"move_left")
 		elif to.x > 4.0:

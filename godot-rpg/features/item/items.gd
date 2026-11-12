@@ -1,6 +1,6 @@
 class_name Items
 extends RefCounted
-## 가방 아이템: 마을 귀환서(마지막으로 들른 마을로), 회복 물약(체력 50%).
+## 가방 아이템: 마을 귀환서(마지막으로 들른 마을로), 회복 물약(체력 50%), 마나 물약(마나 50%).
 ## 몬스터가 가끔 떨어뜨리고(ItemPickup), 보스는 꼭 몇 개 준다. 가진 수는 Save.items, 가방 창은 ItemWindow.
 ## 스킬 책(트레이닝·마스터)도 가방에 보이지만 쓰는 곳은 로비 아바타의 스킬 창이다.
 
@@ -9,18 +9,19 @@ const DATA: Dictionary[StringName, Array] = {
 	&"return_scroll": ["마을 귀환서", "마지막으로 들른 마을로 순식간에 돌아간다", &"scroll"],
 	&"stone": ["강화석", "장비 강화에 쓴다 · 장비를 분해하면 나온다(사용은 로비 장비 창에서)", &"gem_yellow"],
 	&"potion": ["회복 물약", "체력을 50% 회복한다 · 자동 사냥 중엔 체력이 적으면 알아서 마신다", &"potion"],
+	&"mana_potion": ["마나 물약", "마나를 50% 회복한다 · 자동 사냥 중엔 마나가 적으면 알아서 마신다", &"potion", Color(0.45, 0.65, 1.0)],
 }
 const BOOKS: Dictionary[String, Array] = {
 	"training": ["트레이닝 북", "스킬 포인트 +1 · 로비 아바타의 스킬 창에서 쓴다", &"book"],
-	"master": ["마스터 북", "오의를 열고 스킬 상한을 10으로 · 로비 스킬 창에서 쓴다", &"book"],
+	"master": ["마스터 북", "스킬 레벨 상한을 15로 · 로비 스킬 창에서 쓴다", &"book"],
 }
 ## 가방 창에서 바로 쓸 수 있는 것(강화석은 장비 창에서 쓴다)
-const USABLE: Array[StringName] = [&"return_scroll", &"potion"]
+const USABLE: Array[StringName] = [&"return_scroll", &"potion", &"mana_potion"]
 ## 마을 맵(귀환서로 돌아갈 수 있는 곳)
 const TOWNS: Array[String] = ["village", "desert_town", "snow_town", "temple_town", "lava_town", "sky_town", "root_town", "mist_town"]
 ## 몬스터가 떨어뜨릴 확률(보스는 아래 BOSS_DROP)
-const DROP := {&"potion": 0.05, &"return_scroll": 0.025}
-const BOSS_DROP := {&"potion": 3, &"return_scroll": 2}
+const DROP := {&"potion": 0.05, &"mana_potion": 0.06, &"return_scroll": 0.025}
+const BOSS_DROP := {&"potion": 3, &"mana_potion": 3, &"return_scroll": 2}
 const POTION_HEAL := 0.5
 
 
@@ -30,6 +31,11 @@ static func name_of(id: StringName) -> String:
 
 static func icon_of(id: StringName) -> StringName:
 	return DATA[id][2]
+
+
+## 아이콘 물들이기(마나 물약은 파랑)
+static func tint_of(id: StringName) -> Color:
+	return DATA[id][3] if DATA.has(id) and DATA[id].size() > 3 else Color.WHITE
 
 
 ## 아이템 쓰기. 쓰면 true(가진 수는 Save.use_item이 줄인다)
@@ -43,6 +49,14 @@ static func use(id: StringName, tree: SceneTree) -> bool:
 				return false
 			player.heal(ceili(player.max_hp * POTION_HEAL))
 			Game.sfx(&"heal", -2.0, 0.0)
+			return true
+		&"mana_potion":
+			if player == null or player.hp <= 0 or player.mp >= player.max_mp:
+				return false
+			if not Save.use_item(id):
+				return false
+			player.add_mp(player.max_mp * POTION_HEAL)
+			Game.sfx(&"powerup", -4.0, 0.0)
 			return true
 		&"return_scroll":
 			if player == null or player.hp <= 0:

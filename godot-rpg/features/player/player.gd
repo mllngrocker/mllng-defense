@@ -23,6 +23,8 @@ const STYLES: Dictionary[int, Script] = {
 	CharacterData.AttackKind.COMBO: preload("res://features/player/attacks/combo_attack.gd"),
 	CharacterData.AttackKind.MAGIC: preload("res://features/player/attacks/magic_attack.gd"),
 	CharacterData.AttackKind.HEAVY: preload("res://features/player/attacks/heavy_attack.gd"),
+	CharacterData.AttackKind.BOW: preload("res://features/player/attacks/bow_attack.gd"),
+	CharacterData.AttackKind.DAGGER: preload("res://features/player/attacks/dagger_attack.gd"),
 }
 
 ## 비워 두면 저장된 "고른 캐릭터"로 나간다
@@ -31,6 +33,11 @@ const STYLES: Dictionary[int, Script] = {
 var data: CharacterData
 var level := 1
 var max_hp := 100
+## 마나: 스킬을 쓰면 든다(SkillCaster.MP_COST: 마법 캐릭터는 많이, 근접은 적게). 초당 MP_REGEN씩 차오른다
+var mp := 100.0
+var max_mp := 100
+const MP_REGEN := 3.0
+var _mp_shown := -1
 var hp := 100
 var atk := 10
 var weapon: StringName = &""  # 장착 무기(종류에 따라 공격 속도·범위·피해가 달라진다)
@@ -40,6 +47,10 @@ var anim_t := 0.0
 var attack_buffer := 0.0
 var dash_t := 0.0
 var dash_cd := 0.0
+var dash_max := 1  # 연속 구르기 횟수(암살자는 2)
+var dash_left := 1
+var haste_t := 0.0  # 가속(그림자 가속 스킬): 이동·공격 속도 +50%
+const HASTE := 1.5
 var dash_vec := Vector2.ZERO
 var ghost_t := 0.0
 var hurt_t := 0.0
@@ -79,6 +90,11 @@ func _ready() -> void:
 	hp = max_hp
 	atk = Save.atk_of(data.id) if Save.is_owned(data.id) else data.atk_at(level)
 	weapon = StringName(Save.equip.get(String(data.id), "")) if Save.is_owned(data.id) else &""
+	max_mp = mp_max_at(level)
+	mp = max_mp
+	_emit_mp.call_deferred()
+	dash_max = 2 if _assassin() else 1
+	dash_left = dash_max
 	Save.leveled.connect(_on_leveled)
 	sprite.texture = data.walk_sheet
 	Skins.apply(sprite.material as ShaderMaterial, data.id, Skins.has_skin(data.id))  # 7성 스킨 색
@@ -101,7 +117,12 @@ func _physics_process(delta: float) -> void:
 	if hp <= 0:
 		return
 	hurt_t = maxf(hurt_t - delta, 0.0)
+	if mp < max_mp:
+		add_mp(MP_REGEN * delta)
 	dash_cd -= delta
+	if dash_cd <= 0.0:
+		dash_left = dash_max
+	haste_t -= delta
 	attack_buffer -= delta
 	if Input.is_action_just_pressed(&"attack"):
 		attack_buffer = ATTACK_BUFFER
@@ -115,8 +136,14 @@ func _physics_process(delta: float) -> void:
 			input = _travel_drive(delta)
 	if auto and input == Vector2.ZERO and dash_t <= 0.0 and Game.travel.is_empty():
 		input = _auto_drive(delta)
-	style.physics(delta * Weapons.mod(weapon, "speed"))
-	var move := input * data.move_speed * speed_mult * style.move_scale
+	var fast := HASTE if haste_t > 0.0 else 1.0
+	style.physics(delta * Weapons.mod(weapon, "speed") * fast * (1.25 if _assassin() else 1.0))
+	var move := input * data.move_speed * speed_mult * style.move_scale * fast
+	if haste_t > 0.0 and input != Vector2.ZERO:
+		ghost_t -= delta
+		if ghost_t <= 0.0:
+			ghost_t = 0.06
+			_spawn_afterimage()
 	if dash_t <= 0.0 and skill_lock_t <= 0.0:
 		if Input.is_action_just_pressed(&"skill"):
 			skills.try_cast("a1")
@@ -147,7 +174,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			if input != Vector2.ZERO:
 				dir = _dir_from(input)
-			if Input.is_action_just_pressed(&"dash") and dash_cd <= 0.0:
+			if Input.is_action_just_pressed(&"dash") and dash_left > 0:
 				_start_dash(input)
 	if Input.is_action_just_released(&"attack"):
 		style.release()
@@ -156,6 +183,32 @@ func _physics_process(delta: float) -> void:
 	knockback = knockback.move_toward(Vector2.ZERO, 700.0 * delta)
 	move_and_slide()
 	_animate(delta, input != Vector2.ZERO and not style.busy)
+
+
+## 암살자(벨라): 연속 구르기 2번 · 단검 25% 빠르게
+func _assassin() -> bool:
+	return data != null and data.id == &"devil2"
+
+
+## 가속: sec초 동안 이동·공격 속도 +50%
+func haste(sec: float) -> void:
+	haste_t = maxf(haste_t, sec)
+
+
+## 최대 마나: 100 + 레벨마다 2
+static func mp_max_at(lv: int) -> int:
+	return 100 + lv * 2
+
+
+func add_mp(amount: float) -> void:
+	mp = clampf(mp + amount, 0.0, float(max_mp))
+	_emit_mp()
+
+
+func _emit_mp() -> void:
+	if int(mp) != _mp_shown:
+		_mp_shown = int(mp)
+		Events.player_mp_changed.emit(_mp_shown, max_mp)
 
 
 ## 몬스터 경험치로 레벨이 오르면: 능력치 다시 계산 + 체력 모두 회복 + 빛 기둥
@@ -177,6 +230,9 @@ func refresh_stats() -> void:
 	max_hp = Save.hp_of(data.id) if Save.is_owned(data.id) else data.hp_at(level)
 	atk = Save.atk_of(data.id) if Save.is_owned(data.id) else data.atk_at(level)
 	hp = maxi(1, roundi(max_hp * ratio))
+	max_mp = mp_max_at(level)
+	mp = minf(mp, max_mp)
+	_mp_shown = -1
 	Events.character_changed.emit(data, level)
 	Events.player_hp_changed.emit(hp, max_hp)
 
@@ -188,6 +244,8 @@ func refresh_stats() -> void:
 func _auto_drive(delta: float) -> Vector2:
 	if hp < max_hp * 0.35 and Save.item_count(&"potion") > 0:
 		Items.use(&"potion", get_tree())  # 체력이 적으면 물약
+	if mp < max_mp * 0.25 and Save.item_count(&"mana_potion") > 0:
+		Items.use(&"mana_potion", get_tree())  # 마나가 적으면 마나 물약
 	for k in _auto_skip.keys():
 		_auto_skip[k] -= delta
 		if _auto_skip[k] <= 0.0:
@@ -202,7 +260,7 @@ func _auto_drive(delta: float) -> Vector2:
 	var v := _auto_target.global_position - global_position
 	var d := v.length()
 	var is_enemy := _auto_target.is_in_group(&"enemies")
-	var reach := 4.0 if not is_enemy else (75.0 if data.attack_kind == 1 else 16.0)  # 마법은 떨어져서 쏜다
+	var reach := 4.0 if not is_enemy else (75.0 if data.attack_kind in [CharacterData.AttackKind.MAGIC, CharacterData.AttackKind.BOW] else 16.0)  # 마법·활은 떨어져서 쏜다
 	# 1.5초 동안 가까워지지 않으면 잠깐 포기하고 다른 것으로
 	_auto_check += delta
 	if d < _auto_best - 2.0:
@@ -406,7 +464,10 @@ func strike(mult: float, knock: float) -> int:
 func hit(body: Node2D, mult: float, knock: float, from: Vector2) -> void:
 	var amount := float(atk) * mult * randf_range(0.9, 1.1)
 	knock *= Weapons.mod(weapon, "knock")
-	var crit := randf() < (Save.crit_of(data.id) if Save.is_owned(data.id) else CRIT_CHANCE)
+	var crit_rate := Save.crit_of(data.id) if Save.is_owned(data.id) else CRIT_CHANCE
+	if data.attack_kind == CharacterData.AttackKind.DAGGER:
+		crit_rate += 0.1  # 도적·암살자: 급소를 노린다
+	var crit := randf() < crit_rate
 	if crit:
 		amount *= CRIT_MULT
 	body.take_hit(maxi(1, roundi(amount)), from, knock, crit)
@@ -491,6 +552,7 @@ func _start_dash(input: Vector2) -> void:
 	dash_vec = input.normalized() if input != Vector2.ZERO else DIR_VEC[dir]
 	dash_t = DASH_TIME
 	dash_cd = DASH_COOLDOWN
+	dash_left -= 1
 	Game.sfx(&"dash", -6.0)
 
 

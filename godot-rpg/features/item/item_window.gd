@@ -123,7 +123,8 @@ func _draw() -> void:
 		# 아이콘 칸 + 개수
 		var ic := Rect2(r.position + Vector2(10, 9), Vector2(r.size.y - 18, r.size.y - 18))
 		Gt.pbox(self, ic, Color("fff4d6"), Gt.INK, 1, false, false)
-		Gt.icon(self, info[2], ic.get_center(), ic.size.x * 0.8, Color.WHITE if n > 0 else Color(1, 1, 1, 0.4))
+		var tint := Items.tint_of(rows[i][1]) if is_item else Color.WHITE
+		Gt.icon(self, info[2], ic.get_center(), ic.size.x * 0.8, tint if n > 0 else Color(tint, 0.4))
 		Gt.text(self, Vector2(ic.end.x - 3, ic.end.y - 4), "%d" % n, 14, Color.WHITE, 2, true, 4, Gt.INK)
 		# 이름 · 설명
 		var tx := ic.end.x + 12

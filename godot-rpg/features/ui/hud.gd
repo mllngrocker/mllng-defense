@@ -10,13 +10,15 @@ const HP_RED := Color("ff4d5e")
 const CUTIN_TIME := 1.1
 const TITLE_TIME := 2.6
 const NOTE_TIME := 2.0
-const TRACKER := Rect2(10, 90, 270, 66)
+const TRACKER := Rect2(10, 100, 270, 66)
 
 var auto_button: IconButton
 var data: CharacterData
 var level := 1
 var hp := 0
 var max_hp := 0
+var mp := 0
+var max_mp := 0
 var kills := 0
 var _shown_hp := 0.0  # 체력이 줄 때 하얀 잔상이 늦게 따라온다
 var _cutin: CharacterData  # 스킬 컷인(일러스트 + 스킬 이름 띠)
@@ -43,6 +45,11 @@ func _ready() -> void:
 	canvas.draw.connect(_draw_hud)
 	Events.character_changed.connect(_on_character_changed)
 	Events.player_hp_changed.connect(_on_hp_changed)
+	Events.player_mp_changed.connect(func(m: int, mm: int) -> void:
+		mp = m
+		max_mp = mm
+		canvas.queue_redraw())
+	Events.enemy_died.connect(func(_k: String) -> void: canvas.queue_redraw.call_deferred())  # 경험치 줄
 	Events.enemy_died.connect(_on_enemy_died)
 	Events.player_died.connect(_on_player_died)
 	Events.map_entered.connect(func(title: String) -> void:
@@ -228,6 +235,26 @@ func _draw_profile(ci: Control) -> void:
 			ci.draw_line(Vector2(x + 6, bar.position.y + 2), Vector2(x - 2, bar.end.y - 2), Color(Gt.INK, 0.35), 1.0)
 		Gt.text(ci, Vector2(bar.position.x + 14, bar.position.y + 15), "HP", 11, Color("ffe36b"), 0, true, 3, Gt.INK, true)
 		Gt.title(ci, Vector2(bar.end.x - 14, bar.position.y + 15), "%d / %d" % [hp, max_hp], 12, Color.WHITE, 2)
+	# 마나바(체력바 아래, 조금 얇게)
+	var mb := Rect2(bar.position.x - 3, bar.end.y + 5, bar.size.x - 14, 13)
+	Gt.skew_box(ci, mb.grow(2), 6, Gt.INK, Gt.INK, Gt.INK, 0.0)
+	Gt.skew_box(ci, mb, 5, Color("1f2440"), Color("2c3358"), Color.TRANSPARENT, 0.0)
+	if max_mp > 0:
+		var mc := mb.size.x * clampf(float(mp) / max_mp, 0.0, 1.0)
+		if mc > 2.0:
+			Gt.skew_box(ci, Rect2(mb.position, Vector2(mc, mb.size.y)), 5, Color("7fc8ff"), Color("2f6cf0"), Color.TRANSPARENT, 0.0)
+			Gt.skew_box(ci, Rect2(mb.position + Vector2(3, 2), Vector2(maxf(mc - 6, 0), 2)), 1, Color(1, 1, 1, 0.45), Color(1, 1, 1, 0.1), Color.TRANSPARENT, 0.0)
+		Gt.text(ci, Vector2(mb.position.x + 12, mb.position.y + 11), "MP", 10, Color("bfe4ff"), 0, true, 3, Gt.INK, true)
+		Gt.text(ci, Vector2(mb.end.x - 12, mb.position.y + 11), "%d / %d" % [mp, max_mp], 10, Color.WHITE, 2, true, 3, Gt.INK)
+	# 경험치(가는 노란 줄): 다음 레벨까지
+	if data and Save.is_owned(data.id):
+		var lv := Save.level_of(data.id)
+		var xr := 1.0 if lv >= Save.MAX_LEVEL else Save.exp_of(data.id) / float(Save.exp_need(lv))
+		var xb := Rect2(c.x - r + 4, mb.end.y + 6, bar.end.x - (c.x - r + 4), 5)
+		ci.draw_rect(xb.grow(1), Gt.INK)
+		ci.draw_rect(xb, Color("3a3046"))
+		ci.draw_rect(Rect2(xb.position, Vector2(xb.size.x * clampf(xr, 0.0, 1.0), xb.size.y)), Color("ffd84a"))
+		Gt.text(ci, Vector2(xb.end.x + 4, xb.end.y + 3), "EXP %.1f%%" % (xr * 100.0), 9, Color("ffe9a0"), 0, true, 3, Gt.INK)
 
 
 ## 오른쪽 위(로비 버튼 왼쪽): 처치 수 · 골드 · 보석 칸

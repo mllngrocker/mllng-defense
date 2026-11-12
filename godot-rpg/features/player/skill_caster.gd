@@ -69,10 +69,27 @@ func _physics_process(delta: float) -> void:
 			_orbit[i].rotation = a * 2.0
 
 
+## 스킬 마나 소모: 마법 캐릭터(원거리 마법)는 많이, 근거리 연타·묵직한 캐릭터는 적게
+const MP_COST := {
+	"magic": {"a1": 30, "a2": 42, "a3": 70},
+	"melee": {"a1": 14, "a2": 20, "a3": 36},
+}
+
+
+static func mp_cost(node: String, attack_kind := 0) -> int:
+	return int(MP_COST["magic" if attack_kind == CharacterData.AttackKind.MAGIC else "melee"].get(node, 20))
+
+
 ## 스킬 사용(node: a1 고유기 · a2 · a3 오의). 안 배웠거나 재사용 대기 중이면 false.
 func try_cast(node := "a1") -> bool:
 	if not has_skill(node) or float(cds.get(node, 0.0)) > 0.0 or player.hp <= 0:
 		return false
+	var cost := mp_cost(node, data.attack_kind)
+	if player.mp < cost:
+		if not player.auto:
+			Events.notice.emit("마나 부족", "마나 %d 필요 · 가방의 마나 물약" % cost)
+		return false
+	player.add_mp(-cost)
 	var owned := Save.is_owned(data.id)
 	cds[node] = SkillTree.cooldown(data.id, node) if owned else data.skill_cooldown
 	cooldown = cds["a1"]
@@ -104,6 +121,7 @@ func try_cast(node := "a1") -> bool:
 		&"elf3": _thorn_rise()
 		&"elf4": _gale_charge()
 		&"devil2": _dark_wings()
+		&"haste": _haste()
 		&"devil3": _abyss_rain()
 		_: _flame_burst()
 	return true
@@ -579,3 +597,14 @@ func _abyss_rain() -> void:
 		hit_all(targets, 1.0, 70.0, player.global_position)
 		Game.sfx(&"ice_shot", -4.0)
 		Game.add_shake(2.5)
+
+
+## 벨라 2번째: 그림자 가속 — 4초 동안 이동·공격 속도 +50%(잔상), 구르기도 바로 다시 채운다
+func _haste() -> void:
+	player.haste(4.0)
+	player.dash_left = player.dash_max
+	player.dash_cd = 0.0
+	var c := player.body_center()
+	fx(SMOKE, 6, c, 20.0, 1.4, Color(0.75, 0.15, 0.3))
+	fx(CIRCLE, 4, c, 14.0, 2.0, Color(0.9, 0.2, 0.35, 0.8))
+	Game.sfx(&"powerup", -2.0, 0.0)

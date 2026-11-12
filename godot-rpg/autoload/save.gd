@@ -55,7 +55,7 @@ var settings: Dictionary = {"bgm": 0.8, "sfx": 0.9, "shake": true}
 ## 가진 책 {"training": 수, "master": 수}
 var books: Dictionary = {"training": 0, "master": 0}
 ## 가방 아이템 {id: 수}(Items.DATA). 처음엔 귀환서 3·물약 5
-const START_ITEMS := {"return_scroll": 3, "potion": 5}
+const START_ITEMS := {"return_scroll": 3, "potion": 5, "mana_potion": 5}
 var items: Dictionary = START_ITEMS.duplicate()
 ## 가진 장비 {id: 재련 수}(Gear.DATA), 캐릭터별 낀 장비 {캐릭터: {부위: id}}
 var gear: Dictionary = {}

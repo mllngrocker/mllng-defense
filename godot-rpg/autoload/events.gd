@@ -3,6 +3,7 @@ extends Node
 
 signal character_changed(data: CharacterData, level: int)
 signal player_hp_changed(hp: int, max_hp: int)
+signal player_mp_changed(mp: int, max_mp: int)
 signal player_died
 signal enemy_died(kind: String)
 signal skill_cast(data: CharacterData)
