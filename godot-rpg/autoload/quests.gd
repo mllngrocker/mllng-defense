@@ -11,15 +11,15 @@ const DESERT_KINDS: Array[String] = ["snake", "lizard", "mole", "eye", "cyclope"
 ## 지역별 몬스터(처치 퀘스트 대상 "snow"·"temple"·"lava"·"hell"·"south")
 const REGION_KINDS := {
 	"desert": DESERT_KINDS,
-	"south": ["kappa", "lantern", "rat", "spider", "bluebat", "axolot", "butterfly", "octopus", "racoon", "spider_queen"],
-	"snow": ["panda", "bear", "ice_skull", "frost_spirit", "snow_bat", "snow_mouse", "yeti_king"],
+	"south": ["ogre", "wing_eye", "poison_shroom", "goblin", "kappa", "lantern", "rat", "spider", "bluebat", "axolot", "butterfly", "octopus", "racoon", "spider_queen"],
+	"snow": ["blue_beast", "panda", "bear", "ice_skull", "frost_spirit", "snow_bat", "snow_mouse", "yeti_king"],
 	"temple": ["blue_axolot", "deep_octopus", "green_octopus", "red_octopus", "jump_fish", "kappa_red", "kraken"],
-	"lava": ["flam", "flam2", "dragon", "dragon_y", "trex", "grey_trex", "heart_red", "flame_dragon"],
-	"hell": ["lantern_red", "demon_eye", "dragon", "grey_trex", "demon_lord"],
-	"sky": ["bamboo", "bamboo_y", "gold_racoon", "heart_green", "sky_spirit", "sky_bat", "giant_soul"],
-	"root": ["root_larva", "root_larva_b", "root_mollusc", "root_mole", "root_shroom", "root_beast", "root_worm"],
-	"garden": ["garden_moth", "garden_owl", "garden_owl2", "garden_lizard", "garden_lizard2", "garden_snake", "garden_spider", "garden_beast", "black_gardener"],
-	"mist": ["mist_octo", "mist_fish", "mist_skull", "mist_wisp", "mist_lantern", "mist_slime", "mist_snake", "mist_apostle"],
+	"lava": ["dragon_man", "crest_lizard", "flam", "flam2", "dragon", "dragon_y", "trex", "grey_trex", "heart_red", "flame_dragon"],
+	"hell": ["pink_witch", "red_armor", "skel_knight", "spike_fiend", "lantern_red", "demon_eye", "dragon", "grey_trex", "demon_lord"],
+	"sky": ["bird_man", "war_rooster", "bamboo", "bamboo_y", "gold_racoon", "heart_green", "sky_spirit", "sky_bat", "giant_soul"],
+	"root": ["horn_beast", "root_larva", "root_larva_b", "root_mollusc", "root_mole", "root_shroom", "root_beast", "root_worm"],
+	"garden": ["grass_zombie", "garden_moth", "garden_owl", "garden_owl2", "garden_lizard", "garden_lizard2", "garden_snake", "garden_spider", "garden_beast", "black_gardener"],
+	"mist": ["shade", "mist_octo", "mist_fish", "mist_skull", "mist_wisp", "mist_lantern", "mist_slime", "mist_snake", "mist_apostle"],
 }
 
 ## 이 메인 퀘스트 보상을 받으면 펫도 준다

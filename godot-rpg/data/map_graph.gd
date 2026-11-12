@@ -38,6 +38,7 @@ const DATA := {
 		],
 		"mobs": [
 			"spider_queen",
+			"wing_eye",
 			"spider",
 			"bluebat",
 			"mole"
@@ -205,6 +206,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"grass_zombie",
 			"garden_moth",
 			"garden_lizard"
 		],
@@ -334,6 +336,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"spike_fiend",
 			"lantern_red",
 			"demon_eye"
 		],
@@ -378,6 +381,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"skel_knight",
 			"grey_trex",
 			"lantern_red"
 		],
@@ -400,6 +404,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"red_armor",
 			"demon_eye",
 			"dragon"
 		],
@@ -422,6 +427,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"pink_witch",
 			"demon_eye",
 			"lantern_red"
 		],
@@ -491,6 +497,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"crest_lizard",
 			"flam",
 			"heart_red"
 		],
@@ -579,6 +586,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"dragon_man",
 			"grey_trex",
 			"dragon_y"
 		],
@@ -713,6 +721,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"shade",
 			"mist_lantern",
 			"mist_wisp"
 		],
@@ -864,6 +873,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"horn_beast",
 			"root_larva",
 			"root_larva_b",
 			"root_beast"
@@ -956,6 +966,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"goblin",
 			"lantern",
 			"rat",
 			"skull",
@@ -1001,6 +1012,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"war_rooster",
 			"bamboo",
 			"heart_green",
 			"sky_bat"
@@ -1024,6 +1036,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"bird_man",
 			"bamboo_y",
 			"gold_racoon",
 			"sky_bat"
@@ -1228,6 +1241,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"blue_beast",
 			"bear",
 			"panda",
 			"frost_spirit"
@@ -1347,6 +1361,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"poison_shroom",
 			"kappa",
 			"slime",
 			"lantern"
@@ -1557,6 +1572,7 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"ogre",
 			"axolot",
 			"butterfly",
 			"racoon"

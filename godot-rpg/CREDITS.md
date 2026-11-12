@@ -16,3 +16,8 @@ git에 올리지 않는 소재(`assets/_zips`, `assets/_raw`, `assets/vendor`)�
 - BeyonderBoy「Cosmo Pixels - Top Down Lava Tileset」무료판 (https://beyonderboy.itch.io/top-down-lava-tileset-16x16) — 나중 지옥 맵용(`assets/vendor/lava/`). 어떤 프로젝트에도 사용·수정 OK, 재판매 금지, 출처 표기 선택
 - 沼から現れた フリーモンスター — 沼から現れた (http://kb147.web.fc2.com/)
 - スノーショップ「魔族☆立ち絵＆歩行グラ」(https://booth.pm/ja/items/5513621)·「エルフ☆立ち絵＆歩行グラ」(https://booth.pm/ja/items/5813207) — `assets/snowshop/devil*`·`elf*` (같은 작가 약관: 상업 이용·수정 OK)
+- LuizMelo「Monsters Creatures Fantasy」(https://luizmelo.itch.io/monsters-creatures-fantasy) — CC0. `assets/monsters2/` 고블린·독버섯 전사·날개 눈알·해골 검사
+- LimeZu「RPG Arsenal」(https://limezu.itch.io/rpg-arsenal) — CC BY 4.0, 출처 표기: LimeZu (https://limezu.itch.io/). `assets/weapons2/` 무기 아이콘 18종
+- Willibab「Simple Weapon Icons」(https://willibab.itch.io/willibabs-simple-weapon-icons) — 상업·비상업 무료. `assets/vendor/willibab/`(git 제외) 무기 아이콘 4종
+- 10KStudios「Free Pixel Art Enemy」(https://10kstudios.itch.io/free-pixel-art-enemy) — 상업 OK·수정 OK·재배포 금지. `assets/vendor/monsters/`(git 제외) 그림자 망령
+- BDragon1727「Topdown Monsters Part 1」무료판 (https://bdragon1727.itch.io/topdown-monsters-part-1) — 비상업 무료·수정 OK·재배포 금지(상업화하면 구매 필요). `assets/vendor/monsters/`(git 제외) 몬스터 11종

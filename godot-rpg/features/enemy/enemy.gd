@@ -22,6 +22,8 @@ const HEART_PICKUP := preload("res://features/pickup/heart_pickup.tscn")
 @export var gold_reward: int = 5
 @export_range(0.0, 1.0) var gem_chance: float = 0.15
 @export var gem_reward: int = 5
+## 0보다 크면 옆모습 한 줄 시트(걷기 칸 수). 방향은 좌우 뒤집기로
+@export var side_frames: int = 0
 
 var hp: int
 var home: Vector2
@@ -170,7 +172,7 @@ func _die() -> void:
 func _draw() -> void:
 	if bar_t <= 0.0 or hp <= 0:
 		return
-	var top := Vector2(-BAR_WIDTH / 2.0, sprite.offset.y - 12.0)
+	var top := Vector2(-BAR_WIDTH / 2.0, sprite.offset.y * sprite.scale.y - 12.0)
 	draw_rect(Rect2(top - Vector2.ONE, Vector2(BAR_WIDTH + 2, 4)), Color("181425"))
 	draw_rect(Rect2(top, Vector2(BAR_WIDTH * hp / float(max_hp), 2)), Color("e43b44"))
 
@@ -220,7 +222,12 @@ func _animate(delta: float, move: Vector2) -> void:
 		else:
 			dir_col = 0 if move.y > 0.0 else 1
 	anim_t += delta
-	sprite.frame = (int(anim_t * anim_fps) % 4) * 4 + dir_col
+	if side_frames > 0:
+		sprite.frame = int(anim_t * anim_fps) % side_frames
+		if absf(move.x) > 1.0:
+			sprite.flip_h = move.x < 0.0
+	else:
+		sprite.frame = (int(anim_t * anim_fps) % 4) * 4 + dir_col
 	if kind == Kind.FLYER or kind == Kind.GHOST:
 		sprite.offset = base_offset + Vector2(0, sin(life_t * 5.0) * 2.0)
 

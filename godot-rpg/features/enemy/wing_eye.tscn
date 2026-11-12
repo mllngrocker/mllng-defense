@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/monsters2/wing_eye.png" id="2_tex"]
+
+[node name="WingEye" instance=ExtResource("1_base")]
+kind = 2
+max_hp = 836
+speed = 48.0
+damage = 32
+chase_range = 120.0
+gold_reward = 36
+gem_chance = 0.2
+gem_reward = 10
+drop_chance = 0.3
+anim_fps = 12.0
+side_frames = 8
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource("2_tex")
+scale = Vector2(0.4848, 0.4848)
+offset = Vector2(0, -15.5)
+hframes = 8
+vframes = 1

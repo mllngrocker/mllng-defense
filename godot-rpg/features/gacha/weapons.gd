@@ -1,6 +1,6 @@
 class_name Weapons
 extends RefCounted
-## 무기 20종(Ravenmore 손그림 아이콘, assets/vendor/ravenmore — 재배포 금지라 git 제외): 이름·등급·공격력·치명타 확률.
+## 무기 42종(Ravenmore 손그림 아이콘 + LimeZu·Willibab 도트 아이콘, assets/vendor/ravenmore — 재배포 금지라 git 제외): 이름·등급·공격력·치명타 확률.
 ## 같은 무기를 또 뽑으면 재련 +1(최대 5), 재련마다 공격력 +25%. 재련이 다 차면 골드로 바꿔 준다.
 ## 캐릭터 한 명에 무기 하나를 장착한다(Save.equip).
 
@@ -31,6 +31,29 @@ const DATA: Dictionary[StringName, Array] = {
 	&"sickle": ["농부의 낫", 3, 5, 0.02, "밭일하다 들고 나왔다"],
 	&"mace": ["가시 철퇴", 3, 6, 0.01, "둔탁하지만 확실하다"],
 	&"wand": ["견습 마법봉", 3, 4, 0.03, "마법 학교 입학 선물"],
+	# 2차 추가(LimeZu RPG Arsenal · Willibab 도트 아이콘)
+	&"bronze_sword": ["청동 검", 3, 5, 0.02, "대장간 첫 작품인 단단한 청동 검"],
+	&"hand_axe": ["손도끼", 3, 7, 0.0, "한 손에 쏙 들어오는 작은 도끼"],
+	&"harpoon": ["어부의 작살", 3, 6, 0.01, "푸른 해변 어부가 쓰던 작살"],
+	&"slingshot": ["나무 새총", 3, 5, 0.03, "돌멩이도 아프게 날아간다"],
+	&"amber_staff": ["호박 지팡이", 3, 4, 0.03, "끝에 호박 구슬이 달린 지팡이"],
+	&"red_fan": ["붉은 부채", 3, 5, 0.04, "휘두르면 매운 바람이 인다"],
+	&"iron_hammer": ["쇠망치", 3, 7, 0.0, "대장장이의 손때 묻은 망치"],
+	&"sapphire_blade": ["사파이어 검", 4, 14, 0.05, "푸른 보석을 박은 기사의 검"],
+	&"jade_blade": ["비취 검", 4, 14, 0.05, "숲의 기운이 깃든 초록 보석 검"],
+	&"frost_feather": ["서리 깃 칼날", 4, 13, 0.08, "얼음새의 깃털처럼 가볍고 차갑다"],
+	&"ruby_staff": ["루비 지팡이", 4, 15, 0.02, "불꽃 주문이 잘 듣는 붉은 지팡이"],
+	&"gold_axes": ["황금 쌍도끼", 4, 16, 0.01, "양날 모두 황금으로 벼린 도끼"],
+	&"frost_trident": ["서리 작살", 4, 14, 0.03, "찌른 자리에 서리가 낀다"],
+	&"violet_fan": ["보랏빛 부채", 4, 13, 0.06, "밤바람을 부르는 마법 부채"],
+	&"gold_spear": ["황금 장식창", 4, 14, 0.04, "왕궁 근위병의 화려한 창"],
+	&"crystal_flail": ["수정 철퇴", 4, 15, 0.02, "수정 가시가 박힌 철퇴"],
+	&"gold_cross": ["황금 십자검", 5, 24, 0.1, "성기사단의 보물로 전해지는 검"],
+	&"phoenix_blade": ["불사조 깃 대검", 5, 25, 0.12, "불사조의 깃털로 벼려 꺼지지 않는 불꽃"],
+	&"sun_scepter": ["태양의 홀", 5, 26, 0.05, "한낮의 햇빛을 담아 둔 홀"],
+	&"platinum_axe": ["백금 전부", 5, 30, 0.03, "거인도 한 번에 쓰러뜨리는 큰 도끼"],
+	&"holy_lance": ["성창", 5, 26, 0.08, "빛의 신전에 꽂혀 있던 창"],
+	&"jade_glaive": ["비취 대창", 5, 27, 0.07, "용의 비늘을 닮은 초록 날 대창"],
 	# 보스를 처음 잡으면 받는 무기(뽑기에서는 안 나온다): [.., true]
 	&"slime_scepter": ["슬라임 왕의 홀", 5, 20, 0.04, "말랑하지만 묵직한 왕의 홀", true],
 	&"crystal_fang": ["수정 송곳니", 5, 26, 0.15, "거미 여왕의 수정 송곳니로 만든 단검", true],
@@ -46,6 +69,32 @@ const DATA: Dictionary[StringName, Array] = {
 }
 const MAX_ENHANCE := 20
 const ENHANCE_BONUS := 0.08  # 강화 1마다 공격력 +8%
+
+## 도트 아이콘 무기는 그림 위치가 따로 있다
+const TEX_PATH: Dictionary[StringName, String] = {
+	&"bronze_sword": "res://assets/weapons2/bronze_sword.png",
+	&"hand_axe": "res://assets/weapons2/hand_axe.png",
+	&"harpoon": "res://assets/weapons2/harpoon.png",
+	&"slingshot": "res://assets/weapons2/slingshot.png",
+	&"amber_staff": "res://assets/weapons2/amber_staff.png",
+	&"red_fan": "res://assets/weapons2/red_fan.png",
+	&"iron_hammer": "res://assets/vendor/willibab/iron_hammer.png",
+	&"sapphire_blade": "res://assets/weapons2/sapphire_blade.png",
+	&"jade_blade": "res://assets/weapons2/jade_blade.png",
+	&"frost_feather": "res://assets/weapons2/frost_feather.png",
+	&"ruby_staff": "res://assets/weapons2/ruby_staff.png",
+	&"gold_axes": "res://assets/weapons2/gold_axes.png",
+	&"frost_trident": "res://assets/weapons2/frost_trident.png",
+	&"violet_fan": "res://assets/weapons2/violet_fan.png",
+	&"gold_spear": "res://assets/vendor/willibab/gold_spear.png",
+	&"crystal_flail": "res://assets/vendor/willibab/crystal_flail.png",
+	&"gold_cross": "res://assets/weapons2/gold_cross.png",
+	&"phoenix_blade": "res://assets/weapons2/phoenix_blade.png",
+	&"sun_scepter": "res://assets/weapons2/sun_scepter.png",
+	&"platinum_axe": "res://assets/weapons2/platinum_axe.png",
+	&"holy_lance": "res://assets/weapons2/holy_lance.png",
+	&"jade_glaive": "res://assets/vendor/willibab/jade_glaive.png",
+}
 
 static var _tex: Dictionary[StringName, Texture2D] = {}
 
@@ -97,7 +146,7 @@ static func atk_of(id: StringName, refine: int, enhance := 0) -> int:
 
 static func texture(id: StringName) -> Texture2D:
 	if not _tex.has(id):
-		_tex[id] = load(TEX_DIR % id)
+		_tex[id] = load(TEX_PATH.get(id, TEX_DIR % id))
 	return _tex[id]
 
 

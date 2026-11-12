@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/monsters2/goblin.png" id="2_tex"]
+
+[node name="Goblin" instance=ExtResource("1_base")]
+kind = 0
+max_hp = 891
+speed = 44.0
+damage = 34
+chase_range = 110.0
+gold_reward = 36
+gem_chance = 0.2
+gem_reward = 10
+drop_chance = 0.3
+anim_fps = 10.0
+side_frames = 8
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource("2_tex")
+scale = Vector2(0.5789, 0.5789)
+offset = Vector2(0, -18.0)
+hframes = 8
+vframes = 1
