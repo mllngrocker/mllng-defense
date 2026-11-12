@@ -74,6 +74,9 @@ func _physics_process(delta: float) -> void:
 		return
 	life_t += delta
 	stun_t -= delta
+	_burn_update(delta)
+	if hp <= 0:
+		return
 	if bar_t > 0.0:
 		bar_t -= delta
 		if bar_t <= 0.0:
@@ -131,6 +134,32 @@ func _attack_update(delta: float, to_player: Vector2) -> void:
 	if atk_t >= ATTACK_TIME:
 		atk_t = -1.0
 		atk_cd = randf_range(1.0, 1.8)
+
+
+## 화상(스칼렛 불꽃 각인): 0.5초마다 tick 피해, sec초 동안
+var burn_t := 0.0
+var burn_dmg := 0
+var _burn_tick := 0.0
+
+
+func burn(dmg: int, sec: float) -> void:
+	burn_dmg = maxi(burn_dmg, dmg)
+	burn_t = maxf(burn_t, sec)
+
+
+func _burn_update(delta: float) -> void:
+	if burn_t <= 0.0:
+		return
+	burn_t -= delta
+	_burn_tick -= delta
+	if _burn_tick > 0.0:
+		return
+	_burn_tick = 0.5
+	hp -= burn_dmg
+	DamageNumber.spawn(_effects_parent(), global_position + Vector2(randf_range(-5, 5), -14), burn_dmg, false, "%d", Color("ff8a3a"))
+	Fx.spawn(_effects_parent(), preload("res://assets/ninja/fx/flame.png"), 8, global_position + Vector2(0, -8), 18.0).scale = Vector2.ONE * 0.6
+	if hp <= 0:
+		_die()
 
 
 func take_hit(amount: int, from: Vector2, knock := 210.0, crit := false) -> void:

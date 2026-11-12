@@ -33,4 +33,6 @@ move_speed = 66.0
 skill_name = "질풍 돌격"
 skill_desc = "바람처럼 앞으로 돌진하며 지나간 적을 벤다"
 skill_cooldown = 9.0
+unique_name = "질풍의 수호"
+unique_desc = "구르면 1.5초 동안 받는 피해 -50%, 다음 공격이 돌풍이 되어 주변을 넓게 휩쓴다"
 star_passives = Array[String](["내려치기 피해 +15%", "체력 +15%", "구르기 재사용 -20%", "공격력 +15%", "돌진 거리 +25%", "체력이 50% 이하면 받는 피해 -15%"])

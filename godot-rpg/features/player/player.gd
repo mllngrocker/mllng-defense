@@ -49,6 +49,11 @@ var dash_t := 0.0
 var dash_cd := 0.0
 var dash_max := 1  # 연속 구르기 횟수(암살자는 2)
 var dash_left := 1
+var heat := 0  # 스칼렛 불꽃 각인: 맞힌 횟수
+var ignite_t := 0.0  # 불타는 시간
+const HEAT_MAX := 12
+var gale_guard_t := 0.0  # 로웬 질풍의 수호: 받는 피해 -50%
+var gale_ready := false  # 로웬: 다음 공격이 돌풍
 var haste_t := 0.0  # 가속(그림자 가속 스킬): 이동·공격 속도 +50%
 const HASTE := 1.5
 var dash_vec := Vector2.ZERO
@@ -123,6 +128,13 @@ func _physics_process(delta: float) -> void:
 	if dash_cd <= 0.0:
 		dash_left = dash_max
 	haste_t -= delta
+	gale_guard_t -= delta
+	if ignite_t > 0.0:
+		ignite_t -= delta
+		ghost_t -= delta
+		if ghost_t <= 0.0:
+			ghost_t = 0.12
+			Fx.spawn(fx_parent(), preload("res://assets/ninja/fx/flame.png"), 8, global_position + Vector2(randf_range(-6, 6), -4), 16.0).scale = Vector2.ONE * 0.7
 	attack_buffer -= delta
 	if Input.is_action_just_pressed(&"attack"):
 		attack_buffer = ATTACK_BUFFER
@@ -453,6 +465,9 @@ func point_sword(radius: float, reach: float) -> void:
 ## 칼 판정 안에 있는 모든 대상에게 피해. 맞힌 수를 돌려준다.
 func strike(mult: float, knock: float) -> int:
 	var hits := 0
+	if gale_ready:
+		gale_ready = false
+		_gale_burst(mult)
 	for body in sword.get_overlapping_bodies():
 		if body.has_method(&"take_hit"):
 			hit(body, mult * Weapons.mod(weapon, "dmg"), knock, global_position)
@@ -471,6 +486,23 @@ func hit(body: Node2D, mult: float, knock: float, from: Vector2) -> void:
 	if crit:
 		amount *= CRIT_MULT
 	body.take_hit(maxi(1, roundi(amount)), from, knock, crit)
+	_unique_on_hit(body)
+
+
+## 5성 고유 능력: 맞힐 때
+func _unique_on_hit(body: Node2D) -> void:
+	if data.id == &"scarlet":
+		if ignite_t > 0.0:
+			if body.has_method(&"burn"):
+				body.burn(maxi(1, roundi(atk * 0.25)), 2.0)
+		else:
+			heat += 1
+			if heat >= HEAT_MAX:
+				heat = 0
+				ignite_t = 4.0
+				Events.notice.emit("불꽃 각인", "4초 동안 모든 공격이 불태운다!")
+				Game.sfx(&"burn", -2.0, 0.0)
+				Game.flash(Color(1, 0.4, 0.1, 0.18), 0.2)
 
 
 func body_center() -> Vector2:
@@ -504,6 +536,8 @@ func lock_for_skill(time: float, move: Vector2, guard: bool) -> void:
 func take_hit(amount: int, from: Vector2, knock := 190.0, _crit := false) -> void:
 	if hurt_t > 0.0 or dash_t > 0.0 or hp <= 0 or (skill_lock_t > 0.0 and skill_guard):
 		return
+	if gale_guard_t > 0.0:
+		amount = maxi(1, amount / 2)  # 로웬 질풍의 수호
 	hp = maxi(hp - amount, 0)
 	hurt_t = HURT_TIME
 	knockback = from.direction_to(global_position) * knock
@@ -545,7 +579,21 @@ func _skip_passed(path: PackedVector2Array, i: int) -> int:
 	return best
 
 
+## 로웬: 구르고 난 다음 공격 — 돌풍이 주변 적을 넓게 휩쓴다
+func _gale_burst(mult: float) -> void:
+	var c := body_center()
+	Fx.spawn(fx_parent(), preload("res://assets/ninja/fx/circular_slash.png"), 4, c, 18.0).scale = Vector2.ONE * 2.4
+	for e: Node2D in get_tree().get_nodes_in_group(&"enemies"):
+		if int(e.get(&"hp")) > 0 and e.global_position.distance_to(global_position) < 46.0:
+			hit(e, mult * 1.2, 260.0, global_position)
+	Game.sfx(&"slash", 0.0)
+	Game.add_shake(3.0)
+
+
 func _start_dash(input: Vector2) -> void:
+	if data.id == &"elf4":
+		gale_guard_t = 1.5
+		gale_ready = true
 	style.cancel()
 	_tr_think = 0.0  # 구르고 나면 길을 바로 다시 찾는다
 	_auto_think = 0.0

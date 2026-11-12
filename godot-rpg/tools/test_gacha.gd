@@ -52,7 +52,7 @@ func _ready() -> void:
 	_reset()
 	_check("이미 있는 캐릭터면 별 조각 +10", Save.grant_character(&"kemo1") == "shard" and Save.shards_of(&"kemo1") == 10 and Save.stars_of(&"kemo1") == 0)
 	_check("처음 나온 캐릭터는 보유", Save.grant_character(&"fairy1") == "new" and Save.is_owned(&"fairy1"))
-	_check("★5도 중복 한 번에 조각 10", Save.grant_character(&"fairy1") == "shard" and Save.shards_of(&"fairy1") == 10)
+	_check("★4도 중복 한 번에 조각 10", Save.grant_character(&"fairy1") == "shard" and Save.shards_of(&"fairy1") == 10)
 	Save.owned["kemo2"]["stars"] = Save.max_stars(&"kemo2")
 	_check("7성이면 골드로(max)", Save.grant_character(&"kemo2") == "max")
 

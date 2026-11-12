@@ -5,8 +5,8 @@ const PATH := "user://save.json"
 const VERSION := 1
 const STARTERS: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3"]
 ## 아바타 화면에 보이는 순서(전체 캐릭터, ★3 → ★5)
-const ROSTER: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3", &"fairy3", &"fairy2", &"maid2", &"maid3", &"maid1", &"maid4", &"fairy1", &"scarlet",
-	&"elf1", &"elf2", &"devil4", &"devil1", &"elf3", &"devil3", &"elf4", &"devil2"]
+const ROSTER: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3", &"fairy3", &"maid2", &"maid3", &"elf1", &"elf2", &"devil4", &"fairy2", &"maid1",
+	&"maid4", &"fairy1", &"devil1", &"elf3", &"devil3", &"scarlet", &"elf4", &"devil2"]
 const MAX_LEVEL := 150  # 2부에서 100 → 150
 const MAX_STARS := 6  # 성장 효과 줄 수(별 승급으로 차례로 열린다)
 ## 별 등급: 타고난 등급(★3~5)에 중복으로 얻은 별을 더한다. 최대 7성(큰 빨간 별 하나로 보인다)

@@ -33,4 +33,6 @@ move_speed = 92.0
 skill_name = "칠흑의 날개"
 skill_desc = "어둠의 날개를 펼쳐 적 사이를 날며 그림자로 벤다"
 skill_cooldown = 8.0
+unique_name = "처형"
+unique_desc = "체력 30% 이하 적에게 마무리 일격 피해 2배 · 구르기 2연속"
 star_passives = Array[String](["마무리 일격 피해 +25%", "치명타 피해 +30%", "처형 범위: 체력 40% 이하 적까지", "공격력 +20%", "스킬 재사용 -15%", "게임당 1회, 쓰러지면 체력 50%로 부활"])

@@ -829,6 +829,19 @@ func _paint_passive_row(ci: Control, index: int, text: String, unlocked: bool) -
 		Gt.lock(ci, Vector2(r.end.x - 22, r.get_center().y), 16, Color("c9c3d6"))
 
 
+## 5성 고유 능력 줄: 금빛 테두리 + "고유" 꼬리표 + 이름·설명
+func _paint_unique_row(ci: Control, data: CharacterData) -> void:
+	var r := Rect2(Vector2(0, 1), ci.size - Vector2(0, 5))
+	Gt.pbox(ci, r.grow(1), Gt.GOLD, Gt.INK, 2, true, true)
+	Gt.pbox(ci, r.grow(-3), Color("fff6dc"), Color(Gt.GOLD_D, 0.6), 1, false, false)
+	var tag := Rect2(r.position + Vector2(8, 8), Vector2(78, r.size.y - 16))
+	Gt.tag(ci, tag, Color("e8a21e"))
+	Gt.star(ci, Vector2(tag.position.x + 16, tag.get_center().y), 7.0, Gt.STAR_BY_RARITY[5])
+	Gt.text(ci, Vector2(tag.position.x + 46, tag.get_center().y + 6), "고유", 14, Color.WHITE, 1, true, 3, Gt.INK)
+	Gt.text(ci, Vector2(tag.end.x + 12, r.position.y + 21), data.unique_name, 15, Color("b5550f"))
+	Gt.text(ci, Vector2(tag.end.x + 12, r.position.y + 40), data.unique_desc, 11, Gt.NAVY_SOFT, 0, false)
+
+
 func _paint_toast(ci: Control) -> void:
 	if _toast_text == "":
 		return
@@ -895,6 +908,8 @@ func _refresh_passives() -> void:
 	var stars := Save.passives_unlocked(viewing)
 	for child in passive_box.get_children():
 		child.queue_free()
+	if data.unique_name != "":
+		passive_box.add_child(_box(_paint_unique_row.bind(data), 54))
 	for i in data.star_passives.size():
 		var row := _box(_paint_passive_row.bind(i, data.star_passives[i], i < stars), 44)
 		passive_box.add_child(row)

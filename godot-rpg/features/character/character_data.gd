@@ -42,6 +42,9 @@ const ATTACK_NAMES: Array[String] = ["근거리 연타", "원거리 마법", "�
 @export var skill_name := ""
 @export var skill_desc := ""
 @export var skill_cooldown := 8.0
+## 5성만: 그 캐릭터만 가진 고유 능력(이름·설명). 동작은 Player에서 id로 고른다
+@export var unique_name := ""
+@export var unique_desc := ""
 
 @export_group("별 효과")
 ## 별 1~6개째에 열리는 효과 설명
