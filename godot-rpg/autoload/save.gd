@@ -62,6 +62,8 @@ var gear: Dictionary = {}
 var gear_equip: Dictionary = {}
 ## 분해한 장비의 재련을 부위별로 기억 → 그 부위 새 장비를 처음 얻으면 그 재련으로 시작 {부위: 재련}
 var gear_carry: Dictionary = {}
+## 전투에 끼운 액티브 3칸 {캐릭터: [노드, 노드, 노드]}(기본 a1·a2·a3)
+var skill_slots: Dictionary = {}
 ## 로비로 나가기 전 있던 곳 {"map": 장면 경로, "x", "y"} — 모험을 누르면 여기서 다시 시작
 var place: Dictionary = {}
 ## 마지막으로 저장한 때(유닉스 초) · 이번에 켜기 전까지 비운 시간(초, 방치 보상용)
@@ -255,8 +257,28 @@ func give_books(training: int, master_books := 0) -> void:
 	save_game()
 
 
+## 이 캐릭터가 전투에 끼운 액티브 3칸
+func slots_of(id: StringName) -> Array:
+	var v: Variant = skill_slots.get(String(id), null)
+	if v is Array and (v as Array).size() == 3:
+		return v
+	return ["a1", "a2", "a3"]
+
+
+## i번 칸(0~2)에 액티브를 끼운다. 다른 칸에 이미 있으면 서로 자리를 바꾼다
+func set_slot(id: StringName, i: int, node: String) -> void:
+	var sl: Array = slots_of(id).duplicate()
+	var j := sl.find(node)
+	if j >= 0:
+		sl[j] = sl[i]
+	sl[i] = node
+	skill_slots[String(id)] = sl
+	equip_changed.emit()
+	save_game()
+
+
 ## 한번에 찍기: 남은 포인트를 정해진 순서로 한꺼번에 배분한다.
-## 고유기 10 → 패시브 합 20 → 2번째 10 → 패시브 합 30 → 오의 10 → 고유기·2번째·오의 30 → 패시브 15씩. 올린 포인트 수를 돌려준다.
+## 고유기 10 → 패시브 합 20 → 2번째 10 → 패시브 합 30 → 오의 10 → 셋 다 15 → 상위 기술(열린 것) 15 → 패시브 15씩. 올린 포인트 수를 돌려준다.
 func auto_skill(id: StringName) -> int:
 	if not is_owned(id):
 		return 0
@@ -264,7 +286,7 @@ func auto_skill(id: StringName) -> int:
 	skill_lv[String(id)] = d
 	var n := 0
 	# 단계: 다음 스킬이 열리는 조건부터 채우고(고유기 10 → 패시브 합 20 → 2번째 10 → 패시브 합 30 → 오의 10), 그다음 액티브·패시브를 끝까지
-	var stages: Array = [["a1", 10], ["P", 20], ["a2", 10], ["P", 30], ["a3", 10], ["a1", 30], ["a2", 30], ["a3", 30], ["P", 60]]
+	var stages: Array = [["a1", 10], ["P", 20], ["a2", 10], ["P", 30], ["a3", 10], ["a1", 15], ["a2", 15], ["a3", 15], ["a4", 15], ["a5", 15], ["a6", 15], ["P", 60]]
 	for st: Array in stages:
 		while skill_points(id) > 0:
 			var pick := ""
@@ -752,6 +774,7 @@ func load_game() -> void:
 	gear = {}
 	gear_equip = {}
 	gear_carry = {}
+	skill_slots = {}
 	place = {}
 	last_town = "village"
 	books = {"training": 0, "master": 0}
@@ -786,6 +809,11 @@ func load_game() -> void:
 				var v: Variant = parsed.get(key, {})
 				if v is Dictionary:
 					set(key, v)
+			for ck: String in skill_lv:  # 상한이 바뀌었으면(예: 액티브 30 → 15) 넘친 포인트는 돌려받는다
+				var sd: Variant = skill_lv[ck]
+				if sd is Dictionary:
+					for nk: String in sd:
+						sd[nk] = mini(int(sd[nk]), SkillTree.cap(nk))
 			var st: Variant = parsed.get("settings", {})
 			if st is Dictionary:
 				for k: String in st:
@@ -800,6 +828,9 @@ func load_game() -> void:
 				for k: String in gr:
 					if Gear.has_id(StringName(k)):
 						gear[k] = int(gr[k])
+			var ss: Variant = parsed.get("skill_slots", {})
+			if ss is Dictionary:
+				skill_slots = ss
 			var gc: Variant = parsed.get("gear_carry", {})
 			if gc is Dictionary:
 				gear_carry = gc
@@ -862,4 +893,4 @@ func save_game() -> void:
 	if f == null:
 		push_error("저장 실패: %s" % error_string(FileAccess.get_open_error()))
 		return
-	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet, "skill_lv": skill_lv, "skill_bonus": skill_bonus, "master": master, "books": books, "settings": settings, "items": items, "gear": gear, "gear_equip": gear_equip, "gear_carry": gear_carry, "place": place, "last_town": last_town, "last_seen": int(Time.get_unix_time_from_system()), "dex": dex, "stats": stats, "ach_claimed": ach_claimed, "mail_claimed": mail_claimed}))
+	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet, "skill_lv": skill_lv, "skill_bonus": skill_bonus, "master": master, "books": books, "settings": settings, "items": items, "gear": gear, "gear_equip": gear_equip, "gear_carry": gear_carry, "skill_slots": skill_slots, "place": place, "last_town": last_town, "last_seen": int(Time.get_unix_time_from_system()), "dex": dex, "stats": stats, "ach_claimed": ach_claimed, "mail_claimed": mail_claimed}))

@@ -256,7 +256,7 @@ const MORE_MAPS: Array[Dictionary] = [
 			{"side": "west", "to": "res://features/world/snow3.tscn", "spawn": "east", "label": "◀ 협곡", "at": 22},
 			{"side": "north", "to": "res://features/world/snow5.tscn", "spawn": "south", "label": "빙하 동굴", "at": 28},
 		], "clearings": 4, "ponds": 1, "rivers": 0, "trees": 110, "big_trees": 6, "rocks": 0, "bushes": 0, "flowers": 0, "spawns": [["bear", 6, 6, 40], ["frost_shroom", 6, 6, 40], ["frost_goblin", 5, 6, 40]], "tint": Color(0.88, 0.93, 1.0)},
-	{"path": "res://features/world/snow5.tscn", "title": "빙하 동굴", "w": 50, "h": 38, "seed": 205, "snow_level": 0.8, "ground": SNOWF_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
+	{"path": "res://features/world/snow5.tscn", "title": "빙하 동굴", "w": 50, "h": 38, "seed": 205, "snow_level": 0.0, "ground": SNOWF_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
 			{"side": "south", "to": "res://features/world/snow4.tscn", "spawn": "north", "label": "서리 숲", "at": 25},
 			{"side": "east", "to": "res://features/world/snow6.tscn", "spawn": "west", "label": "설산 정상 ▶", "at": 18},
 		], "clearings": 3, "ponds": 4, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["snow_bat", 7, 6, 40], ["glacier_spider", 6, 6, 40], ["ice_eye", 4, 6, 40]], "crystals": 24, "tint": Color(0.65, 0.78, 1.0)},
@@ -447,7 +447,7 @@ const TOWN_MAPS: Array[Dictionary] = [
 			{"side": "north", "to": "res://features/world/garden1.tscn", "spawn": "west", "label": "검은 정원 ▲", "lock": "mist_apostle", "lock_title": "4장 보스 안개의 사도"},
 		],
 		"ponds": 1, "trees": 0, "big_trees": 0, "rocks": 4, "bushes": 0, "flowers": 0,
-		"village": true, "spawns": [],
+		"layout": "ring", "village": true, "spawns": [],
 		"villagers": [
 			["족장", "villagers/v31_desert", Vector2i(-3, -3), ["모래 폭풍보다 무서운 게 몬스터 떼라네.", "협곡 너머 폐허에서 몬스터가 끝도 없이 기어 나와."]],
 			["물장수", "villagers/v24_desert", Vector2i(8, 3), ["오아시스 물이 점점 줄고 있어요.", "몬스터가 늘어난 뒤로 사막도 메말라 가요."]],
@@ -465,7 +465,7 @@ const TOWN_MAPS: Array[Dictionary] = [
 			{"side": "north", "to": "res://features/world/snow2.tscn", "spawn": "south", "label": "얼어붙은 호수"},
 		],
 		"ponds": 1, "trees": 10, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0,
-		"village": true, "spawns": [],
+		"layout": "terrace", "village": true, "spawns": [],
 		"villagers": [
 			["눈꽃 촌장", "villagers/v23_snow", Vector2i(-3, -3), ["이 추위에 레몬 마을에서 왔다고? 대단하구먼.", "설산 정상의 대왕곰이 미쳐 날뛰는 바람에 몬스터가 내려오고 있지."]],
 			["얼음 낚시꾼", "villagers/v08_snow", Vector2i(6, 4), ["호수가 얼어서 물고기 대신 얼음 해골만 낚여…", "정상에 오르려면 협곡과 서리 숲을 지나야 해."]],
@@ -497,7 +497,7 @@ const TOWN_MAPS: Array[Dictionary] = [
 			{"side": "east", "to": "res://features/world/lava4.tscn", "spawn": "west", "label": "마그마 호수 ▶"},
 		],
 		"ponds": 0, "trees": 0, "big_trees": 0, "rocks": 6, "bushes": 0, "flowers": 0,
-		"village": true, "spawns": [],
+		"layout": "street", "village": true, "spawns": [],
 		"villagers": [
 			["대장장이", "villagers/v00_forge", Vector2i(-3, -3), ["용암 열기로 벼린 무기는 단단하지! 강화는 아끼지 말라고.", "화염룡이 날뛰는 통에 광산이 다 막혔어."]],
 			["광부", "villagers/v07_forge", Vector2i(9, 4), ["땅 밑에서도 몬스터가 솟아나. 끝이 없어.", "마계의 문 너머에 마왕이 있다지만… 그게 다일까?"]],
@@ -514,7 +514,7 @@ const TOWN_MAPS: Array[Dictionary] = [
 			{"side": "east", "to": "res://features/world/sky3.tscn", "spawn": "west", "label": "천공의 탑 ▶"},
 		],
 		"ponds": 0, "trees": 6, "big_trees": 3, "big_tree_set": "blossom", "rocks": 0, "bushes": 6, "flowers": 60,
-		"village": true, "spawns": [],
+		"layout": "isles", "village": true, "spawns": [],
 		"villagers": [
 			["구름 장로", "villagers/v04_sky", Vector2i(-3, -3), ["땅에서 여기까지 올라온 이는 처음이로구나.", "탑 꼭대기의 큰 나무가 시들고 있다. 그 뿌리에서 검은 열매가 맺혀…", "그 열매가 땅으로 떨어질 때마다 몬스터가 태어나지."]],
 			["바람 소녀", "villagers/v27_sky", Vector2i(10, 4), ["탑을 오르면 큰 나무에 닿을 수 있어요.", "나무가 아파하는 소리, 들리지 않아요?"]],
@@ -531,7 +531,7 @@ const TOWN_MAPS: Array[Dictionary] = [
 			{"side": "east", "to": "res://features/world/root3.tscn", "spawn": "west", "label": "썩은 물길 ▶"},
 		],
 		"ponds": 1, "trees": 10, "big_trees": 4, "rocks": 2, "bushes": 10, "flowers": 70,
-		"village": true, "spawns": [],
+		"layout": "arc", "village": true, "spawns": [],
 		"villagers": [
 			["새싹 장로", "villagers/v17_root", Vector2i(-3, -3), ["큰 나무의 뿌리 속에도 사람이 산다네. 우린 뿌리를 돌보는 새싹 일족이지.", "십 년 전, 검은 옷을 입은 사내가 뿌리 심장으로 내려갔어.", "그 뒤를 쫓아 사냥꾼 부부가 내려갔지… 돌아온 건 사내뿐이었다네."]],
 			["약초꾼", "villagers/v15_root", Vector2i(10, 4), ["뿌리 물이 썩어서 약초가 다 시들었어요.", "벌레들이 뿌리를 갉아 먹고 점점 커지고 있어요."]],
@@ -549,7 +549,7 @@ const TOWN_MAPS: Array[Dictionary] = [
 			{"side": "east", "to": "res://features/world/mist2.tscn", "spawn": "west", "label": "난파선 무덤 ▶"},
 		],
 		"ponds": 1, "trees": 0, "big_trees": 0, "rocks": 4, "bushes": 0, "flowers": 0,
-		"village": true, "spawns": [],
+		"layout": "harbor", "village": true, "spawns": [],
 		"villagers": [
 			["항구 촌장", "villagers/v05_mist", Vector2i(-3, -3), ["이 안개는 십 년 전, 탑이 별을 삼킨 날부터 걷히지 않는다네.", "가면 쓴 자들이 탑에서 내려와 씨앗을 배에 실어 보냈지.", "그 배가 닿은 곳마다 몬스터가 들끓었다고 들었네."]],
 			["등대지기", "villagers/v14_mist", Vector2i(10, 4), ["등대 불이 꺼진 뒤로 유령 등불만 길을 떠돈다오.", "절벽 너머 탑에는 아무도 가까이 못 가지."]],
@@ -659,6 +659,10 @@ func _build_map(m: Dictionary) -> void:
 		_block(Vector2i(0, 0), Vector2i(W, int(m["top_rows"]) + 1))
 	_make_water(start)
 	_paint_ground(ground)
+	if cfg.get("isle", false) and cfg.get("backdrop", "") == "sky":
+		_make_rails()
+	if cfg.get("pave", false):  # 포장길(지금은 안 씀: 흙길이 더 낫다고 함)
+		_pave(ground)
 	_water_bodies(entities)
 	_make_bridges(ground)
 	_make_scenery(ground)
@@ -1033,12 +1037,51 @@ func _auto_tile(c: Vector2i, cells: Dictionary, shift: Vector2i) -> Vector2i:
 # ── 마을 ──
 
 ## 광장 위쪽에 집 4채(문에서 길까지 오솔길), 위쪽 끝 신사 문, 광장 옆 우물, 마을 사람, 동물.
+## 마을 배치(cfg "layout"): 집 자리(왼쪽 위 칸) 목록. 없으면 레몬 마을처럼 큰길 위아래
+func _village_lots(center: Vector2i) -> Array:
+	var c := center
+	match String(cfg.get("layout", "")):
+		"ring":  # 오아시스: 가운데 광장(샘)을 둘러싼 둥근 마을
+			var out: Array = []
+			for i in 6:
+				var a := -PI / 2.0 + i * TAU / 6.0 + PI / 6.0
+				out.append(c + Vector2i(roundi(cos(a) * 13.0) - 2, roundi(sin(a) * 9.0) - 2))
+			return out
+		"terrace":  # 눈꽃: 세로 길 양옆으로 엇갈려 올라가는 계단식
+			return [c + Vector2i(-9, -12), c + Vector2i(5, -9), c + Vector2i(-9, -5), c + Vector2i(5, -2), c + Vector2i(-9, 3), c + Vector2i(5, 6)]
+		"street":  # 불꽃 대장간: 긴 큰길 양옆으로 빽빽한 공방 거리
+			return [c + Vector2i(-18, -6), c + Vector2i(-12, -6), c + Vector2i(-6, -6), c + Vector2i(4, -6), c + Vector2i(10, -6),
+				c + Vector2i(-16, 3), c + Vector2i(-10, 3), c + Vector2i(6, 3), c + Vector2i(12, 3)]
+		"isles":  # 구름: 멀찍이 흩어진 집들(구름 다리로 잇는다)
+			return [c + Vector2i(-16, -10), c + Vector2i(11, -10), c + Vector2i(-16, 5), c + Vector2i(11, 5), c + Vector2i(-3, -12)]
+		"arc":  # 새싹: 위쪽에 반원으로 둘러선 집 + 아래 한 채
+			var out2: Array = []
+			for i in 5:
+				var a2 := PI + i * PI / 4.0
+				out2.append(c + Vector2i(roundi(cos(a2) * 13.0) - 2, roundi(sin(a2) * 9.0) - 1))
+			out2.append(c + Vector2i(-2, 6))
+			return out2
+		"harbor":  # 안개 항구: 위쪽 한 줄 집 + 아래는 부두(상자·통)
+			return [c + Vector2i(-17, -8), c + Vector2i(-11, -8), c + Vector2i(-5, -8), c + Vector2i(3, -8), c + Vector2i(9, -8), c + Vector2i(15, -8)]
+	return [Vector2i(c.x - 14, c.y - 8), Vector2i(c.x - 8, c.y - 8), Vector2i(c.x + 5, c.y - 8), Vector2i(c.x + 11, c.y - 8),
+		Vector2i(c.x - 13, c.y + 5), Vector2i(c.x + 9, c.y + 5)]
+
+
 func _make_village(parent: Node, center: Vector2i) -> void:
 	var road_y := center.y
-	var lots := [Vector2i(center.x - 14, road_y - 8), Vector2i(center.x - 8, road_y - 8), Vector2i(center.x + 5, road_y - 8), Vector2i(center.x + 11, road_y - 8),
-		Vector2i(center.x - 13, road_y + 5), Vector2i(center.x + 9, road_y + 5)]
+	var layout := String(cfg.get("layout", ""))
+	var lots := _village_lots(center)
 	for i in lots.size():
 		var c: Vector2i = lots[i]
+		if cfg.get("isle", false):  # 하늘섬: 집이 가장자리(난간)에 걸리지 않게 섬 안쪽으로 민다
+			for step in 16:
+				var worst := 0.0
+				for q: Vector2i in [c + Vector2i(-1, -2), c + Vector2i(6, -2), c + Vector2i(-1, 5), c + Vector2i(6, 5)]:
+					worst = maxf(worst, _isle_q(q))
+				if worst < 0.87:
+					break
+				var d := Vector2(center - c - Vector2i(2, 2))
+				c += Vector2i(signi(roundi(d.x)) if absf(d.x) > 1.0 else 0, signi(roundi(d.y)) if absf(d.y) > 1.0 else 0)
 		var region := HOUSES[i % HOUSES.size()]
 		var htex := house_tex
 		if cfg.has("house_set"):  # 마을마다 다른 집(assets/towns/*.png, 칸 5×4)
@@ -1047,6 +1090,9 @@ func _make_village(parent: Node, center: Vector2i) -> void:
 		var base := Vector2(c * T) + Vector2(region.size.x * T / 2.0, region.size.y * T - 2.0)
 		_sprite_prop(parent, htex, region, base, Vector2(region.size.x * T - 22, 2 * T - 6), "House")
 		_block(c - Vector2i(1, 1), region.size + Vector2i(2, 2))
+		if layout != "":  # 문 앞에서 광장까지 오솔길(흙길)
+			_carve(Vector2(c + Vector2i(2, region.size.y)), Vector2(center), 0.4)
+			continue
 		# 위쪽 집은 문 앞에서 큰길까지 오솔길
 		if c.y < road_y:
 			for y in range(c.y + region.size.y, road_y):
@@ -1056,8 +1102,11 @@ func _make_village(parent: Node, center: Vector2i) -> void:
 		var tx := _road_x(5)
 		_sprite_prop(parent, house_tex, TORII, Vector2((tx + 1) * T, 6 * T + T - 2.0), Vector2.ZERO, "Torii")
 		_block(Vector2i(tx - 1, 4), Vector2i(4, 3))
-	# 우물
-	var well_c := center + Vector2i(4, -4)
+	# 우물(둥근·반원 마을은 광장 한가운데)
+	var well_c := center + (Vector2i(-1, -1) if layout in ["ring", "arc"] else Vector2i(4, -4))
+	if layout != "":
+		_blob(Vector2(center), 4.2)
+		_town_props(parent, center, layout)
 	_sprite_prop(parent, desert_tex, WELL, Vector2(well_c * T) + Vector2(T, 2 * T - 2.0), Vector2(26, 12), "Well")
 	_block(well_c - Vector2i.ONE, Vector2i(4, 4))
 	# 마을 사람
@@ -1085,13 +1134,151 @@ func _make_npcs(parent: Node, list: Array, origin: Vector2i) -> void:
 		var npc := StaticBody2D.new()
 		npc.set_script(npc_script)
 		npc.name = "Npc%s" % String(v[1]).capitalize()
-		var cell: Vector2i = origin + v[2]
+		var cell: Vector2i = _free_cell(origin + v[2])  # 집·소품에 끼지 않게 가까운 빈칸으로
 		npc.position = Vector2(cell * T) + Vector2(T / 2.0, T - 2.0)
 		npc.set(&"display_name", v[0])
 		npc.set(&"sheet", load(("res://assets/%s.png" if "/" in String(v[1]) else "res://assets/ninja/actor/npc/%s.png") % v[1]))
 		npc.set(&"lines", PackedStringArray(v[3]))
 		_add(parent, npc)
 		_block(cell - Vector2i.ONE, Vector2i(3, 3))
+
+
+## 하늘섬 가장자리 난간: 땅 칸 중 옆이 하늘(물 칸)인 곳에 난간을 그린다(부딪힘은 원래 있는 물 몸체가 막는다)
+func _make_rails() -> void:
+	var e := PackedInt32Array()
+	var dirs := [Vector2i(0, -1), Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0)]
+	for y in range(1, H - 1):
+		for x in range(1, W - 1):
+			var c := Vector2i(x, y)
+			if water.has(c) or bridge.has(c):
+				continue
+			for k in 4:
+				var n: Vector2i = c + dirs[k]
+				if water.has(n) and not bridge.has(n):
+					e.append_array([x, y, k])
+	if e.is_empty():
+		return
+	var rail := Node2D.new()
+	rail.name = "Rails"
+	rail.set_script(load("res://features/world/rail_deco.gd"))
+	rail.set(&"edges", e)
+	_add(world, rail)
+
+
+## 하늘섬 타원 안에서 얼마나 바깥쪽인지(1 넘으면 하늘). _make_water의 섬 모양과 같은 식(흔들림 빼고)
+func _isle_q(c: Vector2i) -> float:
+	var c0 := Vector2(W / 2.0, H / 2.0)
+	return ((Vector2(c) - c0) / Vector2(W / 2.0 - 2.5, H / 2.0 - 2.5)).length()
+
+
+## 반듯한 골목: a에서 가로로 b.x까지, 그다음 세로로 b.y까지(폭 2칸)
+func _lane(a: Vector2i, b: Vector2i) -> void:
+	var y := a.y
+	for x in range(mini(a.x, b.x), maxi(a.x, b.x) + 2):
+		dirt[Vector2i(x, y)] = true
+		dirt[Vector2i(x, y + 1)] = true
+	for yy in range(mini(y, b.y), maxi(y, b.y) + 1):
+		dirt[Vector2i(b.x, yy)] = true
+		dirt[Vector2i(b.x + 1, yy)] = true
+
+
+## 마을 길 포장(Port Town 바닥 타일): 마을마다 다른 돌·나무 판자. 흙길 칸 위에 한 층 더 깐다
+const PAVE_STYLE := {
+	"ring": [Vector2i(2, 2), Color(1.0, 0.86, 0.62)],  # 오아시스: 모래빛 돌
+	"terrace": [Vector2i(2, 2), Color(0.9, 0.95, 1.05)],  # 눈꽃: 푸르스름한 돌
+	"street": [Vector2i(2, 2), Color(0.62, 0.52, 0.5)],  # 대장간: 그을린 돌
+	"isles": [Vector2i(2, 2), Color(1.1, 1.08, 1.12)],  # 구름: 하얀 돌
+	"arc": [Vector2i(7, 2), Color(0.95, 1.0, 0.85)],  # 새싹: 나무 판자
+	"harbor": [Vector2i(7, 2), Color(0.85, 0.8, 0.78)],  # 항구: 부두 판자
+}
+
+
+func _pave(ground: Node) -> void:
+	var path := "res://assets/_raw/1113/_Kimbulworks__Port_Town_Pack/Port Town Free.png"
+	var vend := "res://assets/vendor/towns/pave.png"
+	if not ResourceLoader.exists(vend):
+		if not FileAccess.file_exists(path):
+			return
+		DirAccess.copy_absolute(ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(vend))
+		return  # 새로 복사한 그림은 다음 가져오기(import) 뒤에 쓴다
+	var st: Array = PAVE_STYLE.get(String(cfg["layout"]), [Vector2i(2, 2), Color.WHITE])
+	var ts := TileSet.new()
+	ts.tile_size = Vector2i(T, T)
+	var src := TileSetAtlasSource.new()
+	src.texture = load(vend)
+	src.texture_region_size = Vector2i(T, T)
+	src.create_tile(st[0])
+	ts.add_source(src)
+	var pave := TileMapLayer.new()
+	pave.name = "Paving"
+	pave.tile_set = ts
+	pave.modulate = st[1]
+	for c: Vector2i in dirt:
+		if c.x >= 1 and c.y >= 1 and c.x < W - 1 and c.y < H - 1 and not water.has(c):
+			pave.set_cell(c, 0, st[0])
+	_add(world, pave)
+	world.move_child(pave, _above_ground(ground))
+
+
+## 가까운 빈칸(막힌 칸이면 둘레를 돌며 찾는다)
+func _free_cell(c: Vector2i) -> Vector2i:
+	for r in 8:
+		for y in range(-r, r + 1):
+			for x in range(-r, r + 1):
+				if maxi(absi(x), absi(y)) != r:
+					continue
+				var p := c + Vector2i(x, y)
+				if p.x < BORDER + 1 or p.y < BORDER + 1 or p.x >= W - BORDER - 1 or p.y >= H - BORDER - 1:
+					continue
+				if not blocked.has(p) and not blocked.has(p + Vector2i(1, 0)) and not blocked.has(p - Vector2i(1, 0)):
+					return p
+	return c
+
+
+## 마을 소품(Port Town·Kenney 소재 시트 assets/vendor/towns/props.png): 가로등·벤치·화분·상자·통 등을 마을 분위기에 맞게
+const TOWN_PROPS := {
+	"lamp": Rect2i(0, 0, 1, 4), "bench": Rect2i(1, 2, 3, 2), "bin": Rect2i(4, 2, 1, 2), "flower_pot": Rect2i(5, 2, 1, 2),
+	"crate": Rect2i(6, 2, 1, 2), "planter": Rect2i(7, 2, 2, 2), "barrel": Rect2i(9, 2, 2, 2), "rocks": Rect2i(11, 2, 2, 2),
+	"bush": Rect2i(13, 3, 1, 1), "bush_flower": Rect2i(14, 3, 1, 1), "big_rock": Rect2i(15, 2, 2, 2), "sign": Rect2i(17, 3, 1, 1),
+	"beehive": Rect2i(18, 3, 1, 1), "target": Rect2i(19, 3, 1, 1),
+}
+const TOWN_PROP_SETS := {
+	"ring": ["lamp", "lamp", "lamp", "lamp", "flower_pot", "flower_pot", "barrel", "bench", "bench", "rocks", "sign"],
+	"terrace": ["lamp", "lamp", "lamp", "bench", "bench", "bin", "barrel", "crate", "sign", "rocks"],
+	"street": ["barrel", "barrel", "barrel", "crate", "crate", "crate", "target", "lamp", "lamp", "lamp", "rocks", "big_rock", "bin", "sign"],
+	"isles": ["flower_pot", "flower_pot", "planter", "planter", "bench", "bench", "lamp", "lamp", "bush_flower", "bush_flower", "sign"],
+	"arc": ["planter", "planter", "flower_pot", "flower_pot", "beehive", "beehive", "bush_flower", "bush_flower", "bush", "bench", "sign"],
+	"harbor": ["crate", "crate", "crate", "crate", "barrel", "barrel", "barrel", "lamp", "lamp", "lamp", "lamp", "bench", "bin", "rocks", "sign"],
+}
+
+
+func _town_props(parent: Node, center: Vector2i, layout: String) -> void:
+	var path := "res://assets/vendor/towns/props.png"
+	if not ResourceLoader.exists(path):
+		return  # 소재가 없으면(git에서 받은 저장소) 건너뛴다
+	var tex := load(path) as Texture2D
+	var list: Array = TOWN_PROP_SETS.get(layout, [])
+	for i in list.size():
+		var name: String = list[i]
+		var r: Rect2i = TOWN_PROPS[name]
+		var placed := false
+		for tries in 60:
+			# 광장 둘레(가까운 곳부터)에 흩어 놓는다. 항구는 아래쪽 부두에 모은다
+			var rad := 5.0 + tries * 0.18 + (i % 3)
+			var a := i * 2.399 + tries * 0.7
+			var off := Vector2(cos(a) * rad * 1.5, sin(a) * rad)
+			if layout == "harbor":
+				off = Vector2(-16 + (i * 7 + tries * 3) % 33, 5 + (i + tries) % 6)
+			var cell := center + Vector2i(off.round()) - Vector2i(r.size.x / 2, r.size.y - 1)
+			if not _area_free(cell - Vector2i.ONE, Vector2i(r.size.x + 2, 3), true):
+				continue
+			var solid := Vector2(r.size.x * T - 6, 8) if name not in ["bush", "bush_flower", "sign"] else Vector2.ZERO
+			_sprite_prop(parent, tex, r, Vector2(cell * T) + Vector2(r.size.x * T / 2.0, r.size.y * T - 2.0), solid, "Prop")
+			_block(cell + Vector2i(0, r.size.y - 1), Vector2i(r.size.x, 1))
+			placed = true
+			break
+		if not placed:
+			continue
 
 
 ## 입구 맵 배경 그림(땅 바로 위, 사람·나무보다 아래)과 눈

@@ -161,12 +161,13 @@ func _physics_process(delta: float) -> void:
 			ghost_t = 0.06
 			_spawn_afterimage()
 	if dash_t <= 0.0 and skill_lock_t <= 0.0:
+		var sl := Save.slots_of(data.id)  # 끼운 액티브 3칸
 		if Input.is_action_just_pressed(&"skill"):
-			skills.try_cast("a1")
+			skills.try_cast(sl[0])
 		elif Input.is_action_just_pressed(&"skill2"):
-			skills.try_cast("a2")
+			skills.try_cast(sl[1])
 		elif Input.is_action_just_pressed(&"skill3"):
-			skills.try_cast("a3")
+			skills.try_cast(sl[2])
 	if skill_lock_t > 0.0:
 		skill_lock_t -= delta
 		move = skill_move
@@ -301,7 +302,7 @@ func _auto_drive(delta: float) -> Vector2:
 	if is_enemy and d <= reach + 10.0:
 		dir = _dir_from(v)
 		if skill_lock_t <= 0.0:
-			for node in ["a3", "a2", "a1"]:
+			for node: String in [Save.slots_of(data.id)[2], Save.slots_of(data.id)[1], Save.slots_of(data.id)[0]]:
 				if skills.has_skill(node) and skills.try_cast(node):
 					break
 		if not style.busy and style.wants_press():

@@ -172,11 +172,14 @@ func _draw_skill_button() -> void:
 	if p == null or p.skills == null:
 		return
 	var cols := {"a1": Color("e9a83a"), "a2": Color("4aa3e8"), "a3": Color("b45ae8")}
-	for node: String in ["a1", "a2", "a3"]:
-		var action: StringName = {"a1": &"skill", "a2": &"skill2", "a3": &"skill3"}[node]
-		var rad := _skill_r(node)
+	var sl := Save.slots_of(p.data.id)
+	for k in 3:
+		var pos_key: String = ["a1", "a2", "a3"][k]  # 버튼 자리(칸)
+		var node: String = sl[k]  # 그 칸에 끼운 스킬
+		var action: StringName = [&"skill", &"skill2", &"skill3"][k]
+		var rad := _skill_r(pos_key)
 		var down := action in button_touches.values()
-		var c := skill_center_of(node) + (Vector2(0, 3) if down else Vector2.ZERO)
+		var c := skill_center_of(pos_key) + (Vector2(0, 3) if down else Vector2.ZERO)
 		if not p.skills.has_skill(node):
 			# 빈 칸: 어두운 동그라미 + 자물쇠
 			draw_circle(c, rad + 3.0, Color(Gt.INK, 0.8))
@@ -186,7 +189,7 @@ func _draw_skill_button() -> void:
 			continue
 		var ratio := p.skills.ready_ratio(node)
 		var ready := ratio >= 1.0
-		Gt.ring_button(self, c, rad, cols[node] if ready else Color("6a6478"), down)
+		Gt.ring_button(self, c, rad, cols[pos_key] if ready else Color("6a6478"), down)
 		var info := SkillTree.info(p.data.id, node) if Save.is_owned(p.data.id) else {}
 		var tex: Texture2D = SkillTree.icon(info["icon"]) if not info.is_empty() else null
 		if tex:
@@ -194,7 +197,7 @@ func _draw_skill_button() -> void:
 			var ts := tex.get_size()
 			Gt.circle_tex(self, tex, c, rad - 6.0, Rect2(ts * 0.17, ts * 0.66), Color.WHITE if ready else Color(0.55, 0.55, 0.6))
 		else:
-			Gt.element_glyph(self, c + Vector2(0, -4), rad * 1.2, p.data.element, Color.WHITE, cols[node])
+			Gt.element_glyph(self, c + Vector2(0, -4), rad * 1.2, p.data.element, Color.WHITE, cols[pos_key])
 		if not ready:
 			var pts := PackedVector2Array([c])
 			var steps := 32
@@ -204,8 +207,10 @@ func _draw_skill_button() -> void:
 			draw_colored_polygon(pts, Color(Gt.INK, 0.6))
 			Gt.title(self, c + Vector2(0, 8), "%d" % ceili(float(p.skills.cds[node])), 20, Color.WHITE, 1)
 		else:
-			draw_arc(c, rad + 5.0, 0, TAU, 40, Color(cols[node].lightened(0.4), 0.35 + 0.25 * sin(Time.get_ticks_msec() / 250.0)), 2.0)
-		if node == "a3":
+			draw_arc(c, rad + 5.0, 0, TAU, 40, Color(cols[pos_key].lightened(0.4), 0.35 + 0.25 * sin(Time.get_ticks_msec() / 250.0)), 2.0)
+		if SkillTree.UPGRADE_OF.has(node):  # 상위 기술: 금빛 고리
+			draw_arc(c, rad + 1.0, 0, TAU, 40, Color("ffd54f"), 3.0)
+		if node == "a3" or node == "a6":
 			Gt.text(self, c + Vector2(0, -rad - 6), "오의", 11, Color("ffd0ff"), 1, true, 3, Gt.INK)
 
 

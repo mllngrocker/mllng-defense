@@ -1,14 +1,15 @@
 class_name SkillTree
 extends RefCounted
-## 캐릭터별 스킬 트리: 액티브 3개(a1 고유기 → a2 → a3 오의) + 패시브 4개(p1 공격 → p4 스킬 숙련, p2 체력, p3 급소).
-## 스킬 레벨 합 = 캐릭터 레벨(고유기 Lv.1은 처음부터). 상한은 액티브 30 · 패시브 15라서 Lv.150이면 30×3 + 15×4 = 150으로 딱 꽉 찬다.
+## 캐릭터별 스킬 트리: 액티브 6개(a1 고유기 → a2 → a3 오의, 그 상위 기술 a4·a5·a6) + 패시브 4개(p1 공격 → p4 스킬 숙련, p2 체력, p3 급소).
+## 전투엔 액티브 중 3개를 골라 칸에 끼운다(Save.skill_slots). 상위 기술은 Lv.90·110·130 + 아래 기술 Lv.15에 열린다.
+## 스킬 레벨 합 = 캐릭터 레벨(고유기 Lv.1은 처음부터). 상한은 모두 15라서 Lv.150이면 15×10 = 150으로 딱 꽉 찬다.
 ## 스킬 창의 "한번에 찍기"로 한꺼번에 배분.
 ## 메이플처럼 단계가 있다: 2번째 액티브는 캐릭터 Lv.30 + 고유기 Lv.10 + 패시브 합 20,
 ## 오의(3번째)는 Lv.70 + 2번째 Lv.10 + 패시브 합 30이어야 배운다(GATE).
 ## 액티브 동작은 SkillCaster의 10가지 중에서 고른다(behavior). 그림은 assets/vendor/skill_icons/<icon>.png(없으면 속성 기호).
 
 const MAX_LV := 15  # 패시브 상한
-const ACTIVE_MAX := 30  # 액티브(고유기·2번째·오의) 상한
+const ACTIVE_MAX := 15  # 액티브 상한
 const MASTER_LV := 15
 const TRAINING_GEMS := 150  # 트레이닝 북 1권 값(보석)
 const MASTER_GEMS := 800  # 마스터 북 1권 값(보석)
@@ -19,14 +20,21 @@ const LAYOUT := [
 	["a1", Vector2i(0, 0), "", 0],
 	["a2", Vector2i(1, 0), "a1", 10],
 	["a3", Vector2i(2, 0), "a2", 10],
-	["p1", Vector2i(0, 1), "", 0],
-	["p4", Vector2i(1, 1), "p1", 5],
-	["p2", Vector2i(0, 2), "", 0],
-	["p3", Vector2i(1, 2), "", 0],
+	["a4", Vector2i(0, 1), "a1", 15],
+	["a5", Vector2i(1, 1), "a2", 15],
+	["a6", Vector2i(2, 1), "a3", 15],
+	["p1", Vector2i(0, 2), "", 0],
+	["p4", Vector2i(1, 2), "p1", 5],
+	["p2", Vector2i(0, 3), "", 0],
+	["p3", Vector2i(1, 3), "", 0],
 ]
 
 ## 액티브 단계 조건: 노드 → [캐릭터 레벨, 패시브 레벨 합]
-const GATE := {"a2": [30, 20], "a3": [70, 30]}
+const GATE := {"a2": [30, 20], "a3": [70, 30], "a4": [90, 0], "a5": [110, 0], "a6": [130, 0]}
+## 상위 기술 → 바탕 기술
+const UPGRADE_OF := {"a4": "a1", "a5": "a2", "a6": "a3"}
+const UP_POWER := 1.6  # 상위 기술 피해 배율(잔향이 한 번 더 몰아친다)
+const UP_CD := 1.15  # 상위 기술 재사용 배율
 
 ## 패시브는 모두 같다: id → [이름, 설명(%d = 레벨당 수치), 레벨당 값, 그림]
 const PASSIVES := {
@@ -59,6 +67,29 @@ const ACTIVES := {
 	&"fairy1": [["꽃바람 회오리", "꽃바람을 몸에 두르고 돈다", &"fairy3", 9.0, "a_wind"], ["꽃샘 분수", "꽃향기 물기둥을 솟구치게 한다", &"fairy2", 16.0, "a_water"]],
 }
 
+## 상위 기술 이름: 캐릭터 → [a4(고유기 상위), a5(2번째 상위), a6(오의 상위)]
+const UP_NAMES := {
+	&"kemo1": ["뇌광 질풍참", "폭풍 회오리", "만뢰 낙인"],
+	&"kemo2": ["빙하 폭우", "빙하 성채", "백야 눈보라"],
+	&"kemo3": ["홍련 대폭발", "작열 연격", "화산 대균열"],
+	&"fairy3": ["푸른 숲 회오리", "만개 꽃잎 폭풍", "생명의 대분수"],
+	&"fairy2": ["해신의 물기둥", "폭우", "대해일 낙뢰"],
+	&"maid2": ["업화 난무", "태양 폭염", "불사조 돌진"],
+	&"maid3": ["대지 붕괴", "운석 폭발", "대지진 강습"],
+	&"maid1": ["신벌의 빛", "천사의 깃털", "유성우"],
+	&"maid4": ["심연 습격", "칠흑 일섬", "심연 균열"],
+	&"elf1": ["폭풍 난무", "세계수 칼날", "대삼림 회오리"],
+	&"elf2": ["성광의 폭우", "대천사의 깃털", "은하 낙하"],
+	&"devil4": ["검은 깃털 폭풍", "천본 표창", "그림자 천연쇄"],
+	&"devil1": ["절대 영도 균열", "빙하 대로", "극한 눈보라 망토"],
+	&"elf3": ["가시 숲 솟음", "화살 폭우", "관통 천궁"],
+	&"elf4": ["폭풍 돌격", "하늘 가르기", "천공 폭풍 낙인"],
+	&"devil2": ["칠흑의 대날개", "신속", "만 개의 칼날"],
+	&"devil3": ["심연의 폭우", "용왕 꼬리", "대해일"],
+	&"scarlet": ["진홍 방울 난무", "매의 일격", "홍련 대낙인"],
+	&"fairy1": ["꽃잎 대폭풍", "꽃바람 태풍", "꽃샘 대분수"],
+}
+
 static var _icons: Dictionary = {}
 
 
@@ -70,6 +101,13 @@ static func info(char_id: StringName, node: String) -> Dictionary:
 		"a2", "a3":
 			var a: Array = ACTIVES.get(char_id, ACTIVES[&"kemo1"])[0 if node == "a2" else 1]
 			return {"name": a[0], "desc": a[1], "behavior": a[2], "cd": a[3], "icon": a[4], "active": true}
+		"a4", "a5", "a6":
+			var base := info(char_id, UPGRADE_OF[node])
+			var nm: Array = UP_NAMES.get(char_id, ["진 " + str(base["name"]), "", ""])
+			var name: String = nm[["a4", "a5", "a6"].find(node)]
+			if name == "":
+				name = "진 " + str(base["name"])
+			return {"name": name, "desc": "「%s」의 상위 기술 · 피해 ×%.1f, 잔향이 한 번 더 몰아친다" % [base["name"], UP_POWER], "behavior": base["behavior"], "cd": float(base["cd"]) * UP_CD, "icon": str(base["icon"]) + "_up", "active": true, "upgrade": true}  # 그림은 바탕 그림의 색을 바꾼 것(_up)
 		_:
 			var p: Array = PASSIVES[node]
 			return {"name": p[0], "desc": p[1] % (int(p[2])), "per": p[2], "icon": p[3], "active": false}
@@ -109,17 +147,17 @@ static func cap(node: String) -> int:
 	return ACTIVE_MAX if node.begins_with("a") else MAX_LV
 
 
-## 스킬 피해 배율: 레벨마다 +6%, 스킬 숙련 +4%씩, 오의는 1.6배
+## 스킬 피해 배율: 레벨마다 +12%, 스킬 숙련 +4%씩, 오의는 1.6배, 상위 기술은 ×1.6
 static func power(char_id: StringName, node: String) -> float:
 	var lv := maxi(1, Save.skill_level(char_id, node))
-	var p := (1.0 + 0.06 * (lv - 1)) * (1.0 + 0.04 * Save.skill_level(char_id, "p4"))
-	return p * (1.6 if node == "a3" else 1.0)
+	var p := (1.0 + 0.12 * (lv - 1)) * (1.0 + 0.04 * Save.skill_level(char_id, "p4"))
+	return p * (1.6 if node in ["a3", "a6"] else 1.0) * (UP_POWER if UPGRADE_OF.has(node) else 1.0)
 
 
-## 재사용 대기: 레벨마다 1.5% 짧아진다
+## 재사용 대기: 레벨마다 3% 짧아진다
 static func cooldown(char_id: StringName, node: String) -> float:
 	var lv := maxi(1, Save.skill_level(char_id, node))
-	return float(info(char_id, node)["cd"]) * (1.0 - 0.015 * (lv - 1))
+	return float(info(char_id, node)["cd"]) * (1.0 - 0.03 * (lv - 1))
 
 
 static func icon(name: String) -> Texture2D:
@@ -138,3 +176,6 @@ static func draw_icon(ci: CanvasItem, char_id: StringName, node: String, r: Rect
 		var d := Save.character(char_id)
 		ci.draw_rect(r, Gt.element_color(d.element).darkened(0.3 if not dim else 0.6))
 		Gt.element_glyph(ci, r.get_center(), r.size.x * 0.8, d.element, Color.WHITE, Gt.INK)
+	if UPGRADE_OF.has(node):  # 상위 기술 표시: 금빛 테두리 + 별
+		ci.draw_rect(r.grow(-1), Color(1, 0.82, 0.3, 0.9 if not dim else 0.4), false, 3.0)
+		Gt.star(ci, r.position + Vector2(r.size.x - 9, 9), 8.0, Color("ffd54f"))

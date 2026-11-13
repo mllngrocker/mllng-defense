@@ -140,6 +140,7 @@ func use_dungeon() -> bool:
 
 func _ready() -> void:
 	_ensure()
+	_sync_title()
 	_repair_bosses()
 	_check_day()
 	track("login")
@@ -184,7 +185,26 @@ func _check_day() -> void:
 
 func main_index() -> int:
 	_ensure()
-	return int(Save.quest["main"])
+	var i := int(Save.quest["main"])
+	Save.quest["main_title"] = String(MAIN[i]["title"]) if i < MAIN.size() else "*끝"  # 번호와 함께 제목도 저장
+	return i
+
+
+## 불러온 세이브: 메인 퀘스트는 제목 기준으로 자리를 찾는다(장 순서를 바꿔 번호가 밀려도 진행이 안 꼬이게).
+## 제목이 목록에 없으면(이름이 바뀐 퀘스트) 번호를 그대로 쓴다
+func _sync_title() -> void:
+	var t := String(Save.quest.get("main_title", ""))
+	if t == "":
+		return
+	if t == "*끝":
+		Save.quest["main"] = MAIN.size()
+		return
+	for k in MAIN.size():
+		if String(MAIN[k]["title"]) == t:
+			if k != int(Save.quest["main"]):
+				Save.quest["main"] = k
+				Save.quest["progress"] = 0
+			return
 
 
 func current() -> Dictionary:

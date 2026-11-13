@@ -5,7 +5,7 @@ extends Node
 func _ready() -> void:
 	Save.persist = false
 	Save.away_seconds = 0  # 방치 보상 창이 가리지 않게
-	Save.owned["kemo1"] = {"level": 138, "stars": 0}
+	Save.owned["kemo1"] = {"level": 150, "stars": 0}
 	Save.skill_lv = {"kemo1": {"a1": 1}}
 	if "--all" in OS.get_cmdline_user_args():
 		Save.auto_skill(&"kemo1")  # "한번에 찍기"를 누른 뒤 모습

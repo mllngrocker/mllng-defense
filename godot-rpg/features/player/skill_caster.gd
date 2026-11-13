@@ -29,7 +29,7 @@ const KUNAI := preload("res://assets/ninja/fx/kunai.png")
 var player: Player
 var data: CharacterData
 var cooldown := 0.0  # 고유기(a1) 남은 재사용 시간(예전 이름 그대로)
-var cds: Dictionary = {"a1": 0.0, "a2": 0.0, "a3": 0.0}  # 슬롯별 남은 재사용 시간
+var cds: Dictionary = {"a1": 0.0, "a2": 0.0, "a3": 0.0, "a4": 0.0, "a5": 0.0, "a6": 0.0}  # 스킬별 남은 재사용 시간
 var power := 1.0  # 지금 쓰는 스킬의 피해 배율(스킬 레벨·숙련·오의)
 var last_name := ""  # 컷인에 보일 이름
 var fx_scale := 1.0  # 별 등급 연출: 스킬 그림 크기 배율(5성부터)
@@ -79,7 +79,9 @@ const MP_COST := {
 
 
 static func mp_cost(node: String, attack_kind := 0) -> int:
-	return int(MP_COST["magic" if attack_kind == CharacterData.AttackKind.MAGIC else "melee"].get(node, 20))
+	var base := String(SkillTree.UPGRADE_OF.get(node, node))
+	var c := int(MP_COST["magic" if attack_kind == CharacterData.AttackKind.MAGIC else "melee"].get(base, 20))
+	return roundi(c * 1.4) if SkillTree.UPGRADE_OF.has(node) else c
 
 
 ## 스킬 사용(node: a1 고유기 · a2 · a3 오의). 안 배웠거나 재사용 대기 중이면 false.
@@ -104,7 +106,66 @@ func try_cast(node := "a1") -> bool:
 	player.flash(0.8)
 	Game.sfx(Game.ELEMENT_SFX[clampi(data.element, 0, 5)], -3.0, 0.0)  # 속성마다 다른 소리
 	_awaken_fx(Save.rank_of(data.id) if owned else data.rarity)
-	match StringName(info["behavior"]):
+	var up := SkillTree.UPGRADE_OF.has(node)
+	if up:
+		fx_scale *= 1.25  # 상위 기술: 더 크게
+		if fx_tint == Color.WHITE:
+			fx_tint = Color("ffd54f")  # 상위 기술: 금빛으로 물든 연출
+		Game.add_shake(4.0)
+		_upgrade_fx()
+	_run(StringName(info["behavior"]))
+	if up:
+		_echo(StringName(info["behavior"]))
+	return true
+
+
+## 상위 기술의 잔향: 잠시 뒤 같은 기술이 한 번 더(피해 절반쯤) 몰아친다
+func _echo(behavior: StringName) -> void:
+	await wait(0.45)
+	if not alive():
+		return
+	var keep := power
+	power *= 0.55
+	_echo_fx()
+	_run(behavior)
+	power = keep
+
+
+## 상위 기술 시전: 발밑에 겹겹이 도는 금빛 마법진 + 사방으로 터지는 빛줄기 + 몸을 감싸는 오라 + 살짝 번쩍
+func _upgrade_fx() -> void:
+	var c := player.body_center()
+	var gold := fx_tint.lerp(Color("fff2a8"), 0.35)
+	Game.flash(Color(gold, 0.16), 0.18)
+	var ring := fx(CIRCLE, 4, c + Vector2(0, 8), 10.0, 3.2, Color(gold, 0.85))
+	ring.z_index = -1
+	var ring2 := fx(CIRCLE, 4, c + Vector2(0, 8), 14.0, 2.2, Color(gold.lightened(0.3), 0.7))
+	ring2.z_index = -1
+	create_tween().tween_property(ring, ^"rotation", TAU, 0.6)
+	create_tween().tween_property(ring2, ^"rotation", -TAU, 0.6)
+	fx(AURA, 4, c, 14.0, 1.6, Color(gold, 0.8))
+	for i in 12:
+		var d := Vector2.from_angle(i * TAU / 12.0)
+		fx(SPARK, 10, c + d * 16.0, 22.0, 1.1, gold, d.angle())
+	for i in 6:
+		var d2 := Vector2.from_angle(i * TAU / 6.0 + 0.26)
+		var ray := fx(SPARK, 10, c + d2 * 34.0, 18.0, 1.6, Color(gold.lightened(0.2), 0.9), d2.angle())
+		ray.z_index = 5
+
+
+## 잔향: 충격파 두 겹 + 별빛 조각
+func _echo_fx() -> void:
+	var c := player.body_center()
+	var gold := fx_tint.lerp(Color("fff2a8"), 0.35)
+	Game.add_shake(5.0)
+	fx(CIRCLE, 4, c, 16.0, 3.8, Color(gold, 0.8)).z_index = 4
+	fx(CIRCLE, 4, c, 12.0, 5.2, Color(gold.lightened(0.4), 0.5)).z_index = 4
+	for i in 8:
+		var d := Vector2.from_angle(i * TAU / 8.0 + 0.4)
+		fx(SPARK, 10, c + d * 40.0, 20.0, 1.4, gold, d.angle())
+
+
+func _run(behavior: StringName) -> void:
+	match behavior:
 		&"kemo1": _gale_dash()
 		&"kemo2": _ice_rain()
 		&"kemo3": _flame_burst()
@@ -141,7 +202,6 @@ func try_cast(node := "a1") -> bool:
 		&"thousand_cuts": _thousand_cuts()
 		&"devil3": _abyss_rain()
 		_: _flame_burst()
-	return true
 
 
 ## 별 등급 연출: 5성부터 스킬 그림이 커지고(×1.12 · 1.25 · 1.4) 별 색 충격파가 퍼진다. 7성은 화면이 붉게 번쩍이고 불꽃이 튄다.

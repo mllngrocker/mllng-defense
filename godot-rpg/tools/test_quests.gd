@@ -146,6 +146,20 @@ func _ready() -> void:
 	print("    가장 긴 설명 → ", lines.size(), "줄: ", " / ".join(lines))
 	_check("긴 설명은 여러 줄로 나뉘고 글자가 빠지지 않는다", lines.size() >= 2 and "".join(lines).replace(" ", "") == longest.replace(" ", ""))
 	hud_w.free()
+	# 퀘스트는 제목으로도 저장: 장 순서가 바뀌어 번호가 밀려도 제목 자리로 돌아간다
+	var keepq: Dictionary = Save.quest.duplicate(true)
+	Save.quest = {"main": 3, "progress": 0, "main_title": String(Quests.MAIN[10]["title"])}
+	Quests._ensure()
+	Quests._sync_title()
+	_check("제목으로 자리 찾기 (%d)" % Quests.main_index(), Quests.main_index() == 10)
+	Save.quest["main"] = 12
+	Quests.main_index()
+	_check("번호가 바뀌면 저장 제목도 따라감", Save.quest["main_title"] == Quests.MAIN[12]["title"])
+	Save.quest = {"main": 5, "progress": 0, "main_title": "없어진 퀘스트"}
+	Quests._ensure()
+	Quests._sync_title()
+	_check("모르는 제목이면 번호 그대로", Quests.main_index() == 5)
+	Save.quest = keepq
 	print("결과: ", "통과" if fails == 0 else "실패 %d개" % fails)
 	get_tree().quit(fails)
 

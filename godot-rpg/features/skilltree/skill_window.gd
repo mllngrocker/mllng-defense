@@ -1,12 +1,13 @@
 class_name SkillWindow
 extends Control
 ## 스킬 창(로비 아바타의 스킬 칸을 누르면): 캐릭터별 스킬 트리.
-## 위: 액티브 줄(고유기 → 두 번째 → 오의), 아래: 패시브(공격 → 스킬 숙련, 체력, 급소). 화살표는 앞선 스킬.
+## 위: 액티브 줄(고유기 → 두 번째 → 오의), 그 아래 상위 기술 줄(4·5·6번), 아래: 패시브(공격 → 스킬 숙련, 체력, 급소). 화살표는 앞선 스킬.
+## 액티브는 6개 중 3개를 "1·2·3칸" 버튼으로 골라 끼운다(전투의 스킬 버튼 3개).
 ## 노드를 누르면 아래에 설명, "올리기"로 스킬 포인트 1점 사용, "한번에 찍기"로 남은 포인트를 정해진 순서로 한꺼번에.
 
 signal closed
 
-const NODE := 74.0
+const NODE := 62.0
 
 var char_id: StringName
 var chosen := "a1"
@@ -14,6 +15,7 @@ var tree: DrawBox
 var detail: DrawBox
 var up_button: GameButton
 var all_button: GameButton
+var slot_buttons: Array[GameButton] = []
 var t := 0.0
 var _toast := ""
 var _toast_t := 0.0
@@ -53,6 +55,11 @@ func _ready() -> void:
 	detail.custom_minimum_size.y = 128
 	col.add_child(detail)
 
+	var row0 := _row(col)
+	for i in 3:
+		var b := _button(row0, "%d칸" % (i + 1), Gt.Kind.BLUE, _on_slot.bind(i))
+		b.font_size = 13
+		slot_buttons.append(b)
 	var row1 := _row(col)
 	up_button = _button(row1, "올리기", Gt.Kind.YELLOW, _on_up)
 	all_button = _button(row1, "한번에 찍기", Gt.Kind.GREEN, _on_all)
@@ -93,6 +100,14 @@ func _refresh() -> void:
 	up_button.label = "올리기 (1포인트)"
 	all_button.disabled = Save.skill_points(char_id) <= 0
 	all_button.sublabel = "남은 %d포인트" % Save.skill_points(char_id)
+	var sl := Save.slots_of(char_id)
+	var can_slot: bool = chosen.begins_with("a") and Save.skill_level(char_id, chosen) > 0
+	for i in 3:
+		var b := slot_buttons[i]
+		b.label = "%d칸 · %s" % [i + 1, SkillTree.info(char_id, sl[i])["name"]]
+		b.kind = Gt.Kind.PINK if sl[i] == chosen else Gt.Kind.BLUE
+		b.sublabel = "여기에 끼우기" if can_slot and sl[i] != chosen else ("끼움" if sl[i] == chosen else "")
+		b.queue_redraw()
 	for b: GameButton in [up_button, all_button]:
 		b.queue_redraw()
 	detail.queue_redraw()
@@ -123,6 +138,19 @@ func _on_all() -> void:
 	_refresh()
 
 
+## 고른 액티브를 i번 칸에 끼운다(이미 다른 칸이면 서로 바꾼다)
+func _on_slot(i: int) -> void:
+	if not chosen.begins_with("a"):
+		_say("액티브 스킬을 먼저 골라 주세요")
+	elif Save.skill_level(char_id, chosen) <= 0:
+		_say("아직 배우지 않은 스킬이에요")
+	else:
+		Save.set_slot(char_id, i, chosen)
+		Game.sfx(&"pickup", -6.0)
+		_say("%s → %d칸" % [SkillTree.info(char_id, chosen)["name"], i + 1])
+	_refresh()
+
+
 func _close() -> void:
 	closed.emit()
 	queue_free()
@@ -133,7 +161,7 @@ func _close() -> void:
 func _node_rect(cell: Vector2i) -> Rect2:
 	var w := tree.size.x
 	var gap := (w - 3 * NODE) / 4.0
-	var y0 := 38.0 + cell.y * (NODE + 46.0) + (22.0 if cell.y > 0 else 0.0)
+	var y0 := 34.0 + cell.y * (NODE + 38.0) + (20.0 if cell.y >= 2 else 0.0)
 	return Rect2(Vector2(gap + cell.x * (NODE + gap), y0), Vector2(NODE, NODE))
 
 
@@ -165,7 +193,7 @@ func _paint_tree(ci: Control) -> void:
 	Gt.pbox(ci, r, Color("2c4466"), Color("6fa8d8"), 2, false, false)
 	# 줄 이름
 	Gt.text(ci, Vector2(12, 24), "액티브 스킬", 13, Color("9fd4ff"))
-	Gt.text(ci, Vector2(12, _node_rect(Vector2i(0, 1)).position.y - 10), "패시브 스킬", 13, Color("9fd4ff"))
+	Gt.text(ci, Vector2(12, _node_rect(Vector2i(0, 2)).position.y - 10), "패시브 스킬", 13, Color("9fd4ff"))
 	# 연결선(밝은 하늘색, 앞선 스킬을 충분히 올렸으면 빛난다)
 	for row: Array in SkillTree.LAYOUT:
 		if row[2] == "":
@@ -174,6 +202,12 @@ func _paint_tree(ci: Control) -> void:
 		var to := _node_rect(row[1])
 		var ok := Save.skill_level(char_id, row[2]) >= int(row[3])
 		var col := Color("5ff0ff") if ok else Color("5f7894")
+		if is_equal_approx(from.position.x, to.position.x):  # 위 → 아래(상위 기술)
+			var a := Vector2(from.get_center().x + 22, from.end.y + 4)
+			var b := Vector2(to.get_center().x + 22, to.position.y - 4)
+			ci.draw_line(a, b, col, 4.0)
+			ci.draw_colored_polygon(PackedVector2Array([b, b + Vector2(-6, -9), b + Vector2(6, -9)]), col)
+			continue
 		var a := Vector2(from.end.x + 2, from.get_center().y)
 		var b := Vector2(to.position.x - 2, to.get_center().y)
 		ci.draw_line(a, b, col, 4.0)
@@ -211,6 +245,12 @@ func _draw_node(ci: Control, node: String, r: Rect2) -> void:
 	Gt.text(ci, Vector2(r.get_center().x, r.end.y + 18), lt, 14, Color("fff3c4") if lv > 0 else Color("a9b8cc"), 1, true, 3, Gt.INK)
 	if node == "a3":
 		Gt.text(ci, Vector2(r.get_center().x, r.position.y - 6), "오의", 12, Color("ff9ec8"), 1, true, 3, Gt.INK)
+	var k := Save.slots_of(char_id).find(node)
+	if k >= 0:  # 전투에 끼운 칸 번호
+		var bc := r.position + Vector2(2, 2)
+		ci.draw_circle(bc, 11.0, Gt.INK)
+		ci.draw_circle(bc, 9.0, Color("ff5d8f"))
+		Gt.text(ci, bc + Vector2(0, 5), str(k + 1), 13, Color.WHITE, 1)
 
 
 func _paint_detail(ci: Control) -> void:
