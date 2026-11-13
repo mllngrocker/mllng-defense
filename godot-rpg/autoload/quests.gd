@@ -140,6 +140,7 @@ func use_dungeon() -> bool:
 
 func _ready() -> void:
 	_ensure()
+	_repair_bosses()
 	_check_day()
 	track("login")
 
@@ -315,6 +316,21 @@ func mark_boss(kind: String) -> void:
 		Save.quest["bosses"] = {}
 	Save.quest["bosses"][kind] = true
 	Save.save_game()
+
+
+## 옛 세이브 보정: 장 순서를 바꾸면서 퀘스트 번호만 앞으로 가 있고 그 앞 장 보스 기록이 없는 경우가 생겼다.
+## 이미 지나간 메인 퀘스트의 보스는 잡은 것으로 쳐서 문이 막히지 않게 한다.
+func _repair_bosses() -> void:
+	var fixed := false
+	for i in mini(main_index(), MAIN.size()):
+		var q: Dictionary = MAIN[i]
+		if String(q["type"]) == "boss" and not boss_defeated(String(q["target"])):
+			if not Save.quest.has("bosses"):
+				Save.quest["bosses"] = {}
+			Save.quest["bosses"][String(q["target"])] = true
+			fixed = true
+	if fixed:
+		Save.save_game()
 
 
 ## 받을 보상이 하나라도 있으면 true(탭에 빨간 점)

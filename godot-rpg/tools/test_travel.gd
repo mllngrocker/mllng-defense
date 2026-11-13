@@ -14,6 +14,16 @@ func _ready() -> void:
 	_check("숲의 주인을 안 잡으면 사막 길은 막힘", Travel.route("forest", "desert").is_empty())
 	Quests.mark_boss("king_slime")
 	_check("잡으면 열림", Travel.route("village", "desert").size() > 3)
+	# 옛 세이브 보정: 퀘스트는 "마계 정화"인데 앞 장 보스 기록이 없으면(뿌리 동굴에 있던 사용자) 길이 막혔다
+	var keep: Dictionary = Save.quest.duplicate(true)
+	for k in Quests.MAIN.size():
+		if Quests.MAIN[k]["title"] == "마계 정화":
+			Save.quest["main"] = k
+	Save.quest["bosses"] = {"king_slime": true, "demon_lord": true}
+	Quests._repair_bosses()
+	var hp := Travel.plan(Quests.current(), "root2")
+	_check("보정 뒤 뿌리 동굴 → 마계 길이 열림 (%s)" % p_str(hp), hp.has("goal") and Quests.boss_defeated("black_gardener") and Quests.boss_defeated("flame_dragon"))
+	Save.quest = keep
 	# 퀘스트 → 목적지
 	var q := {}
 	for m in Quests.MAIN:
@@ -75,3 +85,7 @@ func _check(label: String, ok: bool) -> void:
 	print(("  OK  " if ok else "  FAIL ") + label)
 	if not ok:
 		fails += 1
+
+
+func p_str(d: Dictionary) -> String:
+	return str(d.get("goal", d.get("error", "")))
