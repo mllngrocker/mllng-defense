@@ -13,7 +13,8 @@ const HERO_TINT := {
 	&"devil2": [Color("12061c"), Color("44104e"), Color("e08aff")],
 	&"elf4": [Color("04140e"), Color("17442c"), Color("9affc4")],
 }
-const FEATURED_WEAPONS: Array[StringName] = [&"flame_fang", &"holy_sword", &"fairy_wand"]
+const FEATURED_WEAPONS: Array[StringName] = [&"blood_fang", &"chaos_sword", &"crimson_lance"]  # ★6 신화
+var rates: Control
 const MODES: Array = [["char", "캐릭터"], ["weapon", "장비"], ["pet", "펫"]]
 const RARITY_COLORS := Gt.RARITY
 
@@ -42,7 +43,7 @@ func _ready() -> void:
 	mode_bar.gui_input.connect(func(e: InputEvent) -> void:
 		var mb := e as InputEventMouseButton
 		if mb and not mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
-			set_mode(MODES[clampi(int(mb.position.x / (mode_bar.size.x / 2.0)), 0, 1)][0]))
+			set_mode(MODES[clampi(int(mb.position.x / (mode_bar.size.x / MODES.size())), 0, MODES.size() - 1)][0]))  # 펫 칸도 누를 수 있게(3칸)
 	col.add_child(mode_bar)
 	banner = _draw_box(func(ci: Control) -> void:
 		if mode == "weapon":
@@ -54,7 +55,7 @@ func _ready() -> void:
 	banner.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	banner.clip_contents = true
 	col.add_child(banner)
-	var rates := _draw_box(_paint_rates)
+	rates = _draw_box(_paint_rates)
 	rates.custom_minimum_size.y = 40
 	col.add_child(rates)
 	var guarantee := _draw_box(_paint_guarantee)
@@ -94,6 +95,7 @@ func set_mode(m: String) -> void:
 	Game.sfx(&"pickup", -10.0)
 	mode_bar.queue_redraw()
 	note.queue_redraw()
+	rates.queue_redraw()  # 모드마다 확률 칸이 다르다
 	_refresh()
 
 
@@ -208,7 +210,7 @@ func _paint_weapon_banner(ci: Control) -> void:
 		Weapons.draw_icon(ci, FEATURED_WEAPONS[0 if k == 0 else 2], Vector2.ZERO, w * 0.2, Color(0.35, 0.18, 0.22, 0.9))
 		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	Weapons.draw_icon(ci, FEATURED_WEAPONS[1], c, w * 0.46)  # 가운데: 크게
-	_cinema_plate(ci, r, "전설의 무기고", "LEGEND ARMORY", "★5 무기 · 전설 장신구  확률 UP", Save.pity_w, Color("ff9a5a"))
+	_cinema_plate(ci, r, "신화의 무기고", "MYTHIC ARMORY", "★6 신화 무기·장비 등장 · ★5 확률 UP", Save.pity_w, Color("ff2d55"))
 	_pickup_tag(ci, r, Color("ffb648"))
 	_slim_frame(ci, r)
 
@@ -373,17 +375,22 @@ func _paint_modes(ci: Control) -> void:
 
 
 func _paint_rates(ci: Control) -> void:
+	# 장비(무기) 소환은 ★6 신화 칸이 하나 더(★5 중 일부가 신화로 바뀐다)
+	var mythic := snappedf(Gacha.RATE_5 * Gacha.MYTHIC_SHARE * 100.0, 0.01)
 	var chips := [[5, "1%"], [4, "9%"], [3, "90%"]]
-	var gap := 8.0
-	var w := (ci.size.x - gap * 2.0) / 3.0
+	if mode == "weapon":
+		chips = [[6, "%s%%" % str(mythic)], [5, "%s%%" % str(snappedf(Gacha.RATE_5 * 100.0 - mythic, 0.01))], [4, "9%"], [3, "90%"]]
+	var gap := 6.0
+	var w := (ci.size.x - gap * (chips.size() - 1)) / chips.size()
 	for i in chips.size():
 		var rarity: int = chips[i][0]
 		var r := Rect2(Vector2(i * (w + gap), 2), Vector2(w, ci.size.y - 6))
-		Gt.pbox(ci, r, Gt.CREAM, Gt.INK, 2, true, true)
-		ci.draw_rect(Rect2(r.position + Vector2(Gt.PX, Gt.PX * 2.0), Vector2(Gt.PX * 2.0, r.size.y - Gt.PX * 4.0)), RARITY_COLORS[rarity])
-		for s in rarity:
-			Gt.star(ci, r.position + Vector2(20 + s * 13, r.size.y / 2.0 + 1), 5.5)
-		Gt.text(ci, Vector2(r.end.x - 12, r.position.y + r.size.y / 2.0 + 7), chips[i][1], 18, Gt.NAVY, 2)
+		Gt.pbox(ci, r, Color("2a0a14") if rarity == 6 else Gt.CREAM, Gt.INK, 2, true, true)
+		ci.draw_rect(Rect2(r.position + Vector2(Gt.PX, Gt.PX * 2.0), Vector2(Gt.PX * 2.0, r.size.y - Gt.PX * 4.0)), Gt.item_star(rarity))
+		# 별 하나(등급 색) + "★N" — 칸이 좁아도 읽히게
+		Gt.star(ci, r.position + Vector2(22, r.size.y / 2.0 + 1), 7.0, Gt.item_star(rarity))
+		Gt.text(ci, r.position + Vector2(33, r.size.y / 2.0 + 6), str(rarity), 15, Color.WHITE if rarity == 6 else Gt.NAVY)
+		Gt.text(ci, Vector2(r.end.x - 10, r.position.y + r.size.y / 2.0 + 7), chips[i][1], 16, Color("ff6b85") if rarity == 6 else Gt.NAVY, 2)
 
 
 func _paint_guarantee(ci: Control) -> void:
