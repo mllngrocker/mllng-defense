@@ -13,7 +13,7 @@ float noise(vec2 p) {
 }
 float fbm(vec2 p) {
 	float v = 0.0; float a = 0.5;
-	for (int k = 0; k < 5; k++) { v += a * noise(p); p *= 2.02; a *= 0.5; }
+	for (int k = 0; k < 3; k++) { v += a * noise(p); p *= 2.02; a *= 0.5; }  // 휴대폰에서 가볍게(예전 5겹)
 	return v;
 }
 void fragment() {

@@ -25,6 +25,11 @@ const STYLES: Dictionary[int, Script] = {
 	CharacterData.AttackKind.HEAVY: preload("res://features/player/attacks/heavy_attack.gd"),
 	CharacterData.AttackKind.BOW: preload("res://features/player/attacks/bow_attack.gd"),
 	CharacterData.AttackKind.DAGGER: preload("res://features/player/attacks/dagger_attack.gd"),
+	CharacterData.AttackKind.FIST: preload("res://features/player/attacks/fist_attack.gd"),
+	CharacterData.AttackKind.SPEAR: preload("res://features/player/attacks/spear_attack.gd"),
+	CharacterData.AttackKind.WHIP: preload("res://features/player/attacks/whip_attack.gd"),
+	CharacterData.AttackKind.DUAL: preload("res://features/player/attacks/dual_attack.gd"),
+	CharacterData.AttackKind.THROW: preload("res://features/player/attacks/throw_attack.gd"),
 }
 
 ## 비워 두면 저장된 "고른 캐릭터"로 나간다
@@ -289,7 +294,7 @@ func _auto_drive(delta: float) -> Vector2:
 	var v := _auto_target.global_position - global_position
 	var d := v.length()
 	var is_enemy := _auto_target.is_in_group(&"enemies")
-	var reach := 4.0 if not is_enemy else (75.0 if data.attack_kind in [CharacterData.AttackKind.MAGIC, CharacterData.AttackKind.BOW] else 16.0)  # 마법·활은 떨어져서 쏜다
+	var reach := 4.0 if not is_enemy else (75.0 if data.attack_kind in [CharacterData.AttackKind.MAGIC, CharacterData.AttackKind.BOW, CharacterData.AttackKind.THROW] else (28.0 if data.attack_kind == CharacterData.AttackKind.SPEAR else 16.0))  # 마법·활은 떨어져서 쏜다
 	# 1.5초 동안 가까워지지 않으면 잠깐 포기하고 다른 것으로
 	_auto_check += delta
 	if d < _auto_best - 2.0:
@@ -461,7 +466,7 @@ func aim(max_range: float) -> Vector2:
 	var best_d := max_range
 	for e: Node2D in get_tree().get_nodes_in_group(&"enemies"):
 		var d := e.global_position.distance_to(global_position)
-		if d < best_d and e.get(&"hp") > 0:
+		if d < best_d and e.get(&"hp") > 0 and not e.is_queued_for_deletion():
 			best = e
 			best_d = d
 	if best:
@@ -497,7 +502,7 @@ func hit(body: Node2D, mult: float, knock: float, from: Vector2) -> void:
 	var amount := float(atk) * mult * randf_range(0.9, 1.1)
 	knock *= Weapons.mod(weapon, "knock")
 	var crit_rate := Save.crit_of(data.id) if Save.is_owned(data.id) else CRIT_CHANCE
-	if data.attack_kind == CharacterData.AttackKind.DAGGER:
+	if data.attack_kind in [CharacterData.AttackKind.DAGGER, CharacterData.AttackKind.DUAL, CharacterData.AttackKind.THROW]:
 		crit_rate += 0.1  # 도적·암살자: 급소를 노린다
 	var crit := randf() < crit_rate
 	if crit:
@@ -539,6 +544,27 @@ func squash(amount: Vector2, duration := 0.2) -> void:
 func flash(strength := 1.0) -> void:
 	flash_mat.set_shader_parameter(&"flash", strength)
 	create_tween().tween_method(func(v: float) -> void: flash_mat.set_shader_parameter(&"flash", v), strength, 0.0, 0.18)
+
+
+## 순간이동: 가는 길에 벽(1층)이 없고, 도착 자리가 벽 속이 아닐 때만 옮긴다. 옮겼으면 true
+func safe_teleport(to: Vector2) -> bool:
+	var space := get_world_2d().direct_space_state
+	var ray := PhysicsRayQueryParameters2D.create(global_position + Vector2(0, -4), to + Vector2(0, -4), 1, [get_rid()])
+	var hit := space.intersect_ray(ray)
+	if not hit.is_empty() and (hit["collider"] is StaticBody2D or hit["collider"] is TileMapLayer):
+		return false  # 벽 너머
+	var body := get_node_or_null(^"Body") as CollisionShape2D
+	if body and body.shape:
+		var q := PhysicsShapeQueryParameters2D.new()
+		q.shape = body.shape
+		q.transform = Transform2D(0.0, to + body.position)
+		q.collision_mask = 1
+		q.exclude = [get_rid()]
+		for h: Dictionary in space.intersect_shape(q, 4):
+			if h["collider"] is StaticBody2D or h["collider"] is TileMapLayer:
+				return false  # 도착 자리가 벽 속
+	global_position = to
+	return true
 
 
 ## 스킬이 잠깐 몸을 붙잡는다: time초 동안 move 속도로만 움직이고, guard면 무적.

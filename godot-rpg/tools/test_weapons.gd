@@ -66,7 +66,7 @@ func _ready() -> void:
 	menu.shop_page._on_pull(1, Gacha.COST_ONE)
 	await get_tree().process_frame
 	var overlay := menu.get_children().filter(func(n: Node) -> bool: return n is GachaResult)
-	_check("상점 무기 모드에서 1회 소환 → 무기 결과 연출", overlay.size() == 1 and (overlay[0] as GachaResult).results[0].has("weapon") and Save.weapons.size() >= before)
+	_check("상점 장비 모드에서 1회 소환 → 무기·장신구 결과 연출", overlay.size() == 1 and ((overlay[0] as GachaResult).results[0].has("weapon") or (overlay[0] as GachaResult).results[0].has("gear")) and Save.weapons.size() >= before)
 	menu._switch_tab("아바타")
 	menu.viewing = &"kemo1"
 	menu._open_weapon_picker()

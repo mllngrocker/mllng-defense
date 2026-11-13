@@ -14,7 +14,7 @@ const HERO_TINT := {
 	&"elf4": [Color("04140e"), Color("17442c"), Color("9affc4")],
 }
 const FEATURED_WEAPONS: Array[StringName] = [&"flame_fang", &"holy_sword", &"fairy_wand"]
-const MODES: Array = [["char", "캐릭터 소환"], ["weapon", "무기 소환"]]
+const MODES: Array = [["char", "캐릭터"], ["weapon", "장비"], ["pet", "펫"]]
 const RARITY_COLORS := Gt.RARITY
 
 var rng := RandomNumberGenerator.new()
@@ -47,6 +47,8 @@ func _ready() -> void:
 	banner = _draw_box(func(ci: Control) -> void:
 		if mode == "weapon":
 			_paint_weapon_banner(ci)
+		elif mode == "pet":
+			_paint_pet_banner(ci)
 		else:
 			_paint_banner(ci))
 	banner.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -69,7 +71,9 @@ func _ready() -> void:
 	row.add_child(ten_button)
 	col.add_child(row)
 	note = _draw_box(func(ci: Control) -> void:
-		var t := "중복 캐릭터는 별 조각으로 · 조각을 모아 아바타에서 승급(최대 7성) · 7성이면 골드로" if mode == "char" else "중복 무기는 재련 +1 (최대 +5, 공격력 +25%씩) · 다 차면 골드로"
+		var t: String = {"char": "중복 캐릭터는 별 조각으로 · 조각을 모아 아바타에서 승급(최대 7성) · 7성이면 골드로",
+			"weapon": "무기와 장신구(옷·신발·목걸이·반지)가 나와요 · 장신구는 지금 레벨에 맞게 · 중복은 재련 +1",
+			"pet": "골드로 소환 · 중복 펫은 강화 +1(보너스 +20%씩, 최대 5) · 다 차면 골드로"}[mode]
 		Gt.text(ci, Vector2(ci.size.x / 2.0, 16), t, 12, Gt.NAVY, 1, false))
 	note.custom_minimum_size.y = 22
 	col.add_child(note)
@@ -93,20 +97,40 @@ func set_mode(m: String) -> void:
 	_refresh()
 
 
+func _cost(count: int) -> int:
+	if mode == "pet":
+		return Gacha.PET_GOLD_TEN if count >= 10 else Gacha.PET_GOLD_ONE
+	return Gacha.COST_TEN if count >= 10 else Gacha.COST_ONE
+
+
 func _refresh() -> void:
-	for pair: Array in [[one_button, Gacha.COST_ONE], [ten_button, Gacha.COST_TEN]]:
+	for pair: Array in [[one_button, _cost(1)], [ten_button, _cost(10)]]:
 		var b: GameButton = pair[0]
-		var enough: bool = Save.gems >= int(pair[1])
+		b.sublabel = str(pair[1])
+		b.sub_icon = GameButton.SubIcon.COIN if mode == "pet" else GameButton.SubIcon.GEM
+		var enough: bool = (Save.gold if mode == "pet" else Save.gems) >= int(pair[1])
 		b.sublabel_color = Color.TRANSPARENT if enough else Color("ff8080")
 		b.queue_redraw()
 	banner.queue_redraw()
 
 
-func _on_pull(count: int, cost: int) -> void:
-	if not Save.spend_gems(cost):
+func _on_pull(count: int, _cost_unused: int) -> void:
+	var cost := _cost(count)
+	if mode == "pet":
+		if not Save.spend_gold(cost):
+			toast_requested.emit("골드가 부족해요")
+			return
+	elif not Save.spend_gems(cost):
 		toast_requested.emit("보석이 부족해요")
 		return
-	var results := Gacha.pull_weapons(count, rng) if mode == "weapon" else Gacha.pull(count, rng)
+	var results: Array[Dictionary]
+	match mode:
+		"weapon":
+			results = Gacha.pull_weapons(count, rng)
+		"pet":
+			results = Gacha.pull_pets(count, rng)
+		_:
+			results = Gacha.pull(count, rng)
 	var overlay := GachaResult.new()
 	overlay.results = results
 	overlay.closed.connect(func() -> void:
@@ -184,7 +208,7 @@ func _paint_weapon_banner(ci: Control) -> void:
 		Weapons.draw_icon(ci, FEATURED_WEAPONS[0 if k == 0 else 2], Vector2.ZERO, w * 0.2, Color(0.35, 0.18, 0.22, 0.9))
 		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	Weapons.draw_icon(ci, FEATURED_WEAPONS[1], c, w * 0.46)  # 가운데: 크게
-	_cinema_plate(ci, r, "전설의 무기고", "LEGEND ARMORY", "★5  별빛 성검 · 홍염의 송곳니 · 요정의 지팡이", Save.pity_w, Color("ff9a5a"))
+	_cinema_plate(ci, r, "전설의 무기고", "LEGEND ARMORY", "★5 무기 · 전설 장신구  확률 UP", Save.pity_w, Color("ff9a5a"))
 	_pickup_tag(ci, r, Color("ffb648"))
 	_slim_frame(ci, r)
 
@@ -198,6 +222,31 @@ func _banner_art(ci: Control, r: Rect2, id: StringName, slot: int, height: float
 	if hero:
 		ci.draw_texture_rect(tex, Rect2(dst.position + Vector2(-3, -2), dst.size + Vector2(6, 4)), false, Color(0.8, 0.75, 1.0, 0.35 * tint.a))
 	ci.draw_texture_rect(tex, dst, false, tint)
+
+
+## 펫 배너: 밤의 숲(짙은 청록) + 반딧불 + ★5 펫 셋이 둥실 떠 있다
+func _paint_pet_banner(ci: Control) -> void:
+	var r := Rect2(Vector2(2, 2), ci.size - Vector2(4, 8))
+	var w := r.size.x
+	var h := r.size.y
+	var t := Time.get_ticks_msec() / 1000.0
+	Gt.round_grad(ci, r, 14, Color("04121a"), Color("0f3b33"))
+	_light_shafts(ci, r, t, Color("8affd8"))
+	for i in 30:  # 반딧불
+		var p := r.position + Vector2(fmod(i * 67.0 + sin(t * 0.7 + i) * 20.0, w), fmod(i * 43.0 + t * 6.0, h * 0.75))
+		var tw := 0.5 + 0.5 * sin(t * 3.0 + i * 1.9)
+		ci.draw_circle(p, 4.0, Color(0.6, 1.0, 0.7, 0.12 * tw))
+		ci.draw_circle(p, 1.6, Color(0.8, 1.0, 0.75, 0.8 * tw))
+	var ids := Pets.gacha_pool(5)
+	for k in ids.size():
+		var c := r.position + Vector2(w * [0.22, 0.5, 0.78][k % 3], h * (0.42 if k == 1 else 0.5) + sin(t * 1.8 + k) * 6.0)
+		var sz := w * (0.36 if k == 1 else 0.24)
+		for i in 4:
+			ci.draw_circle(c, sz * (0.62 - i * 0.1), Color(0.55, 1.0, 0.8, 0.05 + i * 0.03))
+		Pets.draw_icon(ci, ids[k], Rect2(c - Vector2(sz, sz) / 2.0, Vector2(sz, sz)))
+	_cinema_plate(ci, r, "신비한 펫 소환", "MYSTIC PETS", "★5  %s  · 골드로 소환" % " · ".join(ids.map(func(id: StringName) -> String: return Pets.name_of(id))), 0, Color("7dffc8"))
+	_pickup_tag(ci, r, Color("3fd99a"))
+	_slim_frame(ci, r)
 
 
 ## 비스듬히 내려오는 빛줄기(천천히 흔들림)
@@ -238,6 +287,8 @@ func _cinema_plate(ci: Control, r: Rect2, title: String, en: String, sub: String
 	ci.draw_line(Vector2(x, y + 46), Vector2(r.end.x - 22, y + 46), Color(Gt.GOLD, 0.7), 1.0)
 	ci.draw_line(Vector2(x, y + 46), Vector2(x + 90, y + 46), accent, 3.0)
 	Gt.text(ci, Vector2(x, y + 66), sub, 13, Color("ffd88a"), 0, true, 3, Color(0, 0, 0, 0.8))
+	if pity <= 0 and title.contains("펫"):
+		return  # 펫 소환은 천장 없음
 	Gt.text(ci, Vector2(x, y + 92), "★5 확정까지 %d회" % (Gacha.PITY_5 - pity), 12, Color(1, 1, 1, 0.85), 0, true, 3, Color(0, 0, 0, 0.8))
 	var bar := Rect2(Vector2(x + 128, y + 82), Vector2(r.end.x - 22 - (x + 128), 8))
 	ci.draw_rect(bar, Color(1, 1, 1, 0.12))
@@ -298,12 +349,12 @@ func _banner_frame(ci: Control, r: Rect2) -> void:
 
 
 func _paint_modes(ci: Control) -> void:
-	var w := ci.size.x / 2.0
-	for i in 2:
+	var w := ci.size.x / 3.0
+	for i in 3:
 		var active: bool = MODES[i][0] == mode
 		var r := Rect2(Vector2(i * w + (0.0 if i == 0 else 4.0), 2), Vector2(w - 4.0, ci.size.y - 4))
 		if active:
-			Gt.button(ci, r, Gt.Kind.PINK if i == 1 else Gt.Kind.BLUE)
+			Gt.button(ci, r, [Gt.Kind.BLUE, Gt.Kind.PINK, Gt.Kind.GREEN][i])
 		else:
 			Gt.pbox(ci, r, Color("e9e4da"), Gt.INK, 2, false, true)
 		var c := Vector2(r.get_center().x, r.position.y + (r.size.y - Gt.PX * 2.0) / 2.0)
@@ -311,8 +362,10 @@ func _paint_modes(ci: Control) -> void:
 		var tw := Gt.width(label, 17)
 		if i == 0:
 			Gt.icon(ci, &"heart", c - Vector2(tw / 2.0 + 14, 0), 20)
-		else:
+		elif i == 1:
 			Weapons.draw_icon(ci, &"holy_sword", c - Vector2(tw / 2.0 + 14, 0), 22)
+		else:
+			Pets.draw_icon(ci, &"guardian", Rect2(c - Vector2(tw / 2.0 + 26, 12), Vector2(24, 24)))
 		if active:
 			Gt.title(ci, c + Vector2(10, 6), label, 17, Color.WHITE, 1)
 		else:

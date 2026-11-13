@@ -13,6 +13,7 @@ var chosen: StringName
 var detail: DrawBox
 var equip_button: GameButton
 var upgrade_button: GameButton
+var enh_button: GameButton
 var dismantle_button: GameButton
 var synth_button: GameButton
 var _toast := ""
@@ -25,8 +26,13 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	z_index = 40
-	var list := Gear.ids().filter(func(g: StringName) -> bool: return Gear.slot_of(g) == slot and (Gear.tier_of(g) == 0 or Save.has_gear(g)))  # 정예·고대는 가진 것만
-	list.sort_custom(func(a: StringName, b: StringName) -> bool: return Gear.grade_of(a) > Gear.grade_of(b))
+	var list := Gear.ids().filter(func(g: StringName) -> bool: return Gear.slot_of(g) == slot and (Gear.level_of(g) == 1 or Save.has_gear(g)))  # Lv.10 이상은 가진 것만
+	list.sort_custom(func(a: StringName, b: StringName) -> bool:  # 가진 것 → 높은 레벨 → 높은 등급
+		if Save.has_gear(a) != Save.has_gear(b):
+			return Save.has_gear(a)
+		if Gear.level_of(a) != Gear.level_of(b):
+			return Gear.level_of(a) > Gear.level_of(b)
+		return Gear.grade_of(a) > Gear.grade_of(b))
 	chosen = Save.gear_on(char_id, slot)
 	if chosen == &"":
 		for g: StringName in list:
@@ -53,14 +59,19 @@ func _ready() -> void:
 	col.offset_bottom = -16
 	col.add_theme_constant_override(&"separation", 10)
 	panel.add_child(col)
+	var scroll := ScrollContainer.new()  # 카드가 많으면 옆으로 넘겨 본다
+	scroll.custom_minimum_size.y = 166
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	col.add_child(scroll)
 	var row := HBoxContainer.new()
-	row.custom_minimum_size.y = 150
+	row.custom_minimum_size.y = 160
 	row.add_theme_constant_override(&"separation", 8)
-	col.add_child(row)
+	scroll.add_child(row)
 	for g: StringName in list:
 		var card := DrawBox.new()
 		card.painter = _paint_card.bind(g)
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		card.custom_minimum_size.x = 124
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
 		card.gui_input.connect(func(e: InputEvent) -> void:
 			var mb := e as InputEventMouseButton
@@ -78,7 +89,11 @@ func _ready() -> void:
 	tools.custom_minimum_size.y = 58
 	tools.add_theme_constant_override(&"separation", 10)
 	col.add_child(tools)
-	upgrade_button = _button("강화", Gt.Kind.GREEN)
+	enh_button = _button("강화", Gt.Kind.YELLOW)  # 골드 강화
+	enh_button.font_size = 17
+	enh_button.pressed.connect(_on_enhance)
+	tools.add_child(enh_button)
+	upgrade_button = _button("재련", Gt.Kind.GREEN)
 	upgrade_button.font_size = 17
 	upgrade_button.pressed.connect(_on_upgrade)
 	tools.add_child(upgrade_button)
@@ -124,11 +139,16 @@ func _refresh() -> void:
 	var anyone := Save.gear_holder(chosen) != &""
 	var maxed := Save.gear_refine(chosen) >= Gear.MAX_REFINE
 	upgrade_button.disabled = not have or maxed
-	upgrade_button.label = "강화 최대" if maxed else "강화"
+	upgrade_button.label = "재련 최대" if maxed else "재련"
+	var e := Save.gear_enh_of(chosen)
+	enh_button.disabled = not have or e >= Gear.MAX_ENH
+	enh_button.label = "강화 최대" if e >= Gear.MAX_ENH else "강화 +%d" % (e + 1)
+	enh_button.sublabel = "" if e >= Gear.MAX_ENH else "골드 %s" % _comma(Gear.enh_cost(chosen, e))
+	enh_button.queue_redraw()
 	upgrade_button.sublabel = "" if maxed else "강화석 %d" % Save.upgrade_cost(chosen)
 	dismantle_button.disabled = not have or anyone
 	dismantle_button.label = "착용 중" if have and anyone else "분해"
-	dismantle_button.sublabel = "" if have and anyone else ("강화석 +%d" % Gear.STONES_FROM[Gear.grade_of(chosen)]) + (" · 재련 +%d 이어짐" % Save.gear_refine(chosen) if Save.gear_refine(chosen) > 0 else "")
+	dismantle_button.sublabel = "" if have and anyone else ("강화석 +%d" % Gear.STONES_FROM[Gear.grade_of(chosen)]) + (" · +%d 이어짐" % Save.gear_enh_of(chosen) if Save.gear_enh_of(chosen) > 0 else "")
 	var grade := Gear.grade_of(chosen)
 	synth_button.disabled = not have or anyone or grade >= 4 or Save.synth_material(grade) < Gear.SYNTH_NEED
 	synth_button.label = "합성 최대" if grade >= 4 else ("착용 중" if have and anyone else "합성")
@@ -149,11 +169,34 @@ func _on_equip() -> void:
 	if Save.gear_on(char_id, slot) == chosen:
 		Save.unequip_gear(char_id, slot)
 		Game.sfx(&"bush", -6.0)
+	elif Gear.level_of(chosen) > Save.level_of(char_id):
+		_say("Lv.%d부터 낄 수 있어요" % Gear.level_of(chosen))
+		return
 	else:
 		Save.equip_gear(char_id, chosen)
 		Game.sfx(&"charged", -6.0, 0.0)
 	Save.save_game()
 	_refresh()
+
+
+func _on_enhance() -> void:
+	if Save.enhance_gear(chosen):
+		Game.sfx(&"powerup", -4.0, 0.0)
+		_say("강화 성공! +%d" % Save.gear_enh_of(chosen))
+	else:
+		Game.sfx(&"hurt", -10.0)
+		_say("골드가 모자라요")
+	Save.save_game()
+	_refresh()
+
+
+static func _comma(n: int) -> String:
+	var s := str(n)
+	var out := ""
+	while s.length() > 3:
+		out = "," + s.substr(s.length() - 3) + out
+		s = s.substr(0, s.length() - 3)
+	return s + out
 
 
 func _on_upgrade() -> void:
@@ -171,7 +214,8 @@ func _on_dismantle() -> void:
 	var n := Save.dismantle_gear(chosen)
 	if n > 0:
 		Game.sfx(&"hit_heavy", -4.0)
-		_say("분해! 강화석 +%d · 재련은 다음 %s에 이어져요" % [n, Gear.SLOT_NAMES[Gear.slot_of(chosen)]] if Save.gear_carry.has(Gear.slot_of(chosen)) else "분해! 강화석 +%d" % n)
+		var sl := Gear.slot_of(chosen)
+		_say("분해! 강화석 +%d · 강화 +%d는 다음 %s에 이어져요" % [n, int(Save.gear_carry_e.get(sl, 0)), Gear.SLOT_NAMES[sl]] if int(Save.gear_carry_e.get(sl, 0)) > 0 else "분해! 강화석 +%d" % n)
 	Save.save_game()
 	_refresh()
 
@@ -225,7 +269,7 @@ func _paint_card(ci: Control, g: StringName) -> void:
 	var sel := g == chosen
 	if sel:
 		r.position.y -= 6  # 고른 카드는 살짝 떠오른다
-	Gear.draw_card(ci, g, r, true, Save.gear_refine(g) if have else -1, not have)
+	Gear.draw_card(ci, g, r, true, Save.gear_enh_of(g) if have else -1, not have)
 	if not have:
 		Gt.lock(ci, r.get_center() + Vector2(0, -r.size.y * 0.1), 22, Color("d8d2e2"))
 	if sel:
@@ -247,12 +291,27 @@ func _paint_detail(ci: Control) -> void:
 	var tag := Rect2(r.position + Vector2(12, 12), Vector2(Gt.width(Gear.GRADE_NAMES[grade], 13) + 20, 24))
 	Gt.tag(ci, tag, gc)
 	Gt.text(ci, Vector2(tag.get_center().x, tag.position.y + 17), Gear.GRADE_NAMES[grade], 13, Color.WHITE, 1)
-	for i in grade:
-		Gt.star(ci, Vector2(tag.end.x + 16 + i * 18, tag.get_center().y), 7, gc)
+	var ns := Gear.stars_of(chosen)
+	for i in ns:
+		Gt.star(ci, Vector2(tag.end.x + 16 + i * 18, tag.get_center().y), 7, Gt.item_star(ns))
 	var refine := Save.gear_refine(chosen)
-	Gt.text(ci, r.position + Vector2(14, 66), Gear.name_of(chosen) + (" +%d" % refine if refine > 0 else ""), 22, Gt.NAVY)
-	Gt.text(ci, r.position + Vector2(14, 92), Gear.stats_text(chosen, refine), 15, gc.darkened(0.25))
+	var enh := Save.gear_enh_of(chosen)
+	var lvtxt := "Lv.%d  " % Gear.level_of(chosen)
+	Gt.text(ci, r.position + Vector2(14, 66), lvtxt + Gear.name_of(chosen) + (" +%d" % enh if enh > 0 else "") + (" (재련 %d)" % refine if refine > 0 else ""), 20, Gt.NAVY if Gear.level_of(chosen) <= Save.level_of(char_id) else Color("c0392b"))
+	Gt.text(ci, r.position + Vector2(14, 92), Gear.stats_text(chosen, refine, enh), 15, gc.darkened(0.25))
 	Gt.text(ci, r.position + Vector2(14, 114), Gear.desc_of(chosen), 12, Gt.NAVY_SOFT, 0, false)
+	# 세트 효과: 이 장비를 낀다고 치고 같은 세트 몇 개인지
+	var sk := Gear.set_of(chosen)
+	if sk != "":
+		var worn := Save.gear_worn(char_id).filter(func(g: StringName) -> bool: return Gear.slot_of(g) != slot)
+		worn.append(chosen)
+		var n := int(Gear.set_counts(worn).get(sk, 0))
+		var sy := r.position.y + 140.0
+		Gt.text(ci, Vector2(r.position.x + 14, sy), "세트  %s (%d/4)" % [Gear.set_name(sk), n], 14, Color("8a4fd0"))
+		for need: int in [2, 4]:
+			sy += 20.0
+			var on := n >= need
+			Gt.text(ci, Vector2(r.position.x + 24, sy), "%d개: %s" % [need, Gear.set_text(sk, need)], 12, Color("37a35e") if on else Gt.GRAY, 0, on)
 	var holder := Save.gear_holder(chosen)
 	var note := "같은 장비를 또 얻으면 재련 +1 (최대 +%d, 효과 +10%%씩)" % Gear.MAX_REFINE
 	if not Save.has_gear(chosen):

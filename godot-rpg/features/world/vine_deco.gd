@@ -16,29 +16,35 @@ func _ready() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	# 덩굴: 맵 위쪽 가장자리와 문 둘레에 빽빽하게, 나머지는 띄엄띄엄
-	for i in 110:
+	for i in 70:
 		var p := Vector2(rng.randf_range(0, area.x), rng.randf_range(0, 56))
 		if absf(p.x - gate.x) < 40.0:
 			continue  # 문 앞 길은 비워 둔다
 		_vines.append([p, rng.randf_range(24, 70), rng.randf_range(1.5, 3.0), rng.randf() * TAU])
-	for i in 16:
+	for i in 12:
 		var p := gate + Vector2(rng.randf_range(-44, 44), rng.randf_range(-12, 0))
 		_vines.append([p, rng.randf_range(30, 80), rng.randf_range(2.0, 3.5), rng.randf() * TAU])
-	for i in 90:  # 아래쪽 가장자리에도 빽빽하게(남쪽 문 앞은 비움)
+	for i in 60:  # 아래쪽 가장자리에도 빽빽하게(남쪽 문 앞은 비움)
 		var p := Vector2(rng.randf_range(0, area.x), rng.randf_range(area.y - 120, area.y - 40))
 		if absf(p.x - area.x / 2.0) < 34.0:
 			continue
 		_vines.append([p, rng.randf_range(24, 60), rng.randf_range(1.5, 3.0), rng.randf() * TAU])
-	for i in 40:
+	for i in 24:
 		var p := Vector2(rng.randf_range(0, area.x), rng.randf_range(60, area.y - 60))
 		_vines.append([p, rng.randf_range(16, 40), rng.randf_range(1.2, 2.2), rng.randf() * TAU])
-	for i in 60:
+	for i in 36:
 		_motes.append([Vector2(rng.randf_range(0, area.x), rng.randf_range(0, area.y)), rng.randf_range(4, 12), rng.randf() * TAU, rng.randf_range(1.0, 2.2)])
+
+
+var _skip := 0
 
 
 func _process(delta: float) -> void:
 	_t += delta
-	queue_redraw()
+	_skip += 1
+	if _skip >= 3:  # 덩굴 흔들림은 20번/초면 충분(휴대폰 렉 줄이기)
+		_skip = 0
+		queue_redraw()
 
 
 func _draw() -> void:

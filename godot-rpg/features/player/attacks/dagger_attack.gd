@@ -110,8 +110,8 @@ func _finisher(mult: float, knock: float) -> void:
 	spawn_fx(SMOKE, 6, player.body_center(), 0.0, 20.0, 0.9, Color(tint, 0.8))
 	if target:
 		var through := player.global_position.direction_to(target.global_position)
-		player.global_position = target.global_position + through * 14.0
-		aim = -through
+		if player.safe_teleport(target.global_position + through * 14.0):  # 벽 너머면 제자리에서 벤다
+			aim = -through
 	var c := player.body_center() + aim * 6.0
 	spawn_fx(CUT_X, 4, c, aim.angle(), 24.0, 1.3 if _assassin() else 1.1, tint)
 	if _assassin():

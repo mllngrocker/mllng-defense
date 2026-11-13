@@ -6,10 +6,13 @@ extends RefCounted
 
 const COST_ONE := 300
 const COST_TEN := 2700
+const GEAR_SHARE := 0.45  # 장비 소환에서 장신구가 나올 몫
 const RATE_5 := 0.01
 const RATE_4 := 0.09
+## 무기 소환에서 ★5가 나왔을 때 그중 신화(무기 ★6 · 장비 ★6)로 바뀔 확률 — 전체 약 0.05%(2000번에 1번, 극악)
+const MYTHIC_SHARE := 0.05
 const PITY_5 := 100
-const MAXED_GOLD: Dictionary[int, int] = {3: 300, 4: 800, 5: 2000}
+const MAXED_GOLD: Dictionary[int, int] = {3: 300, 4: 800, 5: 2000, 6: 8000}
 
 
 static func pool(rarity: int) -> Array[StringName]:
@@ -53,7 +56,16 @@ static func pull_weapons(count: int, rng: RandomNumberGenerator) -> Array[Dictio
 		var rarity := _roll_rarity(rng, force_4, Save.pity_w)
 		if rarity >= 4:
 			got_4 = true
-		Save.pity_w = 0 if rarity == 5 else Save.pity_w + 1
+		Save.pity_w = 0 if rarity >= 5 else Save.pity_w + 1
+		if rarity == 5 and rng.randf() < MYTHIC_SHARE:
+			rarity = 6  # 신화!
+		if rng.randf() < GEAR_SHARE:  # 장신구(옷·신발·목걸이·반지): ★3 → 희귀 · ★4 → 영웅 · ★5 → 전설, 지금 레벨에 맞는 장비
+			var grade: int = {3: 2, 4: 3, 5: 4, 6: 5}[rarity]
+			var bases := Gear.DATA.keys().filter(func(b: StringName) -> bool: return Gear.grade_of(b) == grade)
+			var gid := Gear.with_level(bases[rng.randi() % bases.size()], Gear.level_for(Save.level_of(Save.selected)))
+			var gres := Save.give_gear(gid)
+			results.append({"gear": gid, "rarity": rarity, "result": {"new": "new", "up": "refine"}.get(gres, "max"), "refine": Save.gear_refine(gid), "gold": Gear.MAXED_GOLD[grade] if gres == "max" else 0})
+			continue
 		var ids := Weapons.pool(rarity)
 		var w := ids[rng.randi() % ids.size()]
 		var result := Save.grant_weapon(w)
@@ -64,6 +76,32 @@ static func pull_weapons(count: int, rng: RandomNumberGenerator) -> Array[Dictio
 		results.append({"weapon": w, "rarity": rarity, "result": result, "refine": Save.refine_of(w), "gold": gold})
 	Quests.track("pull", "", count)
 	Save.add_stat("pulls", count)
+	Save.save_game()
+	return results
+
+
+## 펫 소환(골드). 결과마다 {pet, rarity, result("new"/"refine"/"max"), refine, gold}
+const PET_GOLD_ONE := 30000
+const PET_GOLD_TEN := 270000
+const PET_MAX_GOLD: Dictionary[int, int] = {3: 5000, 4: 20000, 5: 80000}
+
+
+static func pull_pets(count: int, rng: RandomNumberGenerator) -> Array[Dictionary]:
+	var results: Array[Dictionary] = []
+	var got_4 := false
+	for i in count:
+		var force_4 := count >= 10 and i == count - 1 and not got_4
+		var rarity := _roll_rarity(rng, force_4, 0)
+		if rarity >= 4:
+			got_4 = true
+		var ids := Pets.gacha_pool(rarity)
+		var p := ids[rng.randi() % ids.size()]
+		var res := Save.gain_pet(p)
+		var gold := 0
+		if res == "max":
+			gold = PET_MAX_GOLD[rarity]
+			Save.add_gold(gold)
+		results.append({"pet": p, "rarity": rarity, "result": {"new": "new", "up": "refine"}.get(res, "max"), "refine": Save.pet_level(p), "gold": gold})
 	Save.save_game()
 	return results
 

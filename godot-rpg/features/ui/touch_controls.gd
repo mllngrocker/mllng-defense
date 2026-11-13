@@ -90,11 +90,27 @@ func _on_touch_down(index: int, pos: Vector2) -> void:
 		_press_button(index, &"skill2")
 	elif pos.distance_to(skill_center_of("a3")) < _skill_r("a3") * 1.35:
 		_press_button(index, &"skill3")
+	elif _tap_npc(pos):
+		pass  # 마을 사람을 눌러서 말 걸었다
 	elif joy_index == -1 and pos.x < size.x * 0.6 and pos.y > size.y * 0.3:
 		joy_index = index
 		joy_base = pos
 		joy_pos = pos
 		_apply_joystick()
+
+
+## 화면에서 마을 사람을 누르면(용사가 가까이 있을 때) 대화창
+func _tap_npc(pos: Vector2) -> bool:
+	var p := _player()
+	if p == null or get_tree().paused:
+		return false
+	var world_pos := get_viewport().get_canvas_transform().affine_inverse() * pos
+	for n in get_tree().get_nodes_in_group(&"npcs"):
+		var npc := n as Npc
+		if npc and world_pos.distance_to(npc.global_position + Vector2(0, -12)) < 18.0 and p.global_position.distance_to(npc.global_position) < 96.0:
+			npc.talk()
+			return true
+	return false
 
 
 func _on_touch_up(index: int) -> void:
@@ -225,7 +241,9 @@ func _process(_delta: float) -> void:
 		for k: String in p.skills.cds:
 			if float(p.skills.cds[k]) > 0.0:
 				cooling = true
-	queue_redraw()
+	var f := Engine.get_process_frames()
+	if cooling != _was_cooling or f % (2 if cooling else 6) == 0:
+		queue_redraw()  # 휴대폰 렉 줄이기
 	_was_cooling = cooling
 
 

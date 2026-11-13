@@ -46,6 +46,7 @@ var _frame := 0
 var _drawn_top := Color.BLACK
 var _drawn_bottom := Color.BLACK
 var promote_button: GameButton
+var skill_button: GameButton
 var level_button: GameButton
 var passive_header: DrawBox
 var passive_box: VBoxContainer
@@ -72,6 +73,8 @@ func _ready() -> void:
 	_refresh_all()
 	_update_aura()  # 첫 화면부터 별 색 아우라(잠깐 다른 색이 비치지 않게)
 	IdleReward.try_show.call_deferred(self)  # 꺼 둔 사이 쌓인 방치 보상
+	if Save.persist and not Save.settings.has("nick"):
+		_open_intro.call_deferred(not Save.fresh)  # 처음: 이름 → 동료 고르기(예전 세이브는 이름만)
 
 
 func _process(delta: float) -> void:
@@ -130,11 +133,7 @@ func _build() -> void:
 				_show_toast("미보유 캐릭터예요")
 				return
 			_bounce(skill_box, 1.03)
-			var sw := SkillWindow.new()
-			sw.char_id = viewing
-			sw.closed.connect(_refresh_all)
-			add_child(sw))
-	avatar_page.add_child(_pad(skill_box, 10, 2, 10, 2))
+			_open_skills())
 	# 승급은 레벨 칸 오른쪽 버튼(레벨은 몬스터 경험치로 오르니 레벨 업 버튼 자리를 쓴다)
 	promote_box = _box(_paint_promote, 0)  # 예전 승급 줄(화면엔 안 넣음)
 	promote_button = GameButton.new()
@@ -143,13 +142,27 @@ func _build() -> void:
 	promote_button.font_size = 20
 	promote_button.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
 	promote_button.offset_left = -150
-	promote_button.offset_top = 14
+	promote_button.offset_top = 10
 	promote_button.offset_right = -14
-	promote_button.offset_bottom = -10
+	promote_button.offset_bottom = -50
+	promote_button.font_size = 15
 	promote_button.pressed.connect(_on_promote_pressed)
 	stats_bar.add_child(promote_button)
+	skill_button = GameButton.new()  # 스킬 트리(승급 버튼 바로 아래)
+	skill_button.label = "스킬 트리"
+	skill_button.kind = Gt.Kind.BLUE
+	skill_button.font_size = 15
+	skill_button.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
+	skill_button.offset_left = -150
+	skill_button.offset_top = 48
+	skill_button.offset_right = -14
+	skill_button.offset_bottom = -8
+	skill_button.pressed.connect(_open_skills)
+	stats_bar.add_child(skill_button)
 	level_button.visible = false
-	avatar_page.add_child(_pad(_build_passives(), 10, 4, 10, 6))
+	var passives_pad := _pad(_build_passives(), 10, 4, 10, 6)
+	passives_pad.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	avatar_page.add_child(passives_pad)
 	shop_page = ShopPage.new()
 	shop_page.set_anchors_preset(Control.PRESET_FULL_RECT)
 	shop_page.visible = false
@@ -166,6 +179,11 @@ func _build() -> void:
 			tab_bar.queue_redraw())
 
 	top_bar = _box(_paint_top_bar, 64)
+	top_bar.mouse_filter = Control.MOUSE_FILTER_PASS
+	top_bar.gui_input.connect(func(e: InputEvent) -> void:
+		var mb := e as InputEventMouseButton
+		if mb and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT and mb.position.x < 220.0:
+			_open_intro(true))  # 왼쪽 위 이름표를 누르면 이름 바꾸기
 	col.add_child(top_bar)
 	col.add_child(pages)
 	col.add_child(_build_tab_bar())
@@ -328,13 +346,25 @@ func _build_level_button() -> void:
 	stats_bar.add_child(level_button)
 
 
+func _open_skills() -> void:
+	if not Save.is_owned(viewing):
+		_show_toast("미보유 캐릭터예요")
+		return
+	var sw := SkillWindow.new()
+	sw.char_id = viewing
+	sw.closed.connect(_refresh_all)
+	add_child(sw)
+
+
 func _build_passives() -> Control:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override(&"separation", 4)
+	v.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	passive_header = _box(_paint_passive_header, 32)
 	v.add_child(passive_header)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size.y = 100
+	scroll.custom_minimum_size.y = 160
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	passive_box = VBoxContainer.new()
@@ -369,6 +399,16 @@ func _on_tab_pressed(i: int) -> void:
 			_open_dex()
 
 
+## 시작 화면(이름 정하기 · 동료 고르기). rename이면 이름만
+func _open_intro(rename := false) -> void:
+	var intro := IntroScreen.new()
+	intro.rename_only = rename
+	intro.finished.connect(func() -> void:
+		viewing = Save.selected
+		_refresh_all())
+	add_child(intro)
+
+
 # ── 그리기: 위쪽 바·탭 바 ──
 
 func _paint_top_bar(ci: Control) -> void:
@@ -379,8 +419,9 @@ func _paint_top_bar(ci: Control) -> void:
 	var icon_box := Rect2(10, 10, 46, 46)
 	Gt.pbox(ci, icon_box, Gt.BLUE)
 	_tab_icon(ci, tab_i, icon_box.get_center(), 30)
-	Gt.title(ci, Vector2(64, 36), TABS[tab_i][0], 22)
-	Gt.text(ci, Vector2(66, 52), TABS[tab_i][1], 11, Color.WHITE, 0, true, 4, Gt.INK, true)
+	# 용사 이름(누르면 바꾼다) + 지금 탭
+	Gt.title(ci, Vector2(64, 36), Save.nickname(), 22)
+	Gt.text(ci, Vector2(66, 52), "%s · %s" % [TABS[tab_i][0], TABS[tab_i][1]], 11, Color.WHITE, 0, true, 4, Gt.INK, true)
 	# 오른쪽: 보석·골드
 	_currency(ci, Rect2(w - 254, 16, 116, 32), Save.gems, true)
 	_currency(ci, Rect2(w - 128, 16, 116, 32), Save.gold, false)
@@ -562,7 +603,7 @@ func _paint_plate(ci: Control) -> void:
 	Gt.tag(ci, chip2, Gt.NAVY)
 	Gt.text(ci, Vector2(chip2.get_center().x, chip2.position.y + 19), kind, 14, Color.WHITE, 1)
 	# 오른쪽: 전투력
-	var power: int = Save.atk_of(viewing) * 10 + Save.hp_of(viewing) if owned else data.atk_at(1) * 10 + data.hp_at(1)
+	var power: int = Save.power_of(viewing) if owned else data.atk_at(1) * 10 + data.hp_at(1)
 	Gt.title(ci, Vector2(w - 14, top + 50), "전투력", 13, Color("ffe36b"), 2)
 	Gt.title(ci, Vector2(w - 14, top + 78), _comma(power), 26, Color.WHITE, 2)
 	# 오른쪽 아래 상태(출전 버튼이 없을 때)
@@ -814,7 +855,9 @@ func _on_promote_pressed() -> void:
 
 func _paint_passive_row(ci: Control, index: int, text: String, unlocked: bool) -> void:
 	var r := Rect2(Vector2(0, 1), ci.size - Vector2(0, 5))
-	Gt.pbox(ci, r, Gt.CREAM if unlocked else Color("e9e4da"), Gt.INK, 2, unlocked, unlocked)
+	Gt.pbox(ci, r, Color("fff1c2") if unlocked else Color("e9e4da"), Gt.INK, 2, unlocked, unlocked)
+	if unlocked:
+		ci.draw_rect(Rect2(r.position + Vector2(2, 2), Vector2(5, r.size.y - 4)), Gt.GREEN)
 	var tag := Rect2(r.position + Vector2(8, 7), Vector2(78, r.size.y - 14))
 	Gt.tag(ci, tag, Gt.BLUE if unlocked else Color("b9b3c6"))
 	# 이 줄이 열리는 별 등급(2성 ~ 7성): "N성" 글자 + 그 등급 색 별
@@ -822,9 +865,9 @@ func _paint_passive_row(ci: Control, index: int, text: String, unlocked: bool) -
 	var col: Color = Gt.STAR_BY_RARITY.get(mini(need, 7), Gt.STAR) if unlocked else Color("e2dfe8")
 	Gt.star(ci, Vector2(tag.position.x + 16, tag.get_center().y), 7.0, col)
 	Gt.text(ci, Vector2(tag.position.x + 46, tag.get_center().y + 6), "%d성" % need, 14, Color.WHITE, 1, true, 3, Gt.INK)
-	Gt.text(ci, Vector2(tag.end.x + 12, r.get_center().y + 5), text, 14, Gt.NAVY if unlocked else Gt.GRAY)
+	Gt.text(ci, Vector2(tag.end.x + 12, r.get_center().y + 6), text, 16, Gt.NAVY if unlocked else Gt.GRAY)
 	if unlocked:
-		Gt.text(ci, Vector2(r.end.x - 14, r.get_center().y + 5), "적용 중", 12, Gt.GREEN, 2)
+		Gt.text(ci, Vector2(r.end.x - 14, r.get_center().y + 6), "✔ 적용 중", 13, Gt.GREEN, 2)
 	else:
 		Gt.lock(ci, Vector2(r.end.x - 22, r.get_center().y), 16, Color("c9c3d6"))
 
@@ -867,15 +910,17 @@ func _refresh_all() -> void:
 	promote_button.disabled = not Save.can_promote(viewing)
 	if Save.rank_of(viewing) >= Save.MAX_RANK:
 		promote_button.label = "7성 달성"
-		promote_button.sublabel = "중복은 골드로"
+		promote_button.sublabel = ""
 		promote_button.disabled = true
 	else:
-		promote_button.label = "%d성 승급" % (Save.rank_of(viewing) + 1)
-		promote_button.sublabel = "별 조각 %d / %d" % [Save.shards_of(viewing) if owned else 0, Save.promote_cost(viewing)]
+		promote_button.label = "%d성 승급 %d/%d" % [Save.rank_of(viewing) + 1, Save.shards_of(viewing) if owned else 0, Save.promote_cost(viewing)]
+		promote_button.sublabel = ""  # 버튼이 낮아서 한 줄로(글자가 넘치지 않게)
 	skin_dot.visible = Skins.exists(viewing)
 	skin_dot.position = _skin_dot_pos()
 	skin_dot.queue_redraw()
 	promote_button.queue_redraw()
+	skill_button.label = "스킬 트리 (%d)" % Save.skill_points(viewing) if Save.is_owned(viewing) and Save.skill_points(viewing) > 0 else "스킬 트리"
+	skill_button.queue_redraw()
 	for c: Control in [top_bar, backdrop, plate, stats_bar, skill_box, promote_box, passive_header, roster_strip, tab_bar]:
 		c.queue_redraw()
 	for id in cards:
@@ -911,7 +956,7 @@ func _refresh_passives() -> void:
 	if data.unique_name != "":
 		passive_box.add_child(_box(_paint_unique_row.bind(data), 54))
 	for i in data.star_passives.size():
-		var row := _box(_paint_passive_row.bind(i, data.star_passives[i], i < stars), 44)
+		var row := _box(_paint_passive_row.bind(i, data.star_passives[i], i < stars), 50)
 		passive_box.add_child(row)
 
 
@@ -945,15 +990,23 @@ func _on_portrait_input(e: InputEvent) -> void:
 func _on_select_pressed() -> void:
 	var prev := Save.selected
 	var next := viewing
-	if prev != next and Save.is_owned(next) and Save.has_equipment(prev):
+	var lv_up: bool = Save.is_owned(next) and Save.level_of(prev) > Save.level_of(next)
+	if prev != next and Save.is_owned(next) and (Save.has_equipment(prev) or lv_up):
 		var box := ConfirmBox.new()
-		box.title = "장비를 그대로 옮길까요?"
-		box.sub = "%s의 무기·장비를 %s에게 옮겨요 (서로 맞바꿈)" % [Save.character(prev).display_name, Save.character(next).display_name]
+		box.title = "레벨·장비를 옮길까요?"
+		var parts: Array[String] = []
+		if lv_up:
+			parts.append("레벨 %d → %d" % [Save.level_of(next), Save.level_of(prev)])
+		if Save.has_equipment(prev):
+			parts.append("무기·장비(서로 맞바꿈)")
+		box.sub = "%s → %s : %s" % [Save.character(prev).display_name, Save.character(next).display_name, " · ".join(parts)]
 		box.yes_label = "옮기기"
 		box.no_label = "그대로 두기"
 		box.answered.connect(func(yes: bool) -> void:
 			if yes:
-				Save.swap_equipment(prev, next)
+				Save.move_level(prev, next)
+				if Save.has_equipment(prev):
+					Save.swap_equipment(prev, next)
 			_select(next))
 		add_child(box)
 		return

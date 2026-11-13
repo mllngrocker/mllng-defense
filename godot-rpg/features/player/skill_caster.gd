@@ -34,6 +34,7 @@ var power := 1.0  # 지금 쓰는 스킬의 피해 배율(스킬 레벨·숙련�
 var last_name := ""  # 컷인에 보일 이름
 var fx_scale := 1.0  # 별 등급 연출: 스킬 그림 크기 배율(5성부터)
 var fx_tint := Color.WHITE  # 별 색으로 살짝 물들이기
+var tint_override := Color(0, 0, 0, 0)  # 이 색으로 연출을 통째로 바꾼다(스칼렛 상위 기술: 푸른 불꽃)
 var _orbit: Array[Sprite2D] = []  # 잎새 회오리 잎사귀
 var _orbit_t := 0.0
 
@@ -71,6 +72,11 @@ func _physics_process(delta: float) -> void:
 			_orbit[i].rotation = a * 2.0
 
 
+## 상위 기술을 통째로 다른 색으로 태우는 캐릭터
+const UP_FLAME := {&"scarlet": Color("5fc8ff"), &"maid1": Color("fff1b8"), &"maid4": Color("e8eeff")}
+## 기본 기술도 고유 색으로 태우는 캐릭터
+const BASE_FLAME := {&"scarlet": Color("ff4a32"), &"devil1": Color("c6f2ff"), &"maid1": Color("ffffff"), &"maid4": Color("b9c6ff"), &"fairy1": Color("ffc6ec")}
+
 ## 스킬 마나 소모: 마법 캐릭터(원거리 마법)는 많이, 근거리 연타·묵직한 캐릭터는 적게
 const MP_COST := {
 	"magic": {"a1": 30, "a2": 42, "a3": 70},
@@ -107,10 +113,17 @@ func try_cast(node := "a1") -> bool:
 	Game.sfx(Game.ELEMENT_SFX[clampi(data.element, 0, 5)], -3.0, 0.0)  # 속성마다 다른 소리
 	_awaken_fx(Save.rank_of(data.id) if owned else data.rarity)
 	var up := SkillTree.UPGRADE_OF.has(node)
+	if BASE_FLAME.has(data.id):  # 캐릭터 고유 불꽃색(스칼렛: 붉은 불)
+		tint_override = BASE_FLAME[data.id]
 	if up:
 		fx_scale *= 1.25  # 상위 기술: 더 크게
 		if fx_tint == Color.WHITE:
 			fx_tint = Color("ffd54f")  # 상위 기술: 금빛으로 물든 연출
+		if UP_FLAME.has(data.id):  # 캐릭터별 상위 기술 색(스칼렛: 붉은 불 → 아주 뜨거운 푸른 불, 리넨: 흰빛에 노란빛 조금)
+			fx_tint = UP_FLAME[data.id]
+			tint_override = UP_FLAME[data.id]
+		if data.id == &"maid1":
+			fx_scale *= 1.2  # 리넨 상위 기술: 규모를 더 크게
 		Game.add_shake(4.0)
 		_upgrade_fx()
 	_run(StringName(info["behavior"]))
@@ -182,7 +195,7 @@ func _run(behavior: StringName) -> void:
 		&"devil4": _feather_storm()
 		&"devil1": _frost_crack()
 		&"elf3": _thorn_rise()
-		&"elf4": _gale_charge()
+		&"elf4": _holy_slash()
 		&"devil2": _dark_wings()
 		&"haste": _haste()
 		&"leaf_blades": _leaf_blades()
@@ -197,6 +210,11 @@ func _run(behavior: StringName) -> void:
 		&"piercing_volley": _piercing_volley()
 		&"wind_wave": _wind_wave()
 		&"storm_brand": _storm_brand()
+		&"excalibur": _excalibur()
+		&"fairy_dust": _fairy_dust()
+		&"queen_garden": _queen_garden()
+		&"crescent": _crescent()
+		&"full_moon": _full_moon()
 		&"tail_sweep": _tail_sweep()
 		&"tidal_wave": _tidal_wave()
 		&"thousand_cuts": _thousand_cuts()
@@ -208,6 +226,7 @@ func _run(behavior: StringName) -> void:
 func _awaken_fx(rank: int) -> void:
 	fx_scale = 1.0
 	fx_tint = Color.WHITE
+	tint_override = Color(0, 0, 0, 0)
 	if rank < 5:
 		return
 	fx_scale = [1.12, 1.25, 1.4][clampi(rank - 5, 0, 2)]
@@ -241,6 +260,8 @@ func fx(tex: Texture2D, frames: int, pos: Vector2, fps := 16.0, sc := 1.0, tint 
 	var f := Fx.spawn(player.fx_parent(), tex, frames, pos, fps)
 	f.scale = Vector2.ONE * sc * fx_scale  # 별이 높을수록 크게
 	f.modulate = tint.lerp(fx_tint, 0.25) if fx_tint != Color.WHITE else tint
+	if tint_override.a > 0.0:
+		f.modulate = Color(tint.lerp(tint_override, 0.85), tint.a)
 	f.rotation = rot
 	return f
 
@@ -435,8 +456,9 @@ func _shadow_raid() -> void:
 		if not is_instance_valid(e):
 			continue
 		var side := Vector2.from_angle(randf() * TAU) * 14.0
+		if not player.safe_teleport(e.global_position + side):
+			continue  # 벽 너머 적은 건너뛴다
 		fx(SMOKE, 6, player.body_center(), 20.0, 0.9, Color(0.5, 0.3, 0.8))
-		player.global_position = e.global_position + side
 		fx(CLAW, 4, e.global_position + Vector2(0, -8), 22.0, 1.4, Color(0.8, 0.55, 1.0), randf() * TAU)
 		hit_all([e], 1.9, 160.0, player.global_position)
 		Game.sfx(&"slash", 0.0)
@@ -556,11 +578,13 @@ func _frost_crack() -> void:
 	Game.add_shake(7.0)
 	var o := player.global_position
 	fx(ICE_BURST, 10, o + Vector2(0, -8), 20.0, 1.8)
+	_frost_ring(o, 2.6)
 	var hit: Array[Node2D] = []
 	for step in 5:
 		for d: Vector2 in [Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN]:
 			var p := o + d * (22.0 + step * 20.0)
 			fx(ICE_BURST, 10, p + Vector2(0, -8), 24.0, 0.9 + step * 0.05, Color(0.75, 0.9, 1.0))
+			_ice_spike(p, 0.9 + step * 0.12)
 			for e in enemies_in(p, 18.0):
 				if not hit.has(e):
 					hit.append(e)
@@ -707,8 +731,9 @@ func _blink_chain(count: int, tint: Color, mult: float, gap: float) -> void:
 			return
 		if not is_instance_valid(e) or e.get(&"hp") <= 0:
 			continue
+		if not player.safe_teleport(e.global_position + Vector2.from_angle(randf() * TAU) * 13.0):
+			continue  # 벽 너머 적은 건너뛴다
 		fx(SMOKE, 6, player.body_center(), 22.0, 0.8, tint)
-		player.global_position = e.global_position + Vector2.from_angle(randf() * TAU) * 13.0
 		fx(CUT_X, 4, e.global_position + Vector2(0, -8), 26.0, 1.2, tint, randf() * TAU)
 		hit_all([e], mult, 140.0, player.global_position)
 		Game.sfx(&"slash", -2.0)
@@ -795,6 +820,7 @@ func _ice_line() -> void:
 			return
 		var p := o + dir * (20.0 + i * 20.0)
 		fx(ICE_BURST, 10, p + Vector2(0, -8), 22.0, 1.2, Color(0.75, 0.9, 1.0))
+		_ice_spike(p, 1.0 + i * 0.1)
 		for e in enemies_in(p, 20.0):
 			if not hit.has(e):
 				hit.append(e)
@@ -802,6 +828,46 @@ func _ice_line() -> void:
 		await wait(0.05)
 	hit_all(hit, 2.0, 60.0, o)
 	_bind(hit, 1.0, Color(0.6, 0.85, 1.0))
+
+
+## 얼음 결정 가시: 바닥에서 뾰족한 얼음 세 개가 솟았다가 금이 가며 부서진다
+func _ice_spike(p: Vector2, sc := 1.0) -> void:
+	var node := Node2D.new()
+	node.position = p
+	node.z_index = 3
+	for k in 3:
+		var h := (18.0 + k * 6.0) * sc
+		var w := (5.0 + k) * sc
+		var x := (k - 1) * 6.0 * sc
+		var shard := Polygon2D.new()
+		shard.polygon = PackedVector2Array([Vector2(x - w, 0), Vector2(x + w * 0.2, -h), Vector2(x + w, 0)])
+		shard.color = Color(0.72, 0.92, 1.0, 0.92)
+		node.add_child(shard)
+		var shine := Polygon2D.new()  # 결정의 밝은 면
+		shine.polygon = PackedVector2Array([Vector2(x - w * 0.4, -2), Vector2(x + w * 0.2, -h), Vector2(x + w * 0.1, -2)])
+		shine.color = Color(1, 1, 1, 0.75)
+		node.add_child(shine)
+	player.fx_parent().add_child(node)
+	node.scale = Vector2(1.0, 0.0)
+	var tw := node.create_tween()
+	tw.tween_property(node, ^"scale", Vector2.ONE, 0.08).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_interval(0.35)
+	tw.tween_property(node, ^"modulate:a", 0.0, 0.25)
+	tw.tween_callback(node.queue_free)
+	fx(SPARK, 10, p + Vector2(0, -10 * sc), 24.0, 0.6 * sc, Color(0.85, 0.97, 1.0))
+
+
+## 서리 고리: 바닥에 얼음빛 원이 퍼진다
+func _frost_ring(p: Vector2, sc: float) -> void:
+	var f := fx(CIRCLE, 4, p, 12.0, sc, Color(0.75, 0.95, 1.0, 0.85))
+	f.z_index = -1
+
+
+## 눈송이 몇 개가 흩날린다
+func _snowflakes(c: Vector2, n: int) -> void:
+	for i in n:
+		var d := Vector2.from_angle(randf() * TAU)
+		fx(SPARK, 10, c + d * randf_range(10, 46), 18.0, 0.55, Color(0.9, 0.98, 1.0), d.angle())
 
 
 ## 카일 3: 눈보라 망토 — 3초 동안 몸 주위로 눈보라가 돌며 닿는 적을 베고 느리게 한다
@@ -813,6 +879,9 @@ func _blizzard_cloak() -> void:
 		for k in 3:
 			var a := tick * 0.9 + k * TAU / 3.0
 			fx(ICE_BURST, 10, c + Vector2.from_angle(a) * Vector2(34, 22), 26.0, 0.7, Color(0.8, 0.95, 1.0))
+		_snowflakes(c, 5)
+		if tick % 4 == 0:
+			_frost_ring(player.global_position, 1.8)
 		var near := enemies_in(c, 44.0)
 		hit_all(near, 0.7, 60.0, c)
 		_bind(near, 0.4, Color(0.6, 0.85, 1.0))
@@ -861,7 +930,143 @@ func _wind_wave() -> void:
 	Game.sfx(&"slash", 0.0)
 
 
-## 로웬 3: 폭풍 낙인 — 높이 뛰어올라(무적) 내려찍으며 넓은 충격파와 번개 고리
+## 플로라 2: 요정 가루 — 분홍빛 요정 가루 여덟 개가 가까운 적을 쫓아 날아가 터진다
+func _fairy_dust() -> void:
+	var c := player.body_center()
+	Game.sfx(&"charged", -4.0, 0.0)
+	var targets := enemies_in(c, 170.0, 8)
+	for i in 8:
+		var d := Vector2.from_angle(i * TAU / 8.0)
+		if not targets.is_empty():
+			d = (targets[i % targets.size()].global_position - c).normalized().rotated(randf_range(-0.25, 0.25))
+		_shoot(SPARK, 10, c + d * 10.0, d, {"speed": 170.0 + i * 8.0, "mult": 0.9, "pierce": 1, "range": 190.0, "scale": 1.4, "radius": 10.0, "knock": 60.0}, Color(1.0, 0.7, 0.92))
+		fx(SPARK, 10, c + d * 14.0, 24.0, 0.8, Color(1.0, 0.85, 0.97), d.angle())
+		await wait(0.04)
+		if not alive():
+			return
+
+
+## 플로라 3: 요정 여왕의 정원 — 주위에 꽃이 둥글게 피어나 차례로 터지고, 체력을 10% 회복한다
+func _queen_garden() -> void:
+	var o := player.global_position
+	player.heal(maxi(1, roundi(player.max_hp * 0.1)))
+	Game.sfx(&"heal", -2.0, 0.0)
+	fx(CIRCLE, 4, o, 10.0, 3.0, Color(1.0, 0.75, 0.92, 0.8)).z_index = -1
+	for ring in 2:
+		var n := 8 + ring * 4
+		for k in n:
+			var p := o + Vector2.from_angle(k * TAU / n + ring * 0.2) * (34.0 + ring * 30.0)
+			fx(LEAF, 6, p + Vector2(0, -6), 14.0, 1.2, Color(1.0, 0.7, 0.88))
+			fx(SPARK, 10, p, 22.0, 0.9, Color(1.0, 0.9, 0.98))
+		await wait(0.18)
+		if not alive():
+			return
+		hit_all(enemies_in(player.global_position, 40.0 + ring * 34.0), 2.0, 120.0, player.global_position)
+		Game.sfx(&"heal", -8.0, 0.0)
+	fx(EXPLOSION, 9, player.body_center(), 18.0, 2.0, Color(1.0, 0.75, 0.9))
+
+
+## 코튼 2: 초승달 베기 — 은빛 초승달 검기 둘을 날려 꿰뚫는다
+func _crescent() -> void:
+	var dir := player.aim(200.0)
+	var c := player.body_center()
+	Game.sfx(&"slash", 0.0)
+	for k in 2:
+		var d := dir.rotated((k * 2 - 1) * 0.12)
+		_shoot(SLASH_DOUBLE, 4, c + d * 12.0, d, {"speed": 230.0, "mult": 1.7, "pierce": 99, "range": 220.0, "scale": 2.0, "radius": 15.0, "knock": 200.0}, Color(0.85, 0.9, 1.0))
+	fx(CIRCULAR, 4, c, 18.0, 1.6, Color(0.8, 0.86, 1.0))
+
+
+## 코튼 3: 만월 낙하 — 머리 위에 커다란 보름달이 떠오르고, 적들 위로 달빛 기둥이 두 번 내리꽂힌다
+func _full_moon() -> void:
+	var c := player.body_center()
+	var moon := fx(CIRCLE, 4, c + Vector2(0, -70), 6.0, 3.6, Color(0.92, 0.95, 1.0, 0.9))
+	moon.z_index = 8
+	fx(AURA, 5, c, 12.0, 1.8, Color(0.8, 0.85, 1.0))
+	Game.flash(Color(0.75, 0.82, 1.0, 0.18), 0.3)
+	Game.sfx(&"charge", -3.0, 0.0)
+	for wave in 2:
+		await wait(0.3)
+		if not alive():
+			return
+		var targets := enemies_in(player.global_position, 170.0, 6)
+		for e in targets:
+			var p: Vector2 = (e as Node2D).global_position
+			var f := fx(THUNDER, 8, p + Vector2(0, -20), 20.0, 1.5, Color(0.85, 0.9, 1.0))
+			f.z_index = 7
+			fx(CIRCLE, 4, p, 14.0, 1.2, Color(0.85, 0.9, 1.0, 0.7))
+		hit_all(targets, 2.4, 160.0, player.global_position)
+		Game.add_shake(6.0)
+		Game.sfx(&"boom", -2.0)
+
+
+## 로웬 1: 성검 일섬 — 성검을 휘둘러 빛의 검기 세 줄을 멀리 날린다(꿰뚫음). 돌진하지 않는 중장거리 검사
+func _holy_slash() -> void:
+	var dir := player.aim(220.0)
+	var c := player.body_center()
+	player.squash(Vector2(1.2, 0.85))
+	Game.sfx(&"slash", 0.0)
+	fx(SLASH_DOUBLE, 4, c + dir * 18.0, 22.0, 2.0, Color(1.0, 0.92, 0.55), dir.angle())
+	for k in 3:
+		var d := dir.rotated((k - 1) * 0.16)
+		_shoot(CUT_X, 4, c + d * 14.0, d, {"speed": 260.0, "mult": 1.5, "pierce": 99, "range": 230.0, "scale": 1.7, "radius": 13.0, "knock": 180.0}, Color(1.0, 0.95, 0.6))
+	await wait(0.18)
+	if not alive():
+		return
+	_shoot(CUT_X, 4, player.body_center(), dir, {"speed": 300.0, "mult": 1.8, "pierce": 99, "range": 260.0, "scale": 2.2, "radius": 16.0, "knock": 220.0}, Color(1.0, 1.0, 0.8))
+
+
+## 로웬 3: 엑스칼리버 — 성검을 높이 들어 빛을 모은 뒤, 앞으로 길고 거대한 빛의 검기를 내리친다
+func _excalibur() -> void:
+	var dir := player.aim(320.0)
+	player.lock_for_skill(0.5, Vector2.ZERO, true)
+	var c := player.body_center()
+	fx(AURA, 5, c, 14.0, 2.0, Color(1.0, 0.9, 0.5))
+	for i in 10:  # 빛이 모여든다
+		var d := Vector2.from_angle(i * TAU / 10.0)
+		fx(SPARK, 10, c + d * 40.0, 24.0, 1.2, Color(1.0, 0.95, 0.6), (-d).angle())
+	Game.sfx(&"charge", -2.0, 0.0)
+	await wait(0.4)
+	if not alive():
+		return
+	c = player.body_center()
+	Game.flash(Color(1.0, 0.95, 0.7, 0.3), 0.25)
+	Game.add_shake(12.0)
+	Game.sfx(&"boom", 2.0)
+	var length := 340.0
+	# 빛의 검기: 굵은 금빛 띠 + 하얀 심지(점점 사라진다)
+	for layer in 2:
+		var ln := Line2D.new()
+		ln.points = PackedVector2Array([c + dir * 10.0, c + dir * length])
+		ln.width = 54.0 if layer == 0 else 22.0
+		ln.default_color = Color(1.0, 0.85, 0.35, 0.75) if layer == 0 else Color(1.0, 1.0, 0.92, 0.95)
+		ln.begin_cap_mode = Line2D.LINE_CAP_ROUND
+		ln.end_cap_mode = Line2D.LINE_CAP_ROUND
+		ln.z_index = 6
+		player.fx_parent().add_child(ln)
+		var tw := ln.create_tween()
+		tw.tween_property(ln, ^"width", ln.width * 1.6, 0.12)
+		tw.tween_property(ln, ^"modulate:a", 0.0, 0.35)
+		tw.tween_callback(ln.queue_free)
+	for i in 16:  # 검기 따라 반짝이
+		var p := c + dir * (20.0 + i * length / 16.0)
+		var f := fx(SPARK, 10, p + dir.orthogonal() * randf_range(-26, 26), 22.0, 1.4, Color(1.0, 0.97, 0.75), dir.angle())
+		f.z_index = 7
+	fx(SLASH_DOUBLE, 4, c + dir * 40.0, 18.0, 3.4, Color(1.0, 1.0, 0.8), dir.angle())
+	for wave in 3:  # 줄 위의 적을 세 번 벤다
+		var hit: Array = []
+		for e in enemies_in(c + dir * length * 0.5, length * 0.6):
+			var v: Vector2 = (e as Node2D).global_position - c
+			var along := v.dot(dir)
+			if along > -10.0 and along < length and absf(v.dot(dir.orthogonal())) < 50.0:
+				hit.append(e)
+		hit_all(hit, 2.2, 160.0 if wave < 2 else 420.0, c)
+		await wait(0.12)
+		if not alive():
+			return
+
+
+## 로웬 3(예전): 폭풍 낙인 — 높이 뛰어올라(무적) 내려찍으며 넓은 충격파와 번개 고리
 func _storm_brand() -> void:
 	var dir := player.aim(90.0)
 	player.lock_for_skill(0.35, dir * 220.0, true)

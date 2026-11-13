@@ -54,7 +54,8 @@ func _process(delta: float) -> void:
 		queue_free()
 		return
 	visible = _t < LIFETIME - 3.0 or int(_t * 10.0) % 2 == 0
-	queue_redraw()
+	if _t < 0.5 or (Engine.get_process_frames() + get_instance_id()) % 2 == 0:
+		queue_redraw()  # 휴대폰 렉 줄이기(떨어질 땐 매 프레임)
 
 
 func _draw() -> void:
@@ -70,7 +71,7 @@ func _draw() -> void:
 		draw_circle(c, 10.0 + sin(_t * 4.0) * 1.5, Color(gc, 0.45))  # 등급색 빛
 		draw_circle(c, 7.0, Color(gc.darkened(0.5), 0.9))
 		draw_arc(c, 7.0, 0, TAU, 16, gc.lightened(0.3), 1.0)
-		Gt.icon(self, Gear.SLOT_ICONS[Gear.slot_of(gear_id)], c, 10.0)
+		Gear.draw_icon(self, gear_id, c, 12.0)
 		return
 	draw_circle(c, 8.5 + sin(_t * 4.0), Color(1, 0.95, 0.6, 0.35))  # 반짝이는 빛
 	Gt.icon(self, Items.icon_of(item_id), c, 13.0, Items.tint_of(item_id))

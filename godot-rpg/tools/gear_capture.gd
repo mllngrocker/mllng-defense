@@ -3,7 +3,8 @@ extends Node
 
 func _ready() -> void:
 	Save.persist = false
-	Save.gear = {"armor4": 1, "boots2": 0, "neck3": 2, "neck1": 0, "neck2": 0, "ring1": 0}
+	Save.away_seconds = 0  # 방치 보상 창이 가리지 않게
+	Save.gear = {"armor4": 1, "armor1b": 0, "armor2": 3, "armor3b": 0, "armor4b": 0, "boots2": 0, "neck3": 2, "neck1": 0, "neck2": 0, "ring1": 0}
 	Save.gear_equip = {String(Save.selected): {"armor": "armor4", "boots": "boots2", "neck": "neck3"}}
 	for a in OS.get_cmdline_user_args():
 		if a == "--seven":
@@ -15,6 +16,10 @@ func _ready() -> void:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--picker="):
 			menu.call_deferred(&"_open_gear_picker", a.substr(9))
+		elif a == "--weapons":
+			menu.call_deferred(&"_open_weapon_picker")
+		elif a == "--pets":
+			menu.call_deferred(&"add_child", PetPicker.new())
 		elif a == "--swap":
 			menu.call_deferred(&"_preview", &"kemo3")
 			menu.call_deferred(&"_on_select_pressed")

@@ -11,7 +11,13 @@ var _t := 0.0
 var _vel := Vector2.ZERO
 
 
+static var alive := 0
+const CAP := 50  # 피해 숫자 상한
+
+
 static func spawn(parent: Node, pos: Vector2, amount: int, crit: bool, fmt := "%d", tint := Color.WHITE) -> void:
+	if alive >= CAP and not crit:
+		return
 	var n := DamageNumber.new()
 	n.text = fmt % amount
 	n.big = crit
@@ -21,6 +27,14 @@ static func spawn(parent: Node, pos: Vector2, amount: int, crit: bool, fmt := "%
 	n._vel = Vector2(randf_range(-20, 20), -70.0)
 	parent.add_child(n)
 	n.global_position = pos + Vector2(randf_range(-4, 4), -14.0)
+
+
+func _enter_tree() -> void:
+	alive += 1
+
+
+func _exit_tree() -> void:
+	alive -= 1
 
 
 func _process(delta: float) -> void:

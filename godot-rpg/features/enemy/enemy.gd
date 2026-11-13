@@ -6,11 +6,13 @@ extends CharacterBody2D
 enum Kind { WALKER, HOPPER, FLYER, GHOST }
 
 const TOUCH_RANGE := 11.0
-const GOLD_MULT := 0.3  # 일반 몬스터 골드 배율
-const BOSS_GOLD_MULT := 0.5  # 보스 골드 배율
-const BOSS_GEM_MULT := 0.25  # 보스 보석 배율
-const GEM_CHANCE_MULT := 0.1  # 일반 몬스터 보석 확률 배율
-const GEM_MULT := 0.3  # 일반 몬스터 보석 개수 배율
+const GOLD_MULT := 0.12  # 일반 몬스터 골드 배율
+const BOSS_GOLD_MULT := 0.25  # 보스 골드 배율
+const BOSS_GEM_MULT := 0.12  # 보스 보석 배율
+const GEM_CHANCE_MULT := 0.05  # 일반 몬스터 보석 확률 배율
+const GEM_MULT := 0.2  # 일반 몬스터 보석 개수 배율
+const HP_MULT := 2.5  # 몬스터 체력 배율(잡는 데 힘이 들게)
+const DMG_MULT := 1.8  # 몬스터 공격력 배율
 const BAR_SHOW_TIME := 3.0
 const BAR_WIDTH := 16.0
 const SMOKE := preload("res://assets/ninja/fx/smoke.png")
@@ -61,6 +63,8 @@ var is_boss := false
 
 
 func _ready() -> void:
+	max_hp = roundi(max_hp * HP_MULT)
+	damage = roundi(damage * DMG_MULT)
 	hp = max_hp
 	home = global_position
 	target = get_tree().get_first_node_in_group(&"player") as Player
@@ -85,6 +89,10 @@ func _physics_process(delta: float) -> void:
 		bar_t -= delta
 		if bar_t <= 0.0:
 			queue_redraw()
+	if not is_boss and target and global_position.distance_squared_to(target.global_position) > 620.0 * 620.0 \
+			and knockback == Vector2.ZERO:
+		chasing = false
+		return  # 휴대폰 렉 줄이기: 멀리 있는 몬스터는 쉰다
 	var to_player := Vector2.ZERO
 	if target and target.hp > 0:
 		to_player = target.global_position - global_position

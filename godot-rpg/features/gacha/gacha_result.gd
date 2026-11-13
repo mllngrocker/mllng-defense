@@ -10,7 +10,7 @@ extends Control
 
 signal closed
 
-const RARITY_COLORS: Dictionary[int, Color] = {3: Color("4da6ff"), 4: Color("b26bff"), 5: Color("ffc21a")}
+const RARITY_COLORS: Dictionary[int, Color] = {3: Color("4da6ff"), 4: Color("b26bff"), 5: Color("ffc21a"), 6: Color("ff2d55")}
 const ORB_TIME := 1.6  # 별똥별이 떨어지는 시간(★5는 더 길게)
 const CARD_GAP := 0.2
 const FLIP_TIME := 0.28
@@ -60,7 +60,7 @@ func _ready() -> void:
 		closed.emit()
 		queue_free())
 	add_child(ok_button)
-	fall_time = ORB_TIME + (0.7 if best == 5 else 0.0)
+	fall_time = ORB_TIME + (0.7 if best >= 5 else 0.0)
 	skip_button = GameButton.new()
 	skip_button.label = "건너뛰기 ▶▶"
 	skip_button.kind = Gt.Kind.WHITE
@@ -104,7 +104,7 @@ func _process(delta: float) -> void:
 		if best >= 4 and _crossed(fall_time * 0.45, delta):
 			flash = 0.35
 			Game.sfx(&"charged", -8.0, 0.0)
-		if best == 5 and _crossed(fall_time * 0.86, delta):
+		if best >= 5 and _crossed(fall_time * 0.86, delta):
 			flash = 0.8
 			Game.sfx(&"alert", -2.0, 0.0)
 			Game.sfx(&"charged", -2.0, 0.0)
@@ -144,7 +144,7 @@ func _start_reveal() -> void:
 	stage = 1
 	reveal_t = 0.0
 	flash = 1.0
-	Game.sfx(&"boom" if best == 5 else &"pickup", -4.0, 0.0)
+	Game.sfx(&"boom" if best >= 5 else &"pickup", -4.0, 0.0)
 
 
 func _reveal_at(i: int) -> float:
@@ -169,19 +169,19 @@ func _revealed_count() -> int:
 
 func _on_card_revealed(i: int) -> void:
 	var rarity := int(results[i]["rarity"])
-	if rarity == 5 and results.size() > 1 and not _splashed.has(i):
+	if rarity >= 5 and results.size() > 1 and not _splashed.has(i):
 		_splashed[i] = true
 		splash_i = i  # ★5 전용 등장 화면
 		splash_t = 0.0
 		Game.sfx(&"success", -2.0, 0.0)
-	if rarity == 5:
+	if rarity >= 5:
 		Game.sfx(&"boom", -3.0, 0.0)
 		Game.sfx(&"charged", -6.0, 0.0)
-		_burst(_card_rect(i).get_center(), RARITY_COLORS[5], 36)
+		_burst(_card_rect(i).get_center(), _col(rarity), 36)
 		flash = maxf(flash, 0.5)
 	elif rarity == 4:
 		Game.sfx(&"pickup", -4.0)
-		_burst(_card_rect(i).get_center(), RARITY_COLORS[4], 16)
+		_burst(_card_rect(i).get_center(), _col(4), 16)
 	else:
 		Game.sfx(&"slash", -12.0)
 
@@ -197,14 +197,14 @@ func _burst(center: Vector2, color: Color, count: int) -> void:
 func _draw() -> void:
 	var w := size.x
 	var h := size.y
-	# 밤하늘 같은 자주색 바탕 + 은은한 다마스크 무늬
-	Gt.grad(self, Rect2(Vector2.ZERO, size), Color(0.13, 0.06, 0.2, 0.97), Color(0.3, 0.12, 0.38, 0.97))
+	# 밤하늘 남색 바탕 + 은은한 다마스크 무늬
+	Gt.grad(self, Rect2(Vector2.ZERO, size), Color(0.04, 0.06, 0.12, 0.97), Color(0.1, 0.15, 0.27, 0.97))
 	var gy := -37.0
 	var row := 0
 	while gy < h + 74.0:
 		var gx := -37.0 + (37.0 if row % 2 else 0.0)
 		while gx < w + 74.0:
-			Gt.damask(self, Vector2(gx, gy), 22.0, Color(1, 0.85, 1, 0.05))
+			Gt.damask(self, Vector2(gx, gy), 22.0, Color(0.8, 0.9, 1, 0.045))
 			gx += 74.0
 		gy += 37.0
 		row += 1
@@ -222,12 +222,26 @@ func _draw() -> void:
 		draw_rect(Rect2(Vector2.ZERO, size), Color(1, 1, 1, flash * 0.8))
 
 
+## 등급 색. 캐릭터 소환은 ★5가 최고라 ★5 = 핏빛 신화 연출, ★4 = 금빛(무기·장비 ★5와 같은 느낌)
+const CHAR_COLORS: Dictionary[int, Color] = {3: Color("4da6ff"), 4: Color("ffc21a"), 5: Color("ff2d55")}
+
+
+func _is_char_pull() -> bool:
+	return not results.is_empty() and not (results[0].has("weapon") or results[0].has("gear") or results[0].has("pet"))
+
+
+func _col(rarity: int) -> Color:
+	if _is_char_pull():
+		return CHAR_COLORS.get(rarity, CHAR_COLORS[3])
+	return RARITY_COLORS.get(rarity, RARITY_COLORS[3])
+
+
 func _orb_color() -> Color:
-	if best == 5 and t >= fall_time * 0.86:
-		return RARITY_COLORS[5]
+	if best >= 5 and t >= fall_time * 0.86:
+		return _col(best)  # 신화면 핏빛
 	if best >= 4 and t >= fall_time * 0.45:
-		return RARITY_COLORS[4]
-	return RARITY_COLORS[3]
+		return _col(4)
+	return _col(3)
 
 
 ## 별똥별: 오른쪽 위에서 가운데로 떨어진다. 꼬리는 지나온 자리, 바탕엔 반짝이는 작은 별들
@@ -295,12 +309,12 @@ func _soft_glow(c: Vector2, r: float, col: Color, alpha: float) -> void:
 
 func _draw_single() -> void:
 	var r := results[0]
-	if r.has("weapon"):
+	if r.has("weapon") or r.has("gear") or r.has("pet"):
 		_draw_single_weapon(r)
 		return
 	var data := Save.character(r["id"])
 	var rarity := int(r["rarity"])
-	var col := RARITY_COLORS[rarity]
+	var col := _col(rarity)
 	var c := Vector2(size.x / 2.0, size.y * 0.42)
 	_draw_rays(c, col, 0.5, size.y)
 	var p := clampf((reveal_t - _reveal_at(0)) / FLIP_TIME, 0.0, 1.0)
@@ -326,9 +340,8 @@ func _draw_single() -> void:
 
 ## 무기 1회 뽑기: 빛 속에 무기가 크게 떠오른다
 func _draw_single_weapon(r: Dictionary) -> void:
-	var w: StringName = r["weapon"]
 	var rarity := int(r["rarity"])
-	var col := RARITY_COLORS[rarity]
+	var col := _col(rarity)
 	var c := Vector2(size.x / 2.0, size.y * 0.38)
 	_draw_rays(c, col, 0.5, size.y)
 	var p := clampf((reveal_t - _reveal_at(0)) / FLIP_TIME, 0.0, 1.0)
@@ -340,17 +353,27 @@ func _draw_single_weapon(r: Dictionary) -> void:
 	draw_circle(c, 120.0, Color(col, 0.25))
 	draw_set_transform(Vector2.ZERO)
 	var bob := sin(t * 2.5) * 8.0
+	if r.has("pet"):  # 펫
+		var pid: StringName = r["pet"]
+		Pets.draw_icon(self, pid, Rect2(c + Vector2(-150 * flip, -150 + bob), Vector2(300 * flip, 300)))
+		_draw_result_info(r, Pets.name_of(pid), "PET  ·  %s" % Pets.bonus_text(pid), Vector2(size.x / 2.0, size.y * 0.66), 1.0)
+		return
+	if r.has("gear"):  # 장신구
+		var g: StringName = r["gear"]
+		Gear.draw_card(self, g, Rect2(c + Vector2(-110 * flip, -130 + bob), Vector2(220 * flip, 260)), false)
+		_draw_result_info(r, Gear.name_of(g), "Lv.%d %s  ·  %s" % [Gear.level_of(g), Gear.SLOT_NAMES[Gear.slot_of(g)], Gear.stats_text(g)], Vector2(size.x / 2.0, size.y * 0.66), 1.0)
+		return
+	var w: StringName = r["weapon"]
 	Weapons.draw_icon(self, w, c + Vector2(0, bob), 380.0 * flip)
 	_draw_result_info(r, Weapons.name_of(w), "WEAPON  ·  공격력 +%d" % Weapons.atk_of(w, int(r["refine"])), Vector2(size.x / 2.0, size.y * 0.66), 1.0)
 
 
 func _draw_result_info(r: Dictionary, title: String, sub: String, top: Vector2, s: float) -> void:
 	var rarity := int(r["rarity"])
-	if r.has("id") and Save.ROSTER.has(StringName(str(r["id"]))):
-		Gt.rank_stars(self, top, Save.rank_of(StringName(str(r["id"]))), 13 * s, false, StringName(str(r["id"])))  # 캐릭터는 지금 별 등급(7성은 큰 빨간 별)
-	else:
-		for i in rarity:
-			Gt.star(self, top + Vector2((i - (rarity - 1) / 2.0) * 30.0 * s, 0), 13 * s)
+	# 뽑기에선 늘 뽑힌 등급(기본 별)만 보인다 — 키운 별(6·7성)과 상관없이
+	var ns := Gear.stars_of(r["gear"]) if r.has("gear") else rarity  # 장비는 장비 별 수(신화 ★6)
+	for i in ns:
+		Gt.star(self, top + Vector2((i - (ns - 1) / 2.0) * 30.0 * s, 0), 13 * s, Gt.item_star(ns))
 	Gt.text(self, top + Vector2(0, 50 * s), title, int(40 * s), Color.WHITE, 1, true, 8, Gt.INK)
 	Gt.text(self, top + Vector2(0, 68 * s), sub, int(14 * s), Color("ffe36b"), 1, true, 4, Gt.INK, true)
 	_draw_tag(r, top + Vector2(0, 80 * s), s)
@@ -361,9 +384,9 @@ func _tag_info(r: Dictionary) -> Array:
 		"new":
 			return ["NEW!", Color("ff4f8b")]
 		"shard":
-			return ["+%d" % int(r["shards"]), Color("ffb31a")]
+			return ["조각 +%d" % int(r["shards"]), Color("ffb31a")]
 		"refine":
-			return ["재련 +%d" % int(r["refine"]), Color("4fb4ff")]
+			return [("강화 +%d" if r.has("pet") else "재련 +%d") % int(r["refine"]), Color("4fb4ff")]
 		_:
 			return ["+%d G" % int(r["gold"]), Color("37c96e")]
 
@@ -397,7 +420,7 @@ func _draw_card_back(r: Rect2, flip: float, glow: Color, charge := -1.0) -> void
 		return
 	var sweep := -1.0
 	if charge >= 0.0:
-		var gold := RARITY_COLORS[5]
+		var gold := _col(best)
 		var c := r.get_center()
 		# 둥근 금빛 + 가는 빛줄기가 점점 세진다
 		_soft_glow(c, r.size.y * (0.9 + charge * 0.6), gold, 0.4 + 0.6 * charge)
@@ -415,8 +438,6 @@ func _draw_card_back(r: Rect2, flip: float, glow: Color, charge := -1.0) -> void
 	Gt.pbox(self, r, Color("3d3556"), Gt.INK, 2, false, true)
 	var inner := r.grow(-Gt.PX * 3.0)
 	Gt.pbox(self, inner, Color("4a4166"), Color("6b6290"), 1, false, false)
-	if flip > 0.3:
-		Gt.star(self, r.get_center(), minf(r.size.y, r.size.x / maxf(flip, 0.01)) * 0.13 * flip, glow.lightened(0.3))
 	if sweep >= 0.0:
 		# 카드 뒷면을 비스듬히 훑고 지나가는 빛 띠
 		var bx := inner.position.x + (inner.size.x + 30.0) * sweep - 15.0
@@ -424,12 +445,12 @@ func _draw_card_back(r: Rect2, flip: float, glow: Color, charge := -1.0) -> void
 		var x1 := clampf(bx + 10.0, inner.position.x, inner.end.x)
 		if x1 > x0:
 			draw_rect(Rect2(x0, inner.position.y, x1 - x0, inner.size.y), Color(1, 0.95, 0.75, 0.35))
-		Gt.round_line(self, r, 6, Color(RARITY_COLORS[5].lightened(0.3), 0.9), 2.0)
+		Gt.round_line(self, r, 6, Color(_col(best).lightened(0.3), 0.9), 2.0)
 
 
 func _draw_ten() -> void:
-	if best == 5:
-		_draw_rays(Vector2(size.x / 2.0, size.y * 0.42), RARITY_COLORS[5], 0.3, size.y * 0.8)
+	if best >= 5:
+		_draw_rays(Vector2(size.x / 2.0, size.y * 0.42), _col(best), 0.3, size.y * 0.8)
 	for i in results.size():
 		var r := results[i]
 		var rect := _card_rect(i)
@@ -439,21 +460,24 @@ func _draw_ten() -> void:
 		if p < 0.5:
 			_draw_card_back(shown_rect, flip, Color("6cb8ff"), _charge_of(i))
 			# 뒷면 테두리가 등급색으로 미리 빛난다(★4·★5는 숨 쉬듯)
-			var rim := RARITY_COLORS[int(r["rarity"])]
+			var rim := _col(int(r["rarity"]))
 			var pulse := 0.6 + 0.4 * sin(t * 5.0 + i) if int(r["rarity"]) >= 4 else 0.5
 			Gt.round_line(self, shown_rect.grow(2.0), 6, Color(rim, pulse), 3.0)
 			continue
 		var rarity := int(r["rarity"])
-		var col := RARITY_COLORS[rarity]
+		var col := _col(rarity)
 		if rarity >= 4:
-			_soft_glow(shown_rect.get_center(), shown_rect.size.y * (0.75 + 0.05 * sin(t * 4.0)), col, 0.9 if rarity == 5 else 0.55)
+			_soft_glow(shown_rect.get_center(), shown_rect.size.y * (0.75 + 0.05 * sin(t * 4.0)), col, 0.9 if rarity >= 5 else 0.55)
 		if shown_rect.size.x > 8.0:
 			if r.has("weapon"):
 				_weapon_card(r["weapon"], rarity, shown_rect, flip)
-			elif r["result"] == "shard":
-				_shard_card(Save.character(r["id"]), shown_rect, rarity, flip > 0.8)
+			elif r.has("gear"):
+				Gear.draw_card(self, r["gear"], shown_rect, flip > 0.8)
+			elif r.has("pet"):
+				Pets.draw_card(self, r["pet"], shown_rect, flip > 0.8)
 			else:
-				Gt.char_card(self, Save.character(r["id"]), shown_rect, true, flip > 0.8)
+				_hero_card(Save.character(r["id"]), shown_rect, rarity, flip > 0.8, r["result"] != "new")
+				Gt.tier_frame(self, shown_rect, {3: 1, 4: 3, 5: 4}.get(rarity, 1), i)  # ★4 금테 · ★5 신화 핏빛
 		if flip > 0.8:
 			_draw_tag(r, Vector2(rect.get_center().x, rect.end.y + 6), 0.7)
 
@@ -463,11 +487,43 @@ func _weapon_card(w: StringName, rarity: int, r: Rect2, flip: float) -> void:
 	Weapons.draw_card(self, w, r, flip > 0.8, -1, t)
 
 
+## 결과 카드(캐릭터): 등급색 바탕(★3 푸른 강철 · ★4 보라 · ★5 금빛) + 일러스트 전체 + 아래 그늘에 이름·별.
+## 이미 있는 캐릭터도 같은 그림(살짝 어둡게) — 조각은 아래 꼬리표 "조각 +N"으로 알린다.
+const CARD_BG := {3: [Color("4f7fc0"), Color("101c33")], 4: [Color("f0b23a"), Color("3d1a05")], 5: [Color("e8344f"), Color("2a0410")]}
+
+
+func _hero_card(data: CharacterData, r: Rect2, rarity: int, show_name: bool, dupe: bool) -> void:
+	if r.size.x < 8.0:
+		return
+	var pal: Array = CARD_BG[rarity]
+	var top: Color = pal[0]
+	var bottom: Color = pal[1]
+	Gt.round_grad(self, r, 6, top, bottom)
+	# 위에서 비치는 빛
+	var cx := r.get_center().x
+	for k in 4:
+		draw_circle(Vector2(cx, r.position.y + r.size.y * 0.3), r.size.x * (0.62 - k * 0.12), Color(top.lightened(0.55), 0.09))
+	if rarity >= 4:  # 줄무늬 빛살(★4 금빛 · ★5 핏빛)
+		for k in 5:
+			var x := r.position.x + r.size.x * (0.1 + k * 0.2)
+			draw_colored_polygon(PackedVector2Array([Vector2(x - 2, r.position.y + 3), Vector2(x + 2, r.position.y + 3), Vector2(cx + (x - cx) * 0.2 + 1, r.end.y * 0.5 + r.position.y * 0.5), Vector2(cx + (x - cx) * 0.2 - 1, r.end.y * 0.5 + r.position.y * 0.5)]), Color(1, 0.95, 0.7, 0.18))
+	var art := r.grow(-2.0)
+	UiKit.card_art(self, data, art, Color(0.8, 0.8, 0.86) if dupe else Color.WHITE)
+	var fade_h := r.size.y * 0.42
+	Gt.grad(self, Rect2(art.position.x, art.end.y - fade_h, art.size.x, fade_h), Color(bottom.darkened(0.5), 0.0), Color(bottom.darkened(0.6), 0.95))
+	var sr := clampf(r.size.x / 17.0, 3.6, 8.0)
+	for k in rarity:
+		Gt.star(self, Vector2(cx + (k - (rarity - 1) / 2.0) * sr * 2.15, art.end.y - sr - 4), sr, Gt.item_star(rarity))  # 별 색 = 등급(3 노랑 · 4 주황 · 5 보라, 로비와 같게)
+	if show_name:
+		Gt.title(self, Vector2(cx, art.end.y - sr * 2.0 - 9), data.display_name, int(clampf(r.size.x / 5.5, 11, 22)), Color.WHITE, 1)
+	Gt.element_badge(self, Vector2(art.end.x - 9, art.position.y + 10), 6.5, data.element)
+
+
 ## 조각 카드(이미 있는 캐릭터): 어두운 보석 바탕 + 등급색 결정 + 가운데 얼굴 + "OO 조각"
 func _shard_card(data: CharacterData, r: Rect2, rarity: int, show_name: bool) -> void:
 	if r.size.x < 8.0:
 		return
-	var col := RARITY_COLORS[rarity]
+	var col := _col(rarity)
 	Gt.pbox(self, r, col.darkened(0.25), Gt.INK, 2, true, true)
 	var inner := r.grow(-Gt.PX * 2.0)
 	Gt.grad(self, inner, Color("2a1f45"), col.darkened(0.55))
@@ -494,8 +550,8 @@ func _draw_splash(r: Dictionary) -> void:
 	var w := size.x
 	var h := size.y
 	var k := splash_t
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.05, 0.02, 0.08, minf(0.88, k * 3.0)))
-	var gold := RARITY_COLORS[5]
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.02, 0.03, 0.07, minf(0.88, k * 3.0)))
+	var gold := _col(int(r["rarity"]))
 	var c := Vector2(w / 2.0, h * 0.42)
 	_draw_rays(c, gold, minf(1.0, k * 2.0) * 0.7, h * 0.7)
 	_soft_glow(c, h * 0.35, gold, minf(1.0, k * 2.0))
@@ -505,6 +561,14 @@ func _draw_splash(r: Dictionary) -> void:
 		var wid: StringName = r["weapon"]
 		Weapons.draw_icon(self, wid, c, 320.0, Color.BLACK.lerp(Color.WHITE, fill))
 		title = Weapons.name_of(wid)
+	elif r.has("pet"):
+		var pid2: StringName = r["pet"]
+		Pets.draw_icon(self, pid2, Rect2(c - Vector2(150, 150), Vector2(300, 300)))
+		title = Pets.name_of(pid2)
+	elif r.has("gear"):
+		var gid: StringName = r["gear"]
+		Gear.draw_card(self, gid, Rect2(c - Vector2(120, 150), Vector2(240, 300)), false)
+		title = Gear.name_of(gid)
 	else:
 		var data := Save.character(r["id"])
 		var tex := data.portraits[0]
@@ -517,7 +581,9 @@ func _draw_splash(r: Dictionary) -> void:
 	var tx := lerpf(-200.0, w / 2.0, 1.0 - pow(1.0 - slide, 3.0))
 	if slide > 0.0:
 		var y := h * 0.72
-		Gt.rank_stars(self, Vector2(tx, y - 20), 5, 14)
+		var ns := Gear.stars_of(r["gear"]) if r.has("gear") else int(r["rarity"])  # 뽑힌 등급 그대로(신화 ★6 빨강)
+		for j in ns:
+			Gt.star(self, Vector2(tx + (j - (ns - 1) / 2.0) * 30.0, y - 20), 14, Gt.item_star(ns))
 		Gt.text(self, Vector2(tx, y + 30), title, 40, Color.WHITE, 1, true, 8, Gt.INK)
 		_draw_tag(r, Vector2(tx, y + 44), 1.0)
 	if k > 1.0:

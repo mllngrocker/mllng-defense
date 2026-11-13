@@ -3,7 +3,7 @@ extends StaticBody2D
 ## 마을 사람: 제자리에 서 있다가 용사가 가까이 오면 그쪽을 보고 말풍선으로 이야기한다(몇 초마다 다음 말).
 ## 멀리 있을 땐 머리 위에 작은 "…" 말풍선만 보인다.
 
-const TALK_RANGE := 40.0
+const TALK_RANGE := 56.0
 const LINE_TIME := 3.2
 
 @export var display_name := ""
@@ -69,7 +69,12 @@ func _process(delta: float) -> void:
 		sprite.frame = 4 if fmod(_t, 2.4) > 2.1 and sprite.vframes > 1 else 0
 		if was:
 			talk_t = 0.0
-	queue_redraw()
+	# 휴대폰 렉 줄이기: 화면 밖(멀리)이면 다시 그리지 않고, 가까워도 3프레임에 한 번
+	if near != was:
+		queue_redraw()
+	elif p != null and p.global_position.distance_squared_to(global_position) < 420.0 * 420.0 \
+			and (Engine.get_process_frames() + get_instance_id()) % 3 == 0:
+		queue_redraw()
 
 
 ## 대화창으로 이야기한다(공격 버튼을 가까이서 누르거나, 말 거는 퀘스트의 대상일 때)

@@ -46,15 +46,27 @@ func _ready() -> void:
 	# 분해한 재련은 같은 부위 새 장비로 이어진다
 	Save.gear["ring3"] = 4
 	Save.dismantle_gear(&"ring3")
-	_check("분해한 재련 +4가 새 반지로 이어진다", Save.give_gear(&"ring1_t2") == "new" and Save.gear_refine(&"ring1_t2") == 4 and not Save.gear_carry.has("ring"))
-	# 레벨 단계
-	_check("정예 장비는 이름·효과가 커진다", Gear.name_of(&"armor2_t2").begins_with("정예") and float(Gear.stats_of(&"armor2_t2")["hp"]) > float(Gear.stats_of(&"armor2")["hp"]) * 1.9)
-	var t3 := 0
+	_check("분해한 재련 +4가 새 반지로 이어진다", Save.give_gear(&"ring1_l40") == "new" and Save.gear_refine(&"ring1_l40") == 4 and not Save.gear_carry.has("ring"))
+	# 장비 레벨제
+	_check("Lv.50 장비는 효과가 커진다", float(Gear.stats_of(&"armor2_l50")["hp"]) > float(Gear.stats_of(&"armor2")["hp"]) * 2.5)
+	var lv120 := 0
 	for i in 200:
-		if Gear.tier_of(Gear.roll(false, 120)) == 2:
-			t3 += 1
-	_check("Lv.120이면 고대 장비가 주로 나온다 (%d/200)" % t3, t3 > 110 and Gear.tier_of(Gear.roll(false, 5)) == 0)
-	_check("장비 목록 48종", Gear.ids().size() == 48 and Gear.has_id(&"neck4_t3") and not Gear.has_id(&"neck4_t4"))
+		if Gear.level_of(Gear.roll(false, 125)) == 120:
+			lv120 += 1
+	_check("Lv.125면 Lv.120 장비가 주로 나온다 (%d/200)" % lv120, lv120 > 110 and Gear.level_of(Gear.roll(false, 5)) == 1)
+	_check("장비 목록 38종 × 16레벨, 예전 정예 = Lv.40", Gear.ids().size() == 608 and Gear.level_of(&"neck4_t2") == 40 and Gear.has_id(&"neck4_l150") and not Gear.has_id(&"neck4_l155"))
+	# 골드 강화 + 분해하면 강화가 이어진다
+	Save.gear["boots3_l20"] = 0
+	Save.gold = 100000000
+	for i in 50:
+		Save.enhance_gear(&"boots3_l20")
+	_check("골드로 강화 +50", Save.gear_enh_of(&"boots3_l20") == 50 and Save.gold < 100000000)
+	Save.gear_equip = {}
+	Save.dismantle_gear(&"boots3_l20")
+	_check("+50 신발을 분해하면 새 신발이 +50으로", Save.give_gear(&"boots1_l60") == "new" and Save.gear_enh_of(&"boots1_l60") == 50)
+	Save.owned[String(id)]["level"] = 10
+	Save.equip_gear(id, &"boots1_l60")
+	_check("레벨이 모자라면 못 낀다", Save.gear_on(id, "boots") != &"boots1_l60")
 	# 무기 드롭: 3~5성, 새 무기는 가장 높은 강화를 이어받는다
 	var ok_rar := true
 	for i in 200:
@@ -92,7 +104,7 @@ func _ready() -> void:
 	menu.call(&"_open_gear_picker", "boots")
 	await get_tree().process_frame
 	var picker := menu.get_child(menu.get_child_count() - 1) as GearPicker
-	_check("신발 선택 창: 카드 4장", picker != null and picker.cards.size() == 4)
+	_check("신발 선택 창: 기본 4장 + 가진 레벨 장비", picker != null and picker.cards.size() >= 4)
 	print("결과: ", "통과" if fails == 0 else "실패 %d개" % fails)
 	get_tree().quit()
 

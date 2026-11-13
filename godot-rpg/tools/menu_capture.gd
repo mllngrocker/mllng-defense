@@ -16,9 +16,13 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	frame += 1
-	if "--shop" in OS.get_cmdline_user_args() or "--shopw" in OS.get_cmdline_user_args():  # 상점(픽업·무기 소환)
+	if "--shop" in OS.get_cmdline_user_args() or "--shopw" in OS.get_cmdline_user_args() or "--shopp" in OS.get_cmdline_user_args():  # 상점(픽업·무기 소환)
 		if frame == 3:
 			menu._on_tab_pressed(0)
+		if frame == 6 and "--shopp" in OS.get_cmdline_user_args():
+			for n in menu.find_children("*", "", true, false):
+				if n.has_method("set_mode"):
+					n.set_mode("pet")
 		if frame == 6 and "--shopw" in OS.get_cmdline_user_args():
 			for n in menu.find_children("*", "", true, false):
 				if n.has_method("set_mode"):

@@ -134,14 +134,8 @@ func _paint_card(ci: Control, p: StringName) -> void:
 	var owned := Save.has_pet(p)
 	if p == chosen:
 		Gt.pbox(ci, r.grow(3), Gt.YELLOW, Gt.INK, 2, false, false)
-	Gt.pbox(ci, r, Color("fff4d6") if owned else Color("cfc8d6"), Gt.INK, 2, false, true)
 	var bob := sin(t * 4.0 + float(p.hash() % 7)) * 2.0 if owned else 0.0
-	var icon := Rect2(r.get_center() + Vector2(-24, -30 + bob), Vector2(48, 48))
-	Pets.draw_icon(ci, p, icon)
-	if not owned:
-		ci.draw_rect(icon, Color(Gt.INK, 0.55))
-		Gt.text(ci, icon.get_center() + Vector2(0, 8), "?", 22, Color.WHITE, 1)
-	Gt.text(ci, Vector2(r.get_center().x, r.end.y - 6), Pets.name_of(p) if owned else "???", 11, Gt.NAVY, 1)
+	Pets.draw_card(ci, p, r.grow(-4.0), true, not owned, bob)
 	if Save.pet == String(p):
 		var tag := Rect2(Vector2(r.position.x - 2, r.position.y - 2), Vector2(34, 18))
 		Gt.tag(ci, tag, Gt.PINK)

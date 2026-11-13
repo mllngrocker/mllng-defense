@@ -12,7 +12,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	t += delta
-	queue_redraw()
+	if Engine.get_process_frames() % 2 == 0:
+		queue_redraw()  # 휴대폰 렉 줄이기
 
 
 func _draw() -> void:

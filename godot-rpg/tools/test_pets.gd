@@ -57,6 +57,18 @@ func _ready() -> void:
 	menu.add_child(pp)
 	await get_tree().process_frame
 	_check("펫 창: 펫 수만큼 칸(%d)" % Pets.DATA.size(), pp.cards.size() == Pets.DATA.size())
+	# 펫 소환(골드): 10회 → 10마리, ★4 이상 1개 확정, 중복은 강화
+	Save.gold = Gacha.PET_GOLD_TEN
+	var prng := RandomNumberGenerator.new()
+	prng.seed = 3
+	_check("골드로 펫 10회 소환", Save.spend_gold(Gacha.PET_GOLD_TEN) and Save.gold == 0)
+	var pr := Gacha.pull_pets(10, prng)
+	_check("펫 결과 10개 · ★4 이상 있음", pr.size() == 10 and pr.any(func(x: Dictionary) -> bool: return int(x["rarity"]) >= 4))
+	var first: StringName = Pets.gacha_pool(3)[0]
+	Save.gain_pet(first)
+	var lv0 := Save.pet_level(first)
+	_check("중복 펫은 강화 +1", Save.gain_pet(first) in ["up", "max"] and Save.pet_level(first) >= mini(lv0 + 1, Pets.MAX_PET_LV))
+	_check("펫 종류 늘어남 (%d종)" % Pets.DATA.size(), Pets.DATA.size() >= 30)
 	print("결과: ", "통과" if fails == 0 else "실패 %d개" % fails)
 	get_tree().quit(fails)
 

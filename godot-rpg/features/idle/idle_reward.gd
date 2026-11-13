@@ -25,7 +25,7 @@ static func compute(seconds: int) -> Dictionary:
 	var gear: Array[StringName] = []
 	for i in mini(minutes / 45, 10):
 		gear.append(Gear.roll(false))
-	return {"minutes": minutes, "kills": kills, "gold": kills * GOLD_BY_TIER[tier] / 4, "gems": minutes / 20, "potion": minutes / 60, "gear": gear}
+	return {"minutes": minutes, "kills": kills, "gold": kills * GOLD_BY_TIER[tier] / 10, "gems": minutes / 60, "potion": minutes / 60, "gear": gear}
 
 
 ## 받을 게 있으면 창을 띄운다(로비에서 부른다)

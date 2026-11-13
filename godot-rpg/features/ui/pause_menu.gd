@@ -40,6 +40,12 @@ func _toggle() -> Rect2:
 	return Rect2(Vector2(p.end.x - 120, p.position.y + 318), Vector2(84, 36))
 
 
+## 처음부터 하기(맨 아래 큰 버튼 위)
+func _reset_btn() -> Rect2:
+	var p := _panel()
+	return Rect2(p.position + Vector2(40, 364), Vector2(p.size.x - 80, 34))
+
+
 func _btn(i: int) -> Rect2:
 	var p := _panel()
 	var w := (p.size.x - 70) / 2.0
@@ -59,6 +65,8 @@ func _gui_input(e: InputEvent) -> void:
 			if _toggle().has_point(mb.position):
 				Save.settings["shake"] = not bool(Save.settings.get("shake", true))
 				Game.sfx(&"pickup", -8.0, 0.0)
+			elif _reset_btn().has_point(mb.position):
+				_ask_reset()
 			elif _btn(0).has_point(mb.position):
 				close()
 			elif _btn(1).has_point(mb.position):
@@ -71,6 +79,24 @@ func _gui_input(e: InputEvent) -> void:
 			_drag = ""
 	elif mm and _drag != "":
 		_set_from(mm.position.x)
+
+
+## 처음부터 하기: 정말 지울지 한 번 더 묻고, 예면 저장을 지우고 로비(첫 화면)로
+func _ask_reset() -> void:
+	Game.sfx(&"pickup", -8.0, 0.0)
+	var box := ConfirmBox.new()
+	box.title = "정말로 삭제할 건가요?"
+	box.sub = "캐릭터·장비·골드·보석·진행이 모두 지워지고 처음부터 시작해요. 되돌릴 수 없어요."
+	box.yes_label = "삭제하기"
+	box.no_label = "취소"
+	box.process_mode = Node.PROCESS_MODE_ALWAYS
+	box.answered.connect(func(yes: bool) -> void:
+		if not yes:
+			return
+		Save.wipe()
+		get_tree().paused = false
+		get_tree().change_scene_to_file(MENU_SCENE))
+	add_child(box)
 
 
 func _set_from(x: float) -> void:
@@ -123,6 +149,10 @@ func _draw() -> void:
 	draw_circle(Vector2(kx, tr.get_center().y), 14.0, Gt.INK)
 	draw_circle(Vector2(kx, tr.get_center().y), 11.0, Color.WHITE)
 	Gt.text(self, Vector2(tr.get_center().x + (-12 if on else 12), tr.position.y + 24), "켬" if on else "끔", 13, Color.WHITE, 1, true, 3, Gt.INK)
+	# 처음부터 하기(빨간 테두리 작은 버튼)
+	var rb := _reset_btn()
+	Gt.pbox(self, rb, Color("ffe1e1"), Color("c0392b"), 2, false, true)
+	Gt.text(self, Vector2(rb.get_center().x, rb.position.y + 23), "처음부터 하기 (저장 삭제)", 15, Color("c0392b"), 1)
 	# 버튼
 	var labels := ["계속하기", "로비로"]
 	var kinds := [Gt.Kind.YELLOW, Gt.Kind.BLUE]

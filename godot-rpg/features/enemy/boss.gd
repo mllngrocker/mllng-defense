@@ -14,6 +14,7 @@ const TELEGRAPH := 0.9
 @export var boss_name := "보스"
 @export var slam_radius := 48.0
 @export var slam_damage := 20
+const BOSS_HP_MULT := 1.6
 @export var summon: PackedScene
 
 var awake := false
@@ -48,6 +49,9 @@ var _charge_hit := false
 func _ready() -> void:
 	super._ready()
 	is_boss = true
+	max_hp = roundi(max_hp * BOSS_HP_MULT)  # 보스는 더 단단하게(몬스터 배율 위에 한 번 더)
+	hp = max_hp
+	slam_damage = roundi(slam_damage * Enemy.DMG_MULT)
 	add_to_group(&"bosses")
 
 

@@ -118,9 +118,9 @@ const DAILY: Array[Dictionary] = [
 	{"id": "levelup", "title": "레벨 1번 올리기", "type": "levelup", "target": "", "count": 1, "gold": 300, "gems": 0},
 	{"id": "gold", "title": "골드 1,000 모으기", "type": "gold", "target": "", "count": 1000, "gold": 0, "gems": 20},
 ]
-const DAILY_BONUS_GEMS := 30
-const REWARD_GOLD := 0.5  # 퀘스트 골드 배율
-const REWARD_GEMS := 0.4  # 퀘스트 보석 배율
+const DAILY_BONUS_GEMS := 15
+const REWARD_GOLD := 0.25  # 퀘스트 골드 배율
+const REWARD_GEMS := 0.2  # 퀘스트 보석 배율
 const DUNGEON_PER_DAY := 3
 
 

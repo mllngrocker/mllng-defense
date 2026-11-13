@@ -4,13 +4,13 @@ extends Resource
 ## data/characters/*.tres 로 하나씩 만든다.
 
 enum Element { FIRE, WATER, WIND, EARTH, LIGHT, DARK }
-enum AttackKind { COMBO, MAGIC, HEAVY, BOW, DAGGER }
+enum AttackKind { COMBO, MAGIC, HEAVY, BOW, DAGGER, FIST, SPEAR, WHIP, DUAL, THROW }
 
 const ELEMENT_NAMES: Array[String] = ["불", "물", "바람", "땅", "빛", "어둠"]
 const ELEMENT_COLORS: Array[Color] = [
 	Color("ff7043"), Color("4fc3f7"), Color("81c784"), Color("c8a165"), Color("fff176"), Color("b388ff"),
 ]
-const ATTACK_NAMES: Array[String] = ["근거리 연타", "원거리 마법", "근거리 묵직", "원거리 활", "근거리 단검"]
+const ATTACK_NAMES: Array[String] = ["근거리 연타", "원거리 마법", "근거리 묵직", "원거리 활", "근거리 단검", "근거리 주먹", "근거리 창", "근거리 채찍", "근거리 쌍검", "원거리 표창"]
 
 @export var id: StringName
 @export var display_name := ""

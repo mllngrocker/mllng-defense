@@ -23,6 +23,23 @@ func _ready() -> void:
 	Save.persist = false
 	for key: String in MAPS:
 		await _check_map(key)
+	# 벽 속에 끼면 0.5초 안에 빈 칸으로 꺼내 준다(천공의 탑에서 순간이동 스킬로 낀 일)
+	var tower := (load("res://features/world/sky3.tscn") as PackedScene).instantiate()
+	add_child(tower)
+	await get_tree().physics_frame
+	var hero := get_tree().get_first_node_in_group(&"player") as Node2D
+	hero.global_position = Vector2(2 * 16 + 8, 2 * 16 + 8)  # 바깥 벽 속
+	await get_tree().create_timer(0.8).timeout
+	var moved := hero.global_position.distance_to(Vector2(40, 40)) > 8.0
+	hero.global_position = Vector2(3 * 16 + 8, 40 * 16 + 8)  # 하늘(바깥) 깊숙이
+	await get_tree().create_timer(0.6).timeout
+	moved = moved and hero.global_position.distance_to(Vector2(56, 648)) > 8.0
+	_check("벽 속에 낀 용사를 빈 칸으로 꺼냄 (%s)" % hero.global_position, moved)
+	var here := hero.global_position
+	_check("벽 너머(하늘)로는 순간이동 안 함", not (hero as Player).safe_teleport(Vector2(3 * 16 + 8, 40 * 16 + 8)) and hero.global_position == here)
+	_check("열린 바닥으로는 순간이동 됨", (hero as Player).safe_teleport(here))
+	tower.queue_free()
+	await get_tree().process_frame
 	print("결과: ", "통과" if fails == 0 else "실패 %d개" % fails)
 	get_tree().quit(fails)
 

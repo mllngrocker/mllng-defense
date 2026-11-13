@@ -40,6 +40,17 @@ const MOBS: Array = [
 	["giant_soul", "고대 거인의 혼", true],
 ]
 
+## 챕터 보상: [이 보스까지가 한 챕터, 이름, 보석]. 그 챕터 몬스터(보스 포함)를 모두 한 번씩 잡으면 받는다
+const CHAPTERS: Array = [
+	["king_slime", "초원·숲", 100], ["cyclope_king", "언덕·사막", 150], ["spider_queen", "늪·동굴·해변", 200],
+	["yeti_king", "설산", 250], ["kraken", "해저 신전", 300], ["mist_apostle", "안개 군도", 350],
+	["black_gardener", "검은 정원", 400], ["flame_dragon", "용암 지대", 450], ["demon_lord", "지옥", 500],
+	["storm_king", "천공의 탑", 600], ["giant_soul", "큰 나무 뿌리", 800],
+]
+## 한 몬스터를 이만큼 잡으면 보석(자동으로 받음)
+const MASTERY_KILLS := 100
+const MASTERY_GEMS := 10
+
 static var _art: Dictionary = {}  # kind → [텍스처, 첫 칸 영역, 색]
 
 
@@ -53,6 +64,63 @@ static func art(kind: String) -> Array:
 		_art[kind] = [tex, Rect2(Vector2.ZERO, cell), sp.modulate]
 		node.free()
 	return _art[kind]
+
+
+## 챕터 i의 몬스터 kind 목록(앞 챕터 보스 다음부터 이 챕터 보스까지)
+static func chapter_mobs(i: int) -> Array[String]:
+	var out: Array[String] = []
+	var start := 0
+	if i > 0:
+		start = _index_of(CHAPTERS[i - 1][0]) + 1
+	for k in range(start, _index_of(CHAPTERS[i][0]) + 1):
+		out.append(MOBS[k][0])
+	return out
+
+
+static func _index_of(kind: String) -> int:
+	for k in MOBS.size():
+		if MOBS[k][0] == kind:
+			return k
+	return -1
+
+
+## [잡아 본 종류, 전체]
+static func chapter_progress(i: int) -> Vector2i:
+	var list := chapter_mobs(i)
+	var n := 0
+	for kind in list:
+		if int(Save.dex.get(kind, 0)) > 0:
+			n += 1
+	return Vector2i(n, list.size())
+
+
+static func chapter_claimed(i: int) -> bool:
+	return (Save.settings.get("dex_ch", []) as Array).has(i)
+
+
+static func can_claim(i: int) -> bool:
+	var p := chapter_progress(i)
+	return p.x >= p.y and not chapter_claimed(i)
+
+
+## 받을 수 있는 챕터 보상 수(도감 버튼 빨간 점)
+static func claimable() -> int:
+	var n := 0
+	for i in CHAPTERS.size():
+		if can_claim(i):
+			n += 1
+	return n
+
+
+static func claim(i: int) -> bool:
+	if not can_claim(i):
+		return false
+	var list: Array = Save.settings.get("dex_ch", [])
+	list.append(i)
+	Save.settings["dex_ch"] = list
+	Save.add_gems(int(CHAPTERS[i][2]))
+	Save.save_game()
+	return true
 
 
 static func found_count() -> int:

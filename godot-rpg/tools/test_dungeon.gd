@@ -10,7 +10,7 @@ func _ready() -> void:
 	# 방치 보상: 2시간이면 몬스터 600마리 몫, 장비 2개, 물약 2개
 	Save.quest["bosses"] = {"king_slime": true, "cyclope_king": true}
 	var r := IdleReward.compute(7200)
-	_check("방치 2시간 → 처치 %d · 골드 %d · 장비 %d · 물약 %d" % [r["kills"], r["gold"], (r["gear"] as Array).size(), r["potion"]], int(r["kills"]) == 600 and int(r["gold"]) == 600 * 30 / 4 and (r["gear"] as Array).size() == 2 and int(r["potion"]) == 2)
+	_check("방치 2시간 → 처치 %d · 골드 %d · 장비 %d · 물약 %d" % [r["kills"], r["gold"], (r["gear"] as Array).size(), r["potion"]], int(r["kills"]) == 600 and int(r["gold"]) == 600 * 30 / 10 and (r["gear"] as Array).size() == 2 and int(r["potion"]) == 2)
 	_check("12시간 넘게 비워도 12시간까지만", int(IdleReward.compute(3600 * 30)["minutes"]) == 720)
 	var g := Save.gold
 	IdleReward.grant(r)
@@ -33,7 +33,7 @@ func _ready() -> void:
 	player.hp = 99999
 	player.auto = true
 	dd.time_left = 14.0
-	for i in 60 * 16:
+	for i in 60 * 24:  # 타격 멈춤(시간 느려짐)이 있어 넉넉히
 		await get_tree().physics_frame
 		if dd.done:
 			break

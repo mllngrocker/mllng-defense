@@ -60,6 +60,11 @@ func _ready() -> void:
 	autosave.autostart = true
 	autosave.timeout.connect(remember_place)
 	add_child(autosave)
+	var unstuck := Timer.new()  # 벽 속에 끼면(순간이동 스킬 등) 가장 가까운 빈 칸으로 꺼내 준다
+	unstuck.wait_time = 0.25
+	unstuck.autostart = true
+	unstuck.timeout.connect(_unstick_player)
+	add_child(unstuck)
 	# 처음 온 맵이면 이야기 장면(맵 이름 띠가 보인 뒤)
 	get_tree().create_timer(1.0, false).timeout.connect(func() -> void: StoryBox.play(self, "enter_" + map_id()))
 
@@ -119,6 +124,50 @@ func nav_path(a: Vector2, b: Vector2) -> PackedVector2Array:
 	if _nav.is_point_solid(ca) or _nav.is_point_solid(cb):
 		return PackedVector2Array()
 	return _nav.get_point_path(ca, cb)
+
+
+## 용사가 막힌 칸(벽·바위 속)에 있으면 가장 가까운 빈 칸 가운데로 옮긴다
+func _unstick_player() -> void:
+	var p := get_tree().get_first_node_in_group(&"player") as Node2D
+	if p == null:
+		return
+	if _nav == null:
+		_build_nav()
+	# 몸이 실제로 벽(1층)과 겹쳐 있을 때만(벽에 붙어 서 있는 건 괜찮다)
+	var body := p.get_node_or_null(^"Body") as CollisionShape2D
+	if body == null or body.shape == null:
+		return
+	var q := PhysicsShapeQueryParameters2D.new()
+	q.shape = body.shape
+	q.transform = body.global_transform
+	q.collision_mask = 1
+	q.exclude = [(p as CollisionObject2D).get_rid()]
+	var hits := get_world_2d().direct_space_state.intersect_shape(q, 4)
+	var inside := false
+	for h: Dictionary in hits:
+		var col: Object = h.get("collider")
+		if col is StaticBody2D or col is TileMapLayer:
+			inside = true
+	if not inside:
+		return
+	var c := Vector2i(floori(p.global_position.x / 16.0), floori(p.global_position.y / 16.0))
+	# 둘레를 넓혀 가며 빈 칸 찾기
+	for rad in range(1, 40):
+		var best := Vector2i(-9999, -9999)
+		var best_d := INF
+		for dy in range(-rad, rad + 1):
+			for dx in range(-rad, rad + 1):
+				if maxi(absi(dx), absi(dy)) != rad:
+					continue
+				var n := c + Vector2i(dx, dy)
+				if _nav.region.has_point(n) and not _nav.is_point_solid(n):
+					var d := (Vector2(n) * 16.0 + Vector2(8, 8)).distance_to(p.global_position)
+					if d < best_d:
+						best_d = d
+						best = n
+		if best.x != -9999:
+			p.global_position = Vector2(best) * 16.0 + Vector2(8, 12)
+			return
 
 
 ## 지금 맵·자리를 기억한다(로비에 갔다 와도 여기서 다시 시작)

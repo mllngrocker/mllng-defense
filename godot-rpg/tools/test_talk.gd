@@ -46,6 +46,28 @@ func _ready() -> void:
 				box = true
 	_check("검 버튼 → 대화창", box)
 	get_tree().paused = false
+	for n in get_tree().get_first_node_in_group(&"hud").get_children():
+		if n is StoryBox:
+			n.queue_free()
+	await get_tree().process_frame
+	# 마을 사람을 손가락으로 톡 눌러도 대화
+	var screen: Vector2 = get_viewport().get_screen_transform() * (get_viewport().get_canvas_transform() * (npc.global_position + Vector2(0, -12)))
+	var tap := InputEventScreenTouch.new()
+	tap.index = 1
+	tap.position = screen
+	tap.pressed = true
+	Input.parse_input_event(tap)
+	var tap_up := tap.duplicate() as InputEventScreenTouch
+	tap_up.pressed = false
+	Input.parse_input_event(tap_up)
+	for k in 4:
+		await get_tree().process_frame
+	var box2 := false
+	for n in get_tree().get_first_node_in_group(&"hud").get_children():
+		if n is StoryBox:
+			box2 = true
+	_check("마을 사람을 누르면 대화창", box2)
+	get_tree().paused = false
 	print("결과: " + ("통과" if fails == 0 else "실패 %d개" % fails))
 	get_tree().quit(fails)
 

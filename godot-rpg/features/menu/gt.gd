@@ -45,7 +45,7 @@ const STAR := Color("ffd23a")
 const STAR_BY_RARITY := {3: Color("ffd23a"), 4: Color("ff8a2a"), 5: Color("c56bff"), 6: Color("3fa9ff"), 7: Color("ff2a3a")}
 const SHADOW := Color(0.18, 0.06, 0.2, 0.28)
 ## 등급 색: ★3 하늘, ★4 보라, ★5 금
-const RARITY: Dictionary[int, Color] = {3: Color("5db8ff"), 4: Color("b77cff"), 5: Color("ffc531")}
+const RARITY: Dictionary[int, Color] = {3: Color("5db8ff"), 4: Color("b77cff"), 5: Color("ffc531"), 6: Color("ff2d55")}
 ## 속성별 색(불·물·바람·땅·빛·어둠 순): 하늘 위·아래, 카드 테두리
 const ELEMENT_SKY: Array = [
 	[Color("ff9a6b"), Color("ffe3c4")], [Color("74cbff"), Color("d9f3ff")], [Color("6fdcae"), Color("dcfaea")],
@@ -138,6 +138,106 @@ static func gold_frame(ci: CanvasItem, r: Rect2, radius: float, th := 4.0) -> vo
 	round_grad(ci, r.grow(-th * 0.45), maxf(radius - th * 0.45, 0.0), GOLD, GOLD_D.lightened(0.15))
 	round_line(ci, r, radius, INK, 1.6)
 	round_line(ci, r.grow(-th), maxf(radius - th, 0.0), Color(GOLD_D.darkened(0.45), 0.9), 1.2)
+
+
+## 등급 테두리(모든 카드 공통): 0 없음 · 1 은테 · 2 보라 이중테 + 모서리 자수정 · 3 금테 + 루비 + 빛 훑기
+## 캐릭터·무기·펫은 ★3/★4/★5 → 1/2/3, 장비는 ★1~★4 → 0~3 (가장 높은 등급은 늘 금테)
+const FRAME_SILVER := Color("d3dcea")
+const FRAME_AMETHYST := Color("c08cff")
+const FRAME_GOLD := Color("ffd34d")
+
+
+## 아이템(무기·장비·펫) 별 색: ★3 노랑 · ★4 주황 · ★5 보라 · ★6 신화 핏빛
+static func item_star(rarity: int) -> Color:
+	return Color("ff2d55") if rarity >= 6 else STAR_BY_RARITY.get(rarity, STAR_BY_RARITY[3])  # ★1·★2도 노랑
+
+
+static func tier_frame(ci: CanvasItem, r: Rect2, level: int, seed := 0) -> void:
+	if r.size.x < 14.0 or level <= 0:
+		return
+	var t := Time.get_ticks_msec() / 1000.0
+	match level:
+		1:
+			_metal_rim(ci, r, FRAME_SILVER, 3.0)
+		2:
+			_metal_rim(ci, r, FRAME_AMETHYST, 3.5)
+			round_line(ci, r.grow(5.0), 9, Color(FRAME_AMETHYST, 0.35), 2.0)
+			for c in [r.position, Vector2(r.end.x, r.position.y), Vector2(r.position.x, r.end.y), r.end]:
+				_frame_gem(ci, c + (c - r.get_center()).sign() * 3.0, 5.0, FRAME_AMETHYST.lightened(0.35), Color("3c2466"))
+		4:
+			_mythic_frame(ci, r, seed, t)
+		_:
+			# 빛이 카드를 비스듬히 훑고 지나간다
+			var k := fmod(t * 0.55 + seed * 0.13, 1.6) - 0.3
+			if k > -0.2 and k < 1.2:
+				var x := r.position.x + r.size.x * k
+				var sk := r.size.y * 0.25
+				var lo := r.position.x + 4.0
+				var hi := r.end.x - 4.0
+				var band := PackedVector2Array([Vector2(clampf(x - 7, lo, hi), r.end.y - 4), Vector2(clampf(x + 7, lo, hi), r.end.y - 4),
+					Vector2(clampf(x + 7 + sk, lo, hi), r.position.y + 4), Vector2(clampf(x - 7 + sk, lo, hi), r.position.y + 4)])
+				if band[1].x - band[0].x > 0.5 or band[2].x - band[3].x > 0.5:
+					ci.draw_colored_polygon(band, Color(1, 0.97, 0.8, 0.26))
+			var pulse := 0.75 + 0.25 * sin(t * 4.0 + seed)
+			round_line(ci, r.grow(7.0), 10, Color(FRAME_GOLD, 0.3 * pulse), 5.0)
+			_metal_rim(ci, r, FRAME_GOLD, 4.0)
+			for c in [r.position, Vector2(r.end.x, r.position.y), Vector2(r.position.x, r.end.y), r.end]:
+				_frame_gem(ci, c + (c - r.get_center()).sign() * 4.0, 6.5, Color("ff4d5e"), FRAME_GOLD)
+
+
+## 금속 테: 검은 외곽 + 어두운 바탕 띠 + 위쪽이 밝은 광택 줄(빛이 위에서 비치는 느낌)
+## 신화 테두리: 핏빛 금속테 + 무지개빛이 테두리를 따라 돈다 + 위로 피어오르는 불꽃 + 흑금 보석
+static func _mythic_frame(ci: CanvasItem, r: Rect2, seed: int, t: float) -> void:
+	var red := Color("ff2d55")
+	var n := int(clampf(r.size.x / 7.0, 8, 18))
+	for k in n:  # 위로 너울대는 불꽃
+		var x := r.position.x + (k + 0.5) * r.size.x / n
+		var h := r.size.y * (0.10 + 0.06 * sin(t * 6.0 + k * 1.7 + seed))
+		var base := r.position.y - 2.0
+		var w := r.size.x / n * 0.7
+		ci.draw_colored_polygon(PackedVector2Array([Vector2(x - w, base), Vector2(x + w, base), Vector2(x + sin(t * 4.0 + k) * 3.0, base - h)]), Color(1.0, 0.35 + 0.25 * sin(t * 5.0 + k), 0.2, 0.55))
+	round_line(ci, r.grow(8.0), 11, Color(red, 0.25 + 0.15 * sin(t * 5.0 + seed)), 6.0)
+	_metal_rim(ci, r, red, 4.0)
+	var per := 2.0 * (r.size.x + r.size.y)
+	for k in 14:  # 무지개빛이 테두리를 따라 돈다
+		var d := fmod(t * per * 0.45 + k * 6.0 + seed * 40.0, per)
+		var p := _rim_point(r.grow(2.0), d)
+		ci.draw_circle(p, 2.6 - k * 0.15, Color.from_hsv(fmod(t * 0.4 + k / 14.0, 1.0), 0.7, 1.0, 1.0 - k / 16.0))
+	for c in [r.position, Vector2(r.end.x, r.position.y), Vector2(r.position.x, r.end.y), r.end]:
+		var gp: Vector2 = c + (c - r.get_center()).sign() * 4.0
+		_frame_gem(ci, gp, 7.0, Color("1a0a14"), Color("ffcf4d"))
+		ci.draw_circle(gp, 2.2, red.lightened(0.3))
+
+
+## 사각형 둘레를 d만큼 간 자리(시계 방향, 왼쪽 위에서 출발)
+static func _rim_point(r: Rect2, d: float) -> Vector2:
+	if d < r.size.x:
+		return r.position + Vector2(d, 0)
+	d -= r.size.x
+	if d < r.size.y:
+		return Vector2(r.end.x, r.position.y + d)
+	d -= r.size.y
+	if d < r.size.x:
+		return Vector2(r.end.x - d, r.end.y)
+	d -= r.size.x
+	return Vector2(r.position.x, r.end.y - d)
+
+
+static func _metal_rim(ci: CanvasItem, r: Rect2, col: Color, w: float) -> void:
+	round_line(ci, r.grow(w + 0.5), 7 + w, INK, 2.0)
+	round_line(ci, r.grow(w * 0.5), 6 + w * 0.5, col.darkened(0.35), w)
+	round_line(ci, r.grow(w * 0.5 + 0.5), 6 + w * 0.5, Color(col.lightened(0.35), 0.9), maxf(1.0, w * 0.35))
+	var hl := Rect2(r.position.x + 6, r.position.y - w * 0.5 - 0.5, r.size.x - 12, 1.0)
+	ci.draw_rect(hl, Color(1, 1, 1, 0.75))  # 윗변 하이라이트
+	round_line(ci, r.grow(-0.5), 5, Color(INK, 0.6), 1.0)
+
+
+static func _frame_gem(ci: CanvasItem, c: Vector2, rad: float, col: Color, rim: Color) -> void:
+	ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -rad - 1.5), c + Vector2(rad + 1.5, 0), c + Vector2(0, rad + 1.5), c + Vector2(-rad - 1.5, 0)]), INK)
+	ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -rad), c + Vector2(rad, 0), c + Vector2(0, rad), c + Vector2(-rad, 0)]), rim)
+	var k := rad * 0.6
+	ci.draw_colored_polygon(PackedVector2Array([c + Vector2(0, -k), c + Vector2(k, 0), c + Vector2(0, k), c + Vector2(-k, 0)]), col)
+	ci.draw_circle(c + Vector2(-k * 0.3, -k * 0.3), rad * 0.18, Color(1, 1, 1, 0.8))
 
 
 ## 모서리 장식(금 마름모 + 작은 보석)

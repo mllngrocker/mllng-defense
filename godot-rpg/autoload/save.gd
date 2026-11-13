@@ -31,6 +31,7 @@ var pity := 0
 var pity_w := 0
 ## 테스트에서는 false로 두어 진짜 저장 파일을 건드리지 않는다
 var persist := true
+var fresh := false  # 저장 파일 없이 처음 시작(시작 화면에서 동료 하나만 고른다)
 
 var selected: StringName = STARTERS[0]
 ## 캐릭터 id(문자열) → {"level": int, "stars": 승급한 별 수, "shards": 별 조각}
@@ -62,6 +63,9 @@ var gear: Dictionary = {}
 var gear_equip: Dictionary = {}
 ## 분해한 장비의 재련을 부위별로 기억 → 그 부위 새 장비를 처음 얻으면 그 재련으로 시작 {부위: 재련}
 var gear_carry: Dictionary = {}
+## 장비 골드 강화 {장비 id: +N}, 분해해 남긴 강화 {부위: +N}
+var gear_enh: Dictionary = {}
+var gear_carry_e: Dictionary = {}
 ## 전투에 끼운 액티브 3칸 {캐릭터: [노드, 노드, 노드]}(기본 a1·a2·a3)
 var skill_slots: Dictionary = {}
 ## 로비로 나가기 전 있던 곳 {"map": 장면 경로, "x", "y"} — 모험을 누르면 여기서 다시 시작
@@ -140,6 +144,14 @@ func passives_unlocked(id: StringName) -> int:
 func atk_of(id: StringName, level := -1) -> int:
 	var lv := level_of(id) if level < 0 else level
 	return roundi((character(id).atk_at(lv) * (1.0 + STAR_BONUS * stars_of(id)) + weapon_atk(id)) * (1.0 + pet_bonus("atk")) * (1.0 + gear_bonus(id, "atk")) * (1.0 + dex_bonus("atk") + Skins.bonus(id, "atk")) * (1.0 + 0.02 * skill_level(id, "p1")))
+
+
+## 전투력: 공격력×10 + 체력 + 액티브 스킬 레벨(합 × 공격력 × 0.3). 스킬을 찍으면 바로 오른다
+func power_of(id: StringName) -> int:
+	var sk := 0
+	for n: String in ["a1", "a2", "a3", "a4", "a5", "a6"]:
+		sk += skill_level(id, n)
+	return atk_of(id) * 10 + hp_of(id) + roundi(sk * atk_of(id) * 0.3)
 
 
 ## 장착 무기의 공격력(없으면 0)
@@ -333,7 +345,35 @@ func has_pet(p: StringName) -> bool:
 func pet_bonus(kind: String) -> float:
 	if pet == "" or not Pets.DATA.has(StringName(pet)):
 		return 0.0
-	return float(Pets.bonus_of(StringName(pet)).get(kind, 0.0))
+	return float(Pets.bonus_of(StringName(pet)).get(kind, 0.0)) * (1.0 + 0.2 * pet_level(StringName(pet)))
+
+
+## 펫 강화(중복으로 얻은 횟수, 최대 5)
+func pet_level(p: StringName) -> int:
+	return int((settings.get("pet_lv", {}) as Dictionary).get(String(p), 0))
+
+
+## 펫 소환으로 얻기: 처음이면 "new", 있으면 강화 +1 "up", 다 찼으면 골드 "max"
+func gain_pet(p: StringName) -> String:
+	if not has_pet(p):
+		grant_pet(p)
+		return "new"
+	if pet_level(p) < Pets.MAX_PET_LV:
+		if not settings.has("pet_lv"):
+			settings["pet_lv"] = {}
+		(settings["pet_lv"] as Dictionary)[String(p)] = pet_level(p) + 1
+		equip_changed.emit()
+		return "up"
+	return "max"
+
+
+func spend_gold(amount: int) -> bool:
+	if gold < amount:
+		return false
+	gold -= amount
+	gold_changed.emit(gold)
+	save_game()
+	return true
 
 
 ## 펫을 준다(처음이면 알림, 데리고 다니는 펫이 없으면 바로 데리고 다닌다)
@@ -343,7 +383,8 @@ func grant_pet(p: StringName) -> void:
 	pets[String(p)] = true
 	if pet == "":
 		pet = String(p)
-	Events.notice.emit("새 펫: %s!" % Pets.name_of(p), Pets.bonus_text(p) + " · 로비 아바타의 펫 칸에서 바꿀 수 있어요")
+	if not Pets.GACHA_PETS.has(p):  # 펫 소환은 결과 화면이 따로 있다
+		Events.notice.emit("새 펫: %s!" % Pets.name_of(p), Pets.bonus_text(p) + " · 로비 아바타의 펫 칸에서 바꿀 수 있어요")
 	equip_changed.emit()
 	save_game()
 
@@ -384,6 +425,9 @@ func give_gear(id: StringName) -> String:
 		var slot := Gear.slot_of(id)
 		gear[String(id)] = mini(int(gear_carry.get(slot, 0)), Gear.MAX_REFINE)  # 분해한 장비의 재련을 이어받는다
 		gear_carry.erase(slot)
+		if int(gear_carry_e.get(slot, 0)) > 0:  # 분해한 장비의 골드 강화도 이어받는다
+			gear_enh[String(id)] = mini(int(gear_carry_e[slot]), Gear.MAX_ENH)
+			gear_carry_e.erase(slot)
 		return "new"
 	if gear_refine(id) < Gear.MAX_REFINE:
 		gear[String(id)] = gear_refine(id) + 1
@@ -409,8 +453,8 @@ func gear_holder(id: StringName) -> StringName:
 
 ## 장착(다른 캐릭터가 끼고 있으면 못 낀다 — 그 캐릭터에서 먼저 해제)
 func equip_gear(char_id: StringName, id: StringName) -> void:
-	if not has_gear(id):
-		return
+	if not has_gear(id) or Gear.level_of(id) > level_of(char_id):
+		return  # 장비 레벨이 캐릭터 레벨보다 높으면 못 낀다
 	var slot := Gear.slot_of(id)
 	var other := gear_holder(id)
 	if other != &"" and other != char_id:
@@ -464,9 +508,28 @@ func dismantle_gear(id: StringName) -> int:
 	var n := Gear.STONES_FROM[Gear.grade_of(id)]
 	var slot := Gear.slot_of(id)
 	gear_carry[slot] = maxi(int(gear_carry.get(slot, 0)), gear_refine(id))  # 재련은 다음 장비로 이어진다
+	gear_carry_e[slot] = maxi(int(gear_carry_e.get(slot, 0)), gear_enh_of(id))  # 골드 강화도
+	gear_enh.erase(String(id))
 	gear.erase(String(id))
 	give_item(&"stone", n)
 	return n
+
+
+func gear_enh_of(id: StringName) -> int:
+	return int(gear_enh.get(String(id), 0))
+
+
+## 골드로 장비 강화 +1(최대 +100). 골드를 많이 쓰는 곳
+func enhance_gear(id: StringName) -> bool:
+	var e := gear_enh_of(id)
+	var cost := Gear.enh_cost(id, e)
+	if not has_gear(id) or e >= Gear.MAX_ENH or gold < cost:
+		return false
+	gold -= cost
+	gear_enh[String(id)] = e + 1
+	gold_changed.emit(gold)
+	equip_changed.emit()
+	return true
 
 
 func upgrade_cost(id: StringName) -> int:
@@ -511,7 +574,7 @@ func synth_gear(id: StringName) -> StringName:
 			else:
 				gear.erase(String(g))
 			need -= 1
-	var pool := Gear.ids().filter(func(x: StringName) -> bool: return Gear.grade_of(x) == grade + 1 and Gear.tier_of(x) == Gear.tier_of(id))
+	var pool := Gear.ids().filter(func(x: StringName) -> bool: return Gear.grade_of(x) == grade + 1 and Gear.level_of(x) == Gear.level_of(id))
 	var got: StringName = pool[randi() % pool.size()]
 	give_gear(got)
 	equip_changed.emit()
@@ -521,11 +584,23 @@ func synth_gear(id: StringName) -> StringName:
 ## 낀 장비 네 부위의 효과 합(stat: hp·atk·crit·speed·gold)
 func gear_bonus(char_id: StringName, stat: String) -> float:
 	var total := 0.0
+	var worn: Array = []
 	for slot in Gear.SLOTS:
 		var g := gear_on(char_id, slot)
 		if g != &"" and Gear.has_id(g):
-			total += float(Gear.stats_of(g, gear_refine(g)).get(stat, 0.0))
-	return total
+			total += float(Gear.stats_of(g, gear_refine(g), gear_enh_of(g)).get(stat, 0.0))
+			worn.append(g)
+	return total + Gear.set_bonus(worn, stat)  # 세트 효과
+
+
+## 이 캐릭터가 낀 장비 목록
+func gear_worn(char_id: StringName) -> Array:
+	var worn: Array = []
+	for slot in Gear.SLOTS:
+		var g := gear_on(char_id, slot)
+		if g != &"" and Gear.has_id(g):
+			worn.append(g)
+	return worn
 
 
 # ── 도감 ──
@@ -536,6 +611,8 @@ func add_stat(key: String, n := 1) -> void:
 
 func record_kill(kind: String) -> void:
 	dex[kind] = int(dex.get(kind, 0)) + 1
+	if dex[kind] == Dex.MASTERY_KILLS:
+		add_gems(Dex.MASTERY_GEMS)  # 한 몬스터를 100마리 잡으면 보석
 
 
 ## 도감 보너스: 발견한 몬스터 1종마다 공격력 +0.3%, 모은 장비 1종마다 체력 +0.5%
@@ -627,11 +704,22 @@ func hp_of(id: StringName, level := -1) -> int:
 
 ## 다음 레벨까지 필요한 경험치(몬스터 경험치 = 그 몬스터 골드 보상과 같다). 레벨마다 그 지역 몬스터 약 150마리
 func exp_need(level: int) -> int:
-	return roundi((30 + level * 12 + level * level * 1.6) * 2.4)
+	return roundi((30 + level * 12 + level * level * 1.6) * 6.0)  # 레벨업 더 느리게(예전 ×2.4)
 
 
 ## 레벨은 계정 공통: 가진 캐릭터는 모두 같은 레벨·경험치(가장 높은 캐릭터 기준, 또는 from 캐릭터 기준).
 ## 그래서 출전 캐릭터를 바꿔도 레벨과 스킬 포인트(= 레벨)가 그대로 따라간다
+## 레벨 옮기기: from의 레벨·경험치를 to에게(to가 더 낮을 때만). 스킬은 to가 다시 찍는다
+func move_level(from: StringName, to: StringName) -> void:
+	if not is_owned(from) or not is_owned(to) or level_of(to) >= level_of(from):
+		return
+	owned[String(to)]["level"] = level_of(from)
+	owned[String(to)]["exp"] = exp_of(from)
+	equip_changed.emit()
+	save_game()
+
+
+## (예전) 레벨 공통 맞추기 — 지금은 안 쓴다(캐릭터마다 레벨이 따로)
 func sync_levels(from: StringName = &"") -> void:
 	if owned.is_empty():
 		return
@@ -667,7 +755,6 @@ func add_exp(id: StringName, amount: int) -> int:
 		ups += 1
 	e["level"] = lv
 	e["exp"] = 0 if lv >= MAX_LEVEL else xp
-	sync_levels(id)
 	if ups > 0:
 		for i in ups:
 			Quests.track("levelup")
@@ -704,7 +791,6 @@ func grant_character(id: StringName) -> String:
 	var key := String(id)
 	if not owned.has(key):
 		owned[key] = {"level": 1, "stars": 0, "shards": 0}
-		sync_levels()  # 새 동료도 지금 레벨로 합류
 		return "new"
 	if rank_of(id) < MAX_RANK:
 		owned[key]["shards"] = shards_of(id) + shards_per_dup(id)
@@ -749,6 +835,32 @@ func select(id: StringName) -> void:
 		save_game()
 
 
+## 용사 이름(시작 화면에서 정한다)
+func nickname() -> String:
+	return str(settings.get("nick", "용사"))
+
+
+## 시작 화면에서 고른 동료로 시작: 처음 시작이면 나머지 두 동료는 아직 없다(소환으로 만난다)
+func start_with(starter: StringName) -> void:
+	if fresh:
+		for id in STARTERS:
+			if id != starter:
+				owned.erase(String(id))
+	selected = starter
+	fresh = false
+	save_game()
+	equip_changed.emit()
+
+
+## 처음부터 하기: 저장 파일을 지우고 처음 상태로
+func wipe() -> void:
+	settings.erase("nick")  # 이름도 처음부터 다시
+	if FileAccess.file_exists(PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(PATH))
+	load_game()
+	save_game()
+
+
 func load_game() -> void:
 	owned = {}
 	gold = 0
@@ -774,12 +886,15 @@ func load_game() -> void:
 	gear = {}
 	gear_equip = {}
 	gear_carry = {}
+	gear_enh = {}
+	gear_carry_e = {}
 	skill_slots = {}
 	place = {}
 	last_town = "village"
 	books = {"training": 0, "master": 0}
 	for id in STARTERS:
 		owned[String(id)] = {"level": 1, "stars": 0}
+	fresh = not FileAccess.file_exists(PATH)
 	if FileAccess.file_exists(PATH):
 		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(PATH))
 		if parsed is Dictionary:
@@ -831,6 +946,10 @@ func load_game() -> void:
 			var ss: Variant = parsed.get("skill_slots", {})
 			if ss is Dictionary:
 				skill_slots = ss
+			for gk in ["gear_enh", "gear_carry_e"]:
+				var gv: Variant = parsed.get(gk, {})
+				if gv is Dictionary:
+					set(gk, gv)
 			var gc: Variant = parsed.get("gear_carry", {})
 			if gc is Dictionary:
 				gear_carry = gc
@@ -879,7 +998,14 @@ func load_game() -> void:
 							owned[key]["shards"] = old * int(SHARDS_PER_DUP.get(character(StringName(key)).rarity, 10))
 	if not owned.has(String(selected)):
 		selected = STARTERS[0]
-	sync_levels()
+	if not bool(settings.get("lv_split", false)):  # 예전 공통 레벨 세이브: 출전 캐릭터만 그 레벨, 나머지는 Lv.1부터(바꿀 때 옮길 수 있다)
+		settings["lv_split"] = true
+		for k: String in owned:
+			if k != String(selected):
+				owned[k]["level"] = 1
+				owned[k]["exp"] = 0
+				skill_lv.erase(k)
+				skill_slots.erase(k)
 	# 무기가 하나도 없으면(새로 시작·예전 저장) 견습 기사의 검을 주고 첫 캐릭터에게 끼워 준다
 	if weapons.is_empty():
 		weapons[String(Weapons.STARTER)] = 0
@@ -893,4 +1019,4 @@ func save_game() -> void:
 	if f == null:
 		push_error("저장 실패: %s" % error_string(FileAccess.get_open_error()))
 		return
-	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet, "skill_lv": skill_lv, "skill_bonus": skill_bonus, "master": master, "books": books, "settings": settings, "items": items, "gear": gear, "gear_equip": gear_equip, "gear_carry": gear_carry, "skill_slots": skill_slots, "place": place, "last_town": last_town, "last_seen": int(Time.get_unix_time_from_system()), "dex": dex, "stats": stats, "ach_claimed": ach_claimed, "mail_claimed": mail_claimed}))
+	f.store_string(JSON.stringify({"version": VERSION, "gold": gold, "gems": gems, "pity": pity, "pity_w": pity_w, "selected": String(selected), "owned": owned, "weapons": weapons, "equip": equip, "quest": quest, "wlevel": wlevel, "pets": pets, "pet": pet, "skill_lv": skill_lv, "skill_bonus": skill_bonus, "master": master, "books": books, "settings": settings, "items": items, "gear": gear, "gear_equip": gear_equip, "gear_carry": gear_carry, "gear_enh": gear_enh, "gear_carry_e": gear_carry_e, "skill_slots": skill_slots, "place": place, "last_town": last_town, "last_seen": int(Time.get_unix_time_from_system()), "dex": dex, "stats": stats, "ach_claimed": ach_claimed, "mail_claimed": mail_claimed}))

@@ -4,6 +4,8 @@ extends Sprite2D
 
 var fps := 14.0
 var _t := 0.0
+const CAP := 140  # 한꺼번에 살아 있는 효과 그림 수 상한(스킬을 몰아 써도 버벅이지 않게)
+static var alive := 0
 
 
 static func spawn(parent: Node, tex: Texture2D, frames: int, pos: Vector2, play_fps := 14.0) -> Fx:
@@ -12,9 +14,20 @@ static func spawn(parent: Node, tex: Texture2D, frames: int, pos: Vector2, play_
 	fx.hframes = frames
 	fx.fps = play_fps
 	fx.z_index = 5
+	if alive >= CAP:  # 너무 많으면 이번 것은 그리지 않는다(부른 쪽이 만져도 되게 바로 지운다)
+		fx.queue_free()
+		return fx
 	parent.add_child(fx)
 	fx.global_position = pos
 	return fx
+
+
+func _enter_tree() -> void:
+	alive += 1
+
+
+func _exit_tree() -> void:
+	alive -= 1
 
 
 ## 덤불을 베었을 때 잎사귀가 사방으로 튄다.

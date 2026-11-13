@@ -85,7 +85,7 @@ func _draw() -> void:
 		return
 	# 눈보라: 바람에 옆으로 날리는 굵은 눈발(줄무늬)
 	var wind := Vector2(1.0, 0.45).normalized()
-	var n := int(900 * storm)
+	var n := int(600 * storm)  # 휴대폰 렉 줄이기(예전 900)
 	for i in n:
 		var s := float(i) * 3.731 + 11.0
 		var speed := (160.0 + fmod(s * 13.7, 140.0)) * (0.8 + 0.6 * _gust)

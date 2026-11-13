@@ -32,7 +32,11 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
-	queue_redraw()
+	if Engine.get_process_frames() % 2 != 0:
+		return  # 휴대폰 렉 줄이기
+	var pl := get_tree().get_first_node_in_group(&"player") as Node2D
+	if pl == null or pl.global_position.distance_squared_to(global_position) < 480.0 * 480.0:
+		queue_redraw()
 
 
 ## 길이 열렸는지: 막는 보스를 물리쳤고, 갈 곳(다음 지역)이 이미 만들어져 있어야 한다

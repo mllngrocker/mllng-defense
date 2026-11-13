@@ -5,7 +5,8 @@ extends Control
 
 signal closed
 
-const TABS: Array[String] = ["몬스터", "장비", "펫"]
+const TABS: Array[String] = ["몬스터", "장비", "펫", "보상"]
+const ROW_H := 74.0  # 보상 탭 한 줄
 const CELL := Vector2(92, 104)
 const COLS := 5
 
@@ -47,13 +48,28 @@ func _count() -> int:
 		0:
 			return Dex.MOBS.size()
 		1:
-			return Gear.ids().size()
+			return Gear.DATA.size()  # 도감은 장비 종류(레벨 무관)
+		3:
+			return Dex.CHAPTERS.size()
 	return Pets.DATA.size()
 
 
 func _max_scroll() -> float:
+	if tab == 3:
+		return maxf(0.0, _count() * ROW_H - _grid_rect().size.y + 8.0)
 	var rows := ceili(_count() / float(COLS))
 	return maxf(0.0, rows * CELL.y - _grid_rect().size.y + 8.0)
+
+
+## 보상 탭: i번째 줄과 받기 버튼 자리
+func _row_rect(i: int) -> Rect2:
+	var g := _grid_rect()
+	return Rect2(Vector2(g.position.x, g.position.y + i * ROW_H - scroll), Vector2(g.size.x, ROW_H - 8.0))
+
+
+func _claim_rect(i: int) -> Rect2:
+	var r := _row_rect(i)
+	return Rect2(Vector2(r.end.x - 108, r.position.y + 12), Vector2(96, r.size.y - 24))
 
 
 func _gui_input(e: InputEvent) -> void:
@@ -68,6 +84,10 @@ func _gui_input(e: InputEvent) -> void:
 					tab = i
 					scroll = 0.0
 					Game.sfx(&"pickup", -12.0)
+			if tab == 3 and _grid_rect().has_point(mb.position):
+				for i in Dex.CHAPTERS.size():
+					if _claim_rect(i).has_point(mb.position) and Dex.claim(i):
+						Game.sfx(&"success", -6.0)
 			if _close_rect().has_point(mb.position):
 				closed.emit()
 				queue_free()
@@ -86,7 +106,7 @@ func _draw() -> void:
 	Gt.panel(self, p)
 	Gt.header(self, p.position + Vector2(20, 46), "도감", "COLLECTION", 22)
 	var mobs := Dex.found_count()
-	Gt.text(self, Vector2(p.end.x - 20, p.position.y + 34), "몬스터 %d/%d · 장비 %d/%d · 펫 %d/%d" % [mobs, Dex.MOBS.size(), Save.gear.size(), Gear.ids().size(), Save.pets.size(), Pets.DATA.size()], 12, Gt.NAVY_SOFT, 2, false)
+	Gt.text(self, Vector2(p.end.x - 20, p.position.y + 34), "몬스터 %d/%d · 장비 %d/%d · 펫 %d/%d" % [mobs, Dex.MOBS.size(), Gear.DATA.keys().filter(func(b: StringName) -> bool: return Save.gear.keys().any(func(k: String) -> bool: return Gear.base_of(StringName(k)) == b)).size(), Gear.DATA.size(), Save.pets.size(), Pets.DATA.size()], 12, Gt.NAVY_SOFT, 2, false)
 	Gt.text(self, Vector2(p.end.x - 20, p.position.y + 56), "도감 보너스  공격력 +%.1f%% · 체력 +%.1f%%" % [Save.dex_bonus("atk") * 100.0, Save.dex_bonus("hp") * 100.0], 14, Gt.PINK, 2)
 	for i in TABS.size():
 		var tr := _tab_rect(i)
@@ -96,10 +116,19 @@ func _draw() -> void:
 		else:
 			Gt.pbox(self, tr, Color("e9e4da"), Gt.INK, 2, false, true)
 			Gt.text(self, Vector2(tr.get_center().x, tr.position.y + 28), TABS[i], 17, Gt.NAVY_SOFT, 1)
+		if i == 3 and Dex.claimable() > 0:  # 받을 보상이 있으면 빨간 점
+			draw_circle(Vector2(tr.end.x - 8, tr.position.y + 6), 8, Gt.INK)
+			draw_circle(Vector2(tr.end.x - 8, tr.position.y + 6), 6, Color("ff4f5e"))
 	# 칸들(잘라서 그리기 대신 보이는 줄만)
 	var g := _grid_rect()
 	var cw := g.size.x / COLS
-	for i in _count():
+	if tab == 3:
+		for i in _count():
+			var rr := _row_rect(i)
+			if rr.position.y < g.position.y - 2 or rr.end.y > g.end.y + 2:
+				continue
+			_draw_row(i, rr)
+	for i in (_count() if tab != 3 else 0):
 		var c := Vector2(g.position.x + (i % COLS) * cw, g.position.y + (i / COLS) * CELL.y - scroll)
 		if c.y < g.position.y - 2 or c.y + CELL.y > g.end.y + 2:
 			continue  # 칸 전체가 보이는 줄만
@@ -111,6 +140,25 @@ func _draw() -> void:
 	var cr := _close_rect()
 	Gt.button(self, cr, Gt.Kind.BLUE)
 	Gt.title(self, Vector2(cr.get_center().x, cr.position.y + 34), "닫기", 19, Color.WHITE, 1)
+
+
+## 챕터 보상 한 줄: 이름 · 진행 막대 · 보석 · 받기
+func _draw_row(i: int, r: Rect2) -> void:
+	var ch: Array = Dex.CHAPTERS[i]
+	var p := Dex.chapter_progress(i)
+	var done := Dex.chapter_claimed(i)
+	Gt.pbox(self, r, Color("eef3e6") if done else Gt.CREAM, Gt.INK, 2, false, true)
+	Gt.text(self, r.position + Vector2(14, 26), "%d. %s" % [i + 1, ch[1]], 16, Gt.NAVY)
+	var bar := Rect2(r.position + Vector2(14, 38), Vector2(r.size.x - 150, 14))
+	Gt.bar(self, bar, p.x / maxf(1.0, p.y), Color("37c96e") if p.x >= p.y else Gt.BLUE)
+	Gt.text(self, Vector2(bar.end.x, r.position.y + 26), "%d / %d종" % [p.x, p.y], 12, Gt.NAVY_SOFT, 2, false)
+	var cr := _claim_rect(i)
+	if done:
+		Gt.text(self, Vector2(cr.get_center().x, cr.get_center().y + 6), "받음", 16, Gt.GRAY, 1)
+		return
+	Gt.button(self, cr, Gt.Kind.YELLOW if Dex.can_claim(i) else Gt.Kind.GRAY)
+	Gt.gem(self, Vector2(cr.position.x + 12, cr.get_center().y - 2), 10)
+	Gt.title(self, Vector2(cr.get_center().x + 10, cr.get_center().y + 4), str(ch[2]), 15, Color.WHITE, 1)
 
 
 func _draw_cell(i: int, r: Rect2) -> void:
@@ -127,7 +175,7 @@ func _draw_cell(i: int, r: Rect2) -> void:
 			if n > 0:
 				Gt.text(self, Vector2(r.get_center().x, r.end.y - 7), "%d마리" % n, 10, Gt.NAVY_SOFT, 1, false)
 		1:
-			var id: StringName = Gear.ids()[i]
+			var id: StringName = Gear.DATA.keys()[i]
 			var have := Save.has_gear(id)
 			Gear.draw_card(self, id, r, false, -1, not have)
 			Gt.text(self, Vector2(r.get_center().x, r.end.y - 22), Gear.name_of(id) if have else "???", 10, Color.WHITE, 1, true, 3, Gt.INK)

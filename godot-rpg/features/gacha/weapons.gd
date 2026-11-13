@@ -54,6 +54,13 @@ const DATA: Dictionary[StringName, Array] = {
 	&"platinum_axe": ["백금 전부", 5, 30, 0.03, "거인도 한 번에 쓰러뜨리는 큰 도끼"],
 	&"holy_lance": ["성창", 5, 26, 0.08, "빛의 신전에 꽂혀 있던 창"],
 	&"jade_glaive": ["비취 대창", 5, 27, 0.07, "용의 비늘을 닮은 초록 날 대창"],
+	# ★6 신화(무기 소환에서 ★5가 나왔을 때 그중 5% — 전체 약 0.05%)
+	&"chaos_sword": ["혼돈의 마검", 6, 44, 0.16, "별을 삼킨 혼돈이 깃든 검붉은 마검"],
+	&"blood_fang": ["핏빛 송곳니", 6, 38, 0.24, "베인 자리에 핏빛 꽃이 피는 단검"],
+	&"doom_axe": ["종말의 도끼", 6, 52, 0.08, "한 번 휘두르면 땅이 갈라진다"],
+	&"crimson_lance": ["진홍의 신창", 6, 46, 0.14, "하늘을 꿰뚫었다는 붉은 신의 창"],
+	&"eclipse_bow": ["일식의 활", 6, 42, 0.18, "해를 가린 어둠으로 시위를 당긴다"],
+	&"abyss_staff": ["심연의 홀", 6, 46, 0.10, "심연의 별빛을 부르는 지팡이"],
 	# 보스를 처음 잡으면 받는 무기(뽑기에서는 안 나온다): [.., true]
 	&"slime_scepter": ["슬라임 왕의 홀", 5, 20, 0.04, "말랑하지만 묵직한 왕의 홀", true],
 	&"crystal_fang": ["수정 송곳니", 5, 26, 0.15, "거미 여왕의 수정 송곳니로 만든 단검", true],
@@ -89,6 +96,7 @@ const KIND_OF := {
 	&"longbow": "bow", &"bow": "bow", &"storm_bow": "bow", &"slingshot": "bow",
 	&"fairy_wand": "staff", &"tome": "staff", &"wand": "staff", &"amber_staff": "staff", &"ruby_staff": "staff", &"sun_scepter": "staff",
 	&"red_fan": "fan", &"violet_fan": "fan",
+	&"blood_fang": "dagger", &"doom_axe": "blunt", &"crimson_lance": "spear", &"eclipse_bow": "bow", &"abyss_staff": "staff",
 }
 
 const MAX_ENHANCE := 20
@@ -119,6 +127,12 @@ const TEX_PATH: Dictionary[StringName, String] = {
 	&"holy_lance": "res://assets/weapons2/holy_lance.png",
 	&"jade_glaive": "res://assets/vendor/willibab/jade_glaive.png",
 	&"storm_bow": "res://assets/vendor/ravenmore/weapons/longbow.png",
+	&"chaos_sword": "res://assets/vendor/mythic/chaos_sword.png",
+	&"blood_fang": "res://assets/vendor/mythic/blood_fang.png",
+	&"doom_axe": "res://assets/vendor/mythic/doom_axe.png",
+	&"crimson_lance": "res://assets/vendor/mythic/crimson_lance.png",
+	&"eclipse_bow": "res://assets/vendor/mythic/eclipse_bow.png",
+	&"abyss_staff": "res://assets/vendor/mythic/abyss_staff.png",
 }
 
 static var _tex: Dictionary[StringName, Texture2D] = {}
@@ -223,10 +237,11 @@ static func draw_card(ci: CanvasItem, id: StringName, r: Rect2, show_name := tru
 	Gt.grad(ci, Rect2(inner.position.x, inner.end.y - fade_h, inner.size.x, fade_h), Color(Gt.INK, 0.0), Color(Gt.INK, 0.8))
 	var sr := clampf(inner.size.x / 15.0, 4.0, 8.0)
 	for i in rarity:
-		Gt.star(ci, Vector2(inner.get_center().x + (i - (rarity - 1) / 2.0) * sr * 2.15, inner.end.y - sr - 4), sr)
+		Gt.star(ci, Vector2(inner.get_center().x + (i - (rarity - 1) / 2.0) * sr * 2.15, inner.end.y - sr - 4), sr, Gt.item_star(rarity))
 	if show_name:
 		Gt.title(ci, Vector2(inner.get_center().x, inner.end.y - sr * 2.0 - 9), name_of(id), int(clampf(inner.size.x / 6.5, 10, 20)), Color.WHITE, 1)
 	if refine > 0:
 		var tag := Rect2(inner.position + Vector2(2, 2), Vector2(30, 18))
 		Gt.tag(ci, tag, Gt.BLUE)
 		Gt.text(ci, Vector2(tag.get_center().x, tag.position.y + 13), "+%d" % refine, 12, Color.WHITE, 1)
+	Gt.tier_frame(ci, r, rarity - 2, id.hash() % 7)
