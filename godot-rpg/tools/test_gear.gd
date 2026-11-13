@@ -40,9 +40,31 @@ func _ready() -> void:
 	_check("합성 재료: 안 낀 희귀 장비 3개(재련 +1 포함)", Save.synth_material(2) == 3)
 	var got := Save.synth_gear(&"ring2")
 	_check("희귀 3개 → 영웅 장비 (%s)" % got, got != &"" and Gear.grade_of(got) == 3 and not Save.has_gear(&"ring2") and not Save.has_gear(&"neck2") and Save.has_gear(&"boots2"))
-	_check("분해 → 강화석 (영웅 %d개)" % Gear.STONES_FROM[3], Save.dismantle_gear(got) == Gear.STONES_FROM[3] * (1 + 0) and Save.item_count(&"stone") == Gear.STONES_FROM[3])
+	_check("분해 → 강화석 (영웅 %d개)" % Gear.STONES_FROM[3], Save.dismantle_gear(got) == Gear.STONES_FROM[3] and Save.item_count(&"stone") == Gear.STONES_FROM[3])
 	Save.gear["armor1"] = 0
 	_check("강화석으로 강화 → 재련 +1", Save.upgrade_gear(&"armor1") and Save.gear_refine(&"armor1") == 1 and Save.item_count(&"stone") == Gear.STONES_FROM[3] - Gear.UPGRADE_COST[1])
+	# 분해한 재련은 같은 부위 새 장비로 이어진다
+	Save.gear["ring3"] = 4
+	Save.dismantle_gear(&"ring3")
+	_check("분해한 재련 +4가 새 반지로 이어진다", Save.give_gear(&"ring1_t2") == "new" and Save.gear_refine(&"ring1_t2") == 4 and not Save.gear_carry.has("ring"))
+	# 레벨 단계
+	_check("정예 장비는 이름·효과가 커진다", Gear.name_of(&"armor2_t2").begins_with("정예") and float(Gear.stats_of(&"armor2_t2")["hp"]) > float(Gear.stats_of(&"armor2")["hp"]) * 1.9)
+	var t3 := 0
+	for i in 200:
+		if Gear.tier_of(Gear.roll(false, 120)) == 2:
+			t3 += 1
+	_check("Lv.120이면 고대 장비가 주로 나온다 (%d/200)" % t3, t3 > 110 and Gear.tier_of(Gear.roll(false, 5)) == 0)
+	_check("장비 목록 48종", Gear.ids().size() == 48 and Gear.has_id(&"neck4_t3") and not Gear.has_id(&"neck4_t4"))
+	# 무기 드롭: 3~5성, 새 무기는 가장 높은 강화를 이어받는다
+	var ok_rar := true
+	for i in 200:
+		var r := Weapons.rarity_of(Weapons.roll_drop())
+		ok_rar = ok_rar and r >= 3 and r <= 5
+	_check("떨어지는 무기는 3~5성", ok_rar)
+	Save.wlevel[String(Weapons.STARTER)] = 7
+	var nw := Weapons.pool(4)[0]
+	Save.weapons.erase(String(nw))
+	_check("새 무기는 강화 +7을 이어받는다", Save.grant_weapon(nw) == "new" and Save.enhance_of(nw) == 7)
 	var low := 0
 	var boss_low := 0
 	for i in 400:

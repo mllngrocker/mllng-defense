@@ -14,7 +14,7 @@ func _ready() -> void:
 	_check("처음엔 첫 사냥꾼 미완료", not Achievements.is_done(kill1))
 	Save.dex = {"slime": 80, "bat": 25}
 	var gems := Save.gems
-	_check("몬스터 105마리 → 첫 사냥꾼 달성, 보석 +%d" % int(kill1[5]), Achievements.is_done(kill1) and Achievements.claim(kill1) and Save.gems == gems + int(kill1[5]))
+	_check("몬스터 105마리 → 첫 사냥꾼 달성, 보석 +%d" % int(kill1[5]), Achievements.is_done(kill1) and Achievements.claim(kill1) and Save.gems == gems + maxi(1, roundi(int(kill1[5]) * 0.5)))
 	_check("두 번은 못 받는다", not Achievements.claim(kill1))
 	Save.add_stat("pulls", 10)
 	var pull1: Array = []

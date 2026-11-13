@@ -22,6 +22,9 @@ const SYNTH_NEED := 3
 const DROP_CHANCE := 0.02
 const MOB_WEIGHTS: Array[float] = [0.0, 60.0, 28.0, 10.0, 2.0]
 const BOSS_WEIGHTS: Array[float] = [0.0, 0.0, 50.0, 38.0, 12.0]
+## 레벨 단계: 같은 장비의 더 센 판(id 뒤에 "_t2"·"_t3"). 용사 레벨이 되면 그 단계가 떨어진다
+## [이름 앞말, 필요 레벨, 효과 배율]
+const TIERS: Array[Array] = [["", 1, 1.0], ["정예 ", 40, 2.0], ["고대 ", 90, 3.5]]
 
 ## id → [이름, 부위, 등급, {효과}, 설명]
 const DATA: Dictionary[StringName, Array] = {
@@ -46,20 +49,40 @@ const DATA: Dictionary[StringName, Array] = {
 
 static func ids() -> Array[StringName]:
 	var out: Array[StringName] = []
-	out.assign(DATA.keys())
+	for t in TIERS.size():
+		for id: StringName in DATA:
+			out.append(with_tier(id, t))
 	return out
 
 
+## 단계(0 기본 · 1 정예 · 2 고대)
+static func tier_of(id: StringName) -> int:
+	var s := String(id)
+	return int(s.substr(s.length() - 1)) - 1 if s.contains("_t") else 0
+
+
+static func base_of(id: StringName) -> StringName:
+	return StringName(String(id).get_slice("_t", 0))
+
+
+static func with_tier(id: StringName, t: int) -> StringName:
+	return base_of(id) if t <= 0 else StringName("%s_t%d" % [base_of(id), t + 1])
+
+
+static func has_id(id: StringName) -> bool:
+	return DATA.has(base_of(id)) and tier_of(id) < TIERS.size()
+
+
 static func name_of(id: StringName) -> String:
-	return DATA[id][0]
+	return TIERS[tier_of(id)][0] + DATA[base_of(id)][0]
 
 
 static func slot_of(id: StringName) -> String:
-	return DATA[id][1]
+	return DATA[base_of(id)][1]
 
 
 static func grade_of(id: StringName) -> int:
-	return DATA[id][2]
+	return DATA[base_of(id)][2]
 
 
 static func color_of(id: StringName) -> Color:
@@ -67,15 +90,16 @@ static func color_of(id: StringName) -> Color:
 
 
 static func desc_of(id: StringName) -> String:
-	return DATA[id][4]
+	return DATA[base_of(id)][4]
 
 
 ## 재련을 반영한 효과 {stat: 값}
 static func stats_of(id: StringName, refine := 0) -> Dictionary:
 	var out := {}
-	var base: Dictionary = DATA[id][3]
+	var base: Dictionary = DATA[base_of(id)][3]
+	var mult: float = TIERS[tier_of(id)][2]
 	for k: String in base:
-		out[k] = float(base[k]) * (1.0 + 0.1 * refine)
+		out[k] = float(base[k]) * mult * (1.0 + 0.1 * refine)
 	return out
 
 
@@ -88,7 +112,7 @@ static func stats_text(id: StringName, refine := 0) -> String:
 
 
 ## 떨어뜨릴 장비 하나를 고른다(등급 가중치 → 그 등급 중 아무거나)
-static func roll(boss := false) -> StringName:
+static func roll(boss := false, level := -1) -> StringName:
 	var w := BOSS_WEIGHTS if boss else MOB_WEIGHTS
 	var total := 0.0
 	for x in w:
@@ -100,8 +124,24 @@ static func roll(boss := false) -> StringName:
 		if r <= 0.0:
 			grade = g
 			break
-	var pool := ids().filter(func(id: StringName) -> bool: return grade_of(id) == grade)
-	return pool[randi() % pool.size()]
+	var pool: Array[StringName] = []
+	for id: StringName in DATA:
+		if grade_of(id) == grade:
+			pool.append(id)
+	return with_tier(pool[randi() % pool.size()], tier_for(level))
+
+
+## 용사 레벨에 맞는 단계(가끔 한 단계 아래가 나온다)
+static func tier_for(level: int) -> int:
+	if level < 0:
+		return 0
+	var t := 0
+	for i in TIERS.size():
+		if level >= int(TIERS[i][1]):
+			t = i
+	if t > 0 and randf() < 0.3:
+		t -= 1
+	return t
 
 
 ## 장비 카드: 등급색 테두리 + 어두운 바탕 + 부위 그림 + 별 + (이름) + (재련 +N)
@@ -121,3 +161,5 @@ static func draw_card(ci: CanvasItem, id: StringName, r: Rect2, show_name := tru
 		Gt.title(ci, Vector2(inner.get_center().x, inner.end.y - sr * 2.0 - 9), name_of(id), int(clampf(inner.size.x / 7.0, 10, 18)), Color.WHITE, 1)
 	if refine > 0:
 		Gt.title(ci, inner.position + Vector2(6, 18), "+%d" % refine, 13, Color("ffe36b"))
+	if tier_of(id) > 0:  # 단계 표시(Ⅱ·Ⅲ)
+		Gt.title(ci, Vector2(inner.end.x - 12, inner.position.y + 18), ["", "Ⅱ", "Ⅲ"][tier_of(id)], 13, Color("ffd0ff"))

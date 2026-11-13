@@ -25,7 +25,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	z_index = 40
-	var list := Gear.ids().filter(func(g: StringName) -> bool: return Gear.slot_of(g) == slot)
+	var list := Gear.ids().filter(func(g: StringName) -> bool: return Gear.slot_of(g) == slot and (Gear.tier_of(g) == 0 or Save.has_gear(g)))  # 정예·고대는 가진 것만
 	list.sort_custom(func(a: StringName, b: StringName) -> bool: return Gear.grade_of(a) > Gear.grade_of(b))
 	chosen = Save.gear_on(char_id, slot)
 	if chosen == &"":
@@ -128,7 +128,7 @@ func _refresh() -> void:
 	upgrade_button.sublabel = "" if maxed else "강화석 %d" % Save.upgrade_cost(chosen)
 	dismantle_button.disabled = not have or anyone
 	dismantle_button.label = "착용 중" if have and anyone else "분해"
-	dismantle_button.sublabel = "" if have and anyone else "강화석 +%d" % (Gear.STONES_FROM[Gear.grade_of(chosen)] * (1 + Save.gear_refine(chosen)))
+	dismantle_button.sublabel = "" if have and anyone else ("강화석 +%d" % Gear.STONES_FROM[Gear.grade_of(chosen)]) + (" · 재련 +%d 이어짐" % Save.gear_refine(chosen) if Save.gear_refine(chosen) > 0 else "")
 	var grade := Gear.grade_of(chosen)
 	synth_button.disabled = not have or anyone or grade >= 4 or Save.synth_material(grade) < Gear.SYNTH_NEED
 	synth_button.label = "합성 최대" if grade >= 4 else ("착용 중" if have and anyone else "합성")
@@ -171,7 +171,7 @@ func _on_dismantle() -> void:
 	var n := Save.dismantle_gear(chosen)
 	if n > 0:
 		Game.sfx(&"hit_heavy", -4.0)
-		_say("분해! 강화석 +%d" % n)
+		_say("분해! 강화석 +%d · 재련은 다음 %s에 이어져요" % [n, Gear.SLOT_NAMES[Gear.slot_of(chosen)]] if Save.gear_carry.has(Gear.slot_of(chosen)) else "분해! 강화석 +%d" % n)
 	Save.save_game()
 	_refresh()
 

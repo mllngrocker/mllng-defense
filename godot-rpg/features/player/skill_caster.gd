@@ -151,14 +151,14 @@ func _awaken_fx(rank: int) -> void:
 	if rank < 5:
 		return
 	fx_scale = [1.12, 1.25, 1.4][clampi(rank - 5, 0, 2)]
-	fx_tint = Gt.STAR_BY_RARITY.get(mini(rank, 7), Color.WHITE)
+	fx_tint = Gt.rank_color(mini(rank, 7), data.id)
 	var c := player.body_center()
 	var ring := fx(CIRCLE, 4, c, 14.0, 2.4, Color(fx_tint, 0.9))
 	ring.z_index = 4
 	if rank >= 6:
 		fx(CIRCLE, 4, c, 10.0, 3.6, Color(fx_tint.lightened(0.3), 0.7))
 	if rank >= 7:
-		Game.flash(Color(1, 0.15, 0.2, 0.22), 0.25)
+		Game.flash(Color(fx_tint, 0.22), 0.25)  # 7성: 캐릭터 색으로 번쩍
 		Game.add_shake(6.0)
 		for i in 8:
 			var d := Vector2.from_angle(i * TAU / 8.0)

@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/vendor/monsters/spike_fiend.png" id="2_tex"]
+
+[node name="SeedFiend" instance=ExtResource("1_base")]
+kind = 0
+max_hp = 17238
+speed = 30.0
+damage = 230
+chase_range = 120.0
+gold_reward = 428
+gem_chance = 0.3
+gem_reward = 80
+drop_chance = 0.3
+anim_fps = 8.0
+side_frames = 8
+attack_frames = 6
+
+[node name="Sprite" parent="." index="1"]
+modulate = Color(0.55, 0.8, 0.45, 1)
+texture = ExtResource("2_tex")
+scale = Vector2(0.4906, 0.4906)
+offset = Vector2(0, -25.5)
+hframes = 14
+vframes = 1

@@ -23,7 +23,7 @@ func _ready() -> void:
 	_check("다른 사람과 이야기하면 그대로", not Quests.main_done())
 	Quests.track("talk", "촌장")
 	_check("촌장과 이야기 → 완료", Quests.main_done())
-	_check("보상 받기 → 골드 100·보석 30, 다음 퀘스트", Quests.claim_main() and Save.gold == 100 and Save.gems == 30 and Quests.current()["title"] == "초원으로!")
+	_check("보상 받기 → 골드 100·보석 30, 다음 퀘스트", Quests.claim_main() and Save.gold == roundi(100 * Quests.REWARD_GOLD) and Save.gems == roundi(30 * Quests.REWARD_GEMS) and Quests.current()["title"] == "초원으로!")
 	_check("완료 전에는 받기 안 됨", not Quests.claim_main())
 	Quests.track("reach", "field")
 	Quests.claim_main()
@@ -57,7 +57,7 @@ func _ready() -> void:
 	for i in 30:
 		Quests.track("kill", "slime")
 	var hunt: Dictionary = Quests.DAILY[1]
-	_check("몬스터 30마리 일일 완료 → 받기 보석 30", Quests.daily_done(hunt) and Quests.claim_daily("hunt") and Save.gems == 30)
+	_check("몬스터 30마리 일일 완료 → 받기 보석 30", Quests.daily_done(hunt) and Quests.claim_daily("hunt") and Save.gems == roundi(30 * Quests.REWARD_GEMS))
 	_check("같은 일일 보상은 한 번만", not Quests.claim_daily("hunt"))
 	for d: Dictionary in Quests.DAILY:
 		Save.quest["daily"][d["id"]] = int(d["count"])
@@ -103,7 +103,7 @@ func _ready() -> void:
 	_check("킹 슬라임 처치 → '숲의 주인' 완료", Quests.main_done())
 	_check("킹 슬라임을 잡으면 사막 문이 열림", gate.is_open())
 	# 일반 몬스터가 쓰러지면 잠시 뒤 다시 나타난다(시간을 줄여서 확인)
-	var slime := world.find_children("Mushroom*", "", true, false)[0] as Enemy
+	var slime := get_tree().get_nodes_in_group(&"enemies").filter(func(e: Node) -> bool: return not (e as Enemy).is_boss and (e as Enemy).hp > 0)[0] as Enemy  # 이 맵의 아무 일반 몬스터
 	var count := get_tree().get_nodes_in_group(&"enemies").size()
 	player.global_position = Vector2(-999, -999)
 	world.schedule_respawn(slime.scene_file_path, slime.home, 0.1)
@@ -121,7 +121,7 @@ func _ready() -> void:
 	_check("로비 4번째 탭 → 퀘스트 화면", menu.quest_page.visible and not menu.avatar_page.visible)
 	var gems_before := Save.gems
 	menu.quest_page._on_main_claim()
-	_check("퀘스트 화면에서 메인 보상 받기 (보석 +150)", Save.gems == gems_before + 150)
+	_check("퀘스트 화면에서 메인 보상 받기 (보석 +150)", Save.gems == gems_before + roundi(150 * Quests.REWARD_GEMS))
 
 	# 먼저 가 본 맵·먼저 잡은 보스는 그 퀘스트가 나중에 와도 바로 완료(사막 도착이 안 깨지던 문제)
 	Save.quest["visited"] = {}

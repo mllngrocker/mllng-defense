@@ -266,9 +266,28 @@ static func star(ci: CanvasItem, c: Vector2, r: float, color := STAR) -> void:
 
 
 ## 반짝이(네 갈래 별빛)
-## 7성 별: 빛나는 큰 빨간 별 하나
-static func red_star(ci: CanvasItem, c: Vector2, r: float) -> void:
-	var col: Color = STAR_BY_RARITY[7]
+## 7성 색: 캐릭터마다 다르다(없으면 빨강). 별·아우라·스킬 연출이 같이 쓴다
+const SEVEN_COLOR := {
+	&"kemo1": Color("ff2a3a"), &"kemo2": Color("5ac8ff"), &"kemo3": Color("ff7a1a"), &"fairy3": Color("5fe06a"),
+	&"fairy2": Color("3fe0e0"), &"maid2": Color("ff4fa0"), &"maid3": Color("ffe14a"), &"maid1": Color("fff0a0"),
+	&"maid4": Color("a24bff"), &"fairy1": Color("ff8fd0"), &"scarlet": Color("ff3050"), &"elf1": Color("8be05a"),
+	&"elf2": Color("fff07a"), &"devil4": Color("4fd060"), &"devil1": Color("9fd8ff"), &"elf3": Color("c8d04a"),
+	&"devil3": Color("3fe0c0"), &"elf4": Color("3fd08a"), &"devil2": Color("d0204a"),
+}
+
+
+static func seven_color(id: StringName) -> Color:
+	return SEVEN_COLOR.get(id, STAR_BY_RARITY[7])
+
+
+## 별 등급 색(7성은 캐릭터 색)
+static func rank_color(rank: int, id: StringName = &"") -> Color:
+	return seven_color(id) if rank >= 7 else STAR_BY_RARITY.get(rank, STAR)
+
+
+## 7성 별: 빛나는 큰 별 하나(캐릭터 색)
+static func red_star(ci: CanvasItem, c: Vector2, r: float, id: StringName = &"") -> void:
+	var col: Color = seven_color(id)
 	ci.draw_circle(c, r * 1.25, Color(col, 0.25))
 	star(ci, c, r, col)
 	ci.draw_circle(c + Vector2(-r * 0.18, -r * 0.2), r * 0.16, Color(1, 1, 1, 0.75))
@@ -290,10 +309,10 @@ static func rainbow_star(ci: CanvasItem, c: Vector2, r: float) -> void:
 
 
 ## 별 등급 줄(가운데 맞춤): 3~6성은 그 수만큼 등급색 별, 7성은 큰 빨간 별 하나. 그린 폭을 돌려준다
-static func rank_stars(ci: CanvasItem, c: Vector2, rank: int, r: float, left := false) -> float:
+static func rank_stars(ci: CanvasItem, c: Vector2, rank: int, r: float, left := false, id: StringName = &"") -> float:
 	if rank >= 7:
 		var big := r * 1.45
-		red_star(ci, c + Vector2(big if left else 0.0, 0), big)
+		red_star(ci, c + Vector2(big if left else 0.0, 0), big, id)
 		return big * 2.0
 	var gap := r * 2.15
 	var col: Color = STAR_BY_RARITY.get(rank, STAR)
@@ -658,7 +677,7 @@ static func char_card(ci: CanvasItem, data: CharacterData, r: Rect2, owned := tr
 	var fade_h := inner.size.y * 0.32
 	grad(ci, Rect2(inner.position.x, inner.end.y - fade_h, inner.size.x, fade_h), Color(INK, 0.0), Color(INK, 0.75))
 	var sr := clampf(inner.size.x / 17.0, 3.6, 8.0)
-	rank_stars(ci, Vector2(inner.get_center().x, inner.end.y - sr - 4), Save.rank_of(data.id) if owned else data.rarity, sr)
+	rank_stars(ci, Vector2(inner.get_center().x, inner.end.y - sr - 4), Save.rank_of(data.id) if owned else data.rarity, sr, false, data.id)
 	if show_name:
 		title(ci, Vector2(inner.get_center().x, inner.end.y - sr * 2.0 - 9), data.display_name, int(clampf(inner.size.x / 5.5, 11, 22)), Color.WHITE, 1)
 	element_badge(ci, Vector2(inner.end.x - 9, inner.position.y + 10), 6.5, data.element)

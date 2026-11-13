@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/ninja/actor/spider.png" id="2_tex"]
+
+[node name="BurrowSpider" instance=ExtResource("1_base")]
+kind = 0
+max_hp = 19825
+speed = 36.0
+damage = 230
+chase_range = 120.0
+anim_fps = 8.0
+gold_reward = 513
+gem_chance = 0.3
+gem_reward = 80
+drop_chance = 0.3
+
+[node name="Sprite" parent="." index="1"]
+modulate = Color(0.85, 0.65, 0.45, 1)
+texture = ExtResource("2_tex")
+offset = Vector2(0, -7)

@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/ninja/actor/spirit.png" id="2_tex"]
+
+[node name="RuinGhost" instance=ExtResource("1_base")]
+kind = 3
+max_hp = 260
+gem_reward = 20
+speed = 22.0
+damage = 24
+chase_range = 110.0
+anim_fps = 6.0
+gold_reward = 45
+gem_chance = 0.8
+drop_chance = 0.35
+
+[node name="Sprite" parent="." index="1"]
+modulate = Color(1.1, 1.0, 0.55, 1)
+texture = ExtResource("2_tex")
+offset = Vector2(0, -10)

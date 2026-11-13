@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
-[ext_resource type="Texture2D" path="res://assets/ninja/actor/boss_demon_lord.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/vendor/monsters/pink_witch.png" id="2_tex"]
 [ext_resource type="Script" path="res://features/enemy/boss.gd" id="3_boss"]
 [ext_resource type="PackedScene" path="res://features/enemy/demon_eye.tscn" id="4_minion"]
 
@@ -19,7 +19,9 @@ max_hp = 200000
 speed = 26.0
 damage = 230
 chase_range = 150.0
-anim_fps = 5.0
+anim_fps = 8.0
+side_frames = 8
+attack_frames = 6
 gold_reward = 80000
 gem_chance = 1.0
 gem_reward = 6000
@@ -30,8 +32,11 @@ scale = Vector2(3.4, 3.4)
 
 [node name="Sprite" parent="." index="1"]
 texture = ExtResource("2_tex")
-offset = Vector2(0, -9)
-scale = Vector2(3.4, 3.4)
+offset = Vector2(0, -27.5)
+scale = Vector2(1.184, 1.184)
+hframes = 14
+vframes = 1
+modulate = Color(0.75, 0.25, 0.35, 1)
 
 [node name="Body" parent="." index="2"]
 position = Vector2(0, -9)

@@ -11,18 +11,18 @@ size = Vector2(44, 24)
 [node name="RootWorm" instance=ExtResource("1_base")]
 script = ExtResource("3_boss")
 boss_name = "뿌리 먹는 벌레왕"
-slam_radius = 90.0
-slam_damage = 450
+slam_radius = 91.0
+slam_damage = 485
 summon = ExtResource("4_minion")
 kind = 0
-max_hp = 280000
-speed = 26.0
-damage = 270
+max_hp = 310000
+speed = 27.0
+damage = 285
 chase_range = 170.0
 anim_fps = 5.0
-gold_reward = 120000
+gold_reward = 140000
 gem_chance = 1.0
-gem_reward = 8000
+gem_reward = 9000
 drop_chance = 1.0
 
 [node name="Shadow" parent="." index="0"]

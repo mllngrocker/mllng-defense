@@ -15,9 +15,10 @@ const DATA: Dictionary[StringName, Array] = {
 	&"octopus": ["꼬마 문어", "res://assets/ninja/actor/octopus.png", 0.7, {"atk": 0.15}, "심해의 크라켄 첫 처치"],
 	&"flam": ["불꽃 정령", "res://assets/ninja/actor/flam.png", 0.8, {"atk": 0.20}, "화염룡 이그니스 첫 처치"],
 	&"dragon": ["아기 용", "res://assets/ninja/actor/dragon.png", 1.0, {"atk": 0.25, "crit": 0.05}, "마왕 아자젤 첫 처치"],
-	&"gold_racoon": ["황금 너구리", "res://assets/ninja/actor/gold_racoon.png", 1.2, {"atk": 0.30, "gold": 0.30}, "고대 거인의 혼 첫 처치"],
+	&"gold_racoon": ["황금 너구리", "res://assets/ninja/actor/gold_racoon.png", 1.2, {"atk": 0.30, "gold": 0.30}, "폭풍새 왕 첫 처치"],
 	&"root_larva": ["아기 애벌레", "res://assets/ninja/actor/root_larva.png", 1.35, {"atk": 0.35, "hp": 0.20}, "뿌리 먹는 벌레왕 첫 처치"],
 	&"garden_owl": ["밤 부엉이", "res://assets/ninja/actor/garden_owl.png", 1.6, {"atk": 0.45, "crit": 0.08}, "검은 정원사 첫 처치"],
+	&"gold_dragon": ["황금 아기 용", "res://assets/ninja/actor/dragon_y.png", 2.0, {"atk": 0.60, "hp": 0.30}, "고대 거인의 혼 첫 처치"],
 	&"mist_wisp": ["도깨비불", "res://assets/ninja/actor/mist_wisp.png", 1.8, {"atk": 0.55, "gold": 0.20}, "안개의 사도 첫 처치"],
 }
 ## 보스를 처음 잡으면 주는 것: 보스 id → [펫, 보스 무기]
@@ -29,7 +30,8 @@ const BOSS_REWARDS := {
 	"kraken": [&"octopus", &"sea_trident"],
 	"flame_dragon": [&"flam", &"ignis_spear"],
 	"demon_lord": [&"dragon", &"demon_sword"],
-	"giant_soul": [&"gold_racoon", &"giant_heart"],
+	"storm_king": [&"gold_racoon", &"storm_bow"],
+	"giant_soul": [&"gold_dragon", &"giant_heart"],
 	"root_worm": [&"root_larva", &"root_lance"],
 	"black_gardener": [&"garden_owl", &"gardener_scythe"],
 	"mist_apostle": [&"mist_wisp", &"mist_blade"],

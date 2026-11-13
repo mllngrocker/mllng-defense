@@ -5,14 +5,14 @@
 
 [node name="Bamboo" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 14173
+max_hp = 11048
 speed = 38.0
-damage = 197
+damage = 167
 chase_range = 120.0
 anim_fps = 7.0
-gold_reward = 430
+gold_reward = 379
 gem_chance = 0.3
-gem_reward = 84
+gem_reward = 74
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

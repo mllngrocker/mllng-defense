@@ -63,7 +63,8 @@ const DATA: Dictionary[StringName, Array] = {
 	&"ignis_spear": ["이그니스의 화염창", 5, 230, 0.10, "화염룡의 숨결이 타오르는 창", true],
 	&"demon_sword": ["마왕의 검", 5, 300, 0.15, "마왕 아자젤을 쓰러뜨린 자의 증표", true],
 	&"giant_heart": ["거인의 심장창", 5, 520, 0.18, "고대 거인이 남긴 빛나는 창", true],
-	&"root_lance": ["생명 뿌리창", 5, 400, 0.18, "벌레왕에게서 되찾은 큰 나무의 뿌리로 깎은 창", true],
+	&"storm_bow": ["폭풍새의 깃활", 5, 400, 0.20, "폭풍새 왕의 금빛 깃털로 엮은 활", true],
+	&"root_lance": ["생명 뿌리창", 5, 460, 0.18, "벌레왕에게서 되찾은 큰 나무의 뿌리로 깎은 창", true],
 	&"gardener_scythe": ["검은 정원사의 낫", 5, 160, 0.22, "검은 씨앗을 거두던 낫. 이제는 생명을 지킨다", true],
 	&"mist_blade": ["안개를 가르는 검", 5, 112, 0.24, "사도의 가면이 깨지며 남은 푸른 검", true],
 }
@@ -85,7 +86,7 @@ const KIND_OF := {
 	&"cyclops_maul": "blunt", &"hand_axe": "blunt", &"iron_hammer": "blunt", &"gold_axes": "blunt", &"crystal_flail": "blunt", &"platinum_axe": "blunt",
 	&"thunder_spear": "spear", &"spear": "spear", &"sea_trident": "spear", &"ignis_spear": "spear", &"giant_heart": "spear", &"root_lance": "spear",
 	&"gardener_scythe": "spear", &"harpoon": "spear", &"frost_trident": "spear", &"gold_spear": "spear", &"holy_lance": "spear", &"jade_glaive": "spear",
-	&"longbow": "bow", &"bow": "bow", &"slingshot": "bow",
+	&"longbow": "bow", &"bow": "bow", &"storm_bow": "bow", &"slingshot": "bow",
 	&"fairy_wand": "staff", &"tome": "staff", &"wand": "staff", &"amber_staff": "staff", &"ruby_staff": "staff", &"sun_scepter": "staff",
 	&"red_fan": "fan", &"violet_fan": "fan",
 }
@@ -117,6 +118,7 @@ const TEX_PATH: Dictionary[StringName, String] = {
 	&"platinum_axe": "res://assets/weapons2/platinum_axe.png",
 	&"holy_lance": "res://assets/weapons2/holy_lance.png",
 	&"jade_glaive": "res://assets/vendor/willibab/jade_glaive.png",
+	&"storm_bow": "res://assets/vendor/ravenmore/weapons/longbow.png",
 }
 
 static var _tex: Dictionary[StringName, Texture2D] = {}
@@ -134,6 +136,16 @@ static func pool(rarity: int) -> Array[StringName]:
 		if int(DATA[id][1]) == rarity and not is_boss(id):
 			out.append(id)
 	return out
+
+
+## 몬스터가 떨어뜨리는 무기: 3성 80 · 4성 17 · 5성 3
+static func roll_drop() -> StringName:
+	var r := randf() * 100.0
+	var rar := 5 if r < 3.0 else (4 if r < 20.0 else 3)
+	var p := pool(rar)
+	if p.is_empty():
+		p = pool(3)
+	return p[randi() % p.size()]
 
 
 ## 보스 전리품 무기(뽑기에 안 나옴)

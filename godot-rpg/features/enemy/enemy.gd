@@ -6,8 +6,10 @@ extends CharacterBody2D
 enum Kind { WALKER, HOPPER, FLYER, GHOST }
 
 const TOUCH_RANGE := 11.0
-const GOLD_MULT := 0.5  # 일반 몬스터 골드 배율
-const GEM_CHANCE_MULT := 0.2  # 일반 몬스터 보석 확률 배율
+const GOLD_MULT := 0.3  # 일반 몬스터 골드 배율
+const BOSS_GOLD_MULT := 0.5  # 보스 골드 배율
+const BOSS_GEM_MULT := 0.25  # 보스 보석 배율
+const GEM_CHANCE_MULT := 0.1  # 일반 몬스터 보석 확률 배율
 const GEM_MULT := 0.3  # 일반 몬스터 보석 개수 배율
 const BAR_SHOW_TIME := 3.0
 const BAR_WIDTH := 16.0
@@ -22,6 +24,8 @@ const HEART_PICKUP := preload("res://features/pickup/heart_pickup.tscn")
 @export var chase_range: float = 96.0
 @export var anim_fps: float = 6.0
 @export_range(0.0, 1.0) var drop_chance: float = 0.25
+const WEAPON_DROP := 0.004  # 일반 몬스터가 무기를 떨어뜨릴 확률
+const WEAPON_DROP_BOSS := 0.3
 @export var gold_reward: int = 5
 @export_range(0.0, 1.0) var gem_chance: float = 0.15
 @export var gem_reward: int = 5
@@ -282,7 +286,7 @@ func _die() -> void:
 	if scene_file_path != "":
 		get_tree().call_group(&"world", &"schedule_respawn", scene_file_path, home, 90.0 if is_boss else randf_range(10.0, 16.0))
 	# 보상 조정: 일반 몬스터는 골드 절반, 보석은 확률 1/5 · 개수 30%(보스는 그대로). 경험치는 원래 값
-	var gold_got := gold_reward if is_boss else maxi(1, roundi(gold_reward * GOLD_MULT))
+	var gold_got := roundi(gold_reward * BOSS_GOLD_MULT) if is_boss else maxi(1, roundi(gold_reward * GOLD_MULT))
 	Save.add_gold(gold_got)
 	Save.add_exp(Save.selected, gold_reward * (3 if is_boss else 1))  # 경험치: 잡은 캐릭터에게
 	Game.sfx(&"kill", -2.0)
@@ -291,13 +295,16 @@ func _die() -> void:
 	Fx.spawn(world, SMOKE, 6, global_position + Vector2(0, -6), 16.0)
 	DamageNumber.spawn(world, global_position + Vector2(0, -2), gold_got, false, "+%dG", Color("ffd54f"))
 	if randf() < (gem_chance if is_boss else gem_chance * GEM_CHANCE_MULT):
-		var gems := gem_reward if is_boss else maxi(1, roundi(gem_reward * GEM_MULT))
+		var gems := maxi(1, roundi(gem_reward * BOSS_GEM_MULT)) if is_boss else maxi(1, roundi(gem_reward * GEM_MULT))
 		Save.add_gems(gems)
 		DamageNumber.spawn(world, global_position + Vector2(0, 6), gems, false, "+%d보석", Color("ff8ad8"))
+	var lv := Save.level_of(Save.selected)
 	if is_boss:
-		ItemPickup.spawn_gear.call_deferred(world, Gear.roll(true), global_position + Vector2(0, 10))  # 보스는 희귀 이상 장비 하나
+		ItemPickup.spawn_gear.call_deferred(world, Gear.roll(true, lv), global_position + Vector2(0, 10))  # 보스는 희귀 이상 장비 하나
 	elif randf() < Gear.DROP_CHANCE:
-		ItemPickup.spawn_gear.call_deferred(world, Gear.roll(false), global_position + Vector2(randf_range(-8, 8), 4))
+		ItemPickup.spawn_gear.call_deferred(world, Gear.roll(false, lv), global_position + Vector2(randf_range(-8, 8), 4))
+	if randf() < (WEAPON_DROP_BOSS if is_boss else WEAPON_DROP):  # 3~5성 무기(그 위는 강화로)
+		ItemPickup.spawn_weapon.call_deferred(world, Weapons.roll_drop(), global_position + Vector2(randf_range(-10, 10), 12))
 	if not is_boss:
 		for k: StringName in Items.DROP:
 			if randf() < float(Items.DROP[k]):

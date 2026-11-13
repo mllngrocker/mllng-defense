@@ -137,7 +137,11 @@ func _physics_process(delta: float) -> void:
 			Fx.spawn(fx_parent(), preload("res://assets/ninja/fx/flame.png"), 8, global_position + Vector2(randf_range(-6, 6), -4), 16.0).scale = Vector2.ONE * 0.7
 	attack_buffer -= delta
 	if Input.is_action_just_pressed(&"attack"):
-		attack_buffer = ATTACK_BUFFER
+		var npc := _npc_near()
+		if npc:
+			npc.talk()  # 마을 사람 앞에서 공격 버튼 → 말 걸기
+		else:
+			attack_buffer = ATTACK_BUFFER
 
 	# 조이스틱 세기를 그대로 쓴다(기본 데드존 0.5면 살짝 밀 때 안 움직여서 뻑뻑하다)
 	var input := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down", 0.05)
@@ -221,6 +225,18 @@ func _emit_mp() -> void:
 	if int(mp) != _mp_shown:
 		_mp_shown = int(mp)
 		Events.player_mp_changed.emit(_mp_shown, max_mp)
+
+
+## 바로 앞(26px 안)의 마을 사람
+func _npc_near() -> Npc:
+	var best: Npc = null
+	var bd := 26.0
+	for n in get_tree().get_nodes_in_group(&"npcs"):
+		var d := (n as Node2D).global_position.distance_to(global_position)
+		if d < bd:
+			bd = d
+			best = n as Npc
+	return best
 
 
 ## 몬스터 경험치로 레벨이 오르면: 능력치 다시 계산 + 체력 모두 회복 + 빛 기둥

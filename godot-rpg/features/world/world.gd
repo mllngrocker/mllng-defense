@@ -40,7 +40,7 @@ func _ready() -> void:
 		pet.pet_id = StringName(Save.pet)
 		player.get_parent().add_child(pet)
 		pet.global_position = player.global_position + Pet.FOLLOW
-	var rect := ground.get_used_rect()
+	var rect := _map_rect()
 	var size := ground.tile_set.tile_size
 	var cam: Camera2D = player.get_node(^"Camera")
 	cam.limit_left = rect.position.x * size.x
@@ -71,7 +71,7 @@ var _nav: AStarGrid2D
 
 func _build_nav() -> void:
 	_nav = AStarGrid2D.new()
-	_nav.region = ground.get_used_rect()
+	_nav.region = _map_rect()
 	_nav.cell_size = Vector2(16, 16)
 	_nav.offset = Vector2(8, 8)
 	_nav.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
@@ -159,3 +159,10 @@ func _on_player_died() -> void:
 	Save.save_game()
 	await get_tree().create_timer(2.0).timeout
 	Game.go_to(VILLAGE_SCENE, "")
+
+
+## 맵 범위: 땅 층이 비어 있는 하늘·바다 배경 맵은 map_size 메타(build_world가 넣는다)
+func _map_rect() -> Rect2i:
+	if has_meta(&"map_size"):
+		return Rect2i(Vector2i.ZERO, get_meta(&"map_size"))
+	return ground.get_used_rect()

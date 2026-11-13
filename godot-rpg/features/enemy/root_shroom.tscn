@@ -5,14 +5,14 @@
 
 [node name="RootShroom" instance=ExtResource("1_base")]
 kind = 1
-max_hp = 13437
+max_hp = 17238
 speed = 36.0
-damage = 195
+damage = 230
 chase_range = 120.0
 anim_fps = 7.0
-gold_reward = 378
+gold_reward = 428
 gem_chance = 0.3
-gem_reward = 71
+gem_reward = 80
 drop_chance = 0.3
 
 [node name="Sprite" parent="." index="1"]

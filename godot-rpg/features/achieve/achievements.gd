@@ -84,6 +84,6 @@ static func claim(a: Array) -> bool:
 	if not is_done(a) or is_claimed(a):
 		return false
 	Save.ach_claimed[a[0]] = true
-	Save.add_gems(int(a[5]))
+	Save.add_gems(maxi(1, roundi(int(a[5]) * 0.5)))  # 보상 조정: 업적 보석 절반
 	Save.save_game()
 	return true

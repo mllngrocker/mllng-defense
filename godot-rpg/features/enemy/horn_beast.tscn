@@ -5,13 +5,13 @@
 
 [node name="HornBeast" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 15453
+max_hp = 19825
 speed = 38.0
-damage = 195
+damage = 230
 chase_range = 120.0
-gold_reward = 453
+gold_reward = 513
 gem_chance = 0.3
-gem_reward = 71
+gem_reward = 80
 drop_chance = 0.3
 anim_fps = 8.0
 side_frames = 8

@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/vendor/monsters/ogre.png" id="2_tex"]
+
+[node name="BoneOgre" instance=ExtResource("1_base")]
+kind = 0
+max_hp = 9105
+speed = 40.0
+damage = 155
+chase_range = 120.0
+gold_reward = 262
+gem_chance = 0.35
+gem_reward = 44
+drop_chance = 0.3
+anim_fps = 8.0
+side_frames = 8
+attack_frames = 6
+
+[node name="Sprite" parent="." index="1"]
+modulate = Color(1.25, 1.2, 1.05, 1)
+texture = ExtResource("2_tex")
+scale = Vector2(0.5833, 0.5833)
+offset = Vector2(0, -23.0)
+hframes = 14
+vframes = 1

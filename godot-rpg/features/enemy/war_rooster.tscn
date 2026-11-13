@@ -5,13 +5,13 @@
 
 [node name="WarRooster" instance=ExtResource("1_base")]
 kind = 0
-max_hp = 16299
+max_hp = 12705
 speed = 38.0
-damage = 197
+damage = 167
 chase_range = 120.0
-gold_reward = 515
+gold_reward = 454
 gem_chance = 0.3
-gem_reward = 84
+gem_reward = 74
 drop_chance = 0.3
 anim_fps = 9.0
 side_frames = 8

@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
-[ext_resource type="Texture2D" path="res://assets/ninja/actor/boss_mist_apostle.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/vendor/monsters/shade.png" id="2_tex"]
 [ext_resource type="Script" path="res://features/enemy/boss.gd" id="3_boss"]
 [ext_resource type="PackedScene" path="res://features/enemy/mist_wisp.tscn" id="4_minion"]
 
@@ -19,7 +19,9 @@ max_hp = 73000
 speed = 22.0
 damage = 130
 chase_range = 170.0
-anim_fps = 5.0
+anim_fps = 14.0
+side_frames = 24
+attack_frames = 24
 gold_reward = 20000
 gem_chance = 1.0
 gem_reward = 1200
@@ -30,8 +32,11 @@ scale = Vector2(3.2, 3.2)
 
 [node name="Sprite" parent="." index="1"]
 texture = ExtResource("2_tex")
-offset = Vector2(0, -9)
-scale = Vector2(3.2, 3.2)
+offset = Vector2(0, -48.5)
+scale = Vector2(0.919, 0.919)
+hframes = 48
+vframes = 1
+modulate = Color(0.85, 0.92, 1, 1)
 modulate = Color(0.82, 0.9, 1, 1)
 
 [node name="Body" parent="." index="2"]

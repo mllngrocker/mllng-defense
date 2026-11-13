@@ -47,7 +47,7 @@ func _count() -> int:
 		0:
 			return Dex.MOBS.size()
 		1:
-			return Gear.DATA.size()
+			return Gear.ids().size()
 	return Pets.DATA.size()
 
 
@@ -86,7 +86,7 @@ func _draw() -> void:
 	Gt.panel(self, p)
 	Gt.header(self, p.position + Vector2(20, 46), "도감", "COLLECTION", 22)
 	var mobs := Dex.found_count()
-	Gt.text(self, Vector2(p.end.x - 20, p.position.y + 34), "몬스터 %d/%d · 장비 %d/%d · 펫 %d/%d" % [mobs, Dex.MOBS.size(), Save.gear.size(), Gear.DATA.size(), Save.pets.size(), Pets.DATA.size()], 12, Gt.NAVY_SOFT, 2, false)
+	Gt.text(self, Vector2(p.end.x - 20, p.position.y + 34), "몬스터 %d/%d · 장비 %d/%d · 펫 %d/%d" % [mobs, Dex.MOBS.size(), Save.gear.size(), Gear.ids().size(), Save.pets.size(), Pets.DATA.size()], 12, Gt.NAVY_SOFT, 2, false)
 	Gt.text(self, Vector2(p.end.x - 20, p.position.y + 56), "도감 보너스  공격력 +%.1f%% · 체력 +%.1f%%" % [Save.dex_bonus("atk") * 100.0, Save.dex_bonus("hp") * 100.0], 14, Gt.PINK, 2)
 	for i in TABS.size():
 		var tr := _tab_rect(i)

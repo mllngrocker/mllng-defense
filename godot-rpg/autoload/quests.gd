@@ -7,19 +7,19 @@ extends Node
 signal changed
 signal completed(title: String)
 
-const DESERT_KINDS: Array[String] = ["snake", "lizard", "mole", "eye", "cyclope", "cyclope_king"]  # 폐허의 해골·유령은 숲 몬스터라 안 셈
+const DESERT_KINDS: Array[String] = ["curse_eye", "ruin_ghost", "sand_skull", "sand_spider", "snake", "lizard", "mole", "eye", "cyclope", "cyclope_king"]  # 폐허의 해골·유령은 숲 몬스터라 안 셈
 ## 지역별 몬스터(처치 퀘스트 대상 "snow"·"temple"·"lava"·"hell"·"south")
 const REGION_KINDS := {
 	"desert": DESERT_KINDS,
-	"south": ["ogre", "wing_eye", "poison_shroom", "goblin", "kappa", "lantern", "rat", "spider", "bluebat", "axolot", "butterfly", "octopus", "racoon", "spider_queen"],
-	"snow": ["blue_beast", "panda", "bear", "ice_skull", "frost_spirit", "snow_bat", "snow_mouse", "yeti_king"],
-	"temple": ["blue_axolot", "deep_octopus", "green_octopus", "red_octopus", "jump_fish", "kappa_red", "kraken"],
-	"lava": ["dragon_man", "crest_lizard", "flam", "flam2", "dragon", "dragon_y", "trex", "grey_trex", "heart_red", "flame_dragon"],
-	"hell": ["pink_witch", "red_armor", "skel_knight", "spike_fiend", "lantern_red", "demon_eye", "dragon", "grey_trex", "demon_lord"],
-	"sky": ["bird_man", "war_rooster", "bamboo", "bamboo_y", "gold_racoon", "heart_green", "sky_spirit", "sky_bat", "giant_soul"],
-	"root": ["horn_beast", "root_larva", "root_larva_b", "root_mollusc", "root_mole", "root_shroom", "root_beast", "root_worm"],
-	"garden": ["grass_zombie", "garden_moth", "garden_owl", "garden_owl2", "garden_lizard", "garden_lizard2", "garden_snake", "garden_spider", "garden_beast", "black_gardener"],
-	"mist": ["shade", "mist_octo", "mist_fish", "mist_skull", "mist_wisp", "mist_lantern", "mist_slime", "mist_snake", "mist_apostle"],
+	"south": ["beach_slime", "swamp_slime", "ogre", "wing_eye", "poison_shroom", "goblin", "kappa", "lantern", "rat", "spider", "bluebat", "axolot", "butterfly", "octopus", "racoon", "spider_queen"],
+	"snow": ["white_bear", "snow_ogre", "ice_eye", "glacier_spider", "frost_goblin", "frost_shroom", "lake_mouse", "ice_octopus", "blue_beast", "panda", "bear", "ice_skull", "frost_spirit", "snow_bat", "snow_mouse", "yeti_king"],
+	"temple": ["altar_knight", "altar_kappa", "abyss_eye", "mirror_fish", "library_ghost", "drop_slime", "blue_axolot", "deep_octopus", "green_octopus", "red_octopus", "jump_fish", "kappa_red", "kraken"],
+	"lava": ["fire_bat", "magma_octo", "lava_slime", "dragon_man", "crest_lizard", "flam", "flam2", "dragon", "dragon_y", "trex", "grey_trex", "heart_red", "flame_dragon"],
+	"hell": ["throne_eye", "demon_drake", "gargoyle", "blood_octo", "bone_ogre", "scream_ghost", "pink_witch", "red_armor", "skel_knight", "spike_fiend", "lantern_red", "demon_eye", "dragon", "grey_trex", "demon_lord"],
+	"sky": ["star_gargoyle", "storm_birdman", "sky_skeleton", "bird_man", "war_rooster", "bamboo", "bamboo_y", "gold_racoon", "heart_green", "sky_spirit", "sky_bat", "storm_king"],
+	"root": ["seed_guard", "seed_fiend", "burrow_spider", "horn_beast", "root_larva", "root_larva_b", "root_mollusc", "root_mole", "root_shroom", "root_beast", "root_worm", "giant_soul"],
+	"garden": ["dark_zombie", "thorn_fiend", "rose_witch", "grass_zombie", "garden_moth", "garden_owl", "garden_owl2", "garden_lizard", "garden_lizard2", "garden_snake", "garden_spider", "garden_beast", "black_gardener"],
+	"mist": ["star_wisp", "tower_guard", "coral_octo", "wreck_knight", "shade", "mist_octo", "mist_fish", "mist_skull", "mist_wisp", "mist_lantern", "mist_slime", "mist_snake", "mist_apostle"],
 }
 
 ## 이 메인 퀘스트 보상을 받으면 펫도 준다
@@ -78,33 +78,36 @@ const MAIN: Array[Dictionary] = [
 	{"title": "어둠을 꿰뚫는 힘", "desc": "아무 캐릭터나 레벨 85를 만들자.", "type": "level", "target": "", "count": 85, "gold": 40000, "gems": 300},
 	{"title": "정원사의 길", "desc": "거꾸로 자란 숲을 지나 석상이 늘어선 정원사의 길에 들어서자.", "type": "reach", "target": "garden5", "count": 1, "gold": 30000, "gems": 200},
 	{"title": "검은 정원사", "desc": "검은 나무 아래에서 검은 정원사를 쓰러뜨리고 검은 씨앗을 뽑아내자!", "type": "boss", "target": "black_gardener", "count": 1, "gold": 80000, "gems": 2000},
-	# 6장 용암·지옥
-	{"title": "6장: 잿빛 황무지", "desc": "저주받은 폐허 동쪽 문을 지나 용암 지대로 가자.", "type": "reach", "target": "lava1", "count": 1, "gold": 30000, "gems": 200},
+	# 6장 화산·마계
+	{"title": "6장: 잿빛 황무지", "desc": "저주받은 폐허 동쪽 문을 지나 화산 용암 지대로 가자.", "type": "reach", "target": "lava1", "count": 1, "gold": 30000, "gems": 200},
 	{"title": "불꽃 대장간 마을", "desc": "불꽃 협곡 동쪽 대장간 마을의 대장장이를 만나자.", "type": "talk", "target": "대장장이", "count": 1, "gold": 30000, "gems": 200},
-	{"title": "불꽃 사냥", "desc": "용암 지대의 몬스터를 150마리 물리치자.", "type": "kill", "target": "lava", "count": 150, "gold": 60000, "gems": 400},
+	{"title": "불꽃 사냥", "desc": "화산 용암 지대의 몬스터를 150마리 물리치자.", "type": "kill", "target": "lava", "count": 150, "gold": 60000, "gems": 400},
 	{"title": "불에 단련되기", "desc": "아무 캐릭터나 레벨 100을 만들자.", "type": "level", "target": "", "count": 100, "gold": 80000, "gems": 500},
-	{"title": "화염룡 이그니스", "desc": "용암 지대 끝, 화염룡의 둥지에서 검은 불꽃에 미친 이그니스를 깨우자. 지옥문이 열린다!", "type": "boss", "target": "flame_dragon", "count": 1, "gold": 100000, "gems": 2000},
-	{"title": "지옥문", "desc": "지옥문을 지나 지옥에 발을 들이자.", "type": "reach", "target": "hell1", "count": 1, "gold": 50000, "gems": 300},
-	{"title": "지옥 정화", "desc": "지옥의 몬스터를 150마리 물리치자.", "type": "kill", "target": "hell", "count": 150, "gold": 100000, "gems": 500},
+	{"title": "화염룡 이그니스", "desc": "화산 용암 지대 끝, 화염룡의 둥지에서 검은 불꽃에 미친 이그니스를 깨우자. 마계의 문이 열린다!", "type": "boss", "target": "flame_dragon", "count": 1, "gold": 100000, "gems": 2000},
+	{"title": "마계의 문", "desc": "마계의 문을 지나 마계에 발을 들이자.", "type": "reach", "target": "hell1", "count": 1, "gold": 50000, "gems": 300},
+	{"title": "마계 정화", "desc": "마계의 몬스터를 150마리 물리치자.", "type": "kill", "target": "hell", "count": 150, "gold": 100000, "gems": 500},
 	{"title": "마왕과 맞설 힘", "desc": "아무 캐릭터나 레벨 115를 만들자.", "type": "level", "target": "", "count": 115, "gold": 120000, "gems": 600},
 	{"title": "마왕 아자젤", "desc": "마왕의 옥좌에서 검은 열매를 삼킨 아자젤을 쓰러뜨리자!", "type": "boss", "target": "demon_lord", "count": 1, "gold": 150000, "gems": 3000},
-	# 3부 「큰 나무」 7장 큰 나무 뿌리
-	{"title": "3부: 돌아온 고향", "desc": "레몬 마을로 돌아가 촌장에게 큰 나무와 로웰 이야기를 전하자.", "type": "talk", "target": "촌장", "count": 1, "gold": 60000, "gems": 300},
-	{"title": "뿌리로 내려가기", "desc": "어스름 숲 북쪽, 큰 나무 뿌리가 땅을 뚫고 나온 곳으로 내려가자.", "type": "reach", "target": "root1", "count": 1, "gold": 60000, "gems": 300},
-	{"title": "부모님의 흔적", "desc": "빛나는 뿌리 동굴에서 부모님이 남긴 흔적을 찾자.", "type": "reach", "target": "root2", "count": 1, "gold": 60000, "gems": 300},
-	{"title": "새싹 마을", "desc": "뿌리 속 새싹 마을의 장로에게 십 년 전 이야기를 듣자.", "type": "talk", "target": "새싹 장로", "count": 1, "gold": 70000, "gems": 300},
-	{"title": "뿌리 정화", "desc": "뿌리 속 몬스터를 180마리 물리치자.", "type": "kill", "target": "root", "count": 180, "gold": 160000, "gems": 700},
-	{"title": "벌레 굴", "desc": "썩은 물길을 지나 벌레 굴에 들어가자.", "type": "reach", "target": "root4", "count": 1, "gold": 100000, "gems": 400},
-	{"title": "뿌리보다 깊게", "desc": "아무 캐릭터나 레벨 130을 만들자.", "type": "level", "target": "", "count": 130, "gold": 200000, "gems": 800},
-	{"title": "뿌리 먹는 벌레왕", "desc": "검은 씨앗의 방에서 봉인을 갉아 먹은 벌레왕을 물리치자. 하늘로 뻗은 줄기 길이 열린다!", "type": "boss", "target": "root_worm", "count": 1, "gold": 250000, "gems": 4000},
-	# 8장 천공의 탑(마지막)
-	{"title": "8장: 하늘로 뻗은 줄기", "desc": "뿌리 내리막길 북쪽, 하늘로 뻗은 줄기를 타고 구름섬에 오르자.", "type": "reach", "target": "sky1", "count": 1, "gold": 120000, "gems": 500},
-	{"title": "구름 마을", "desc": "하늘섬의 구름 마을에서 장로에게 큰 나무 이야기를 듣자.", "type": "talk", "target": "구름 장로", "count": 1, "gold": 150000, "gems": 500},
-	{"title": "구름 위의 사냥", "desc": "하늘섬과 천공의 탑 몬스터를 200마리 물리치자.", "type": "kill", "target": "sky", "count": 200, "gold": 300000, "gems": 900},
-	{"title": "세 번째 사냥꾼", "desc": "아무 캐릭터나 레벨 140을 만들자.", "type": "level", "target": "", "count": 140, "gold": 250000, "gems": 1000},
-	{"title": "천공의 탑", "desc": "꽃구름 섬을 지나 천공의 탑 꼭대기에 오르자.", "type": "reach", "target": "sky6", "count": 1, "gold": 300000, "gems": 800},
+	# 3부 「큰 나무」 7장 천공의 탑
+	{"title": "3부: 큰 나무 줄기", "desc": "어스름 숲 북쪽 문으로 나가 큰 나무 줄기를 타고 구름섬에 오르자.", "type": "reach", "target": "sky1", "count": 1, "gold": 60000, "gems": 300},
+	{"title": "구름 마을", "desc": "하늘섬의 구름 마을에서 장로에게 큰 나무 이야기를 듣자.", "type": "talk", "target": "구름 장로", "count": 1, "gold": 70000, "gems": 300},
+	{"title": "구름 위의 사냥", "desc": "하늘섬과 천공의 탑 몬스터를 180마리 물리치자.", "type": "kill", "target": "sky", "count": 180, "gold": 160000, "gems": 700},
+	{"title": "천공의 탑", "desc": "구름 마을을 지나 천공의 탑 꼭대기에 오르자.", "type": "reach", "target": "sky6", "count": 1, "gold": 100000, "gems": 400},
+	{"title": "하늘을 걷는 힘", "desc": "아무 캐릭터나 레벨 130을 만들자.", "type": "level", "target": "", "count": 130, "gold": 200000, "gems": 800},
+	{"title": "폭풍새 왕", "desc": "탑 꼭대기에서 병든 열매를 쪼아 먹고 미쳐 버린 폭풍새 왕을 쓰러뜨리자. 뿌리로 내려가는 길이 열린다!", "type": "boss", "target": "storm_king", "count": 1, "gold": 250000, "gems": 4000},
+	{"title": "뿌리 갓길", "desc": "버섯 구름섬 남쪽, 줄기 속 뿌리 갓길로 내려가 넝쿨 숲으로 나오자.", "type": "reach", "target": "vine", "count": 1, "gold": 60000, "gems": 300},
+	{"title": "돌아온 고향", "desc": "레몬 마을로 돌아가 촌장에게 큰 나무와 로웰 이야기를 전하자.", "type": "talk", "target": "촌장", "count": 1, "gold": 60000, "gems": 300},
+	# 8장 큰 나무 뿌리(마지막)
+	{"title": "8장: 넝쿨 문 너머", "desc": "넝쿨 숲 북쪽, 봉인이 풀린 넝쿨 문으로 큰 나무 뿌리에 들어가자.", "type": "reach", "target": "root1", "count": 1, "gold": 120000, "gems": 500},
+	{"title": "부모님의 흔적", "desc": "빛나는 뿌리 동굴에서 부모님이 남긴 흔적을 찾자.", "type": "reach", "target": "root2", "count": 1, "gold": 120000, "gems": 500},
+	{"title": "새싹 마을", "desc": "뿌리 속 새싹 마을의 장로에게 십 년 전 이야기를 듣자.", "type": "talk", "target": "새싹 장로", "count": 1, "gold": 150000, "gems": 500},
+	{"title": "뿌리 정화", "desc": "뿌리 속 몬스터를 200마리 물리치자.", "type": "kill", "target": "root", "count": 200, "gold": 300000, "gems": 900},
+	{"title": "뿌리 먹는 벌레왕", "desc": "썩은 물길 너머 벌레 굴에서 봉인을 갉아 먹은 벌레왕을 물리치자.", "type": "boss", "target": "root_worm", "count": 1, "gold": 300000, "gems": 2000},
+	{"title": "뿌리보다 깊게", "desc": "아무 캐릭터나 레벨 140을 만들자.", "type": "level", "target": "", "count": 140, "gold": 250000, "gems": 1000},
+	{"title": "검은 씨앗의 방", "desc": "뿌리 심장 앞을 지나 검은 씨앗의 방에 들어서자.", "type": "reach", "target": "root6", "count": 1, "gold": 300000, "gems": 800},
 	{"title": "한계를 넘어", "desc": "아무 캐릭터나 레벨 150을 만들자.", "type": "level", "target": "", "count": 150, "gold": 400000, "gems": 1500},
-	{"title": "고대 거인의 혼", "desc": "탑 꼭대기 큰 나무를 지키는 고대 거인의 혼을 잠재우고 큰 나무를 되살리자!", "type": "boss", "target": "giant_soul", "count": 1, "gold": 600000, "gems": 5000},
+	{"title": "고대 거인의 혼", "desc": "검은 씨앗에 먹혀 뿌리 심장을 붙든 고대 거인의 혼을 잠재우고 큰 나무를 되살리자!", "type": "boss", "target": "giant_soul", "count": 1, "gold": 600000, "gems": 5000},
+	{"title": "집으로", "desc": "레몬 마을로 돌아가 촌장에게 큰 나무가 되살아난 이야기를 전하자.", "type": "talk", "target": "촌장", "count": 1, "gold": 100000, "gems": 1000},
 ]
 
 const DAILY: Array[Dictionary] = [
@@ -115,7 +118,9 @@ const DAILY: Array[Dictionary] = [
 	{"id": "levelup", "title": "레벨 1번 올리기", "type": "levelup", "target": "", "count": 1, "gold": 300, "gems": 0},
 	{"id": "gold", "title": "골드 1,000 모으기", "type": "gold", "target": "", "count": 1000, "gold": 0, "gems": 20},
 ]
-const DAILY_BONUS_GEMS := 50
+const DAILY_BONUS_GEMS := 30
+const REWARD_GOLD := 0.5  # 퀘스트 골드 배율
+const REWARD_GEMS := 0.4  # 퀘스트 보석 배율
 const DUNGEON_PER_DAY := 3
 
 
@@ -361,10 +366,11 @@ func _max_level() -> int:
 
 
 func _reward(q: Dictionary) -> void:
+	# 보상 조정(2026-11-13): 퀘스트 골드 절반, 보석 40%
 	if int(q.get("gold", 0)) > 0:
-		Save.add_gold(int(q["gold"]))
+		Save.add_gold(roundi(int(q["gold"]) * REWARD_GOLD))
 	if int(q.get("gems", 0)) > 0:
-		Save.add_gems(int(q["gems"]))
+		Save.add_gems(maxi(1, roundi(int(q["gems"]) * REWARD_GEMS)))
 	Game.sfx(&"pickup", 0.0, 0.0)
 
 

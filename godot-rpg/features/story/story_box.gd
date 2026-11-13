@@ -32,6 +32,17 @@ static func play(host: Node, key: String) -> bool:
 	return true
 
 
+## 대사 묶음을 바로 띄운다(본 적 있어도). 마을 사람에게 말 걸 때 쓴다. lines: [[이름, 말], …]
+static func show_lines(host: Node, talk: Array) -> bool:
+	if talk.is_empty() or host == null or not host.is_inside_tree() or host.get_tree().paused:
+		return false
+	var box := StoryBox.new()
+	box.lines = talk
+	var hud := host.get_tree().get_first_node_in_group(&"hud")
+	(hud if hud else host.get_tree().current_scene).add_child(box)
+	return true
+
+
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP

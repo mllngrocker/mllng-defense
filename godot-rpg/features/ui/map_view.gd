@@ -12,6 +12,7 @@ const CELL := 6  # 타일 1칸을 지도에서 몇 픽셀로
 const REGIONS: Array[Dictionary] = [
 	{"id": "village", "name": "레몬 마을", "pos": Vector2(0.38, 0.60), "color": Color("7ccf5a"), "info": "모험의 시작 · 몬스터 없음", "mobs": "촌장 · 상인 · 농부 · 수도승 · 사냥꾼", "boss": "", "boss_name": "", "lock": "", "lock_name": ""},
 	{"id": "field", "name": "초록 초원", "pos": Vector2(0.47, 0.65), "color": Color("6fd34f"), "info": "1장 · 추천 Lv.1~5", "mobs": "슬라임 · 버섯 · 박쥐", "boss": "", "boss_name": "", "lock": "", "lock_name": ""},
+	{"id": "vine", "name": "넝쿨 숲", "pos": Vector2(0.55, 0.49), "color": Color("3f9a3a"), "info": "초원 북쪽의 수수께끼 숲 · 몬스터 없음 · 넝쿨 문 너머는 8장 큰 나무 뿌리", "mobs": "없음", "boss": "", "boss_name": "", "lock": "", "lock_name": ""},
 	{"id": "hill", "name": "꽃바람 언덕", "pos": Vector2(0.50, 0.55), "color": Color("6fd34f"), "info": "1장 · 추천 Lv.4~8", "mobs": "버섯 · 박쥐 · 슬라임 · 유령", "boss": "", "boss_name": "", "lock": "", "lock_name": ""},
 	{"id": "forest", "name": "어스름 숲", "pos": Vector2(0.60, 0.57), "color": Color("6fd34f"), "info": "1장 · 추천 Lv.7~10", "mobs": "유령 · 해골 · 박쥐 · 버섯", "boss": "king_slime", "boss_name": "킹 슬라임", "lock": "", "lock_name": ""},
 	{"id": "desert", "name": "타오르는 사막", "pos": Vector2(0.76, 0.59), "color": Color("f2b05e"), "info": "1장 · 추천 Lv.10~13", "mobs": "뱀 · 도마뱀 · 두더지", "boss": "", "boss_name": "", "lock": "king_slime", "lock_name": "킹 슬라임"},
@@ -42,30 +43,30 @@ const REGIONS: Array[Dictionary] = [
 	{"id": "lava4", "name": "마그마 호수", "pos": Vector2(0.79, 0.84), "color": Color("ff8a2a"), "info": "6장 · 추천 Lv.96~99", "mobs": "티라노 · 불꽃", "boss": "", "boss_name": "", "lock": "black_gardener", "lock_name": "검은 정원사"},
 	{"id": "lava5", "name": "화산 기슭", "pos": Vector2(0.72, 0.83), "color": Color("ff8a2a"), "info": "6장 · 추천 Lv.97~100", "mobs": "회색 티라노 · 노란 용", "boss": "", "boss_name": "", "lock": "black_gardener", "lock_name": "검은 정원사"},
 	{"id": "lava6", "name": "화염룡의 둥지", "pos": Vector2(0.84, 0.90), "color": Color("ff8a2a"), "info": "6장 · 추천 Lv.100", "mobs": "용 · 푸른 불꽃", "boss": "flame_dragon", "boss_name": "화염룡 이그니스", "lock": "black_gardener", "lock_name": "검은 정원사"},
-	{"id": "hell1", "name": "지옥문", "pos": Vector2(0.65, 0.86), "color": Color("e0404f"), "info": "6장 · 추천 Lv.100~105", "mobs": "붉은 등불 · 마안", "boss": "", "boss_name": "", "lock": "flame_dragon", "lock_name": "화염룡 이그니스"},
+	{"id": "hell1", "name": "마계의 문", "pos": Vector2(0.65, 0.86), "color": Color("e0404f"), "info": "6장 · 추천 Lv.100~105", "mobs": "붉은 등불 · 마안", "boss": "", "boss_name": "", "lock": "flame_dragon", "lock_name": "화염룡 이그니스"},
 	{"id": "hell2", "name": "비명의 회랑", "pos": Vector2(0.60, 0.88), "color": Color("e0404f"), "info": "6장 · 추천 Lv.103~107", "mobs": "붉은 등불 · 마안", "boss": "", "boss_name": "", "lock": "flame_dragon", "lock_name": "화염룡 이그니스"},
 	{"id": "hell3", "name": "뼈의 들판", "pos": Vector2(0.66, 0.91), "color": Color("e0404f"), "info": "6장 · 추천 Lv.106~110", "mobs": "회색 티라노 · 붉은 등불", "boss": "", "boss_name": "", "lock": "flame_dragon", "lock_name": "화염룡 이그니스"},
 	{"id": "hell4", "name": "핏빛 호수", "pos": Vector2(0.58, 0.93), "color": Color("e0404f"), "info": "6장 · 추천 Lv.109~113", "mobs": "마안 · 용", "boss": "", "boss_name": "", "lock": "flame_dragon", "lock_name": "화염룡 이그니스"},
 	{"id": "hell5", "name": "타락한 성채", "pos": Vector2(0.69, 0.90), "color": Color("e0404f"), "info": "6장 · 추천 Lv.112~115", "mobs": "마안 · 붉은 등불", "boss": "", "boss_name": "", "lock": "flame_dragon", "lock_name": "화염룡 이그니스"},
 	{"id": "hell6", "name": "마왕의 옥좌", "pos": Vector2(0.63, 0.96), "color": Color("e0404f"), "info": "6장 끝 · 추천 Lv.115", "mobs": "마안 · 용", "boss": "demon_lord", "boss_name": "마왕 아자젤", "lock": "flame_dragon", "lock_name": "화염룡 이그니스"},
-	{"id": "sky1", "name": "버섯 구름섬", "pos": Vector2(0.74, 0.23), "color": Color("f4f6ff"), "info": "8장 · 추천 Lv.140~143", "mobs": "대나무 · 초록 하트 · 노란 박쥐", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
-	{"id": "sky2", "name": "꽃구름 섬", "pos": Vector2(0.20, 0.23), "color": Color("f4f6ff"), "info": "8장 · 추천 Lv.142~145", "mobs": "노란 대나무 · 황금 너구리 · 노란 박쥐", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
-	{"id": "sky3", "name": "천공의 탑 1층", "pos": Vector2(0.46, 0.25), "color": Color("f4f6ff"), "info": "8장 · 추천 Lv.144~147", "mobs": "하늘 정령 · 황금 너구리", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
-	{"id": "sky4", "name": "천공의 탑 2층", "pos": Vector2(0.50, 0.21), "color": Color("f4f6ff"), "info": "8장 · 추천 Lv.146~148", "mobs": "하늘 정령 · 노란 대나무", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
-	{"id": "sky5", "name": "천공의 탑 3층", "pos": Vector2(0.46, 0.17), "color": Color("f4f6ff"), "info": "8장 · 추천 Lv.148~150", "mobs": "황금 너구리 · 초록 하트", "boss": "", "boss_name": "", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
-	{"id": "sky6", "name": "천공의 탑 꼭대기", "pos": Vector2(0.49, 0.13), "color": Color("f4f6ff"), "info": "마지막 장 · 추천 Lv.150", "mobs": "하늘 정령 · 황금 너구리", "boss": "giant_soul", "boss_name": "고대 거인의 혼", "lock": "root_worm", "lock_name": "뿌리 먹는 벌레왕"},
+	{"id": "sky1", "name": "버섯 구름섬", "pos": Vector2(0.74, 0.23), "color": Color("f4f6ff"), "info": "7장 · 추천 Lv.115~120", "mobs": "대나무 · 초록 하트 · 노란 박쥐", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
+	{"id": "sky2", "name": "꽃구름 섬", "pos": Vector2(0.20, 0.23), "color": Color("f4f6ff"), "info": "7장 · 추천 Lv.118~124", "mobs": "노란 대나무 · 황금 너구리 · 노란 박쥐", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
+	{"id": "sky3", "name": "천공의 탑 1층", "pos": Vector2(0.46, 0.25), "color": Color("f4f6ff"), "info": "7장 · 추천 Lv.122~128", "mobs": "하늘 정령 · 황금 너구리", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
+	{"id": "sky4", "name": "천공의 탑 2층", "pos": Vector2(0.50, 0.21), "color": Color("f4f6ff"), "info": "7장 · 추천 Lv.126~132", "mobs": "하늘 정령 · 노란 대나무", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
+	{"id": "sky5", "name": "천공의 탑 3층", "pos": Vector2(0.46, 0.17), "color": Color("f4f6ff"), "info": "7장 · 추천 Lv.130~138", "mobs": "황금 너구리 · 초록 하트", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
+	{"id": "sky6", "name": "천공의 탑 꼭대기", "pos": Vector2(0.49, 0.13), "color": Color("f4f6ff"), "info": "7장 끝 · 추천 Lv.140", "mobs": "하늘 정령 · 황금 너구리", "boss": "storm_king", "boss_name": "폭풍새 왕", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
 	{"id": "desert_town", "name": "오아시스 마을", "pos": Vector2(0.84, 0.63), "color": Color("ffe9a8"), "info": "사막의 마을 · 몬스터 없음", "mobs": "족장 · 물장수 · 대상 · 무희", "boss": "", "boss_name": "", "lock": "king_slime", "lock_name": "킹 슬라임"},
 	{"id": "snow_town", "name": "눈꽃 마을", "pos": Vector2(0.25, 0.37), "color": Color("ffe9a8"), "info": "설산의 마을 · 몬스터 없음", "mobs": "눈꽃 촌장 · 얼음 낚시꾼 · 약초꾼", "boss": "", "boss_name": "", "lock": "spider_queen", "lock_name": "수정 거미 여왕"},
 	{"id": "temple_town", "name": "물방울 마을", "pos": Vector2(0.04, 0.47), "color": Color("ffe9a8"), "info": "바다 밑 마을 · 몬스터 없음", "mobs": "신전지기 · 물방울 상인 · 늙은 학자", "boss": "", "boss_name": "", "lock": "yeti_king", "lock_name": "설원의 대왕곰"},
-	{"id": "lava_town", "name": "불꽃 대장간 마을", "pos": Vector2(0.80, 0.79), "color": Color("ffe9a8"), "info": "용암 지대의 마을 · 몬스터 없음", "mobs": "대장장이 · 광부 · 견습생", "boss": "", "boss_name": "", "lock": "kraken", "lock_name": "심해의 크라켄"},
+	{"id": "lava_town", "name": "불꽃 대장간 마을", "pos": Vector2(0.80, 0.79), "color": Color("ffe9a8"), "info": "화산 용암 지대의 마을 · 몬스터 없음", "mobs": "대장장이 · 광부 · 견습생", "boss": "", "boss_name": "", "lock": "kraken", "lock_name": "심해의 크라켄"},
 	{"id": "sky_town", "name": "구름 마을", "pos": Vector2(0.86, 0.20), "color": Color("ffe9a8"), "info": "하늘섬의 마을 · 몬스터 없음", "mobs": "구름 장로 · 바람 소녀 · 하늘 파수꾼", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
-	{"id": "root1", "name": "뿌리 내리막길", "pos": Vector2(0.63, 0.47), "color": Color("b58a4a"), "info": "7장 · 추천 Lv.115~120", "mobs": "애벌레 · 흙두더지", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
-	{"id": "root2", "name": "빛나는 뿌리 동굴", "pos": Vector2(0.68, 0.50), "color": Color("b58a4a"), "info": "7장 · 추천 Lv.118~124", "mobs": "푸른 애벌레 · 푸른 버섯", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
-	{"id": "root_town", "name": "새싹 마을", "pos": Vector2(0.64, 0.53), "color": Color("d4f5c8"), "info": "뿌리 속 마을 · 몬스터 없음", "mobs": "새싹 장로 · 약초꾼 · 새싹 아이", "boss": "", "boss_name": "", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
-	{"id": "root3", "name": "썩은 물길", "pos": Vector2(0.69, 0.56), "color": Color("b58a4a"), "info": "7장 · 추천 Lv.122~128", "mobs": "초록 달팽이 · 푸른 버섯", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
-	{"id": "root4", "name": "벌레 굴", "pos": Vector2(0.66, 0.62), "color": Color("b58a4a"), "info": "7장 · 추천 Lv.126~132", "mobs": "애벌레 · 잿빛 야수", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
-	{"id": "root5", "name": "뿌리 심장 앞", "pos": Vector2(0.62, 0.66), "color": Color("b58a4a"), "info": "7장 · 추천 Lv.130~138", "mobs": "잿빛 야수 · 초록 달팽이", "boss": "", "boss_name": "", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
-	{"id": "root6", "name": "검은 씨앗의 방", "pos": Vector2(0.57, 0.63), "color": Color("b58a4a"), "info": "7장 끝 · 추천 Lv.140", "mobs": "잿빛 야수 · 푸른 애벌레", "boss": "root_worm", "boss_name": "뿌리 먹는 벌레왕", "lock": "demon_lord", "lock_name": "마왕 아자젤"},
+	{"id": "root1", "name": "뿌리 내리막길", "pos": Vector2(0.63, 0.47), "color": Color("b58a4a"), "info": "8장 · 추천 Lv.140~143", "mobs": "애벌레 · 흙두더지", "boss": "", "boss_name": "", "lock": "storm_king", "lock_name": "폭풍새 왕"},
+	{"id": "root2", "name": "빛나는 뿌리 동굴", "pos": Vector2(0.68, 0.50), "color": Color("b58a4a"), "info": "8장 · 추천 Lv.142~145", "mobs": "푸른 애벌레 · 푸른 버섯", "boss": "", "boss_name": "", "lock": "storm_king", "lock_name": "폭풍새 왕"},
+	{"id": "root_town", "name": "새싹 마을", "pos": Vector2(0.64, 0.53), "color": Color("d4f5c8"), "info": "뿌리 속 마을 · 몬스터 없음", "mobs": "새싹 장로 · 약초꾼 · 새싹 아이", "boss": "", "boss_name": "", "lock": "storm_king", "lock_name": "폭풍새 왕"},
+	{"id": "root3", "name": "썩은 물길", "pos": Vector2(0.69, 0.56), "color": Color("b58a4a"), "info": "8장 · 추천 Lv.144~147", "mobs": "초록 달팽이 · 푸른 버섯", "boss": "", "boss_name": "", "lock": "storm_king", "lock_name": "폭풍새 왕"},
+	{"id": "root4", "name": "벌레 굴", "pos": Vector2(0.66, 0.62), "color": Color("b58a4a"), "info": "8장 · 추천 Lv.146~148", "mobs": "애벌레 · 잿빛 야수", "boss": "root_worm", "boss_name": "뿌리 먹는 벌레왕", "lock": "storm_king", "lock_name": "폭풍새 왕"},
+	{"id": "root5", "name": "뿌리 심장 앞", "pos": Vector2(0.62, 0.66), "color": Color("b58a4a"), "info": "8장 · 추천 Lv.148~150", "mobs": "잿빛 야수 · 초록 달팽이", "boss": "", "boss_name": "", "lock": "storm_king", "lock_name": "폭풍새 왕"},
+	{"id": "root6", "name": "검은 씨앗의 방", "pos": Vector2(0.57, 0.63), "color": Color("b58a4a"), "info": "마지막 장 · 추천 Lv.150", "mobs": "잿빛 야수 · 푸른 애벌레", "boss": "giant_soul", "boss_name": "고대 거인의 혼", "lock": "storm_king", "lock_name": "폭풍새 왕"},
 	{"id": "garden1", "name": "시든 꽃길", "pos": Vector2(0.94, 0.58), "color": Color("9a5cff"), "info": "5장 · 추천 Lv.80~83", "mobs": "푸른 나방 · 초록 도마뱀", "boss": "", "boss_name": "", "lock": "mist_apostle", "lock_name": "안개의 사도"},
 	{"id": "garden2", "name": "가시덤불 미로", "pos": Vector2(0.91, 0.52), "color": Color("9a5cff"), "info": "5장 · 추천 Lv.82~85", "mobs": "검은 뱀 · 독거미", "boss": "", "boss_name": "", "lock": "mist_apostle", "lock_name": "안개의 사도"},
 	{"id": "garden3", "name": "검은 연못", "pos": Vector2(0.95, 0.46), "color": Color("9a5cff"), "info": "5장 · 추천 Lv.84~87", "mobs": "부엉이 · 푸른 도마뱀", "boss": "", "boss_name": "", "lock": "mist_apostle", "lock_name": "안개의 사도"},
@@ -81,7 +82,7 @@ const REGIONS: Array[Dictionary] = [
 	{"id": "mist6", "name": "별을 삼킨 탑", "pos": Vector2(0.41, 0.81), "color": Color("3fe0c8"), "info": "4장 끝 · 추천 Lv.75~80", "mobs": "유령 등불 · 붉은 뱀", "boss": "mist_apostle", "boss_name": "안개의 사도", "lock": "kraken", "lock_name": "심해의 크라켄"},
 ]
 ## 지도 위 길(이어진 맵 id 쌍)
-const ROUTES := [["village", "field"], ["field", "hill"], ["hill", "forest"], ["forest", "desert"], ["desert", "desert_town"], ["desert_town", "desert2"], ["desert2", "desert3"], ["village", "swamp"], ["swamp", "waterfall"], ["swamp", "beach"], ["swamp", "ruinvillage"], ["ruinvillage", "crystalcave"], ["village", "snowgate"], ["snowgate", "snow1"], ["snow1", "snow_town"], ["snow_town", "snow2"], ["snow2", "snow3"], ["snow3", "snow4"], ["snow4", "snow5"], ["snow5", "snow6"], ["village", "shore"], ["shore", "temple1"], ["temple1", "temple2"], ["temple2", "temple_town"], ["temple_town", "temple3"], ["temple3", "temple4"], ["temple4", "temple5"], ["temple5", "temple6"], ["desert3", "lava1"], ["desert_town", "garden1"], ["forest", "root1"], ["root1", "sky1"], ["lava1", "lava2"], ["lava2", "lava3"], ["lava3", "lava_town"], ["lava_town", "lava4"], ["lava4", "lava5"], ["lava5", "lava6"], ["lava6", "hell1"], ["hell1", "hell2"], ["hell2", "hell3"], ["hell3", "hell4"], ["hell4", "hell5"], ["hell5", "hell6"], ["sky1", "sky2"], ["sky2", "sky_town"], ["sky_town", "sky3"], ["sky3", "sky4"], ["sky4", "sky5"], ["sky5", "sky6"], ["root1", "root2"], ["root2", "root_town"], ["root_town", "root3"], ["root3", "root4"], ["root4", "root5"], ["root5", "root6"], ["garden1", "garden2"], ["garden2", "garden3"], ["garden3", "garden4"], ["garden4", "garden5"], ["garden5", "garden6"], ["beach", "mist1"], ["mist1", "mist_town"], ["mist_town", "mist2"], ["mist2", "mist3"], ["mist3", "mist4"], ["mist4", "mist5"], ["mist5", "mist6"]]
+const ROUTES := [["village", "field"], ["field", "hill"], ["field", "vine"], ["vine", "root1"], ["hill", "forest"], ["forest", "desert"], ["desert", "desert_town"], ["desert_town", "desert2"], ["desert2", "desert3"], ["village", "swamp"], ["swamp", "waterfall"], ["swamp", "beach"], ["swamp", "ruinvillage"], ["ruinvillage", "crystalcave"], ["village", "snowgate"], ["snowgate", "snow1"], ["snow1", "snow_town"], ["snow_town", "snow2"], ["snow2", "snow3"], ["snow3", "snow4"], ["snow4", "snow5"], ["snow5", "snow6"], ["village", "shore"], ["shore", "temple1"], ["temple1", "temple2"], ["temple2", "temple_town"], ["temple_town", "temple3"], ["temple3", "temple4"], ["temple4", "temple5"], ["temple5", "temple6"], ["desert3", "lava1"], ["desert_town", "garden1"], ["forest", "sky1"], ["root1", "sky1"], ["lava1", "lava2"], ["lava2", "lava3"], ["lava3", "lava_town"], ["lava_town", "lava4"], ["lava4", "lava5"], ["lava5", "lava6"], ["lava6", "hell1"], ["hell1", "hell2"], ["hell2", "hell3"], ["hell3", "hell4"], ["hell4", "hell5"], ["hell5", "hell6"], ["sky1", "sky2"], ["sky2", "sky_town"], ["sky_town", "sky3"], ["sky3", "sky4"], ["sky4", "sky5"], ["sky5", "sky6"], ["root1", "root2"], ["root2", "root_town"], ["root_town", "root3"], ["root3", "root4"], ["root4", "root5"], ["root5", "root6"], ["garden1", "garden2"], ["garden2", "garden3"], ["garden3", "garden4"], ["garden4", "garden5"], ["garden5", "garden6"], ["beach", "mist1"], ["mist1", "mist_town"], ["mist_town", "mist2"], ["mist2", "mist3"], ["mist3", "mist4"], ["mist4", "mist5"], ["mist5", "mist6"]]
 const WORLD_MAP := preload("res://assets/ui/world_map_art.png")  # 사용자가 준 월드 지도 그림
 
 var world: Node2D
@@ -134,6 +135,13 @@ func _gui_input(e: InputEvent) -> void:
 		tab = 0
 	elif _tab_rect(1).has_point(p):
 		tab = 1
+	elif tab == 1 and _go_rect().has_point(p):
+		var why := Travel.go_to(get_tree(), sel)  # 고른 곳으로 길찾기
+		if why == "":
+			Events.notice.emit("길찾기", "%s(으)로 가는 중 · 조이스틱을 움직이면 멈춰요" % _region_name(sel))
+			close()
+		else:
+			Events.notice.emit("길찾기", why)
 	elif tab == 1:
 		var dst := _world_dst(_body_rect())
 		# 가장 가까운 동그라미(손가락 크기쯤 안)
@@ -149,12 +157,25 @@ func _gui_input(e: InputEvent) -> void:
 			Game.sfx(&"pickup", -10.0, 0.0)
 
 
+## 월드 지도 정보 카드 오른쪽 아래 "길찾기" 버튼 자리
+func _go_rect() -> Rect2:
+	var body := _body_rect()
+	return Rect2(Vector2(body.end.x - 118, body.end.y - 46), Vector2(106, 36))
+
+
+func _region_name(id: String) -> String:
+	for reg: Dictionary in REGIONS:
+		if reg["id"] == id:
+			return reg["name"]
+	return id
+
+
 # ── 지도 그림 만들기 ──
 
 ## 땅 타일마다 그 타일 그림 가운데 색을 칸 하나로 칠하고, 나무·바위·집을 점으로 얹는다
 func _build_texture() -> void:
 	var ground := world.get_node(^"Ground") as TileMapLayer
-	var used := ground.get_used_rect()
+	var used: Rect2i = world.call(&"_map_rect") if world.has_method(&"_map_rect") else ground.get_used_rect()
 	map_cells = used.size
 	var img := Image.create(used.size.x * CELL, used.size.y * CELL, false, Image.FORMAT_RGBA8)
 	for y in used.size.y:
@@ -405,4 +426,8 @@ func _draw_world(body: Rect2) -> void:
 		var tag := Rect2(Vector2(r.end.x - 104, r.position.y + 10), Vector2(92, 24))
 		Gt.tag(self, tag, Gt.PINK)
 		Gt.text(self, Vector2(tag.get_center().x, tag.position.y + 17), "현재 위치", 12, Color.WHITE, 1)
-	Gt.text(self, Vector2(r.get_center().x, r.end.y - 8), "지도의 동그라미를 누르면 이름과 정보가 나와요", 11, Gt.NAVY_SOFT, 1, false)
+	Gt.text(self, Vector2(r.position.x + 14, r.end.y - 8), "동그라미를 눌러 고르고 → 길찾기", 11, Gt.NAVY_SOFT, 0, false)
+	if reg["id"] != here:
+		var g := _go_rect()
+		Gt.pbox(self, g, Gt.YELLOW if not locked else Color("b8b0c8"), Gt.INK, 2, true, true)
+		Gt.text(self, Vector2(g.get_center().x, g.position.y + 24), "▶ 길찾기", 15, Color.WHITE if not locked else Gt.GRAY, 1, true, 3, Gt.INK)

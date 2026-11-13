@@ -21,8 +21,7 @@ const DATA := {
 		],
 		"mobs": [
 			"octopus",
-			"racoon",
-			"kappa"
+			"beach_slime"
 		],
 		"npcs": [],
 		"scene": "res://features/world/beach.tscn"
@@ -40,8 +39,7 @@ const DATA := {
 			"spider_queen",
 			"wing_eye",
 			"spider",
-			"bluebat",
-			"mole"
+			"bluebat"
 		],
 		"npcs": [],
 		"scene": "res://features/world/crystalcave.tscn"
@@ -85,9 +83,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"lizard",
-			"mole",
 			"eye",
+			"sand_spider",
 			"cyclope"
 		],
 		"npcs": [],
@@ -110,10 +107,9 @@ const DATA := {
 		],
 		"mobs": [
 			"cyclope_king",
-			"eye",
-			"cyclope",
-			"skull",
-			"spirit"
+			"sand_skull",
+			"ruin_ghost",
+			"curse_eye"
 		],
 		"npcs": [],
 		"scene": "res://features/world/desert3.tscn"
@@ -161,12 +157,18 @@ const DATA := {
 				"to": "hill",
 				"x": 872.0,
 				"y": 272.0
+			},
+			{
+				"boss": "",
+				"to": "vine",
+				"x": 496.0,
+				"y": 24.0
 			}
 		],
 		"mobs": [
+			"rabbit",
 			"slime",
-			"mushroom",
-			"bat"
+			"butterfly"
 		],
 		"npcs": [],
 		"scene": "res://features/world/world.tscn"
@@ -187,7 +189,7 @@ const DATA := {
 			},
 			{
 				"boss": "demon_lord",
-				"to": "root1",
+				"to": "sky1",
 				"x": 304.0,
 				"y": 24.0
 			}
@@ -195,9 +197,8 @@ const DATA := {
 		"mobs": [
 			"king_slime",
 			"spirit",
-			"skull",
-			"bat",
-			"mushroom"
+			"goblin",
+			"forest_bat"
 		],
 		"npcs": [],
 		"scene": "res://features/world/forest.tscn"
@@ -219,8 +220,7 @@ const DATA := {
 		],
 		"mobs": [
 			"grass_zombie",
-			"garden_moth",
-			"garden_lizard"
+			"garden_moth"
 		],
 		"npcs": [],
 		"scene": "res://features/world/garden1.tscn"
@@ -263,8 +263,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"garden_owl",
-			"garden_lizard2"
+			"garden_lizard2",
+			"garden_owl"
 		],
 		"npcs": [],
 		"scene": "res://features/world/garden3.tscn"
@@ -286,8 +286,7 @@ const DATA := {
 		],
 		"mobs": [
 			"garden_owl2",
-			"garden_beast",
-			"garden_moth"
+			"garden_lizard"
 		],
 		"npcs": [],
 		"scene": "res://features/world/garden4.tscn"
@@ -309,8 +308,7 @@ const DATA := {
 		],
 		"mobs": [
 			"garden_beast",
-			"garden_spider",
-			"garden_owl"
+			"rose_witch"
 		],
 		"npcs": [],
 		"scene": "res://features/world/garden5.tscn"
@@ -326,8 +324,8 @@ const DATA := {
 		],
 		"mobs": [
 			"black_gardener",
-			"garden_owl2",
-			"garden_snake"
+			"thorn_fiend",
+			"dark_zombie"
 		],
 		"npcs": [],
 		"scene": "res://features/world/garden6.tscn"
@@ -349,8 +347,7 @@ const DATA := {
 		],
 		"mobs": [
 			"spike_fiend",
-			"lantern_red",
-			"demon_eye"
+			"lantern_red"
 		],
 		"npcs": [],
 		"scene": "res://features/world/hell1.tscn"
@@ -371,8 +368,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"lantern_red",
-			"demon_eye"
+			"demon_eye",
+			"scream_ghost"
 		],
 		"npcs": [],
 		"scene": "res://features/world/hell2.tscn"
@@ -394,8 +391,7 @@ const DATA := {
 		],
 		"mobs": [
 			"skel_knight",
-			"grey_trex",
-			"lantern_red"
+			"bone_ogre"
 		],
 		"npcs": [],
 		"scene": "res://features/world/hell3.tscn"
@@ -417,8 +413,7 @@ const DATA := {
 		],
 		"mobs": [
 			"red_armor",
-			"demon_eye",
-			"dragon"
+			"blood_octo"
 		],
 		"npcs": [],
 		"scene": "res://features/world/hell4.tscn"
@@ -440,8 +435,7 @@ const DATA := {
 		],
 		"mobs": [
 			"pink_witch",
-			"demon_eye",
-			"lantern_red"
+			"gargoyle"
 		],
 		"npcs": [],
 		"scene": "res://features/world/hell5.tscn"
@@ -457,8 +451,8 @@ const DATA := {
 		],
 		"mobs": [
 			"demon_lord",
-			"demon_eye",
-			"dragon"
+			"demon_drake",
+			"throne_eye"
 		],
 		"npcs": [],
 		"scene": "res://features/world/hell6.tscn"
@@ -479,10 +473,9 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"horn_rabbit",
 			"mushroom",
-			"bat",
-			"slime",
-			"spirit"
+			"bat"
 		],
 		"npcs": [],
 		"scene": "res://features/world/hill.tscn"
@@ -504,7 +497,6 @@ const DATA := {
 		],
 		"mobs": [
 			"crest_lizard",
-			"flam",
 			"heart_red"
 		],
 		"npcs": [],
@@ -527,7 +519,7 @@ const DATA := {
 		],
 		"mobs": [
 			"flam",
-			"flam2"
+			"lava_slime"
 		],
 		"npcs": [],
 		"scene": "res://features/world/lava2.tscn"
@@ -548,8 +540,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"dragon_y",
-			"flam2"
+			"flam2",
+			"dragon_y"
 		],
 		"npcs": [],
 		"scene": "res://features/world/lava3.tscn"
@@ -571,7 +563,7 @@ const DATA := {
 		],
 		"mobs": [
 			"trex",
-			"flam"
+			"magma_octo"
 		],
 		"npcs": [],
 		"scene": "res://features/world/lava4.tscn"
@@ -593,8 +585,7 @@ const DATA := {
 		],
 		"mobs": [
 			"dragon_man",
-			"grey_trex",
-			"dragon_y"
+			"grey_trex"
 		],
 		"npcs": [],
 		"scene": "res://features/world/lava5.tscn"
@@ -617,7 +608,7 @@ const DATA := {
 		"mobs": [
 			"flame_dragon",
 			"dragon",
-			"flam2"
+			"fire_bat"
 		],
 		"npcs": [],
 		"scene": "res://features/world/lava6.tscn"
@@ -684,7 +675,7 @@ const DATA := {
 		],
 		"mobs": [
 			"mist_skull",
-			"mist_octo"
+			"wreck_knight"
 		],
 		"npcs": [],
 		"scene": "res://features/world/mist2.tscn"
@@ -706,7 +697,7 @@ const DATA := {
 		],
 		"mobs": [
 			"mist_slime",
-			"mist_fish"
+			"coral_octo"
 		],
 		"npcs": [],
 		"scene": "res://features/world/mist3.tscn"
@@ -728,8 +719,7 @@ const DATA := {
 		],
 		"mobs": [
 			"shade",
-			"mist_lantern",
-			"mist_wisp"
+			"mist_lantern"
 		],
 		"npcs": [],
 		"scene": "res://features/world/mist4.tscn"
@@ -750,9 +740,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"mist_snake",
 			"mist_wisp",
-			"mist_skull"
+			"mist_snake"
 		],
 		"npcs": [],
 		"scene": "res://features/world/mist5.tscn"
@@ -768,8 +757,8 @@ const DATA := {
 		],
 		"mobs": [
 			"mist_apostle",
-			"mist_lantern",
-			"mist_snake"
+			"tower_guard",
+			"star_wisp"
 		],
 		"npcs": [],
 		"scene": "res://features/world/mist6.tscn"
@@ -806,7 +795,7 @@ const DATA := {
 				"y": 304.0
 			},
 			{
-				"boss": "root_worm",
+				"boss": "",
 				"to": "sky1",
 				"x": 416.0,
 				"y": 24.0
@@ -816,10 +805,15 @@ const DATA := {
 				"to": "root2",
 				"x": 776.0,
 				"y": 304.0
+			},
+			{
+				"boss": "",
+				"to": "vine",
+				"x": 416.0,
+				"y": 592.0
 			}
 		],
 		"mobs": [
-			"horn_beast",
 			"root_larva",
 			"root_mole"
 		],
@@ -842,9 +836,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"root_ogre",
-			"root_larva_b",
-			"root_shroom"
+			"root_shroom",
+			"root_larva_b"
 		],
 		"npcs": [],
 		"scene": "res://features/world/root2.tscn"
@@ -866,8 +859,7 @@ const DATA := {
 		],
 		"mobs": [
 			"root_zombie",
-			"root_mollusc",
-			"root_shroom"
+			"root_mollusc"
 		],
 		"npcs": [],
 		"scene": "res://features/world/root3.tscn"
@@ -888,10 +880,9 @@ const DATA := {
 			}
 		],
 		"mobs": [
+			"root_worm",
 			"horn_beast",
-			"root_larva",
-			"root_larva_b",
-			"root_beast"
+			"burrow_spider"
 		],
 		"npcs": [],
 		"scene": "res://features/world/root4.tscn"
@@ -912,10 +903,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"horn_beast",
 			"root_ogre",
-			"root_beast",
-			"root_mollusc"
+			"root_beast"
 		],
 		"npcs": [],
 		"scene": "res://features/world/root5.tscn"
@@ -930,11 +919,9 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"root_worm",
-			"horn_beast",
-			"root_zombie",
-			"root_beast",
-			"root_larva_b"
+			"giant_soul",
+			"seed_fiend",
+			"seed_guard"
 		],
 		"npcs": [],
 		"scene": "res://features/world/root6.tscn"
@@ -979,11 +966,9 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"goblin",
-			"lantern",
 			"rat",
-			"skull",
-			"spirit"
+			"lantern",
+			"skull"
 		],
 		"npcs": [],
 		"scene": "res://features/world/ruinvillage.tscn"
@@ -1013,9 +998,15 @@ const DATA := {
 		"doors": [
 			{
 				"boss": "",
-				"to": "root1",
+				"to": "forest",
 				"x": 24.0,
 				"y": 320.0
+			},
+			{
+				"boss": "storm_king",
+				"to": "root1",
+				"x": 416.0,
+				"y": 624.0
 			},
 			{
 				"boss": "",
@@ -1027,8 +1018,7 @@ const DATA := {
 		"mobs": [
 			"war_rooster",
 			"bamboo",
-			"heart_green",
-			"sky_bat"
+			"heart_green"
 		],
 		"npcs": [],
 		"scene": "res://features/world/sky1.tscn"
@@ -1051,8 +1041,7 @@ const DATA := {
 		"mobs": [
 			"bird_man",
 			"bamboo_y",
-			"gold_racoon",
-			"sky_bat"
+			"gold_racoon"
 		],
 		"npcs": [],
 		"scene": "res://features/world/sky2.tscn"
@@ -1073,10 +1062,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"war_rooster",
-			"sky_knight",
 			"sky_spirit",
-			"gold_racoon"
+			"sky_bat"
 		],
 		"npcs": [],
 		"scene": "res://features/world/sky3.tscn"
@@ -1097,11 +1084,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"bird_man",
-			"sky_drake",
 			"sky_knight",
-			"sky_spirit",
-			"bamboo_y"
+			"sky_skeleton"
 		],
 		"npcs": [],
 		"scene": "res://features/world/sky4.tscn"
@@ -1122,11 +1106,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"bird_man",
-			"sky_fiend",
 			"sky_drake",
-			"gold_racoon",
-			"heart_green"
+			"storm_birdman"
 		],
 		"npcs": [],
 		"scene": "res://features/world/sky5.tscn"
@@ -1141,11 +1122,9 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"giant_soul",
+			"storm_king",
 			"sky_fiend",
-			"sky_knight",
-			"sky_spirit",
-			"gold_racoon"
+			"star_gargoyle"
 		],
 		"npcs": [],
 		"scene": "res://features/world/sky6.tscn"
@@ -1190,8 +1169,7 @@ const DATA := {
 		],
 		"mobs": [
 			"snow_mouse",
-			"panda",
-			"snow_bat"
+			"panda"
 		],
 		"npcs": [],
 		"scene": "res://features/world/snow1.tscn"
@@ -1212,9 +1190,9 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"snow_mouse",
 			"ice_skull",
-			"snow_bat"
+			"ice_octopus",
+			"lake_mouse"
 		],
 		"npcs": [],
 		"scene": "res://features/world/snow2.tscn"
@@ -1235,9 +1213,8 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"bear",
 			"frost_spirit",
-			"ice_skull"
+			"blue_beast"
 		],
 		"npcs": [],
 		"scene": "res://features/world/snow3.tscn"
@@ -1258,10 +1235,9 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"blue_beast",
 			"bear",
-			"panda",
-			"frost_spirit"
+			"frost_shroom",
+			"frost_goblin"
 		],
 		"npcs": [],
 		"scene": "res://features/world/snow4.tscn"
@@ -1282,9 +1258,9 @@ const DATA := {
 			}
 		],
 		"mobs": [
-			"ice_skull",
-			"frost_spirit",
-			"snow_bat"
+			"snow_bat",
+			"glacier_spider",
+			"ice_eye"
 		],
 		"npcs": [],
 		"scene": "res://features/world/snow5.tscn"
@@ -1300,8 +1276,8 @@ const DATA := {
 		],
 		"mobs": [
 			"yeti_king",
-			"bear",
-			"panda"
+			"snow_ogre",
+			"white_bear"
 		],
 		"npcs": [],
 		"scene": "res://features/world/snow6.tscn"
@@ -1380,8 +1356,7 @@ const DATA := {
 		"mobs": [
 			"poison_shroom",
 			"kappa",
-			"slime",
-			"lantern"
+			"swamp_slime"
 		],
 		"npcs": [],
 		"scene": "res://features/world/swamp.tscn"
@@ -1425,7 +1400,7 @@ const DATA := {
 		],
 		"mobs": [
 			"green_octopus",
-			"blue_axolot"
+			"drop_slime"
 		],
 		"npcs": [],
 		"scene": "res://features/world/temple2.tscn"
@@ -1447,7 +1422,7 @@ const DATA := {
 		],
 		"mobs": [
 			"kappa_red",
-			"green_octopus"
+			"library_ghost"
 		],
 		"npcs": [],
 		"scene": "res://features/world/temple3.tscn"
@@ -1469,7 +1444,7 @@ const DATA := {
 		],
 		"mobs": [
 			"red_octopus",
-			"jump_fish"
+			"mirror_fish"
 		],
 		"npcs": [],
 		"scene": "res://features/world/temple4.tscn"
@@ -1491,7 +1466,7 @@ const DATA := {
 		],
 		"mobs": [
 			"deep_octopus",
-			"kappa_red"
+			"abyss_eye"
 		],
 		"npcs": [],
 		"scene": "res://features/world/temple5.tscn"
@@ -1507,8 +1482,8 @@ const DATA := {
 		],
 		"mobs": [
 			"kraken",
-			"deep_octopus",
-			"red_octopus"
+			"altar_kappa",
+			"altar_knight"
 		],
 		"npcs": [],
 		"scene": "res://features/world/temple6.tscn"
@@ -1579,6 +1554,25 @@ const DATA := {
 		],
 		"scene": "res://features/world/village.tscn"
 	},
+	"vine": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "field",
+				"x": 320.0,
+				"y": 496.0
+			},
+			{
+				"boss": "storm_king",
+				"to": "root1",
+				"x": 320.0,
+				"y": 24.0
+			}
+		],
+		"mobs": [],
+		"npcs": [],
+		"scene": "res://features/world/vine.tscn"
+	},
 	"waterfall": {
 		"doors": [
 			{
@@ -1591,7 +1585,6 @@ const DATA := {
 		"mobs": [
 			"ogre",
 			"axolot",
-			"butterfly",
 			"racoon"
 		],
 		"npcs": [],

@@ -12,12 +12,14 @@ const LINE_TIME := 3.2
 
 var sprite: Sprite2D
 var near := false
+var big := false  # 사람 모양 큰 그림(말풍선을 더 위에)
 var line_i := 0
 var talk_t := 0.0
 var _t := 0.0
 
 
 func _ready() -> void:
+	add_to_group(&"npcs")
 	collision_layer = 1
 	collision_mask = 0
 	sprite = Sprite2D.new()
@@ -26,6 +28,12 @@ func _ready() -> void:
 	sprite.hframes = 4
 	sprite.vframes = maxi(1, sheet.get_height() / 16) if sheet else 1
 	sprite.offset = Vector2(0, -8)
+	if sheet and sheet.get_width() > 64:
+		# 사람 모양 주민(칸 32×44, 2줄: 서 있기·걸음): 발끝이 자리에 오게
+		big = true
+		sprite.vframes = 2
+		sprite.offset = Vector2(0, -sheet.get_height() / 4.0 + 3.0)
+		sprite.scale = Vector2.ONE * 0.72  # 주인공 캐릭터와 비슷한 키로
 	add_child(sprite)
 	var cs := CollisionShape2D.new()
 	var shape := CircleShape2D.new()
@@ -42,10 +50,10 @@ func _process(delta: float) -> void:
 	var was := near
 	near = p != null and p.global_position.distance_to(global_position) < TALK_RANGE
 	if near and not was:
-		# 이 사람에게 말 거는 메인 퀘스트면 그 퀘스트의 이야기 장면을 먼저 보여 준다
+		# 이 사람에게 말 거는 메인 퀘스트면 바로 대화창을 연다(이야기 장면이 있으면 그것, 없으면 이 사람의 대사)
 		var q := Quests.current()
 		if not q.is_empty() and q["type"] == "talk" and q["target"] == display_name:
-			StoryBox.play(self, "quest_" + String(q["title"]))
+			talk()
 		Quests.track("talk", display_name)
 	if near:
 		var v := p.global_position - global_position
@@ -64,8 +72,21 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
+## 대화창으로 이야기한다(공격 버튼을 가까이서 누르거나, 말 거는 퀘스트의 대상일 때)
+func talk() -> void:
+	var q := Quests.current()
+	if not q.is_empty() and q["type"] == "talk" and q["target"] == display_name:
+		if StoryBox.play(self, "quest_" + String(q["title"])):
+			return
+	var talk_lines: Array = []
+	for l in lines:
+		talk_lines.append([display_name, l])
+	StoryBox.show_lines(self, talk_lines)
+	Quests.track("talk", display_name)
+
+
 func _draw() -> void:
-	draw_set_transform(Vector2(0, -26), 0.0, Vector2.ONE * 0.5)
+	draw_set_transform(Vector2(0, -36 if big else -26), 0.0, Vector2.ONE * 0.5)
 	var q := Quests.current()
 	var wanted: bool = not q.is_empty() and q["type"] == "talk" and q["target"] == display_name and not Quests.main_done()
 	if near and not lines.is_empty():

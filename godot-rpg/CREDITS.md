@@ -21,3 +21,8 @@ git에 올리지 않는 소재(`assets/_zips`, `assets/_raw`, `assets/vendor`)�
 - Willibab「Simple Weapon Icons」(https://willibab.itch.io/willibabs-simple-weapon-icons) — 상업·비상업 무료. `assets/vendor/willibab/`(git 제외) 무기 아이콘 4종
 - 10KStudios「Free Pixel Art Enemy」(https://10kstudios.itch.io/free-pixel-art-enemy) — 상업 OK·수정 OK·재배포 금지. `assets/vendor/monsters/`(git 제외) 그림자 망령
 - BDragon1727「Topdown Monsters Part 1」무료판 (https://bdragon1727.itch.io/topdown-monsters-part-1) — 비상업 무료·수정 OK·재배포 금지(상업화하면 구매 필요). `assets/vendor/monsters/`(git 제외) 몬스터 11종
+- lexlom「32 Character Pack (Villagers)」(https://lexlom.itch.io/32-character-pack-pixel-art-4-direction-idle-walking) — 작가: 퍼블릭 도메인. `assets/villagers/` 마을 주민(마을마다 색)
+- LimeZu「Serene Village Revamped」(https://limezu.itch.io/serenevillagerevamped) — CC BY 4.0, 출처: LimeZu (https://limezu.itch.io/). `assets/towns/` 마을 집
+- SorceressGameLab「Top down RPG tileset」(https://sorceressgamelab.itch.io/top-down-rpg-tileset) — 상업 OK, 출처 선택. `assets/towns/` 사막·눈 마을 집
+- Admurin「FREE: Monster Pack」(https://admurin.itch.io/monster-pack) — 상업 OK, 재배포 금지. `assets/vendor/admurin/`(git 제외) 토끼 2종
+- zneeke「Dark Fantasy Big Boss 1」무료판(https://zneeke.itch.io/dark-fantasy-big-boss-1) — 상업 OK, 재배포 금지. `assets/vendor/monsters/`(git 제외) 검은 정원사

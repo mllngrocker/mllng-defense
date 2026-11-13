@@ -2,7 +2,7 @@ extends Control
 ## 휴대폰 터치 조작: 왼쪽 아래를 누른 채 끌면 조이스틱, 오른쪽 아래 큰 버튼은 공격(꾹 누르기 지원), 작은 버튼은 구르기.
 ## 터치를 입력 동작(move_*, attack, dash)으로 바꿔 준다. PC에서는 마우스 클릭도 터치로 받는다.
 
-const JOY_RADIUS := 62.0
+const JOY_RADIUS := 80.0  # 조이스틱(콘솔) 크게
 const DEAD_ZONE := 0.12
 const FULL_AT := 0.55  # 이만큼만 밀어도 최고 속도
 const ATTACK_R := 66.0
@@ -55,7 +55,7 @@ func _has(node: String) -> bool:
 
 
 func joy_home() -> Vector2:
-	return Vector2(122, size.y - 162)
+	return Vector2(138, size.y - 172)
 
 
 func _input(event: InputEvent) -> void:
@@ -144,10 +144,10 @@ func _draw() -> void:
 		var d := Vector2.from_angle(i * PI / 2.0)
 		var tip := base + d * (JOY_RADIUS - 8.0)
 		draw_colored_polygon(PackedVector2Array([tip, tip - d * 10.0 + d.orthogonal() * 8.0, tip - d * 10.0 - d.orthogonal() * 8.0]), Color(1, 1, 1, alpha * 0.7))
-	draw_circle(knob + Vector2(0, 4), 34.0, Color(Gt.INK, alpha))
-	draw_circle(knob, 34.0, Color(Gt.INK, alpha))
-	draw_circle(knob, 31.0, Color(Gt.CREAM, alpha))
-	draw_circle(knob + Vector2(0, -5), 21.0, Color(1, 1, 1, alpha * 0.6))
+	draw_circle(knob + Vector2(0, 4), 42.0, Color(Gt.INK, alpha))
+	draw_circle(knob, 42.0, Color(Gt.INK, alpha))
+	draw_circle(knob, 38.0, Color(Gt.CREAM, alpha))
+	draw_circle(knob + Vector2(0, -6), 26.0, Color(1, 1, 1, alpha * 0.6))
 	# 공격 버튼(칼 그림)
 	var attack_down := &"attack" in button_touches.values()
 	var ac := attack_center() + (Vector2(0, 3) if attack_down else Vector2.ZERO)

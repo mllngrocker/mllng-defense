@@ -484,9 +484,9 @@ func _paint_backdrop(ci: Control) -> void:
 
 ## 별 등급 → 아우라 색(7성 빨강은 불꽃처럼 살짝 일렁인다)
 func _aura_color(rank: int, phase: float) -> Color:
-	var c: Color = AURA_COLORS.get(mini(rank, 7), Color.WHITE)
+	var c: Color = Gt.rank_color(mini(rank, 7), viewing)
 	if rank >= 7:
-		c = c.lerp(Color("ff7a2a"), 0.15 + 0.15 * sin(t * 3.0 + phase * TAU))
+		c = c.lerp(Color.WHITE, 0.1 + 0.12 * sin(t * 3.0 + phase * TAU))
 	return c
 
 
@@ -543,7 +543,7 @@ func _paint_plate(ci: Control) -> void:
 	var x := 14.0
 	# 별 + 레벨 꼬리표
 	var rank := Save.rank_of(viewing)
-	var sw := Gt.rank_stars(ci, Vector2(x, top + 20), rank, 10, true)
+	var sw := Gt.rank_stars(ci, Vector2(x, top + 20), rank, 10, true, viewing)
 	var lv_tag := Rect2(x + sw + 10, top + 8, 68, 24)
 	Gt.tag(ci, lv_tag, Gt.NAVY if owned else Color("8e88a0"))
 	Gt.text(ci, Vector2(lv_tag.get_center().x, lv_tag.position.y + 17), "Lv.%d" % Save.level_of(viewing) if owned else "미보유", 14, Color.WHITE, 1)

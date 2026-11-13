@@ -6,6 +6,7 @@ const LIFETIME := 25.0
 
 var item_id: StringName
 var gear_id: StringName  # 비어 있지 않으면 장비
+var weapon_id: StringName  # 비어 있지 않으면 무기
 var _t := 0.0
 var _y := -16.0
 
@@ -20,6 +21,13 @@ static func spawn(parent: Node, id: StringName, pos: Vector2) -> void:
 static func spawn_gear(parent: Node, id: StringName, pos: Vector2) -> void:
 	var p := ItemPickup.new()
 	p.gear_id = id
+	p.position = pos
+	parent.add_child(p)
+
+
+static func spawn_weapon(parent: Node, id: StringName, pos: Vector2) -> void:
+	var p := ItemPickup.new()
+	p.weapon_id = id
 	p.position = pos
 	parent.add_child(p)
 
@@ -52,6 +60,11 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	var c := Vector2(0, _y + sin(_t * 3.0) * 1.5)
 	draw_circle(Vector2(0, -1), 5.0, Color(0, 0, 0, 0.25))
+	if weapon_id != &"":
+		var wc: Color = Gt.RARITY[Weapons.rarity_of(weapon_id)]
+		draw_circle(c, 11.0 + sin(_t * 4.0) * 1.5, Color(wc, 0.45))
+		Weapons.draw_icon(self, weapon_id, c, 14.0)
+		return
 	if gear_id != &"":
 		var gc := Gear.color_of(gear_id)
 		draw_circle(c, 10.0 + sin(_t * 4.0) * 1.5, Color(gc, 0.45))  # 등급색 빛
@@ -64,7 +77,19 @@ func _draw() -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if body is Player and body.hp > 0 and gear_id != &"":
+	if body is Player and body.hp > 0 and weapon_id != &"":
+		var res := Save.grant_weapon(weapon_id)
+		var r := Weapons.rarity_of(weapon_id)
+		if res == "max":
+			Save.add_gold(500 * r * r)
+		Game.sfx(&"charged", -3.0, 0.0)
+		var tail := {"new": "", "refine": " 재련 +%d" % Save.refine_of(weapon_id), "max": " → 골드"}
+		_float_text(body, "[%d성] %s%s" % [r, Weapons.name_of(weapon_id), tail[res]], (Gt.RARITY[r] as Color).lightened(0.35))
+		if res == "new":
+			Events.notice.emit("%d성 무기 획득!" % r, "%s · 로비 아바타의 무기 칸에서 장착하세요" % Weapons.name_of(weapon_id))
+		Save.save_game()
+		queue_free()
+	elif body is Player and body.hp > 0 and gear_id != &"":
 		var res := Save.give_gear(gear_id)
 		Game.sfx(&"charged" if Gear.grade_of(gear_id) >= 3 else &"pickup", -3.0, 0.0)
 		var tail := {"new": "", "up": " 재련 +%d" % Save.gear_refine(gear_id), "max": " → 골드"}

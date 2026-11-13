@@ -92,6 +92,20 @@ static func start(tree: SceneTree) -> String:
 	return ""
 
 
+## 월드 지도에서 고른 맵으로 출발(성공하면 "", 못 가면 이유)
+static func go_to(tree: SceneTree, map_id: String) -> String:
+	var world := tree.get_first_node_in_group(&"world")
+	if world == null:
+		return "모험 중에만 쓸 수 있어요"
+	var here := String(world.call(&"map_id"))
+	if here == map_id:
+		return "여기가 그곳이에요"
+	if route(here, map_id).is_empty():
+		return "길이 아직 막혀 있어요 · 앞 장 보스를 먼저 물리쳐요"
+	Game.travel = {"goal": map_id, "kind": "reach", "target": map_id}
+	return ""
+
+
 static func stop(note := "") -> void:
 	Game.travel = {}
 	if note != "":
