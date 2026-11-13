@@ -12,7 +12,7 @@ func _reset() -> void:
 	Save.owned = {}
 	for id in Save.STARTERS:
 		Save.owned[String(id)] = {"level": 1, "stars": 0}
-	Save.gems = 500
+	Save.gems = 5000
 	Save.gold = 0
 	Save.pity = 0
 	Save.pity_w = 0
@@ -23,8 +23,8 @@ func _reset() -> void:
 func _ready() -> void:
 	rng.seed = 12345
 	_reset()
-	_check("보석 50개 차감", Save.spend_gems(Gacha.COST_ONE) and Save.gems == 450)
-	_check("보석이 모자라면 실패", not Save.spend_gems(9999) and Save.gems == 450)
+	_check("보석 %d개 차감" % Gacha.COST_ONE, Save.spend_gems(Gacha.COST_ONE) and Save.gems == 5000 - Gacha.COST_ONE)
+	_check("보석이 모자라면 실패", not Save.spend_gems(99999) and Save.gems == 5000 - Gacha.COST_ONE)
 	var one := Gacha.pull(1, rng)
 	_check("1회 뽑기 결과 1개", one.size() == 1)
 
@@ -69,6 +69,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	menu._switch_tab("상점")
 	_check("상점 탭으로 바뀜", menu.shop_page.visible and not menu.avatar_page.visible)
+	Save.gems = Gacha.COST_TEN + 50
 	menu.shop_page._on_pull(10, Gacha.COST_TEN)
 	await get_tree().process_frame
 	var overlay := menu.get_children().filter(func(n: Node) -> bool: return n is GachaResult)

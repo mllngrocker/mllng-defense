@@ -4,8 +4,8 @@ extends RefCounted
 ## ★5가 100번 안 나오면 100번째에 확정(천장). 같은 캐릭터면 별 +1, 별이 다 찼으면 골드로 바꿔 준다.
 ## 무기 뽑기(pull_weapons)도 확률·확정·천장 규칙은 같고 천장은 따로 센다(Save.pity_w). 같은 무기면 재련 +1.
 
-const COST_ONE := 50
-const COST_TEN := 450
+const COST_ONE := 300
+const COST_TEN := 2700
 const RATE_5 := 0.01
 const RATE_4 := 0.09
 const PITY_5 := 100

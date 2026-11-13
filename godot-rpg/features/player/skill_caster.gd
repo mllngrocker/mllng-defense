@@ -627,7 +627,7 @@ func _gale_charge() -> void:
 
 ## 벨라: 칠흑의 날개 — 날개를 펼쳐(무적) 어둠 구슬 8개가 나선으로 퍼진 뒤 한가운데서 터진다
 func _dark_wings() -> void:
-	player.lock_for_skill(1.1, Vector2.ZERO, true)
+	# 움직이면서 쓴다(몸을 붙잡지 않음). 마지막 폭발은 그때 서 있는 자리에서
 	var c := player.body_center()
 	fx(AURA, 5, c + Vector2(0, 4), 12.0, 1.8, Color(0.75, 0.2, 0.35))
 	fx(CLAW, 4, c + Vector2(-14, -6), 14.0, 1.6, Color(0.5, 0.1, 0.2), -0.5)

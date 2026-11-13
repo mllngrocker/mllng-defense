@@ -5,7 +5,14 @@ extends Control
 signal toast_requested(text: String)
 signal pulled  # 뽑기 연출이 끝나면(로비가 카드·보석을 새로 그리도록)
 
-const FEATURED: Array[StringName] = [&"maid1", &"fairy1", &"maid4"]
+const FEATURED: Array[StringName] = [&"scarlet", &"devil2", &"elf4"]  # ★5 셋(돌아가며 가운데에 선다)
+const ROTATE := 4.0  # 가운데가 바뀌는 간격(초)
+## 가운데 캐릭터별 배너 색: [위, 아래, 빛]
+const HERO_TINT := {
+	&"scarlet": [Color("1e0509"), Color("5e1220"), Color("ff8a8a")],
+	&"devil2": [Color("12061c"), Color("44104e"), Color("e08aff")],
+	&"elf4": [Color("04140e"), Color("17442c"), Color("9affc4")],
+}
 const FEATURED_WEAPONS: Array[StringName] = [&"flame_fang", &"holy_sword", &"fairy_wand"]
 const MODES: Array = [["char", "캐릭터 소환"], ["weapon", "무기 소환"]]
 const RARITY_COLORS := Gt.RARITY
@@ -114,52 +121,135 @@ func _on_pull(count: int, cost: int) -> void:
 
 # ── 그리기 ──
 
-## 캐릭터 배너: 분홍~라벤더 바탕 + 뒤쪽 부드러운 빛 + ★5 세 명 + 아래 정보판 + 둥근 금테
+## 캐릭터 배너: 밤하늘 남색~보라 + 비스듬한 빛줄기 + 별가루. 가운데 주인공은 뒤에서 빛을 받고, 양옆은 어둑한 실루엣.
+## 아래는 검은 그라데이션 위에 큰 제목과 가는 금선(시네마 포스터 느낌)
 func _paint_banner(ci: Control) -> void:
 	var r := Rect2(Vector2(2, 2), ci.size - Vector2(4, 8))
 	var w := r.size.x
 	var h := r.size.y
 	var t := Time.get_ticks_msec() / 1000.0
-	Gt.round_grad(ci, r, 14, Color("ffe1ef"), Color("d8c6ff"))
-	_soft_glow(ci, r.position + Vector2(w * 0.55, h * 0.38), h * 0.42, Color.WHITE, t)
-	_twinkles(ci, r, t, Color.WHITE)
-	# ★5 세 명(가운데가 크게, 양옆은 살짝 뒤로)
-	var art_h := h * 0.9
-	for k in [0, 2, 1]:
-		var data := Save.character(FEATURED[k])
-		var tex := data.portraits[0]
-		var sc: float = (art_h if k == 1 else art_h * 0.78) / tex.get_height()
-		var art := tex.get_size() * sc
-		var cx: float = r.position.x + w * ([0.2, 0.55, 0.86][k] as float)
-		var dst := Rect2(Vector2(cx - art.x / 2.0, r.end.y - art.y - (0.0 if k == 1 else 6.0)), art)
-		ci.draw_texture_rect(tex, dst, false, Color.WHITE if k == 1 else Color(0.92, 0.88, 0.98))
-	_info_plate(ci, r, "별빛 소환", "★5  리넨 · 플로라 · 코튼  확률 UP", Save.pity)
-	_pickup_tag(ci, r, Gt.PINK)
-	_banner_frame(ci, r)
+	# ★5 셋이 돌아가며 가운데에 선다(ROTATE초마다, 바뀔 때 0.6초 동안 서로 겹쳐 사라지고 나타남). 배경색도 그 캐릭터 색으로
+	var turn := int(t / ROTATE)
+	var fade := clampf((fmod(t, ROTATE) - (ROTATE - 0.6)) / 0.6, 0.0, 1.0)
+	var ta: Array = HERO_TINT.get(FEATURED[turn % 3], [Color("0b1026"), Color("2c1650"), Color("b9a8ff")])
+	var tb: Array = HERO_TINT.get(FEATURED[(turn + 1) % 3], ta)
+	var top := (ta[0] as Color).lerp(tb[0], fade)
+	var bottom := (ta[1] as Color).lerp(tb[1], fade)
+	var glow := (ta[2] as Color).lerp(tb[2], fade)
+	Gt.round_grad(ci, r, 14, top, bottom)
+	_light_shafts(ci, r, t, glow)
+	_star_dust(ci, r, t, glow.lerp(Color.WHITE, 0.5))
+	var hero_c := r.position + Vector2(w * 0.55, h * 0.42)
+	for i in 5:  # 주인공 뒤 둥근 역광(캐릭터 색)
+		ci.draw_circle(hero_c, h * (0.42 - i * 0.06), Color(glow, 0.05 + i * 0.03))
+	var art_h := h * 0.92
+	for slot in [0, 2]:  # 양옆: 어둑한 실루엣
+		var sid: StringName = FEATURED[(turn + (1 if slot == 0 else 2)) % 3]
+		_banner_art(ci, r, sid, slot, art_h * 0.8, Color(bottom.lightened(0.25), 0.95))
+	var hero: StringName = FEATURED[turn % 3]
+	var next: StringName = FEATURED[(turn + 1) % 3]
+	_banner_art(ci, r, hero, 1, art_h, Color(1, 1, 1, 1.0 - fade), true)
+	if fade > 0.0:
+		_banner_art(ci, r, next, 1, art_h, Color(1, 1, 1, fade), true)
+	_cinema_plate(ci, r, "별빛 소환", "STARLIGHT SUMMON", "★5  %s 확률 UP" % " · ".join(FEATURED.map(func(id: StringName) -> String: return Save.character(id).display_name)), Save.pity, Color("b9a8ff"))
+	_pickup_tag(ci, r, Color("e8456b"))
+	_slim_frame(ci, r)
 
 
-## 무기 배너: 짙은 보라 바탕 + 마법진 + 빛나는 ★5 무기 셋(가운데 크게, 겹치지 않게) + 아래 정보판 + 둥근 금테
+## 무기 배너: 검은 무기고 + 진홍빛 바닥 + 떠오르는 불씨. 가운데 무기가 떠서 빛나고, 양옆 무기는 어둠 속 실루엣.
 func _paint_weapon_banner(ci: Control) -> void:
 	var r := Rect2(Vector2(2, 2), ci.size - Vector2(4, 8))
 	var w := r.size.x
 	var h := r.size.y
 	var t := Time.get_ticks_msec() / 1000.0
-	Gt.round_grad(ci, r, 14, Color("2b1a4d"), Color("7a48b0"))
-	_soft_glow(ci, r.position + Vector2(w * 0.5, h * 0.36), h * 0.4, Color("ffd36b"), t)
-	_twinkles(ci, r, t, Color(1, 0.94, 0.75))
-	Gt.island(ci, r.position + Vector2(w * 0.5, h * 0.6), w * 0.62, w * 0.16)
-	var spots := [[0.18, 0.45, 0.24], [0.82, 0.45, 0.24], [0.5, 0.35, 0.36]]  # [x, y, 크기(폭 비율)]
-	for k in 3:
-		var sp: Array = spots[k]
-		var c := r.position + Vector2(w * float(sp[0]), h * float(sp[1]) + sin(t * 2.0 + k) * 5.0)
-		var size := w * float(sp[2])
-		ci.draw_circle(c, size * 0.42, Color(1, 0.85, 0.5, 0.12))
-		ci.draw_circle(c, size * 0.3, Color(1, 0.9, 0.6, 0.12))
-		var wid: StringName = FEATURED_WEAPONS[[0, 2, 1][k]]
-		Weapons.draw_icon(ci, wid, c, size)
-	_info_plate(ci, r, "전설의 무기고", "★5  별빛 성검 · 홍염의 송곳니 · 요정의 지팡이", Save.pity_w)
-	_pickup_tag(ci, r, Gt.YELLOW)
-	_banner_frame(ci, r)
+	Gt.round_grad(ci, r, 14, Color("07070c"), Color("3a0d18"))
+	var c := r.position + Vector2(w * 0.5, h * 0.4 + sin(t * 1.6) * 4.0)
+	for ring in 3:  # 뒤에서 천천히 도는 룬 고리
+		var rad := h * (0.2 + ring * 0.08)
+		var a0 := t * (0.3 - ring * 0.15)
+		ci.draw_arc(c, rad, a0, a0 + TAU * 0.85, 64, Color(1, 0.55, 0.35, 0.18 - ring * 0.04), 2.0)
+	for i in 12:
+		var a := i * TAU / 12.0 + t * 0.3
+		ci.draw_circle(c + Vector2.from_angle(a) * h * 0.28, 2.0, Color(1, 0.7, 0.4, 0.4))
+	for k in 2:  # 교차 빛줄기
+		var d := Vector2.from_angle(PI / 4.0 + k * PI / 2.0)
+		var ln := h * (0.55 + 0.05 * sin(t * 3.0 + k))
+		ci.draw_colored_polygon(PackedVector2Array([c - d * ln, c + d.orthogonal() * 3.0, c + d * ln, c - d.orthogonal() * 3.0]), Color(1, 0.85, 0.6, 0.35))
+	for i in 5:
+		ci.draw_circle(c, h * (0.22 - i * 0.035), Color(1, 0.6, 0.3, 0.05 + i * 0.03))
+	_embers(ci, r, t)
+	for k in 2:  # 양옆 무기: 어둠 속 실루엣
+		var sc := r.position + Vector2(w * (0.17 if k == 0 else 0.83), h * 0.46 + sin(t * 1.3 + k * 2.0) * 3.0)
+		ci.draw_set_transform(sc, (-0.5 if k == 0 else 0.5), Vector2.ONE)
+		Weapons.draw_icon(ci, FEATURED_WEAPONS[0 if k == 0 else 2], Vector2.ZERO, w * 0.2, Color(0.35, 0.18, 0.22, 0.9))
+		ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	Weapons.draw_icon(ci, FEATURED_WEAPONS[1], c, w * 0.46)  # 가운데: 크게
+	_cinema_plate(ci, r, "전설의 무기고", "LEGEND ARMORY", "★5  별빛 성검 · 홍염의 송곳니 · 요정의 지팡이", Save.pity_w, Color("ff9a5a"))
+	_pickup_tag(ci, r, Color("ffb648"))
+	_slim_frame(ci, r)
+
+
+## 배너 캐릭터 그림 하나: slot 0 왼쪽 · 1 가운데 · 2 오른쪽. hero면 뒤에 테두리 빛
+func _banner_art(ci: Control, r: Rect2, id: StringName, slot: int, height: float, tint: Color, hero := false) -> void:
+	var tex := Save.character(id).portraits[0]
+	var art := tex.get_size() * (height / tex.get_height())
+	var cx: float = r.position.x + r.size.x * ([0.17, 0.55, 0.9][slot] as float)
+	var dst := Rect2(Vector2(cx - art.x / 2.0, r.end.y - art.y - (0.0 if slot == 1 else 10.0)), art)
+	if hero:
+		ci.draw_texture_rect(tex, Rect2(dst.position + Vector2(-3, -2), dst.size + Vector2(6, 4)), false, Color(0.8, 0.75, 1.0, 0.35 * tint.a))
+	ci.draw_texture_rect(tex, dst, false, tint)
+
+
+## 비스듬히 내려오는 빛줄기(천천히 흔들림)
+func _light_shafts(ci: Control, r: Rect2, t: float, color: Color) -> void:
+	for i in 5:
+		var x := r.position.x + r.size.x * (0.1 + i * 0.2) + sin(t * 0.4 + i) * 10.0
+		var wtop := 10.0 + (i % 2) * 14.0
+		ci.draw_colored_polygon(PackedVector2Array([Vector2(x, r.position.y), Vector2(x + wtop, r.position.y),
+			Vector2(x + wtop + r.size.y * 0.45, r.end.y), Vector2(x + r.size.y * 0.35, r.end.y)]), Color(color, 0.05 + 0.03 * sin(t + i)))
+
+
+## 반짝이는 별가루
+func _star_dust(ci: Control, r: Rect2, t: float, color: Color) -> void:
+	for i in 40:
+		var p := r.position + Vector2(fmod(i * 73.7, r.size.x), fmod(i * 41.3 + t * (4.0 + i % 5), r.size.y * 0.75))
+		var tw := 0.5 + 0.5 * sin(t * 2.5 + i * 1.7)
+		ci.draw_rect(Rect2(p, Vector2(2, 2) if i % 6 == 0 else Vector2(1, 1)), Color(color, 0.25 + 0.6 * tw))
+
+
+## 아래에서 떠오르는 불씨
+func _embers(ci: Control, r: Rect2, t: float) -> void:
+	for i in 34:
+		var sp := 18.0 + fmod(i * 7.3, 26.0)
+		var y := r.end.y - fmod(t * sp + i * 37.0, r.size.y)
+		var x := r.position.x + fmod(i * 59.0, r.size.x) + sin(t * 1.5 + i) * 8.0
+		var life := (r.end.y - y) / r.size.y
+		ci.draw_circle(Vector2(x, y), 1.6 if i % 3 else 2.4, Color(1, 0.55 + 0.3 * (1.0 - life), 0.25, 0.85 * (1.0 - life)))
+
+
+## 아래 정보판(시네마 포스터식): 검은 그라데이션 + 영문 부제 + 큰 제목 + 가는 금선 + 천장 막대
+func _cinema_plate(ci: Control, r: Rect2, title: String, en: String, sub: String, pity: int, accent: Color) -> void:
+	var fade := Rect2(r.position.x, r.end.y - 150, r.size.x, 150)
+	Gt.round_grad(ci, fade, 12, Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.88))
+	var x := r.position.x + 22
+	var y := r.end.y - 112
+	Gt.text(ci, Vector2(x, y), en, 12, Color(accent, 0.9), 0, true, 0, Gt.INK, true)
+	Gt.title(ci, Vector2(x, y + 36), title, 32, Color("fff6e0"))
+	ci.draw_line(Vector2(x, y + 46), Vector2(r.end.x - 22, y + 46), Color(Gt.GOLD, 0.7), 1.0)
+	ci.draw_line(Vector2(x, y + 46), Vector2(x + 90, y + 46), accent, 3.0)
+	Gt.text(ci, Vector2(x, y + 66), sub, 13, Color("ffd88a"), 0, true, 3, Color(0, 0, 0, 0.8))
+	Gt.text(ci, Vector2(x, y + 92), "★5 확정까지 %d회" % (Gacha.PITY_5 - pity), 12, Color(1, 1, 1, 0.85), 0, true, 3, Color(0, 0, 0, 0.8))
+	var bar := Rect2(Vector2(x + 128, y + 82), Vector2(r.end.x - 22 - (x + 128), 8))
+	ci.draw_rect(bar, Color(1, 1, 1, 0.12))
+	ci.draw_rect(Rect2(bar.position, Vector2(bar.size.x * clampf(pity / float(Gacha.PITY_5), 0.0, 1.0), bar.size.y)), accent)
+
+
+## 가는 금테(모서리 점만 살짝 강조)
+func _slim_frame(ci: Control, r: Rect2) -> void:
+	Gt.round_line(ci, r, 15, Gt.INK, 2.0)
+	Gt.round_line(ci, r.grow(-3), 12, Color(Gt.GOLD, 0.85), 1.5)
+	for p: Vector2 in [r.position + Vector2(10, 10), Vector2(r.end.x - 10, r.position.y + 10), Vector2(r.position.x + 10, r.end.y - 10), r.end - Vector2(10, 10)]:
+		ci.draw_circle(p, 2.5, Gt.GOLD_L)
 
 
 ## 배너 뒤 부드러운 빛(겹친 원 + 아주 옅은 빛줄기)
@@ -179,9 +269,11 @@ func _twinkles(ci: Control, r: Rect2, t: float, color: Color) -> void:
 
 
 func _pickup_tag(ci: Control, r: Rect2, color: Color) -> void:
-	var tag := Rect2(r.position + Vector2(16, 16), Vector2(104, 30))
-	Gt.tag(ci, tag, color)
-	Gt.title(ci, Vector2(tag.get_center().x, tag.position.y + 21), "PICK UP!", 15, Color.WHITE, 1)
+	var tag := Rect2(r.position + Vector2(16, 16), Vector2(96, 24))
+	ci.draw_rect(tag, Color(0, 0, 0, 0.65))
+	ci.draw_rect(Rect2(tag.position, Vector2(4, tag.size.y)), color)
+	ci.draw_rect(tag, Color(color, 0.8), false, 1.0)
+	Gt.text(ci, Vector2(tag.position.x + 52, tag.position.y + 17), "PICK UP", 13, Color.WHITE, 1, true, 0, Gt.INK, true)
 
 
 ## 아래쪽 정보판: 반투명 자주 판 + 제목 + 소제목 + 천장 막대

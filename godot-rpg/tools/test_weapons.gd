@@ -56,7 +56,7 @@ func _ready() -> void:
 	_check("무기·장착·천장이 저장 형식으로 오고 감", back["equip"]["kemo3"] == "sword" and int(back["pity_w"]) == Save.pity_w)
 
 	# 상점 화면 무기 모드
-	Save.gems = 500
+	Save.gems = 5000
 	var menu := (load("res://features/menu/main_menu.tscn") as PackedScene).instantiate()
 	add_child(menu)
 	await get_tree().process_frame

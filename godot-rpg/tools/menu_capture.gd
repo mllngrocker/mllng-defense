@@ -9,12 +9,21 @@ var frame := 0
 func _ready() -> void:
 	Save.persist = false
 	Save.gold = 1240
+	Save.away_seconds = 0  # 방치 보상 창이 가리지 않게
 	menu = (load("res://features/menu/main_menu.tscn") as PackedScene).instantiate()
 	add_child(menu)
 
 
 func _process(_delta: float) -> void:
 	frame += 1
+	if "--shop" in OS.get_cmdline_user_args() or "--shopw" in OS.get_cmdline_user_args():  # 상점(픽업·무기 소환)
+		if frame == 3:
+			menu._on_tab_pressed(0)
+		if frame == 6 and "--shopw" in OS.get_cmdline_user_args():
+			for n in menu.find_children("*", "", true, false):
+				if n.has_method("set_mode"):
+					n.set_mode("weapon")
+		return
 	if "--quest" in OS.get_cmdline_user_args():
 		if frame == 3:
 			menu._on_tab_pressed(3)
