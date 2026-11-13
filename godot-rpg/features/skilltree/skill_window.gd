@@ -2,7 +2,7 @@ class_name SkillWindow
 extends Control
 ## 스킬 창(로비 아바타의 스킬 칸을 누르면): 캐릭터별 스킬 트리.
 ## 위: 액티브 줄(고유기 → 두 번째 → 오의), 그 아래 상위 기술 줄(4·5·6번), 아래: 패시브(공격 → 스킬 숙련, 체력, 급소). 화살표는 앞선 스킬.
-## 액티브는 6개 중 3개를 "1·2·3칸" 버튼으로 골라 끼운다(전투의 스킬 버튼 3개).
+## 액티브는 6개 중 3개를 아래 네모 칸 3개에 끼운다: 스킬을 끌어다 칸에 놓거나, 스킬을 고른 뒤 칸을 누른다(전투의 스킬 버튼 3개).
 ## 노드를 누르면 아래에 설명, "올리기"로 스킬 포인트 1점 사용, "한번에 찍기"로 남은 포인트를 정해진 순서로 한꺼번에.
 
 signal closed
@@ -15,7 +15,11 @@ var tree: DrawBox
 var detail: DrawBox
 var up_button: GameButton
 var all_button: GameButton
-var slot_buttons: Array[GameButton] = []
+var slot_bar: DrawBox
+var drag_layer: DrawBox
+var _drag := ""  # 끌고 있는 스킬
+var _drag_pos := Vector2.ZERO  # 끄는 손가락 자리(창 기준)
+var _press_pos := Vector2.ZERO
 var t := 0.0
 var _toast := ""
 var _toast_t := 0.0
@@ -55,16 +59,22 @@ func _ready() -> void:
 	detail.custom_minimum_size.y = 128
 	col.add_child(detail)
 
-	var row0 := _row(col)
-	for i in 3:
-		var b := _button(row0, "%d칸" % (i + 1), Gt.Kind.BLUE, _on_slot.bind(i))
-		b.font_size = 13
-		slot_buttons.append(b)
+	slot_bar = DrawBox.new()  # 전투에 끼운 스킬 네모 칸 3개
+	slot_bar.painter = _paint_slots
+	slot_bar.custom_minimum_size.y = 92
+	slot_bar.mouse_filter = Control.MOUSE_FILTER_STOP
+	slot_bar.gui_input.connect(_on_slot_input)
+	col.add_child(slot_bar)
 	var row1 := _row(col)
 	up_button = _button(row1, "올리기", Gt.Kind.YELLOW, _on_up)
 	all_button = _button(row1, "한번에 찍기", Gt.Kind.GREEN, _on_all)
 	var row2 := _row(col)
 	_button(row2, "닫기", Gt.Kind.WHITE, _close)
+	drag_layer = DrawBox.new()  # 끌고 있는 스킬 그림(맨 위)
+	drag_layer.painter = _paint_drag
+	drag_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	drag_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(drag_layer)
 	_refresh()
 
 
@@ -100,14 +110,7 @@ func _refresh() -> void:
 	up_button.label = "올리기 (1포인트)"
 	all_button.disabled = Save.skill_points(char_id) <= 0
 	all_button.sublabel = "남은 %d포인트" % Save.skill_points(char_id)
-	var sl := Save.slots_of(char_id)
-	var can_slot: bool = chosen.begins_with("a") and Save.skill_level(char_id, chosen) > 0
-	for i in 3:
-		var b := slot_buttons[i]
-		b.label = "%d칸 · %s" % [i + 1, SkillTree.info(char_id, sl[i])["name"]]
-		b.kind = Gt.Kind.PINK if sl[i] == chosen else Gt.Kind.BLUE
-		b.sublabel = "여기에 끼우기" if can_slot and sl[i] != chosen else ("끼움" if sl[i] == chosen else "")
-		b.queue_redraw()
+	slot_bar.queue_redraw()
 	for b: GameButton in [up_button, all_button]:
 		b.queue_redraw()
 	detail.queue_redraw()
@@ -138,19 +141,6 @@ func _on_all() -> void:
 	_refresh()
 
 
-## 고른 액티브를 i번 칸에 끼운다(이미 다른 칸이면 서로 바꾼다)
-func _on_slot(i: int) -> void:
-	if not chosen.begins_with("a"):
-		_say("액티브 스킬을 먼저 골라 주세요")
-	elif Save.skill_level(char_id, chosen) <= 0:
-		_say("아직 배우지 않은 스킬이에요")
-	else:
-		Save.set_slot(char_id, i, chosen)
-		Game.sfx(&"pickup", -6.0)
-		_say("%s → %d칸" % [SkillTree.info(char_id, chosen)["name"], i + 1])
-	_refresh()
-
-
 func _close() -> void:
 	closed.emit()
 	queue_free()
@@ -166,15 +156,104 @@ func _node_rect(cell: Vector2i) -> Rect2:
 
 
 func _on_tree_input(e: InputEvent) -> void:
+	var mm := e as InputEventMouseMotion
+	if mm and _drag != "":
+		_drag_pos = tree.global_position - global_position + mm.position
+		drag_layer.queue_redraw()
+		slot_bar.queue_redraw()
+		return
 	var mb := e as InputEventMouseButton
-	if not (mb and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT):
+	if not (mb and mb.button_index == MOUSE_BUTTON_LEFT):
+		return
+	if not mb.pressed:
+		if _drag != "":  # 놓은 자리가 칸이면 끼운다
+			var k := _slot_at(tree.global_position + mb.position - slot_bar.global_position)
+			if k >= 0:
+				_equip(k, _drag)
+			_drag = ""
+			drag_layer.queue_redraw()
+			slot_bar.queue_redraw()
 		return
 	for row: Array in SkillTree.LAYOUT:
 		if _node_rect(row[1]).grow(6).has_point(mb.position):
 			chosen = row[0]
 			Game.sfx(&"pickup", -12.0)
+			# 배운 액티브는 끌어서 칸에 끼울 수 있다
+			if chosen.begins_with("a") and Save.skill_level(char_id, chosen) > 0:
+				_drag = chosen
+				_drag_pos = tree.global_position - global_position + mb.position
 			_refresh()
 			return
+
+
+# ── 끼운 칸 ──
+
+func _slot_rect(k: int) -> Rect2:
+	var sz := 64.0
+	var gap := 26.0
+	var x0 := (slot_bar.size.x - (sz * 3 + gap * 2)) / 2.0
+	return Rect2(Vector2(x0 + k * (sz + gap), 6), Vector2(sz, sz))
+
+
+func _slot_at(p: Vector2) -> int:
+	for k in 3:
+		if _slot_rect(k).grow(10).has_point(p):
+			return k
+	return -1
+
+
+func _equip(k: int, node: String) -> void:
+	Save.set_slot(char_id, k, node)
+	Game.sfx(&"charged", -6.0, 0.0)
+	_say("%s → %d번 칸" % [SkillTree.info(char_id, node)["name"], k + 1])
+	_refresh()
+
+
+## 칸을 누르면: 고른 액티브(배운 것)를 그 칸에 끼운다
+func _on_slot_input(e: InputEvent) -> void:
+	var mb := e as InputEventMouseButton
+	if not (mb and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT):
+		return
+	var k := _slot_at(mb.position)
+	if k < 0:
+		return
+	if not chosen.begins_with("a"):
+		_say("위에서 액티브 스킬을 골라 끌어다 놓아요")
+	elif Save.skill_level(char_id, chosen) <= 0:
+		_say("아직 배우지 않은 스킬이에요")
+	else:
+		_equip(k, chosen)
+
+
+func _paint_slots(ci: Control) -> void:
+	var sl := Save.slots_of(char_id)
+	var hover := _slot_at(_drag_pos - (slot_bar.global_position - global_position)) if _drag != "" else -1
+	Gt.text(ci, Vector2(10, 18), "전투 스킬", 12, Color("9fd4ff"))
+	for k in 3:
+		var r := _slot_rect(k)
+		var glow := k == hover
+		Gt.pbox(ci, r.grow(4), Color("ffd54f") if glow else Color("e8c06a"), Gt.INK, 2, false, true)
+		ci.draw_rect(r, Color("1f2f4a"))
+		var node: String = sl[k]
+		if Save.skill_level(char_id, node) > 0:
+			SkillTree.draw_icon(ci, char_id, node, r.grow(-3))
+		else:
+			Gt.lock(ci, r.get_center(), 24, Color(1, 1, 1, 0.4))
+		var bc := r.position + Vector2(2, 2)
+		ci.draw_circle(bc, 11.0, Gt.INK)
+		ci.draw_circle(bc, 9.0, Color("ff5d8f"))
+		Gt.text(ci, bc + Vector2(0, 5), str(k + 1), 13, Color.WHITE, 1)
+		Gt.text(ci, Vector2(r.get_center().x, r.end.y + 16), SkillTree.info(char_id, node)["name"], 11, Color("fff3c4"), 1, true, 3, Gt.INK)
+		if glow:
+			ci.draw_rect(r.grow(2), Color(1, 0.9, 0.4, 0.35))
+
+
+func _paint_drag(ci: Control) -> void:
+	if _drag == "":
+		return
+	var r := Rect2(_drag_pos - Vector2(30, 30), Vector2(60, 60))
+	ci.draw_rect(r.grow(3), Color(Gt.INK, 0.7))
+	SkillTree.draw_icon(ci, char_id, _drag, r)
 
 
 func _paint_panel(ci: Control) -> void:

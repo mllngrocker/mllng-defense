@@ -21,3 +21,9 @@ func _ready() -> void:
 	sw.char_id = &"kemo1"
 	sw.chosen = "a1"
 	menu.add_child(sw)
+	if "--drag" in OS.get_cmdline_user_args():  # 끌어서 칸에 놓는 중인 모습
+		await get_tree().process_frame
+		sw._drag = "a5"
+		sw._drag_pos = sw.slot_bar.global_position - sw.global_position + sw._slot_rect(1).get_center() + Vector2(14, -10)
+		sw.drag_layer.queue_redraw()
+		sw.slot_bar.queue_redraw()

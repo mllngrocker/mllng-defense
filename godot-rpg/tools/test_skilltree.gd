@@ -99,6 +99,22 @@ func _ready() -> void:
 	add_child(sw)
 	await get_tree().process_frame
 	_check("스킬 창 열림", sw.tree != null)
+	# 끌어서 칸에 끼우기: 2번째 스킬 상위(a5)를 눌러 3번 칸 위에서 놓는다
+	Save.owned[String(id)]["level"] = 150
+	Save.auto_skill(id)
+	Save.skill_slots = {}
+	await get_tree().process_frame
+	var down := InputEventMouseButton.new()
+	down.button_index = MOUSE_BUTTON_LEFT
+	down.pressed = true
+	down.position = sw._node_rect(Vector2i(1, 1)).get_center()
+	sw._on_tree_input(down)
+	var up := InputEventMouseButton.new()
+	up.button_index = MOUSE_BUTTON_LEFT
+	up.pressed = false
+	up.position = sw.slot_bar.global_position + sw._slot_rect(2).get_center() - sw.tree.global_position
+	sw._on_tree_input(up)
+	_check("끌어다 3번 칸에 놓기 → %s" % [Save.slots_of(id)], Save.slots_of(id)[2] == "a5")
 	print("결과: ", "통과" if fails == 0 else "실패 %d개" % fails)
 	get_tree().quit(fails)
 
