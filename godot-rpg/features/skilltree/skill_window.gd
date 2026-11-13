@@ -2,7 +2,7 @@ class_name SkillWindow
 extends Control
 ## 스킬 창(로비 아바타의 스킬 칸을 누르면): 캐릭터별 스킬 트리.
 ## 위: 액티브 줄(고유기 → 두 번째 → 오의), 아래: 패시브(공격 → 스킬 숙련, 체력, 급소). 화살표는 앞선 스킬.
-## 노드를 누르면 아래에 설명, "올리기"로 스킬 포인트 1점 사용. 트레이닝 북(+1포인트)·마스터 북(오의·상한 10)도 여기서 쓴다.
+## 노드를 누르면 아래에 설명, "올리기"로 스킬 포인트 1점 사용, "한번에 찍기"로 남은 포인트를 정해진 순서로 한꺼번에.
 
 signal closed
 
@@ -13,11 +13,7 @@ var chosen := "a1"
 var tree: DrawBox
 var detail: DrawBox
 var up_button: GameButton
-var train_button: GameButton
-var master_button: GameButton
-var buy_t: GameButton
-var buy_m: GameButton
-var reset_button: GameButton
+var all_button: GameButton
 var t := 0.0
 var _toast := ""
 var _toast_t := 0.0
@@ -59,18 +55,9 @@ func _ready() -> void:
 
 	var row1 := _row(col)
 	up_button = _button(row1, "올리기", Gt.Kind.YELLOW, _on_up)
-	train_button = _button(row1, "트레이닝 북", Gt.Kind.GREEN, _on_train)
-	master_button = _button(row1, "마스터 북", Gt.Kind.PINK, _on_master)
+	all_button = _button(row1, "한번에 찍기", Gt.Kind.GREEN, _on_all)
 	var row2 := _row(col)
-	buy_t = _button(row2, "트레이닝 북 사기", Gt.Kind.BLUE, func() -> void: _buy("training"))
-	buy_t.sublabel = str(SkillTree.TRAINING_GEMS)
-	buy_t.sub_icon = GameButton.SubIcon.GEM
-	buy_m = _button(row2, "마스터 북 사기", Gt.Kind.BLUE, func() -> void: _buy("master"))
-	buy_m.sublabel = str(SkillTree.MASTER_GEMS)
-	buy_m.sub_icon = GameButton.SubIcon.GEM
-	var row3 := _row(col)
-	reset_button = _button(row3, "스킬 초기화", Gt.Kind.GRAY, _on_reset)
-	_button(row3, "닫기", Gt.Kind.WHITE, _close)
+	_button(row2, "닫기", Gt.Kind.WHITE, _close)
 	_refresh()
 
 
@@ -104,14 +91,9 @@ func _refresh() -> void:
 	var block := Save.skill_block(char_id, chosen)
 	up_button.disabled = block != ""
 	up_button.label = "올리기 (1포인트)"
-	train_button.label = "트레이닝 북 ×%d" % int(Save.books.get("training", 0))
-	train_button.disabled = int(Save.books.get("training", 0)) <= 0
-	var sealed := not Save.master.has(String(char_id))
-	master_button.label = ("상한 15로 ×%d" if sealed else "상한 15 해제됨 ×%d") % int(Save.books.get("master", 0))
-	master_button.disabled = not sealed or int(Save.books.get("master", 0)) <= 0
-	reset_button.sublabel = str(1000 * Save.level_of(char_id))
-	reset_button.sub_icon = GameButton.SubIcon.COIN
-	for b: GameButton in [up_button, train_button, master_button, buy_t, buy_m, reset_button]:
+	all_button.disabled = Save.skill_points(char_id) <= 0
+	all_button.sublabel = "남은 %d포인트" % Save.skill_points(char_id)
+	for b: GameButton in [up_button, all_button]:
 		b.queue_redraw()
 	detail.queue_redraw()
 
@@ -130,35 +112,14 @@ func _on_up() -> void:
 	_refresh()
 
 
-func _on_train() -> void:
-	if Save.use_training_book(char_id):
-		Game.sfx(&"pickup", -6.0)
-		_say("스킬 포인트 +1")
-	_refresh()
-
-
-func _on_master() -> void:
-	if Save.use_master_book(char_id):
-		Game.sfx(&"charged", -2.0, 0.0)
-		_say("봉인 해제! 오의가 열리고 스킬 상한이 10이 됐어요")
-		chosen = "a3"
-	_refresh()
-
-
-func _buy(kind: String) -> void:
-	if Save.buy_book(kind):
-		Game.sfx(&"pickup", -6.0)
-		_say(("트레이닝" if kind == "training" else "마스터") + " 북을 샀어요")
+## 한번에 찍기: 고유기 → 패시브 → 2번째 → 패시브 → 오의 → 남은 건 패시브 고르게
+func _on_all() -> void:
+	var n := Save.auto_skill(char_id)
+	if n > 0:
+		Game.sfx(&"charged", -4.0, 0.0)
+		_say("%d포인트를 한번에 찍었어요" % n)
 	else:
-		_say("보석이 모자라요")
-	_refresh()
-
-
-func _on_reset() -> void:
-	if Save.reset_skills(char_id):
-		_say("스킬 포인트를 모두 돌려받았어요")
-	else:
-		_say("골드가 모자라요")
+		_say("더 찍을 수 있는 스킬이 없어요")
 	_refresh()
 
 
@@ -235,7 +196,7 @@ func _cell_of(node: String) -> Vector2i:
 
 func _draw_node(ci: Control, node: String, r: Rect2) -> void:
 	var lv := Save.skill_level(char_id, node)
-	var cap := Save.skill_cap(char_id)
+	var cap := Save.skill_cap(char_id, node)
 	var req := SkillTree.requires(node)
 	var locked: bool = lv == 0 and SkillTree.gate(char_id, node) != ""
 	if node == chosen:

@@ -151,7 +151,7 @@ func _awaken_fx(rank: int) -> void:
 	if rank < 5:
 		return
 	fx_scale = [1.12, 1.25, 1.4][clampi(rank - 5, 0, 2)]
-	fx_tint = Gt.rank_color(mini(rank, 7), data.id)
+	fx_tint = Gt.skill_color(mini(rank, 7), data.id)  # 7성 스킬 연출만 캐릭터 색
 	var c := player.body_center()
 	var ring := fx(CIRCLE, 4, c, 14.0, 2.4, Color(fx_tint, 0.9))
 	ring.z_index = 4

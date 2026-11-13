@@ -1,12 +1,14 @@
 class_name SkillTree
 extends RefCounted
 ## 캐릭터별 스킬 트리: 액티브 3개(a1 고유기 → a2 → a3 오의) + 패시브 4개(p1 공격 → p4 스킬 숙련, p2 체력, p3 급소).
-## 스킬 포인트: 레벨 1마다 1점 + 트레이닝 북 1권마다 1점. 스킬 레벨 상한은 10, 마스터 북으로 15까지.
+## 스킬 레벨 합 = 캐릭터 레벨(고유기 Lv.1은 처음부터). 상한은 액티브 30 · 패시브 15라서 Lv.150이면 30×3 + 15×4 = 150으로 딱 꽉 찬다.
+## 스킬 창의 "한번에 찍기"로 한꺼번에 배분.
 ## 메이플처럼 단계가 있다: 2번째 액티브는 캐릭터 Lv.30 + 고유기 Lv.10 + 패시브 합 20,
 ## 오의(3번째)는 Lv.70 + 2번째 Lv.10 + 패시브 합 30이어야 배운다(GATE).
 ## 액티브 동작은 SkillCaster의 10가지 중에서 고른다(behavior). 그림은 assets/vendor/skill_icons/<icon>.png(없으면 속성 기호).
 
-const MAX_LV := 10
+const MAX_LV := 15  # 패시브 상한
+const ACTIVE_MAX := 30  # 액티브(고유기·2번째·오의) 상한
 const MASTER_LV := 15
 const TRAINING_GEMS := 150  # 트레이닝 북 1권 값(보석)
 const MASTER_GEMS := 800  # 마스터 북 1권 값(보석)
@@ -102,17 +104,22 @@ static func requires(node: String) -> Array:
 	return ["", 0]
 
 
-## 스킬 피해 배율: 레벨마다 +12%, 스킬 숙련 +4%씩, 오의는 1.6배
+## 노드별 상한
+static func cap(node: String) -> int:
+	return ACTIVE_MAX if node.begins_with("a") else MAX_LV
+
+
+## 스킬 피해 배율: 레벨마다 +6%, 스킬 숙련 +4%씩, 오의는 1.6배
 static func power(char_id: StringName, node: String) -> float:
 	var lv := maxi(1, Save.skill_level(char_id, node))
-	var p := (1.0 + 0.12 * (lv - 1)) * (1.0 + 0.04 * Save.skill_level(char_id, "p4"))
+	var p := (1.0 + 0.06 * (lv - 1)) * (1.0 + 0.04 * Save.skill_level(char_id, "p4"))
 	return p * (1.6 if node == "a3" else 1.0)
 
 
-## 재사용 대기: 레벨마다 3% 짧아진다
+## 재사용 대기: 레벨마다 1.5% 짧아진다
 static func cooldown(char_id: StringName, node: String) -> float:
 	var lv := maxi(1, Save.skill_level(char_id, node))
-	return float(info(char_id, node)["cd"]) * (1.0 - 0.03 * (lv - 1))
+	return float(info(char_id, node)["cd"]) * (1.0 - 0.015 * (lv - 1))
 
 
 static func icon(name: String) -> Texture2D:

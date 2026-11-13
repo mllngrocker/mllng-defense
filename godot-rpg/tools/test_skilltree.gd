@@ -17,12 +17,12 @@ func _ready() -> void:
 	Save.books = {"training": 0, "master": 0}
 	Save.gold = 100000
 	Save.gems = 5000
-	_check("레벨 10 → 스킬 포인트 10", Save.skill_points(id) == 10)
+	_check("레벨 10 → 스킬 포인트 9(고유기 Lv.1 포함 합 10)", Save.skill_points(id) == 9)
 	_check("두 번째 스킬은 캐릭터 Lv.30 전엔 못 배움", Save.skill_block(id, "a2").contains("Lv.30"))
 	var atk := Save.atk_of(id)
 	Save.learn_skill(id, "p1")
 	_check("공격 수련 → 공격력 상승 (%d → %d)" % [atk, Save.atk_of(id)], Save.atk_of(id) >= atk)
-	Save.owned[String(id)]["level"] = 30
+	Save.owned[String(id)]["level"] = 31
 	_check("Lv.30이어도 고유기 Lv.10 전엔 못 배움", Save.skill_block(id, "a2").contains("Lv.10"))
 	for i in 9:
 		Save.learn_skill(id, "a1")
@@ -38,11 +38,10 @@ func _ready() -> void:
 	while Save.skill_level(id, "p3") < 10:
 		Save.learn_skill(id, "p3")
 	_check("Lv.70 + 두 번째 10 + 패시브 30 → 오의", Save.learn_skill(id, "a3"))
-	_check("보석으로 마스터 북 사기", Save.buy_book("master") and int(Save.books["master"]) == 1)
-	_check("마스터 북 → 상한 15", Save.use_master_book(id) and Save.skill_cap(id) == 15)
-	var before := Save.skill_points(id)
-	Save.buy_book("training")
-	_check("트레이닝 북 → 포인트 +1", Save.use_training_book(id) and Save.skill_points(id) == before + 1)
+	_check("상한: 액티브 30 · 패시브 15", Save.skill_cap(id, "a1") == 30 and Save.skill_cap(id, "p1") == 15)
+	var pts := Save.skill_points(id)
+	Save.skill_bonus[String(id)] = 5
+	_check("포인트 = 레벨(옛 트레이닝 북 보너스는 안 셈)", Save.skill_points(id) == pts)
 	_check("스킬 피해 배율: 레벨이 오르면 커진다", SkillTree.power(id, "a1") > 1.0)
 	# 전투: 세 슬롯 모두 쓸 수 있다
 	var world := (load("res://features/world/world.tscn") as PackedScene).instantiate()
@@ -53,8 +52,26 @@ func _ready() -> void:
 	_check("재사용 대기 중엔 다시 못 씀", not player.skills.try_cast("a2"))
 	world.queue_free()
 	await get_tree().process_frame
-	var spent_gold := Save.gold
-	_check("초기화 → 포인트 돌려받음", Save.reset_skills(id) and Save.skill_points(id) == 90 + 1 and Save.gold < spent_gold)
+	# 한번에 찍기: 고유기 → 패시브 합 20 → 2번째 → 패시브 합 30 → 오의 → 나머지 패시브
+	Save.skill_lv = {}
+	Save.owned[String(id)]["level"] = 20
+	Save.auto_skill(id)
+	_check("Lv.20 한번에: 고유기 10 → 패시브 (%d·%d)" % [Save.skill_level(id, "a1"), SkillTree.passive_sum(id)], Save.skill_level(id, "a1") == 10 and SkillTree.passive_sum(id) == 10 and Save.skill_points(id) == 0)
+	Save.owned[String(id)]["level"] = 80
+	Save.auto_skill(id)
+	_check("Lv.80 한번에: 2번째·오의도 찍힘 (a2 %d · a3 %d · 패시브 %d)" % [Save.skill_level(id, "a2"), Save.skill_level(id, "a3"), SkillTree.passive_sum(id)], Save.skill_level(id, "a2") >= 10 and Save.skill_level(id, "a3") >= 1 and Save.skill_points(id) == 0)
+	Save.owned[String(id)]["level"] = 150
+	Save.auto_skill(id)
+	var total := 0
+	for n: String in ["a1", "a2", "a3", "p1", "p2", "p3", "p4"]:
+		total += Save.skill_level(id, n)
+	_check("Lv.150 한번에: 모든 스킬 꽉, 합 150 (%d)" % total, total == 150 and Save.skill_points(id) == 0)
+	Save.owned[String(id)]["level"] = 80
+	Save.skill_lv = {}
+	Save.auto_skill(id)
+	Save.owned[String(id)]["exp"] = 0
+	Save.add_exp(id, Save.exp_need(80) + 1)
+	_check("레벨업만으로는 안 찍힘(버튼을 눌러야)", Save.skill_points(id) == 1)
 	# 스킬 창
 	var sw := SkillWindow.new()
 	sw.char_id = id

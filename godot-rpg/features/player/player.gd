@@ -230,7 +230,7 @@ func _emit_mp() -> void:
 ## 바로 앞(26px 안)의 마을 사람
 func _npc_near() -> Npc:
 	var best: Npc = null
-	var bd := Npc.TALK_RANGE + 4.0  # 말풍선이 뜨는 거리와 같게
+	var bd := Npc.TALK_RANGE + 10.0  # 말풍선이 뜨는 거리(몸이 밀려도 조금 여유)
 	for n in get_tree().get_nodes_in_group(&"npcs"):
 		var d := (n as Node2D).global_position.distance_to(global_position)
 		if d < bd:

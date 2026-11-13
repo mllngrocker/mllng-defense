@@ -266,7 +266,7 @@ static func star(ci: CanvasItem, c: Vector2, r: float, color := STAR) -> void:
 
 
 ## 반짝이(네 갈래 별빛)
-## 7성 색: 캐릭터마다 다르다(없으면 빨강). 별·아우라·스킬 연출이 같이 쓴다
+## 7성 스킬 연출 색: 캐릭터마다 다르다(없으면 빨강). 별·아우라·카드는 모두 빨간 7성 별로 통일
 const SEVEN_COLOR := {
 	&"kemo1": Color("ff2a3a"), &"kemo2": Color("5ac8ff"), &"kemo3": Color("ff7a1a"), &"fairy3": Color("5fe06a"),
 	&"fairy2": Color("3fe0e0"), &"maid2": Color("ff4fa0"), &"maid3": Color("ffe14a"), &"maid1": Color("fff0a0"),
@@ -280,14 +280,19 @@ static func seven_color(id: StringName) -> Color:
 	return SEVEN_COLOR.get(id, STAR_BY_RARITY[7])
 
 
-## 별 등급 색(7성은 캐릭터 색)
-static func rank_color(rank: int, id: StringName = &"") -> Color:
+## 별 등급 색(별·아우라·카드: 7성은 모두 빨강)
+static func rank_color(rank: int, _id: StringName = &"") -> Color:
+	return STAR_BY_RARITY.get(rank, STAR) if rank < 7 else STAR_BY_RARITY[7]
+
+
+## 스킬 연출 색: 7성만 캐릭터마다 다른 색
+static func skill_color(rank: int, id: StringName) -> Color:
 	return seven_color(id) if rank >= 7 else STAR_BY_RARITY.get(rank, STAR)
 
 
-## 7성 별: 빛나는 큰 별 하나(캐릭터 색)
-static func red_star(ci: CanvasItem, c: Vector2, r: float, id: StringName = &"") -> void:
-	var col: Color = seven_color(id)
+## 7성 별: 빛나는 큰 빨간 별 하나(모든 캐릭터 같은 색)
+static func red_star(ci: CanvasItem, c: Vector2, r: float, _id: StringName = &"") -> void:
+	var col: Color = STAR_BY_RARITY[7]
 	ci.draw_circle(c, r * 1.25, Color(col, 0.25))
 	star(ci, c, r, col)
 	ci.draw_circle(c + Vector2(-r * 0.18, -r * 0.2), r * 0.16, Color(1, 1, 1, 0.75))

@@ -179,17 +179,17 @@ func skill_level(id: StringName, node: String) -> int:
 	return int(d.get(node, 1 if node == "a1" else 0))
 
 
-func skill_cap(id: StringName) -> int:
-	return SkillTree.MASTER_LV if master.has(String(id)) else SkillTree.MAX_LV
+func skill_cap(_id: StringName, node := "p1") -> int:
+	return SkillTree.cap(node)
 
 
-## 남은 스킬 포인트 = 레벨 + 트레이닝 북 - 쓴 포인트(고유기 첫 1레벨은 공짜)
+## 남은 스킬 포인트: 스킬 레벨을 모두 더하면 캐릭터 레벨이 되게(고유기 Lv.1은 처음부터 있으니 레벨 - 1점). Lv.150이면 모든 스킬이 꽉 찬다
 func skill_points(id: StringName) -> int:
 	var spent := 0
 	var d: Dictionary = skill_lv.get(String(id), {})
 	for k: String in d:
 		spent += int(d[k]) - (1 if k == "a1" else 0)
-	return level_of(id) + int(skill_bonus.get(String(id), 0)) - spent
+	return level_of(id) - 1 - spent
 
 
 ## 이 노드를 올릴 수 있는지(안 되면 이유 문자열)
@@ -197,8 +197,8 @@ func skill_block(id: StringName, node: String) -> String:
 	if not is_owned(id):
 		return "미보유 캐릭터"
 	var lv := skill_level(id, node)
-	if lv >= skill_cap(id):
-		return "최대 레벨" if lv >= SkillTree.MASTER_LV else "마스터 북으로 상한을 15까지 올릴 수 있어요"
+	if lv >= skill_cap(id, node):
+		return "최대 레벨"
 	if lv == 0:
 		var g := SkillTree.gate(id, node)
 		if g != "":
@@ -255,6 +255,39 @@ func give_books(training: int, master_books := 0) -> void:
 	save_game()
 
 
+## 한번에 찍기: 남은 포인트를 정해진 순서로 한꺼번에 배분한다.
+## 고유기 10 → 패시브 합 20 → 2번째 10 → 패시브 합 30 → 오의 10 → 고유기·2번째·오의 30 → 패시브 15씩. 올린 포인트 수를 돌려준다.
+func auto_skill(id: StringName) -> int:
+	if not is_owned(id):
+		return 0
+	var d: Dictionary = skill_lv.get(String(id), {})
+	skill_lv[String(id)] = d
+	var n := 0
+	# 단계: 다음 스킬이 열리는 조건부터 채우고(고유기 10 → 패시브 합 20 → 2번째 10 → 패시브 합 30 → 오의 10), 그다음 액티브·패시브를 끝까지
+	var stages: Array = [["a1", 10], ["P", 20], ["a2", 10], ["P", 30], ["a3", 10], ["a1", 30], ["a2", 30], ["a3", 30], ["P", 60]]
+	for st: Array in stages:
+		while skill_points(id) > 0:
+			var pick := ""
+			if st[0] == "P":
+				if SkillTree.passive_sum(id) >= int(st[1]):
+					break
+				var low := 1 << 30
+				for p: String in SkillTree.PASSIVES:
+					if skill_block(id, p) == "" and skill_level(id, p) < low:
+						low = skill_level(id, p)
+						pick = p
+			elif skill_level(id, st[0]) < int(st[1]) and skill_block(id, st[0]) == "":
+				pick = st[0]
+			if pick == "":
+				break
+			d[pick] = skill_level(id, pick) + 1
+			n += 1
+	if n > 0:
+		equip_changed.emit()
+		save_game()
+	return n
+
+
 ## 스킬 초기화: 쓴 포인트를 모두 돌려준다(골드 1,000 × 레벨)
 func reset_skills(id: StringName) -> bool:
 	var cost := 1000 * level_of(id)
@@ -309,10 +342,8 @@ func boss_reward(boss: String) -> void:
 		weapons[String(w)] = 0
 		Events.notice.emit.call_deferred("보스 무기: %s!" % Weapons.name_of(w), "공격력 +%d · 로비 아바타의 무기 칸에서 장착하세요" % Weapons.atk_of(w, 0))
 	grant_pet.call_deferred(r[0])
-	give_books(3, 1)
 	for k: StringName in Items.BOSS_DROP:
 		give_item(k, int(Items.BOSS_DROP[k]))
-	Events.notice.emit.call_deferred("스킬 책 획득!", "트레이닝 북 3권 · 마스터 북 1권 — 아바타의 스킬 칸에서 쓰세요")
 
 
 # ── 장비(옷·신발·목걸이·반지) ──

@@ -4,10 +4,11 @@ extends Node
 
 func _ready() -> void:
 	Save.persist = false
-	Save.owned["kemo1"] = {"level": 20, "stars": 0}
-	Save.skill_lv = {"kemo1": {"a1": 4, "a2": 3, "p1": 5, "p4": 2, "p2": 1}}
-	Save.master = {"kemo1": true}
-	Save.books = {"training": 2, "master": 1}
+	Save.away_seconds = 0  # 방치 보상 창이 가리지 않게
+	Save.owned["kemo1"] = {"level": 138, "stars": 0}
+	Save.skill_lv = {"kemo1": {"a1": 1}}
+	if "--all" in OS.get_cmdline_user_args():
+		Save.auto_skill(&"kemo1")  # "한번에 찍기"를 누른 뒤 모습
 	Save.pets = {"chicken": true}
 	Save.pet = "chicken"
 	var menu := (load("res://features/menu/main_menu.tscn") as PackedScene).instantiate()
@@ -18,5 +19,5 @@ func _ready() -> void:
 		return
 	var sw := SkillWindow.new()
 	sw.char_id = &"kemo1"
-	sw.chosen = "a2"
+	sw.chosen = "a1"
 	menu.add_child(sw)

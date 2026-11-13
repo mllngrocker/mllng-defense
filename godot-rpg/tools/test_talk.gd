@@ -24,10 +24,21 @@ func _ready() -> void:
 	await get_tree().physics_frame
 	await get_tree().process_frame
 	_check("말풍선 거리 안 (%.0f)" % player.global_position.distance_to(npc.global_position), player.global_position.distance_to(npc.global_position) < Npc.TALK_RANGE)
-	Input.action_press(&"attack")
-	await get_tree().physics_frame
-	await get_tree().physics_frame
-	Input.action_release(&"attack")
+	# 휴대폰처럼: 화면의 공격(검) 버튼을 손가락으로 아주 짧게 톡
+	var tc := get_tree().get_first_node_in_group(&"hud").find_child("TouchControls", true, false) as Control
+	var at: Vector2 = get_viewport().get_screen_transform() * (tc.get_global_transform_with_canvas() * tc.attack_center())  # 화면(창) 좌표로
+	var down := InputEventScreenTouch.new()
+	down.index = 0
+	down.position = at
+	down.pressed = true
+	Input.parse_input_event(down)
+	var up := InputEventScreenTouch.new()  # 아주 짧게 톡: 누름과 뗌이 한 프레임 안에
+	up.index = 0
+	up.position = at
+	up.pressed = false
+	Input.parse_input_event(up)
+	for k in 4:
+		await get_tree().process_frame
 	var box := false
 	for n in get_tree().get_nodes_in_group(&"hud"):
 		for c in n.get_children():

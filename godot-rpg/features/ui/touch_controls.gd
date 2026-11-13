@@ -76,6 +76,11 @@ func _input(event: InputEvent) -> void:
 
 func _on_touch_down(index: int, pos: Vector2) -> void:
 	if pos.distance_to(attack_center()) < ATTACK_R * 1.25:
+		var p := _player()
+		var npc: Npc = p._npc_near() if p and p.hp > 0 else null
+		if npc and not get_tree().paused:
+			npc.talk()  # 마을 사람 앞: 누르는 순간 바로 대화(짧게 톡 쳐도 놓치지 않게)
+			return
 		_press_button(index, &"attack")
 	elif pos.distance_to(dash_center()) < DASH_R * 1.3:
 		_press_button(index, &"dash")
