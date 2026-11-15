@@ -4,7 +4,7 @@ extends Node
 func _ready() -> void:
 	Save.persist = false
 	Save.fresh = true
-	Save.settings.erase("nick")
+	Save.settings["nick"] = "엄준식앙"  # 한글 이름이 네모 없이 보이는지
 	var intro := IntroScreen.new()
 	add_child(intro)
 	if "--pick" in OS.get_cmdline_user_args():

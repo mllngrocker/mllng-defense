@@ -72,7 +72,7 @@ func _ready() -> void:
 	menu._open_weapon_picker()
 	await get_tree().process_frame
 	var pickers := menu.get_children().filter(func(n: Node) -> bool: return n is WeaponPicker)
-	_check("무기 칸을 누르면 무기 선택 창(무기 %d개)" % (pickers[0].cards.size() if pickers.size() > 0 else 0), pickers.size() == 1 and pickers[0].cards.size() == Save.weapons.size())
+	_check("무기 칸을 누르면 무기 선택 창(무기 %d개)" % (pickers[0].cards.size() if pickers.size() > 0 else 0), pickers.size() == 1 and pickers[0].cards.size() == Weapons.ids().size())  # 보유 + 미보유 모두
 
 	print("결과: ", "통과" if fails == 0 else "실패 %d개" % fails)
 	get_tree().quit(fails)

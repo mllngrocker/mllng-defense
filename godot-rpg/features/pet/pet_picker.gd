@@ -4,12 +4,13 @@ extends Control
 
 signal closed
 
-const COLS := 5
+const COLS := 4
 
 var chosen: StringName
 var detail: DrawBox
 var go_button: GameButton
-var cards: Dictionary[StringName, DrawBox] = {}
+var cards: Dictionary = {}
+var grid: ItemGrid
 var t := 0.0
 
 
@@ -24,8 +25,8 @@ func _ready() -> void:
 	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	panel.offset_left = 14
 	panel.offset_right = -14
-	panel.offset_top = 120
-	panel.offset_bottom = -90
+	panel.offset_top = 70  # 무기 창과 같은 크기
+	panel.offset_bottom = -40
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(panel)
 
@@ -37,27 +38,27 @@ func _ready() -> void:
 	col.offset_bottom = -16
 	col.add_theme_constant_override(&"separation", 10)
 	panel.add_child(col)
-	var grid := GridContainer.new()
-	grid.columns = COLS
-	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	grid.add_theme_constant_override(&"h_separation", 8)
-	grid.add_theme_constant_override(&"v_separation", 10)
-	col.add_child(grid)
-	for p: StringName in Pets.ids():
-		var card := DrawBox.new()
-		card.painter = _paint_card.bind(p)
-		card.custom_minimum_size = Vector2(0, 92)
-		card.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		card.mouse_filter = Control.MOUSE_FILTER_STOP
-		card.gui_input.connect(func(e: InputEvent) -> void:
-			var mb := e as InputEventMouseButton
-			if mb and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
-				chosen = p
-				Game.sfx(&"pickup", -12.0)
-				_refresh())
-		grid.add_child(card)
-		cards[p] = card
+	# 보유(별 많은 순) · 미보유(별 많은 순) — 펫이 많아도 위아래로 넘겨 본다
+	var by_star := func(a: StringName, b: StringName) -> bool: return Pets.rarity_of(a) > Pets.rarity_of(b)
+	var owned := Pets.ids().filter(func(p: StringName) -> bool: return Save.has_pet(p))
+	owned.sort_custom(by_star)
+	var unowned := Pets.ids().filter(func(p: StringName) -> bool: return not Save.has_pet(p))
+	unowned.sort_custom(by_star)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	col.add_child(scroll)
+	grid = ItemGrid.new()
+	grid.cols = COLS
+	grid.setup(owned, unowned, _paint_card, func(p: StringName) -> void:
+		chosen = p
+		Game.sfx(&"pickup", -12.0)
+		_refresh())
+	scroll.add_child(grid)
+	cards = grid.cards
+	for c: DrawBox in cards.values():
+		c.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 
 	detail = DrawBox.new()
 	detail.painter = _paint_detail
@@ -83,8 +84,9 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	t += delta
-	for p in cards:
-		cards[p].queue_redraw()
+	if Engine.get_process_frames() % 2 == 0:
+		for p in cards:
+			cards[p].queue_redraw()  # 통통 튀는 펫(2프레임에 한 번)
 
 
 func _refresh() -> void:
@@ -130,12 +132,19 @@ func _paint_panel(ci: Control) -> void:
 
 
 func _paint_card(ci: Control, p: StringName) -> void:
-	var r := Rect2(Vector2(3, 3), ci.size - Vector2(6, 6))
+	var r := Rect2(Vector2(6, 9), ci.size - Vector2(12, 20))  # 무기 카드와 같은 여백
 	var owned := Save.has_pet(p)
-	if p == chosen:
-		Gt.pbox(ci, r.grow(3), Gt.YELLOW, Gt.INK, 2, false, false)
+	var sel := p == chosen
+	if sel:
+		r.position.y -= 5
 	var bob := sin(t * 4.0 + float(p.hash() % 7)) * 2.0 if owned else 0.0
-	Pets.draw_card(ci, p, r.grow(-4.0), true, not owned, bob)
+	Pets.draw_card(ci, p, r, true, not owned, bob)
+	if not owned:
+		Gt.lock(ci, r.get_center() + Vector2(0, -r.size.y * 0.12), 20, Color("d8d2e2"))
+	if sel:
+		Gt.selected_frame(ci, r, t)
+	else:
+		Gt.dim_other(ci, r)
 	if Save.pet == String(p):
 		var tag := Rect2(Vector2(r.position.x - 2, r.position.y - 2), Vector2(34, 18))
 		Gt.tag(ci, tag, Gt.PINK)

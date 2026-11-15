@@ -34,6 +34,7 @@ func _ready() -> void:
 	_edit.placeholder_text = "이름 (2~8자)"
 	_edit.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_edit.text = str(Save.settings.get("nick", ""))
+	_edit.add_theme_font_override(&"font", Gt.BOLD)  # 기본 글꼴엔 한글이 없어 "C543" 같은 네모가 떴다
 	_edit.add_theme_font_size_override(&"font_size", 26)
 	_edit.add_theme_color_override(&"font_color", Gt.NAVY)
 	_edit.add_theme_color_override(&"font_placeholder_color", Gt.GRAY)
@@ -50,6 +51,14 @@ func _ready() -> void:
 		_error = ""
 		queue_redraw())
 	_edit.text_submitted.connect(func(_s: String) -> void: _next())
+	if OS.has_feature("web"):
+		# 휴대폰 웹에선 게임 안 글자 입력이 한글 조합을 잘 못 해서, 누르면 브라우저 입력창으로 받는다
+		_edit.editable = false
+		_edit.mouse_filter = Control.MOUSE_FILTER_STOP
+		_edit.gui_input.connect(func(e: InputEvent) -> void:
+			var mb := e as InputEventMouseButton
+			if mb and not mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+				_ask_name_web())
 	add_child(_edit)
 	_ok = GameButton.new()
 	_ok.kind = Gt.Kind.YELLOW
@@ -129,6 +138,17 @@ func _refresh() -> void:
 	_ok.queue_redraw()
 	_layout()
 	queue_redraw()
+
+
+## 웹: 브라우저 입력창(prompt)으로 이름 받기
+func _ask_name_web() -> void:
+	var cur := _edit.text.replace("\\", "").replace("'", "")
+	var got: Variant = JavaScriptBridge.eval("(window.prompt('용사님의 이름을 입력해 주세요 (2~8자)', '%s') || '')" % cur, true)
+	var nick := str(got).strip_edges().left(NAME_MAX)
+	if nick != "":
+		_edit.text = nick
+		_error = ""
+		queue_redraw()
 
 
 func _next() -> void:

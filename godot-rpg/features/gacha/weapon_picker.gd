@@ -9,11 +9,11 @@ const COLS := 4
 
 var char_id: StringName
 var chosen: StringName
-var grid: GridContainer
+var grid: ItemGrid
 var detail: DrawBox
 var equip_button: GameButton
 var enhance_button: GameButton
-var cards: Dictionary[StringName, DrawBox] = {}
+var cards: Dictionary = {}
 
 
 func _ready() -> void:
@@ -22,9 +22,13 @@ func _ready() -> void:
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	z_index = 40
 	chosen = Save.equipped(char_id)
+	# 보유(별 많은 순 → 공격력 순) · 미보유(별 많은 순)
+	var by_star := func(a: StringName, b: StringName) -> bool:
+		return Weapons.rarity_of(a) > Weapons.rarity_of(b) or (Weapons.rarity_of(a) == Weapons.rarity_of(b) and Weapons.atk_of(a, Save.refine_of(a)) > Weapons.atk_of(b, Save.refine_of(b)))
 	var owned := Weapons.ids().filter(func(w: StringName) -> bool: return Save.has_weapon(w))
-	owned.sort_custom(func(a: StringName, b: StringName) -> bool:
-		return Weapons.rarity_of(a) > Weapons.rarity_of(b) or (Weapons.rarity_of(a) == Weapons.rarity_of(b) and Weapons.atk_of(a, Save.refine_of(a)) > Weapons.atk_of(b, Save.refine_of(b))))
+	owned.sort_custom(by_star)
+	var unowned := Weapons.ids().filter(func(w: StringName) -> bool: return not Save.has_weapon(w))
+	unowned.sort_custom(by_star)
 	if chosen == &"" and not owned.is_empty():
 		chosen = owned[0]
 
@@ -51,28 +55,11 @@ func _ready() -> void:
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	col.add_child(scroll)
-	grid = GridContainer.new()
-	grid.columns = COLS
-	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.add_theme_constant_override(&"h_separation", 8)
-	grid.add_theme_constant_override(&"v_separation", 10)
+	grid = ItemGrid.new()
+	grid.cols = COLS
+	grid.setup(owned, unowned, _paint_card, _choose)
 	scroll.add_child(grid)
-	for w: StringName in owned:
-		var card := DrawBox.new()
-		card.painter = _paint_card.bind(w)
-		card.custom_minimum_size = Vector2(0, 128)
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		card.mouse_filter = Control.MOUSE_FILTER_PASS
-		var press := [Vector2.ZERO]
-		card.gui_input.connect(func(e: InputEvent) -> void:
-			var mb := e as InputEventMouseButton
-			if mb and mb.button_index == MOUSE_BUTTON_LEFT:
-				if mb.pressed:
-					press[0] = mb.position
-				elif mb.position.distance_to(press[0]) < 12.0:
-					_choose(w))
-		grid.add_child(card)
-		cards[w] = card
+	cards = grid.cards
 
 	detail = DrawBox.new()
 	detail.painter = _paint_detail
@@ -116,14 +103,15 @@ func _choose(w: StringName) -> void:
 
 
 func _refresh() -> void:
+	var have := chosen != &"" and Save.has_weapon(chosen)
 	var on := chosen != &"" and Save.equipped(char_id) == chosen
 	var held := chosen != &"" and Save.holder_of(chosen) != &"" and Save.holder_of(chosen) != char_id
-	equip_button.label = "해제" if on else ("착용 중" if held else "장착")
-	equip_button.kind = Gt.Kind.GRAY if on or held else Gt.Kind.YELLOW
-	equip_button.disabled = chosen == &"" or held
+	equip_button.label = "해제" if on else ("착용 중" if held else ("장착" if have else "미보유"))
+	equip_button.kind = Gt.Kind.GRAY if on or held or not have else Gt.Kind.YELLOW
+	equip_button.disabled = chosen == &"" or held or not have
 	equip_button.queue_redraw()
 	var lv := Save.enhance_of(chosen) if chosen != &"" else 0
-	enhance_button.disabled = chosen == &"" or lv >= Weapons.MAX_ENHANCE
+	enhance_button.disabled = not have or lv >= Weapons.MAX_ENHANCE
 	enhance_button.label = "강화 최대" if lv >= Weapons.MAX_ENHANCE else "강화 +%d" % (lv + 1)
 	enhance_button.sublabel = "" if lv >= Weapons.MAX_ENHANCE else str(Weapons.enhance_cost(lv))
 	enhance_button.queue_redraw()
@@ -134,7 +122,7 @@ func _refresh() -> void:
 
 
 func _on_equip() -> void:
-	if chosen == &"":
+	if chosen == &"" or not Save.has_weapon(chosen):
 		return
 	if Save.equipped(char_id) == chosen:
 		Save.unequip(char_id)
@@ -147,7 +135,7 @@ func _on_equip() -> void:
 
 ## 골드로 강화(+8% 공격력씩, 최대 +20)
 func _on_enhance() -> void:
-	if chosen == &"":
+	if chosen == &"" or not Save.has_weapon(chosen):
 		return
 	if Save.try_enhance(chosen):
 		Game.sfx(&"charged", -4.0, 0.0)
@@ -189,9 +177,12 @@ func _paint_panel(ci: Control) -> void:
 func _paint_card(ci: Control, w: StringName) -> void:
 	var r := Rect2(Vector2(6, 9), ci.size - Vector2(12, 20))
 	var sel := w == chosen
+	var have := Save.has_weapon(w)
 	if sel:
 		r.position.y -= 5  # 고른 카드는 살짝 떠오른다
-	Weapons.draw_card(ci, w, r, true, Save.refine_of(w))
+	Weapons.draw_card(ci, w, r, true, Save.refine_of(w) if have else -1, 0.0, not have)
+	if not have:
+		Gt.lock(ci, r.get_center() + Vector2(0, -r.size.y * 0.12), 20, Color("d8d2e2"))
 	if sel:
 		Gt.selected_frame(ci, r, Time.get_ticks_msec() / 1000.0)
 	else:
@@ -221,8 +212,9 @@ func _paint_detail(ci: Control) -> void:
 	var icon := Rect2(r.position + Vector2(10, 10), Vector2(r.size.y - 20, r.size.y - 20))
 	Weapons.draw_card(ci, w, icon, false, refine)
 	var x := icon.end.x + 14
-	for i in Weapons.rarity_of(w):
-		Gt.star(ci, Vector2(x + 8 + i * 18, r.position.y + 20), 7)
+	var n := Weapons.rarity_of(w)
+	for i in n:
+		Gt.star(ci, Vector2(x + 8 + i * 18, r.position.y + 20), 7, Gt.item_star(n))
 	var enh := Save.enhance_of(w)
 	Gt.text(ci, Vector2(x, r.position.y + 50), Weapons.name_of(w) + ("  +%d강" % enh if enh > 0 else "") + ("  (재련 %d)" % refine if refine > 0 else ""), 20, Gt.NAVY)
 	Gt.text(ci, Vector2(x, r.position.y + 72), Weapons.kind_text(w), 12, Color("2f7d4f"), 0, false)
@@ -231,5 +223,7 @@ func _paint_detail(ci: Control) -> void:
 	Gt.text(ci, Vector2(x + 20, y), "공격력 +%d" % Weapons.atk_of(w, refine, Save.enhance_of(w)), 14, Gt.NAVY)
 	Gt.text(ci, Vector2(x + 130, y), "치명타 +%d%%" % roundi(Weapons.crit_of(w) * 100.0), 14, Color("e5484d"))
 	var holder := Save.holder_of(w)
-	if holder != &"" and holder != char_id:
+	if not Save.has_weapon(w):
+		Gt.text(ci, Vector2(r.end.x - 12, r.position.y + 22), "보스 첫 처치 보상" if Weapons.is_boss(w) else "무기 소환에서 나와요", 12, Gt.GRAY, 2)
+	elif holder != &"" and holder != char_id:
 		Gt.text(ci, Vector2(r.end.x - 12, r.position.y + 22), Save.character(holder).display_name + " 장착 중", 12, Gt.PINK, 2)

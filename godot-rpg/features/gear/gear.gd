@@ -180,7 +180,7 @@ static func set_of(id: StringName) -> String:
 	return ""
 
 
-static func set_name(key: String) -> String:
+static func set_title(key: String) -> String:
 	return SETS[key][0] if SETS.has(key) else ""
 
 

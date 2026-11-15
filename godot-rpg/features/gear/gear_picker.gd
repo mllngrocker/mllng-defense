@@ -18,7 +18,8 @@ var dismantle_button: GameButton
 var synth_button: GameButton
 var _toast := ""
 var _toast_t := 0.0
-var cards: Dictionary[StringName, DrawBox] = {}
+var cards: Dictionary = {}
+var grid: ItemGrid
 
 
 func _ready() -> void:
@@ -26,29 +27,28 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	z_index = 40
-	var list := Gear.ids().filter(func(g: StringName) -> bool: return Gear.slot_of(g) == slot and (Gear.level_of(g) == 1 or Save.has_gear(g)))  # Lv.10 이상은 가진 것만
-	list.sort_custom(func(a: StringName, b: StringName) -> bool:  # 가진 것 → 높은 레벨 → 높은 등급
-		if Save.has_gear(a) != Save.has_gear(b):
-			return Save.has_gear(a)
-		if Gear.level_of(a) != Gear.level_of(b):
-			return Gear.level_of(a) > Gear.level_of(b)
-		return Gear.grade_of(a) > Gear.grade_of(b))
+	# 보유: 이 부위에서 가진 것(별 많은 순 → 높은 레벨) · 미보유: 아직 한 번도 못 얻은 종류(Lv.1로, 별 많은 순)
+	var owned := Gear.ids().filter(func(g: StringName) -> bool: return Gear.slot_of(g) == slot and Save.has_gear(g))
+	owned.sort_custom(func(a: StringName, b: StringName) -> bool:
+		if Gear.stars_of(a) != Gear.stars_of(b):
+			return Gear.stars_of(a) > Gear.stars_of(b)
+		return Gear.level_of(a) > Gear.level_of(b))
+	var got_bases := {}
+	for g: StringName in owned:
+		got_bases[Gear.base_of(g)] = true
+	var unowned := Gear.DATA.keys().filter(func(b: StringName) -> bool: return Gear.slot_of(b) == slot and not got_bases.has(b))
+	unowned.sort_custom(func(a: StringName, b: StringName) -> bool: return Gear.stars_of(a) > Gear.stars_of(b))
 	chosen = Save.gear_on(char_id, slot)
 	if chosen == &"":
-		for g: StringName in list:
-			if Save.has_gear(g):
-				chosen = g
-				break
-	if chosen == &"":
-		chosen = list[0]
+		chosen = owned[0] if not owned.is_empty() else unowned[0]
 
 	var panel := DrawBox.new()
 	panel.painter = _paint_panel
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.offset_left = -256
-	panel.offset_right = 256
-	panel.offset_top = -300
-	panel.offset_bottom = 300
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)  # 무기 창과 같은 크기·모양
+	panel.offset_left = 14
+	panel.offset_right = -14
+	panel.offset_top = 70
+	panel.offset_bottom = -40
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(panel)
 	var col := VBoxContainer.new()
@@ -59,31 +59,21 @@ func _ready() -> void:
 	col.offset_bottom = -16
 	col.add_theme_constant_override(&"separation", 10)
 	panel.add_child(col)
-	var scroll := ScrollContainer.new()  # 카드가 많으면 옆으로 넘겨 본다
-	scroll.custom_minimum_size.y = 166
-	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	var scroll := ScrollContainer.new()  # 위아래로 넘겨 본다(무기 창과 같은 격자)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	col.add_child(scroll)
-	var row := HBoxContainer.new()
-	row.custom_minimum_size.y = 160
-	row.add_theme_constant_override(&"separation", 8)
-	scroll.add_child(row)
-	for g: StringName in list:
-		var card := DrawBox.new()
-		card.painter = _paint_card.bind(g)
-		card.custom_minimum_size.x = 124
-		card.mouse_filter = Control.MOUSE_FILTER_STOP
-		card.gui_input.connect(func(e: InputEvent) -> void:
-			var mb := e as InputEventMouseButton
-			if mb and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
-				chosen = g
-				Game.sfx(&"pickup", -12.0)
-				_refresh())
-		row.add_child(card)
-		cards[g] = card
+	grid = ItemGrid.new()
+	grid.setup(owned, unowned, _paint_card, func(g: StringName) -> void:
+		chosen = g
+		Game.sfx(&"pickup", -12.0)
+		_refresh())
+	scroll.add_child(grid)
+	cards = grid.cards
 	detail = DrawBox.new()
 	detail.painter = _paint_detail
-	detail.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	detail.custom_minimum_size.y = 214
 	col.add_child(detail)
 	var tools := HBoxContainer.new()
 	tools.custom_minimum_size.y = 58
@@ -251,7 +241,7 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(Gt.INK, 0.6))
 	if _toast_t > 0.0:
 		var w := Gt.width(_toast, 17) + 40
-		var tr := Rect2(Vector2((size.x - w) / 2.0, size.y / 2.0 - 360), Vector2(w, 44))
+		var tr := Rect2(Vector2((size.x - w) / 2.0, 18), Vector2(w, 44))  # 창 위쪽 빈 곳에
 		Gt.pbox(self, tr, Color(Gt.NAVY, 0.95))
 		Gt.title(self, Vector2(tr.get_center().x, tr.position.y + 29), _toast, 17, Color.WHITE, 1)
 
@@ -264,14 +254,14 @@ func _paint_panel(ci: Control) -> void:
 
 
 func _paint_card(ci: Control, g: StringName) -> void:
-	var r := Rect2(Vector2(6, 10), ci.size - Vector2(12, 24))
+	var r := Rect2(Vector2(6, 9), ci.size - Vector2(12, 20))
 	var have := Save.has_gear(g)
 	var sel := g == chosen
 	if sel:
 		r.position.y -= 6  # 고른 카드는 살짝 떠오른다
 	Gear.draw_card(ci, g, r, true, Save.gear_enh_of(g) if have else -1, not have)
 	if not have:
-		Gt.lock(ci, r.get_center() + Vector2(0, -r.size.y * 0.1), 22, Color("d8d2e2"))
+		Gt.lock(ci, r.get_center() + Vector2(0, -r.size.y * 0.12), 20, Color("d8d2e2"))
 	if sel:
 		Gt.selected_frame(ci, r, Time.get_ticks_msec() / 1000.0)
 	else:
@@ -307,7 +297,7 @@ func _paint_detail(ci: Control) -> void:
 		worn.append(chosen)
 		var n := int(Gear.set_counts(worn).get(sk, 0))
 		var sy := r.position.y + 140.0
-		Gt.text(ci, Vector2(r.position.x + 14, sy), "세트  %s (%d/4)" % [Gear.set_name(sk), n], 14, Color("8a4fd0"))
+		Gt.text(ci, Vector2(r.position.x + 14, sy), "세트  %s (%d/4)" % [Gear.set_title(sk), n], 14, Color("8a4fd0"))
 		for need: int in [2, 4]:
 			sy += 20.0
 			var on := n >= need
