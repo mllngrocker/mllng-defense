@@ -1,32 +1,33 @@
 [gd_scene format=4]
 
-[ext_resource type="Script" path="res://features/world/world.gd" id="1_tt3r7"]
-[ext_resource type="PackedScene" path="res://features/ui/hud.tscn" id="2_4iky1"]
-[ext_resource type="Texture2D" path="res://assets/ninja/tiles/floor.png" id="3_t46ay"]
-[ext_resource type="Texture2D" path="res://assets/ninja/tiles/water.png" id="4_60bq7"]
-[ext_resource type="Texture2D" path="res://assets/ninja/tiles/TilesetRelief.png" id="5_00m0o"]
-[ext_resource type="Texture2D" path="res://assets/ninja/tiles/TilesetFloorB.png" id="6_tmba1"]
-[ext_resource type="Texture2D" path="res://assets/ninja/tiles/floor_hell.png" id="7_04y7b"]
-[ext_resource type="Texture2D" path="res://assets/ninja/tiles/floor_cave.png" id="8_fh77q"]
-[ext_resource type="Texture2D" path="res://assets/ninja/tiles/water_lava.png" id="9_asdot"]
-[ext_resource type="Texture2D" path="res://assets/ninja/tiles/water_clear.png" id="10_qdeba"]
-[ext_resource type="Texture2D" path="res://assets/towns/mist.png" id="11_o1r3i"]
-[ext_resource type="Texture2D" path="res://assets/vendor/towns/props.png" id="12_8y3tf"]
-[ext_resource type="Texture2D" path="res://assets/ninja/tiles/desert.png" id="13_yjr1t"]
-[ext_resource type="Script" path="res://features/npc/npc.gd" id="14_vbs8g"]
-[ext_resource type="Texture2D" path="res://assets/villagers/v05_mist.png" id="15_57g3p"]
-[ext_resource type="Texture2D" path="res://assets/villagers/v13_mist.png" id="16_fsrdd"]
-[ext_resource type="Texture2D" path="res://assets/villagers/v14_mist.png" id="17_rdirs"]
-[ext_resource type="Script" path="res://features/npc/critter.gd" id="18_g11wn"]
-[ext_resource type="Texture2D" path="res://assets/ninja/actor/npc/cat.png" id="19_pmxcc"]
-[ext_resource type="Texture2D" path="res://assets/ninja/tiles/nature.png" id="20_imsi3"]
-[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="21_2netx"]
-[ext_resource type="Script" path="res://features/world/portal.gd" id="22_l73kw"]
-[ext_resource type="Script" path="res://features/world/backdrop_layer.gd" id="23_k8te5"]
-[ext_resource type="AudioStream" path="res://assets/ninja/music/town2.ogg" id="24_7yhrs"]
+[ext_resource type="Script" path="res://features/world/world.gd" id="1_4iky1"]
+[ext_resource type="PackedScene" path="res://features/ui/hud.tscn" id="2_t46ay"]
+[ext_resource type="Script" path="res://features/world/isle_rim.gd" id="3_60bq7"]
+[ext_resource type="Texture2D" path="res://assets/ninja/tiles/floor.png" id="4_00m0o"]
+[ext_resource type="Texture2D" path="res://assets/ninja/tiles/water.png" id="5_tmba1"]
+[ext_resource type="Texture2D" path="res://assets/ninja/tiles/TilesetRelief.png" id="6_04y7b"]
+[ext_resource type="Texture2D" path="res://assets/ninja/tiles/TilesetFloorB.png" id="7_fh77q"]
+[ext_resource type="Texture2D" path="res://assets/ninja/tiles/floor_hell.png" id="8_asdot"]
+[ext_resource type="Texture2D" path="res://assets/ninja/tiles/floor_cave.png" id="9_qdeba"]
+[ext_resource type="Texture2D" path="res://assets/ninja/tiles/water_lava.png" id="10_o1r3i"]
+[ext_resource type="Texture2D" path="res://assets/ninja/tiles/water_clear.png" id="11_8y3tf"]
+[ext_resource type="Texture2D" path="res://assets/towns/mist.png" id="12_yjr1t"]
+[ext_resource type="Texture2D" path="res://assets/vendor/towns/props.png" id="13_vbs8g"]
+[ext_resource type="Texture2D" path="res://assets/ninja/tiles/desert.png" id="14_57g3p"]
+[ext_resource type="Script" path="res://features/npc/npc.gd" id="15_fsrdd"]
+[ext_resource type="Texture2D" path="res://assets/villagers/v05_mist.png" id="16_rdirs"]
+[ext_resource type="Texture2D" path="res://assets/villagers/v13_mist.png" id="17_g11wn"]
+[ext_resource type="Texture2D" path="res://assets/villagers/v14_mist.png" id="18_pmxcc"]
+[ext_resource type="Script" path="res://features/npc/critter.gd" id="19_imsi3"]
+[ext_resource type="Texture2D" path="res://assets/ninja/actor/npc/cat.png" id="20_2netx"]
+[ext_resource type="Texture2D" path="res://assets/ninja/tiles/nature.png" id="21_l73kw"]
+[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="22_k8te5"]
+[ext_resource type="Script" path="res://features/world/portal.gd" id="23_7yhrs"]
+[ext_resource type="Script" path="res://features/world/backdrop_layer.gd" id="24_humq1"]
+[ext_resource type="AudioStream" path="res://assets/ninja/music/town2.ogg" id="25_i8flp"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xu8mu"]
-texture = ExtResource("3_t46ay")
+texture = ExtResource("4_00m0o")
 0:12/0 = 0
 1:12/0 = 0
 2:12/0 = 0
@@ -131,7 +132,7 @@ texture = ExtResource("3_t46ay")
 6:16/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bvclp"]
-texture = ExtResource("4_60bq7")
+texture = ExtResource("5_tmba1")
 3:9/0 = 0
 0:9/0 = 0
 2:9/0 = 0
@@ -221,7 +222,7 @@ texture = ExtResource("4_60bq7")
 1:13/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lbe84"]
-texture = ExtResource("5_00m0o")
+texture = ExtResource("6_04y7b")
 1:0/0 = 0
 2:0/0 = 0
 3:0/0 = 0
@@ -242,7 +243,7 @@ texture = ExtResource("5_00m0o")
 6:2/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rtqyb"]
-texture = ExtResource("6_tmba1")
+texture = ExtResource("7_fh77q")
 3:3/0 = 0
 0:3/0 = 0
 2:3/0 = 0
@@ -265,7 +266,7 @@ texture = ExtResource("6_tmba1")
 6:2/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_g63et"]
-texture = ExtResource("7_04y7b")
+texture = ExtResource("8_asdot")
 0:5/0 = 0
 1:5/0 = 0
 2:5/0 = 0
@@ -293,7 +294,7 @@ texture = ExtResource("7_04y7b")
 6:2/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qfl2y"]
-texture = ExtResource("8_fh77q")
+texture = ExtResource("9_qdeba")
 0:5/0 = 0
 1:5/0 = 0
 2:5/0 = 0
@@ -321,7 +322,7 @@ texture = ExtResource("8_fh77q")
 6:2/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_merhf"]
-texture = ExtResource("9_asdot")
+texture = ExtResource("10_o1r3i")
 3:3/0 = 0
 0:3/0 = 0
 2:3/0 = 0
@@ -344,7 +345,7 @@ texture = ExtResource("9_asdot")
 6:2/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fjchd"]
-texture = ExtResource("10_qdeba")
+texture = ExtResource("11_8y3tf")
 3:9/0 = 0
 0:9/0 = 0
 2:9/0 = 0
@@ -396,22 +397,22 @@ sources/5 = SubResource("TileSetAtlasSource_qfl2y")
 sources/6 = SubResource("TileSetAtlasSource_merhf")
 sources/7 = SubResource("TileSetAtlasSource_fjchd")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_humq1"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l3wbw"]
 size = Vector2(58, 26)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_i8flp"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bjw4m"]
 size = Vector2(10, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_l3wbw"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gocut"]
 size = Vector2(26, 8)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bjw4m"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nrj2n"]
 size = Vector2(42, 8)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eb26y"]
 size = Vector2(26, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xybhk"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0ahb8"]
 size = Vector2(632, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hrbcp"]
@@ -459,9 +460,6 @@ size = Vector2(232, 10)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_t4awp"]
 size = Vector2(200, 10)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_b0mq3"]
-size = Vector2(24, 12)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dxgjh"]
 size = Vector2(640, 42)
 
@@ -474,733 +472,888 @@ size = Vector2(4, 64)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fkvx2"]
 size = Vector2(16, 48)
 
-[node name="World" type="Node2D" unique_id=1176398288]
-script = ExtResource("1_tt3r7")
+[node name="World" type="Node2D" unique_id=201145266]
+script = ExtResource("1_4iky1")
 map_title = "별지기 야영지"
 metadata/map_size = Vector2i(40, 32)
 
-[node name="HUD" parent="." unique_id=226662052 instance=ExtResource("2_4iky1")]
+[node name="HUD" parent="." unique_id=1449922582 instance=ExtResource("2_t46ay")]
 
-[node name="Ground" type="TileMapLayer" parent="." unique_id=574417801]
+[node name="IsleRim" type="Node2D" parent="." unique_id=1515117498]
+script = ExtResource("3_60bq7")
+size_cells = Vector2i(40, 32)
+mask = PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
+
+[node name="Ground" type="TileMapLayer" parent="." unique_id=1592615454]
 tile_map_data = PackedByteArray("AAAUAAMABQAAAAUAAAAVAAMABQAAAAUAAAAOAAQABQAAAAUAAAAPAAQABQABAAUAAAAQAAQABQAAAAUAAAARAAQABQAAAAUAAAASAAQABQAAAAUAAAATAAQABQAEAAUAAAAUAAQABQAAAAUAAAAVAAQABQAAAAUAAAAWAAQABQADAAUAAAAXAAQABQAAAAUAAAAYAAQABQAAAAUAAAAZAAQABQAAAAUAAAAaAAQABQAAAAUAAAAbAAQABQAAAAUAAAAJAAUABQAAAAUAAAAKAAUABQAAAAUAAAALAAUABQAAAAUAAAAMAAUABQAAAAUAAAANAAUABQAAAAUAAAAOAAUABQAAAAUAAAAPAAUABQAAAAUAAAAQAAUABQAAAAUAAAARAAUABQABAAUAAAASAAUABQAAAAUAAAATAAUABQAAAAUAAAAUAAUABQAEAAUAAAAVAAUABQAAAAUAAAAWAAUABQAAAAUAAAAXAAUABQAAAAUAAAAYAAUABQAAAAUAAAAZAAUABQAAAAUAAAAaAAUABQAAAAUAAAAbAAUABQAAAAUAAAAcAAUABQAAAAUAAAAdAAUABQAAAAUAAAAeAAUABQAAAAUAAAAfAAUABQAAAAUAAAAIAAYABQACAAUAAAAJAAYABQAAAAUAAAAKAAYABQACAAUAAAALAAYABQAAAAUAAAAMAAYABQAAAAUAAAANAAYABQAAAAUAAAAOAAYABQAAAAUAAAAPAAYABQACAAUAAAAQAAYABQAAAAUAAAARAAYABQAAAAUAAAASAAYABQAAAAUAAAATAAYABQAAAAUAAAAUAAYABQAAAAUAAAAVAAYABQAAAAUAAAAWAAYABQAAAAUAAAAXAAYABQAAAAUAAAAYAAYABQACAAUAAAAZAAYABQAAAAUAAAAaAAYABQAAAAUAAAAbAAYABQAAAAUAAAAcAAYABQADAAUAAAAdAAYABQAEAAUAAAAeAAYABQAAAAUAAAAfAAYABQAAAAUAAAAgAAYABQAAAAUAAAAhAAYABQAAAAUAAAAHAAcABQAEAAUAAAAIAAcABQAAAAUAAAAJAAcABQAAAAUAAAAKAAcABQACAAUAAAALAAcABQAAAAUAAAAMAAcABQAAAAUAAAANAAcABQAAAAUAAAAOAAcABQAAAAUAAAAPAAcABQAAAAUAAAAQAAcABQAAAAUAAAARAAcABQACAAUAAAASAAcABQAAAAUAAAATAAcABQAAAAUAAAAUAAcABQACAAUAAAAVAAcABQAAAAUAAAAWAAcABQACAAUAAAAXAAcABQAAAAUAAAAYAAcABQACAAUAAAAZAAcABQAAAAUAAAAaAAcABQAAAAUAAAAbAAcABQAAAAUAAAAcAAcABQAAAAUAAAAdAAcABQAEAAUAAAAeAAcABQAAAAUAAAAfAAcABQAEAAUAAAAgAAcABQAAAAUAAAAhAAcABQAAAAUAAAAGAAgABQAAAAUAAAAHAAgABQAAAAUAAAAIAAgABQAAAAUAAAAJAAgABQAEAAUAAAAKAAgABQAAAAUAAAALAAgABQACAAUAAAAMAAgABQAAAAUAAAANAAgABQAAAAUAAAAOAAgABQAAAAUAAAAPAAgABQAAAAUAAAAQAAgABQAAAAUAAAARAAgABQAAAAUAAAASAAgABQAAAAUAAAATAAgABQACAAUAAAAUAAgABQAAAAUAAAAVAAgABQAAAAUAAAAWAAgABQAAAAUAAAAXAAgABQABAAUAAAAYAAgABQAAAAUAAAAZAAgABQAAAAUAAAAaAAgABQAAAAUAAAAbAAgABQABAAUAAAAcAAgABQAAAAUAAAAdAAgABQAAAAUAAAAeAAgABQAAAAUAAAAfAAgABQAAAAUAAAAgAAgABQAAAAUAAAAhAAgABQAAAAUAAAAGAAkABQAAAAUAAAAHAAkABQAAAAUAAAAIAAkABQAAAAUAAAAJAAkABQACAAUAAAAKAAkABQAAAAUAAAALAAkABQADAAUAAAAMAAkABQAAAAUAAAANAAkABQAAAAUAAAAOAAkABQAAAAUAAAAPAAkABQAAAAUAAAAQAAkABQAAAAUAAAARAAkABQADAAUAAAASAAkABQAAAAUAAAATAAkABQAAAAUAAAAUAAkABQAAAAUAAAAVAAkABQAAAAUAAAAWAAkABQAAAAUAAAAXAAkABQAAAAUAAAAYAAkABQAAAAUAAAAZAAkABQAAAAUAAAAaAAkABQAAAAUAAAAbAAkABQADAAUAAAAcAAkABQAAAAUAAAAdAAkABQAAAAUAAAAeAAkABQAAAAUAAAAfAAkABQAAAAUAAAAgAAkABQAAAAUAAAAhAAkABQAAAAUAAAAiAAkABQAAAAUAAAAAAAoABQAAAAUAAAABAAoABQAAAAUAAAACAAoABQAAAAUAAAADAAoABQADAAUAAAAEAAoABQAAAAUAAAAFAAoABQAAAAUAAAAGAAoABQAAAAUAAAAHAAoABQAAAAUAAAAIAAoABQAAAAUAAAAJAAoABQAAAAUAAAAKAAoABQACAAUAAAALAAoABQAAAAUAAAAMAAoABQAAAAUAAAANAAoABQAAAAUAAAAOAAoABQAAAAUAAAAPAAoABQAAAAUAAAAQAAoABQAEAAUAAAARAAoABQAAAAUAAAASAAoABQAAAAUAAAATAAoABQAAAAUAAAAUAAoABQAAAAUAAAAVAAoABQAAAAUAAAAWAAoABQAAAAUAAAAXAAoABQAAAAUAAAAYAAoABQAAAAUAAAAZAAoABQAAAAUAAAAaAAoABQAAAAUAAAAbAAoABQAAAAUAAAAcAAoABQAAAAUAAAAdAAoABQAAAAUAAAAeAAoABQAAAAUAAAAfAAoABQAAAAUAAAAgAAoABQAAAAUAAAAhAAoABQAAAAUAAAAiAAoABQAAAAUAAAAjAAoABQAAAAUAAAAkAAoABQAAAAUAAAAlAAoABQAAAAUAAAAmAAoABQADAAUAAAAnAAoABQAAAAUAAAAAAAsABQAAAAUAAAABAAsABQAAAAUAAAACAAsABQAAAAUAAAADAAsABQAAAAUAAAAEAAsABQAAAAUAAAAFAAsABQAAAAUAAAAGAAsABQAAAAUAAAAHAAsABQAAAAUAAAAIAAsABQADAAUAAAAJAAsABQABAAUAAAAKAAsABQABAAUAAAALAAsABQADAAUAAAAMAAsABQAAAAUAAAANAAsABQAAAAUAAAAOAAsABQAAAAUAAAAPAAsABQAAAAUAAAAQAAsABQACAAUAAAARAAsABQAAAAUAAAASAAsABQAAAAAAAAATAAsABQACAAAAAAAUAAsABQAAAAUAAAAVAAsABQAAAAUAAAAWAAsABQAAAAUAAAAXAAsABQAAAAUAAAAYAAsABQAAAAUAAAAZAAsABQAAAAUAAAAaAAsABQAAAAUAAAAbAAsABQAAAAUAAAAcAAsABQAAAAUAAAAdAAsABQAAAAUAAAAeAAsABQAAAAUAAAAfAAsABQAAAAUAAAAgAAsABQAAAAUAAAAhAAsABQAAAAUAAAAiAAsABQAAAAUAAAAjAAsABQABAAUAAAAkAAsABQAAAAUAAAAlAAsABQAAAAUAAAAmAAsABQAAAAUAAAAnAAsABQAEAAUAAAAAAAwABQADAAUAAAABAAwABQABAAUAAAACAAwABQAAAAUAAAADAAwABQAAAAUAAAAEAAwABQAAAAUAAAAFAAwABQAAAAUAAAAGAAwABQAAAAUAAAAHAAwABQAAAAUAAAAIAAwABQAAAAUAAAAJAAwABQAAAAUAAAAKAAwABQAAAAUAAAALAAwABQAAAAUAAAAMAAwABQAAAAUAAAANAAwABQAEAAUAAAAOAAwABQAAAAUAAAAPAAwABQAAAAUAAAAQAAwABQAAAAUAAAARAAwABQAAAAAAAAASAAwABQAGAAIAAAATAAwABQAFAAIAAAAUAAwABQABAAAAAAAVAAwABQACAAAAAAAWAAwABQAAAAUAAAAXAAwABQABAAUAAAAYAAwABQAAAAUAAAAZAAwABQAAAAUAAAAaAAwABQAAAAUAAAAbAAwABQAAAAUAAAAcAAwABQAEAAUAAAAdAAwABQAAAAUAAAAeAAwABQAAAAUAAAAfAAwABQAAAAUAAAAgAAwABQAAAAUAAAAhAAwABQAAAAUAAAAiAAwABQAAAAUAAAAjAAwABQAAAAUAAAAkAAwABQAAAAUAAAAlAAwABQAAAAUAAAAmAAwABQAAAAUAAAAnAAwABQAAAAUAAAAAAA0ABQACAAUAAAABAA0ABQAAAAUAAAACAA0ABQAAAAUAAAADAA0ABQAAAAUAAAAEAA0ABQAAAAUAAAAFAA0ABQADAAUAAAAGAA0ABQAAAAUAAAAHAA0ABQAAAAUAAAAIAA0ABQAAAAUAAAAJAA0ABQAAAAUAAAAKAA0ABQAAAAUAAAALAA0ABQAAAAUAAAAMAA0ABQAAAAUAAAANAA0ABQAAAAUAAAAOAA0ABQAAAAUAAAAPAA0ABQAAAAUAAAAQAA0ABQAAAAAAAAARAA0ABQAGAAIAAAASAA0ABQABAAEAAAATAA0ABQABAAEAAAAUAA0ABQABAAEAAAAVAA0ABQAFAAIAAAAWAA0ABQACAAAAAAAXAA0ABQAAAAUAAAAYAA0ABQAAAAUAAAAZAA0ABQAAAAUAAAAaAA0ABQAAAAUAAAAbAA0ABQAAAAUAAAAcAA0ABQAAAAUAAAAdAA0ABQAAAAUAAAAeAA0ABQAAAAUAAAAfAA0ABQAAAAUAAAAgAA0ABQAAAAUAAAAhAA0ABQAAAAUAAAAiAA0ABQAAAAUAAAAjAA0ABQAAAAUAAAAkAA0ABQAAAAUAAAAlAA0ABQABAAUAAAAmAA0ABQAAAAUAAAAnAA0ABQAAAAUAAAAAAA4ABQAAAAUAAAABAA4ABQAAAAUAAAACAA4ABQAAAAUAAAADAA4ABQAAAAUAAAAEAA4ABQAAAAUAAAAFAA4ABQAAAAUAAAAGAA4ABQAAAAUAAAAHAA4ABQAAAAUAAAAIAA4ABQAAAAUAAAAJAA4ABQAAAAUAAAAKAA4ABQAAAAUAAAALAA4ABQAAAAUAAAAMAA4ABQAAAAUAAAANAA4ABQAAAAUAAAAOAA4ABQAAAAUAAAAPAA4ABQAAAAUAAAAQAA4ABQAAAAEAAAARAA4ABQABAAEAAAASAA4ABQABAAEAAAATAA4ABQABAAEAAAAUAA4ABQABAAEAAAAVAA4ABQABAAEAAAAWAA4ABQAFAAIAAAAXAA4ABQABAAAAAAAYAA4ABQABAAAAAAAZAA4ABQABAAAAAAAaAA4ABQABAAAAAAAbAA4ABQABAAAAAAAcAA4ABQACAAAAAAAdAA4ABQAAAAUAAAAeAA4ABQAAAAUAAAAfAA4ABQACAAUAAAAgAA4ABQAAAAUAAAAhAA4ABQAAAAUAAAAiAA4ABQAAAAUAAAAjAA4ABQAAAAUAAAAkAA4ABQAAAAUAAAAlAA4ABQAAAAUAAAAmAA4ABQAAAAUAAAAnAA4ABQAAAAUAAAAAAA8ABQABAAAAAAABAA8ABQABAAAAAAACAA8ABQABAAAAAAADAA8ABQABAAAAAAAEAA8ABQABAAAAAAAFAA8ABQABAAAAAAAGAA8ABQABAAAAAAAHAA8ABQABAAAAAAAIAA8ABQABAAAAAAAJAA8ABQABAAAAAAAKAA8ABQABAAAAAAALAA8ABQABAAAAAAAMAA8ABQABAAAAAAANAA8ABQABAAAAAAAOAA8ABQABAAAAAAAPAA8ABQABAAAAAAAQAA8ABQAGAAIAAAARAA8ABQABAAEAAAASAA8ABQABAAEAAAATAA8ABQABAAEAAAAUAA8ABQABAAEAAAAVAA8ABQABAAEAAAAWAA8ABQABAAEAAAAXAA8ABQABAAEAAAAYAA8ABQABAAEAAAAZAA8ABQABAAEAAAAaAA8ABQABAAEAAAAbAA8ABQABAAEAAAAcAA8ABQAFAAIAAAAdAA8ABQABAAAAAAAeAA8ABQABAAAAAAAfAA8ABQABAAAAAAAgAA8ABQABAAAAAAAhAA8ABQABAAAAAAAiAA8ABQABAAAAAAAjAA8ABQABAAAAAAAkAA8ABQABAAAAAAAlAA8ABQABAAAAAAAmAA8ABQABAAAAAAAnAA8ABQABAAAAAAAAABAABQABAAIAAAABABAABQABAAIAAAACABAABQABAAIAAAADABAABQABAAIAAAAEABAABQABAAIAAAAFABAABQABAAIAAAAGABAABQABAAIAAAAHABAABQABAAIAAAAIABAABQABAAIAAAAJABAABQABAAIAAAAKABAABQABAAIAAAALABAABQABAAIAAAAMABAABQABAAIAAAANABAABQABAAIAAAAOABAABQAGAAEAAAAPABAABQABAAEAAAAQABAABQABAAEAAAARABAABQABAAEAAAASABAABQABAAEAAAATABAABQABAAEAAAAUABAABQABAAEAAAAVABAABQABAAEAAAAWABAABQABAAEAAAAXABAABQABAAEAAAAYABAABQABAAEAAAAZABAABQAFAAEAAAAaABAABQABAAIAAAAbABAABQABAAIAAAAcABAABQABAAIAAAAdABAABQABAAIAAAAeABAABQABAAIAAAAfABAABQABAAIAAAAgABAABQABAAIAAAAhABAABQABAAIAAAAiABAABQABAAIAAAAjABAABQABAAIAAAAkABAABQABAAIAAAAlABAABQABAAIAAAAmABAABQABAAIAAAAnABAABQABAAIAAAAAABEABQAAAAUAAAABABEABQAAAAUAAAACABEABQAAAAUAAAADABEABQAAAAUAAAAEABEABQAAAAUAAAAFABEABQAAAAUAAAAGABEABQAAAAUAAAAHABEABQAAAAUAAAAIABEABQAAAAUAAAAJABEABQAAAAUAAAAKABEABQAEAAUAAAALABEABQACAAUAAAAMABEABQABAAUAAAANABEABQAAAAUAAAAOABEABQAAAAEAAAAPABEABQABAAEAAAAQABEABQABAAEAAAARABEABQABAAEAAAASABEABQABAAEAAAATABEABQABAAEAAAAUABEABQABAAEAAAAVABEABQABAAEAAAAWABEABQABAAEAAAAXABEABQABAAEAAAAYABEABQABAAEAAAAZABEABQACAAEAAAAaABEABQABAAUAAAAbABEABQAAAAUAAAAcABEABQAAAAUAAAAdABEABQAAAAUAAAAeABEABQAAAAUAAAAfABEABQAAAAUAAAAgABEABQABAAUAAAAhABEABQAAAAUAAAAiABEABQAAAAUAAAAjABEABQAAAAUAAAAkABEABQAAAAUAAAAlABEABQAAAAUAAAAmABEABQAAAAUAAAAnABEABQAAAAUAAAAAABIABQAAAAUAAAABABIABQAAAAUAAAACABIABQAAAAUAAAADABIABQACAAUAAAAEABIABQAAAAUAAAAFABIABQAAAAUAAAAGABIABQAAAAUAAAAHABIABQAEAAUAAAAIABIABQADAAUAAAAJABIABQAAAAUAAAAKABIABQAAAAUAAAALABIABQAAAAUAAAAMABIABQAAAAAAAAANABIABQABAAAAAAAOABIABQAGAAIAAAAPABIABQAFAAEAAAAQABIABQABAAIAAAARABIABQABAAIAAAASABIABQAGAAEAAAATABIABQABAAEAAAAUABIABQAFAAEAAAAVABIABQABAAIAAAAWABIABQABAAIAAAAXABIABQABAAIAAAAYABIABQAGAAEAAAAZABIABQAFAAIAAAAaABIABQACAAAAAAAbABIABQADAAUAAAAcABIABQAAAAUAAAAdABIABQAAAAUAAAAeABIABQAAAAUAAAAfABIABQAAAAUAAAAgABIABQAAAAUAAAAhABIABQAAAAUAAAAiABIABQAAAAUAAAAjABIABQAAAAUAAAAkABIABQAAAAUAAAAlABIABQACAAUAAAAmABIABQAAAAUAAAAnABIABQAAAAUAAAAAABMABQAAAAUAAAABABMABQACAAUAAAACABMABQABAAUAAAADABMABQAAAAUAAAAEABMABQAAAAUAAAAFABMABQAAAAUAAAAGABMABQAAAAUAAAAHABMABQAAAAUAAAAIABMABQAAAAUAAAAJABMABQAAAAUAAAAKABMABQAAAAAAAAALABMABQABAAAAAAAMABMABQAFAAEAAAANABMABQABAAIAAAAOABMABQABAAIAAAAPABMABQACAAIAAAAQABMABQAAAAUAAAARABMABQACAAUAAAASABMABQAAAAIAAAATABMABQABAAIAAAAUABMABQACAAIAAAAVABMABQAAAAUAAAAWABMABQAAAAUAAAAXABMABQAAAAUAAAAYABMABQAAAAIAAAAZABMABQAGAAEAAAAaABMABQAFAAIAAAAbABMABQACAAAAAAAcABMABQABAAUAAAAdABMABQAAAAUAAAAeABMABQAAAAUAAAAfABMABQAEAAUAAAAgABMABQAAAAUAAAAhABMABQAAAAUAAAAiABMABQAAAAUAAAAjABMABQAAAAUAAAAkABMABQAAAAUAAAAlABMABQAAAAUAAAAmABMABQAAAAUAAAAnABMABQAAAAUAAAAAABQABQAAAAUAAAABABQABQAAAAUAAAACABQABQAAAAUAAAADABQABQAAAAUAAAAEABQABQAAAAUAAAAFABQABQAAAAUAAAAGABQABQAAAAUAAAAHABQABQAAAAUAAAAIABQABQAAAAUAAAAJABQABQAAAAUAAAAKABQABQAAAAIAAAALABQABQABAAIAAAAMABQABQACAAIAAAANABQABQAAAAUAAAAOABQABQAAAAUAAAAPABQABQACAAUAAAAQABQABQAAAAUAAAARABQABQAAAAUAAAASABQABQADAAUAAAATABQABQAAAAUAAAAUABQABQAAAAUAAAAVABQABQAAAAUAAAAWABQABQAAAAUAAAAXABQABQAAAAUAAAAYABQABQAAAAUAAAAZABQABQAAAAIAAAAaABQABQABAAIAAAAbABQABQAGAAEAAAAcABQABQABAAAAAAAdABQABQACAAAAAAAeABQABQAAAAUAAAAfABQABQAAAAUAAAAgABQABQAAAAUAAAAhABQABQACAAUAAAAiABQABQAAAAUAAAAjABQABQAAAAUAAAAkABQABQAAAAUAAAAlABQABQAAAAUAAAAmABQABQAAAAUAAAAnABQABQAAAAUAAAAEABUABQACAAUAAAAFABUABQAAAAUAAAAGABUABQAAAAUAAAAHABUABQAAAAUAAAAIABUABQAAAAUAAAAJABUABQAAAAUAAAAKABUABQACAAUAAAALABUABQAAAAUAAAAMABUABQAAAAUAAAANABUABQAAAAUAAAAOABUABQAAAAUAAAAPABUABQAAAAUAAAAQABUABQAEAAUAAAARABUABQAAAAUAAAASABUABQAEAAUAAAATABUABQABAAUAAAAUABUABQAAAAUAAAAVABUABQAAAAUAAAAWABUABQABAAUAAAAXABUABQAEAAUAAAAYABUABQAAAAUAAAAZABUABQAAAAUAAAAaABUABQAAAAUAAAAbABUABQAAAAIAAAAcABUABQABAAIAAAAdABUABQAGAAEAAAAeABUABQACAAAAAAAfABUABQAAAAUAAAAgABUABQAAAAUAAAAhABUABQAAAAUAAAAiABUABQACAAUAAAAjABUABQAAAAUAAAAkABUABQAAAAUAAAAlABUABQAAAAUAAAAFABYABQAAAAUAAAAGABYABQAEAAUAAAAHABYABQAAAAUAAAAIABYABQAAAAUAAAAJABYABQACAAUAAAAKABYABQAAAAUAAAALABYABQAAAAUAAAAMABYABQAAAAUAAAANABYABQAAAAUAAAAOABYABQAAAAUAAAAPABYABQAAAAUAAAAQABYABQAAAAUAAAARABYABQAAAAUAAAASABYABQACAAUAAAATABYABQAAAAUAAAAUABYABQAAAAUAAAAVABYABQAAAAUAAAAWABYABQAAAAUAAAAXABYABQAAAAUAAAAYABYABQADAAUAAAAZABYABQAAAAUAAAAaABYABQAAAAUAAAAbABYABQAAAAUAAAAcABYABQAAAAUAAAAdABYABQAAAAIAAAAeABYABQACAAIAAAAfABYABQAAAAUAAAAgABYABQAAAAUAAAAhABYABQAAAAUAAAAiABYABQAAAAUAAAAjABYABQAAAAUAAAAkABYABQAAAAUAAAAHABcABQAAAAUAAAAIABcABQAAAAUAAAAJABcABQAAAAUAAAAKABcABQACAAUAAAALABcABQAAAAUAAAAMABcABQAAAAUAAAANABcABQABAAUAAAAOABcABQAAAAUAAAAPABcABQAAAAUAAAAQABcABQAAAAUAAAARABcABQAAAAUAAAASABcABQAAAAUAAAATABcABQAAAAUAAAAUABcABQAAAAUAAAAVABcABQAAAAUAAAAWABcABQAAAAUAAAAXABcABQAAAAUAAAAYABcABQAAAAUAAAAZABcABQAAAAUAAAAaABcABQAAAAUAAAAbABcABQAAAAUAAAAcABcABQAAAAUAAAAdABcABQAAAAUAAAAeABcABQAAAAUAAAAfABcABQAAAAUAAAAgABcABQAAAAUAAAAhABcABQAAAAUAAAAiABcABQAAAAUAAAAHABgABQAAAAUAAAAIABgABQADAAUAAAAJABgABQAAAAUAAAAKABgABQAAAAUAAAALABgABQAEAAUAAAAMABgABQACAAUAAAANABgABQAAAAUAAAAOABgABQAAAAUAAAAPABgABQAAAAUAAAAQABgABQAAAAUAAAARABgABQAAAAUAAAASABgABQAEAAUAAAATABgABQAAAAUAAAAUABgABQAAAAUAAAAVABgABQAAAAUAAAAWABgABQAAAAUAAAAXABgABQAAAAUAAAAYABgABQAAAAUAAAAZABgABQAAAAUAAAAaABgABQAAAAUAAAAbABgABQACAAUAAAAcABgABQAAAAUAAAAdABgABQAAAAUAAAAeABgABQAAAAUAAAAfABgABQADAAUAAAAgABgABQAAAAUAAAAhABgABQAAAAUAAAAIABkABQAAAAUAAAAJABkABQACAAUAAAAKABkABQAEAAUAAAALABkABQAAAAUAAAAMABkABQAAAAUAAAANABkABQAAAAUAAAAOABkABQAAAAUAAAAPABkABQAAAAUAAAAQABkABQAAAAUAAAARABkABQAAAAUAAAASABkABQACAAUAAAATABkABQABAAUAAAAUABkABQAAAAUAAAAVABkABQAAAAUAAAAWABkABQAEAAUAAAAXABkABQAAAAUAAAAYABkABQAAAAUAAAAZABkABQAAAAUAAAAaABkABQAAAAUAAAAbABkABQAAAAUAAAAcABkABQAAAAUAAAAdABkABQAAAAUAAAAeABkABQAAAAUAAAAfABkABQAAAAUAAAAgABkABQAAAAUAAAAhABkABQAAAAUAAAAIABoABQAAAAUAAAAJABoABQAAAAUAAAAKABoABQAAAAUAAAALABoABQACAAUAAAAMABoABQAAAAUAAAANABoABQAAAAUAAAAOABoABQAAAAUAAAAPABoABQAAAAUAAAAQABoABQAAAAUAAAARABoABQAAAAUAAAASABoABQAAAAUAAAATABoABQAAAAUAAAAUABoABQACAAUAAAAVABoABQAAAAUAAAAWABoABQABAAUAAAAXABoABQAAAAUAAAAYABoABQAAAAUAAAAZABoABQAAAAUAAAAaABoABQAAAAUAAAAbABoABQAAAAUAAAAcABoABQAAAAUAAAAdABoABQAAAAUAAAAeABoABQAAAAUAAAAfABoABQAAAAUAAAAgABoABQAAAAUAAAALABsABQAAAAUAAAAMABsABQACAAUAAAANABsABQAAAAUAAAAOABsABQAAAAUAAAAPABsABQAAAAUAAAAQABsABQAAAAUAAAARABsABQAEAAUAAAASABsABQAAAAUAAAATABsABQAEAAUAAAAUABsABQAAAAUAAAAVABsABQAAAAUAAAAWABsABQAAAAUAAAAXABsABQAAAAUAAAAYABsABQAAAAUAAAAZABsABQAAAAUAAAAaABsABQAAAAUAAAAbABsABQAEAAUAAAAcABsABQAAAAUAAAAdABsABQAAAAUAAAAeABsABQACAAUAAAAfABsABQAAAAUAAAAPABwABQAAAAUAAAAQABwABQAAAAUAAAARABwABQAAAAUAAAASABwABQAAAAUAAAATABwABQAAAAUAAAAUABwABQAAAAUAAAAVABwABQAAAAUAAAAWABwABQAAAAUAAAAXABwABQAAAAUAAAAYABwABQAAAAUAAAAZABwABQAAAAUAAAAaABwABQAAAAUAAAAbABwABQAAAAUAAAAcABwABQAEAAUAAAASAB0ABQAAAAUAAAATAB0ABQAAAAUAAAAUAB0ABQAAAAUAAAAVAB0ABQAAAAUAAAAWAB0ABQAAAAUAAAAXAB0ABQABAAUAAAAYAB0ABQAEAAUAAAAZAB0ABQAAAAUAAAAaAB0ABQAAAAUAAAA=")
 tile_set = SubResource("TileSet_kpwf8")
 
-[node name="Entities" type="Node2D" parent="." unique_id=2140199643]
+[node name="Entities" type="Node2D" parent="." unique_id=781541397]
 y_sort_enabled = true
 
-[node name="House1" type="StaticBody2D" parent="Entities" unique_id=1851993939]
+[node name="House1" type="StaticBody2D" parent="Entities" unique_id=1740710856]
 position = Vector2(184, 238)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/House1" unique_id=354912512]
-texture = ExtResource("11_o1r3i")
+[node name="Sprite" type="Sprite2D" parent="Entities/House1" unique_id=618573265]
+texture = ExtResource("12_yjr1t")
 centered = false
 offset = Vector2(-40, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 80, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/House1" unique_id=1548878238]
+[node name="Shape" type="CollisionShape2D" parent="Entities/House1" unique_id=714619755]
 position = Vector2(0, -13)
-shape = SubResource("RectangleShape2D_humq1")
+shape = SubResource("RectangleShape2D_l3wbw")
 
-[node name="House2" type="StaticBody2D" parent="Entities" unique_id=673991851]
+[node name="House2" type="StaticBody2D" parent="Entities" unique_id=1399841960]
 position = Vector2(440, 222)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/House2" unique_id=463039429]
-texture = ExtResource("11_o1r3i")
+[node name="Sprite" type="Sprite2D" parent="Entities/House2" unique_id=1064905065]
+texture = ExtResource("12_yjr1t")
 centered = false
 offset = Vector2(-40, -62)
 region_enabled = true
 region_rect = Rect2(80, 0, 80, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/House2" unique_id=1597091318]
+[node name="Shape" type="CollisionShape2D" parent="Entities/House2" unique_id=528438717]
 position = Vector2(0, -13)
-shape = SubResource("RectangleShape2D_humq1")
+shape = SubResource("RectangleShape2D_l3wbw")
 
-[node name="House3" type="StaticBody2D" parent="Entities" unique_id=1588980907]
+[node name="House3" type="StaticBody2D" parent="Entities" unique_id=1205359674]
 position = Vector2(168, 302)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/House3" unique_id=1353842289]
-texture = ExtResource("11_o1r3i")
+[node name="Sprite" type="Sprite2D" parent="Entities/House3" unique_id=1043101715]
+texture = ExtResource("12_yjr1t")
 centered = false
 offset = Vector2(-40, -62)
 region_enabled = true
 region_rect = Rect2(160, 0, 80, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/House3" unique_id=2135200200]
+[node name="Shape" type="CollisionShape2D" parent="Entities/House3" unique_id=1237952193]
 position = Vector2(0, -13)
-shape = SubResource("RectangleShape2D_humq1")
+shape = SubResource("RectangleShape2D_l3wbw")
 
-[node name="House4" type="StaticBody2D" parent="Entities" unique_id=385803682]
+[node name="House4" type="StaticBody2D" parent="Entities" unique_id=1890596623]
 position = Vector2(472, 334)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/House4" unique_id=1719569898]
-texture = ExtResource("11_o1r3i")
+[node name="Sprite" type="Sprite2D" parent="Entities/House4" unique_id=1493263186]
+texture = ExtResource("12_yjr1t")
 centered = false
 offset = Vector2(-40, -62)
 region_enabled = true
 region_rect = Rect2(240, 0, 80, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/House4" unique_id=36860890]
+[node name="Shape" type="CollisionShape2D" parent="Entities/House4" unique_id=1514408272]
 position = Vector2(0, -13)
-shape = SubResource("RectangleShape2D_humq1")
+shape = SubResource("RectangleShape2D_l3wbw")
 
-[node name="House5" type="StaticBody2D" parent="Entities" unique_id=1638586117]
+[node name="House5" type="StaticBody2D" parent="Entities" unique_id=776732814]
 position = Vector2(296, 174)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/House5" unique_id=1789808347]
-texture = ExtResource("11_o1r3i")
+[node name="Sprite" type="Sprite2D" parent="Entities/House5" unique_id=290059415]
+texture = ExtResource("12_yjr1t")
 centered = false
 offset = Vector2(-40, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 80, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/House5" unique_id=103339769]
+[node name="Shape" type="CollisionShape2D" parent="Entities/House5" unique_id=1088124256]
 position = Vector2(0, -13)
-shape = SubResource("RectangleShape2D_humq1")
+shape = SubResource("RectangleShape2D_l3wbw")
 
-[node name="Prop6" type="StaticBody2D" parent="Entities" unique_id=157608729]
+[node name="Prop6" type="StaticBody2D" parent="Entities" unique_id=488881380]
 position = Vector2(344, 126)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop6" unique_id=135249978]
-texture = ExtResource("12_8y3tf")
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop6" unique_id=1645577887]
+texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 16, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop6" unique_id=1782834042]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop6" unique_id=1340383319]
 position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_i8flp")
+shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop7" type="StaticBody2D" parent="Entities" unique_id=1880368219]
+[node name="Prop7" type="StaticBody2D" parent="Entities" unique_id=901791345]
 position = Vector2(184, 190)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop7" unique_id=2142146256]
-texture = ExtResource("12_8y3tf")
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop7" unique_id=1422066730]
+texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 16, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop7" unique_id=1404153404]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop7" unique_id=282422042]
 position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_i8flp")
+shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop8" type="StaticBody2D" parent="Entities" unique_id=2015200966]
+[node name="Prop8" type="StaticBody2D" parent="Entities" unique_id=474694386]
 position = Vector2(440, 174)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop8" unique_id=1937913593]
-texture = ExtResource("12_8y3tf")
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop8" unique_id=248604432]
+texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 16, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop8" unique_id=170222362]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop8" unique_id=1327258726]
 position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_i8flp")
+shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop9" type="StaticBody2D" parent="Entities" unique_id=863664914]
-position = Vector2(296, 366)
+[node name="Prop9" type="StaticBody2D" parent="Entities" unique_id=647283464]
+position = Vector2(376, 158)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop9" unique_id=1947352722]
-texture = ExtResource("12_8y3tf")
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop9" unique_id=1941033377]
+texture = ExtResource("13_vbs8g")
 centered = false
-offset = Vector2(-8, -30)
+offset = Vector2(-8, -62)
 region_enabled = true
-region_rect = Rect2(96, 32, 16, 32)
+region_rect = Rect2(0, 0, 16, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop9" unique_id=174919731]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop9" unique_id=784252230]
 position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_i8flp")
+shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop10" type="StaticBody2D" parent="Entities" unique_id=1864081528]
+[node name="Prop10" type="StaticBody2D" parent="Entities" unique_id=1258220397]
 position = Vector2(376, 366)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop10" unique_id=1163375362]
-texture = ExtResource("12_8y3tf")
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop10" unique_id=705096205]
+texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -30)
 region_enabled = true
 region_rect = Rect2(96, 32, 16, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop10" unique_id=455499825]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop10" unique_id=1401358639]
 position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_i8flp")
+shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop11" type="StaticBody2D" parent="Entities" unique_id=2044361148]
-position = Vector2(96, 174)
+[node name="Prop11" type="StaticBody2D" parent="Entities" unique_id=536907623]
+position = Vector2(312, 382)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop11" unique_id=1731543428]
-texture = ExtResource("12_8y3tf")
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop11" unique_id=1112790922]
+texture = ExtResource("13_vbs8g")
+centered = false
+offset = Vector2(-8, -30)
+region_enabled = true
+region_rect = Rect2(96, 32, 16, 32)
+
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop11" unique_id=391551770]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_bjw4m")
+
+[node name="Prop12" type="StaticBody2D" parent="Entities" unique_id=445099097]
+position = Vector2(248, 382)
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop12" unique_id=1359476005]
+texture = ExtResource("13_vbs8g")
+centered = false
+offset = Vector2(-8, -30)
+region_enabled = true
+region_rect = Rect2(96, 32, 16, 32)
+
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop12" unique_id=1719678893]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_bjw4m")
+
+[node name="Prop13" type="StaticBody2D" parent="Entities" unique_id=1057102752]
+position = Vector2(320, 366)
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop13" unique_id=950367918]
+texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(144, 32, 32, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop11" unique_id=1237004917]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop13" unique_id=2010512308]
 position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_l3wbw")
+shape = SubResource("RectangleShape2D_gocut")
 
-[node name="Prop12" type="StaticBody2D" parent="Entities" unique_id=902745833]
-position = Vector2(240, 382)
+[node name="Prop14" type="StaticBody2D" parent="Entities" unique_id=26314992]
+position = Vector2(272, 366)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop12" unique_id=61632173]
-texture = ExtResource("12_8y3tf")
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop14" unique_id=402570777]
+texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(144, 32, 32, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop12" unique_id=383734943]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop14" unique_id=488735629]
 position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_l3wbw")
+shape = SubResource("RectangleShape2D_gocut")
 
-[node name="Prop13" type="StaticBody2D" parent="Entities" unique_id=82776869]
-position = Vector2(208, 126)
+[node name="Prop15" type="StaticBody2D" parent="Entities" unique_id=589213937]
+position = Vector2(200, 142)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop13" unique_id=164940870]
-texture = ExtResource("12_8y3tf")
-centered = false
-offset = Vector2(-16, -30)
-region_enabled = true
-region_rect = Rect2(176, 32, 32, 32)
-
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop13" unique_id=2044798094]
-position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_l3wbw")
-
-[node name="Prop14" type="StaticBody2D" parent="Entities" unique_id=1063669795]
-position = Vector2(400, 142)
-collision_mask = 0
-
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop14" unique_id=1022532517]
-texture = ExtResource("12_8y3tf")
-centered = false
-offset = Vector2(-16, -30)
-region_enabled = true
-region_rect = Rect2(176, 32, 32, 32)
-
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop14" unique_id=1298788257]
-position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_l3wbw")
-
-[node name="Prop15" type="StaticBody2D" parent="Entities" unique_id=1712739122]
-position = Vector2(336, 382)
-collision_mask = 0
-
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop15" unique_id=2127249093]
-texture = ExtResource("12_8y3tf")
-centered = false
-offset = Vector2(-16, -30)
-region_enabled = true
-region_rect = Rect2(240, 32, 32, 32)
-
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop15" unique_id=1762729442]
-position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_l3wbw")
-
-[node name="Prop16" type="StaticBody2D" parent="Entities" unique_id=1214839977]
-position = Vector2(408, 126)
-collision_mask = 0
-
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop16" unique_id=23514092]
-texture = ExtResource("12_8y3tf")
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop15" unique_id=1088721241]
+texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-24, -30)
 region_enabled = true
 region_rect = Rect2(16, 32, 48, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop16" unique_id=1342007009]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop15" unique_id=1904351054]
 position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_bjw4m")
+shape = SubResource("RectangleShape2D_nrj2n")
 
-[node name="Prop17" type="Node2D" parent="Entities" unique_id=2021476569]
-position = Vector2(376, 414)
+[node name="Prop16" type="Node2D" parent="Entities" unique_id=782814315]
+position = Vector2(408, 126)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop17" unique_id=741648161]
-texture = ExtResource("12_8y3tf")
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop16" unique_id=353140292]
+texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(272, 48, 16, 16)
 
-[node name="Well18" type="StaticBody2D" parent="Entities" unique_id=179134273]
+[node name="Well17" type="StaticBody2D" parent="Entities" unique_id=202768518]
 position = Vector2(384, 206)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Well18" unique_id=194351179]
-texture = ExtResource("13_yjr1t")
+[node name="Sprite" type="Sprite2D" parent="Entities/Well17" unique_id=650517809]
+texture = ExtResource("14_57g3p")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(0, 48, 32, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Well18" unique_id=1747787652]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Well17" unique_id=155003637]
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_eb26y")
 
-[node name="NpcVillagers_v 05 Mist" type="StaticBody2D" parent="Entities" unique_id=2138312692]
+[node name="NpcVillagers_v 05 Mist" type="StaticBody2D" parent="Entities" unique_id=719810660]
 position = Vector2(264, 206)
-script = ExtResource("14_vbs8g")
+script = ExtResource("15_fsrdd")
 display_name = "별지기"
-sheet = ExtResource("15_57g3p")
+sheet = ExtResource("16_rdirs")
 lines = PackedStringArray("별을 지키는 일족, 별지기라네. 이 별은 오래전부터 잠들어 있었지.", "그런데 누군가 별의 봉인을 풀었어. 별이 깨어나 굶주리기 시작했다네.", "별의 심장까지 가면 굶주림을 멈출 수 있을 걸세. 길은 동쪽이야.")
 
-[node name="NpcVillagers_v 13 Mist" type="StaticBody2D" parent="Entities" unique_id=256521475]
+[node name="NpcVillagers_v 13 Mist" type="StaticBody2D" parent="Entities" unique_id=988735208]
 position = Vector2(424, 366)
-script = ExtResource("14_vbs8g")
+script = ExtResource("15_fsrdd")
 display_name = "별 관측자"
-sheet = ExtResource("16_fsrdd")
+sheet = ExtResource("17_g11wn")
 lines = PackedStringArray("밤마다 하늘 위에서 하얀 빛이 내려와요. 저 빛이 봉인을 푼 것 같아요.", "부서진 궤도에 운석 골렘이 길을 막고 있어요.")
 
-[node name="NpcVillagers_v 14 Mist" type="StaticBody2D" parent="Entities" unique_id=427112232]
+[node name="NpcVillagers_v 14 Mist" type="StaticBody2D" parent="Entities" unique_id=1916211755]
 position = Vector2(136, 334)
-script = ExtResource("14_vbs8g")
+script = ExtResource("15_fsrdd")
 display_name = "떠돌이 상인"
-sheet = ExtResource("17_rdirs")
+sheet = ExtResource("18_pmxcc")
 lines = PackedStringArray("별 조각은 비싸게 팔리지! 근데 요즘은 별이 오히려 사람을 먹으려 들어서 장사가 안 돼.")
 
-[node name="Critter18" type="Node2D" parent="Entities" unique_id=21848359]
+[node name="Critter17" type="Node2D" parent="Entities" unique_id=1093724164]
 position = Vector2(376, 366)
-script = ExtResource("18_g11wn")
-sheet = ExtResource("19_pmxcc")
+script = ExtResource("19_imsi3")
+sheet = ExtResource("20_2netx")
 speed = 10.0
 
-[node name="Water" type="StaticBody2D" parent="Entities" unique_id=69748577]
+[node name="Water" type="StaticBody2D" parent="Entities" unique_id=722806927]
 collision_mask = 0
 
-[node name="@CollisionShape2D@2965" type="CollisionShape2D" parent="Entities/Water" unique_id=136677736]
+[node name="@CollisionShape2D@2965" type="CollisionShape2D" parent="Entities/Water" unique_id=878259551]
 position = Vector2(320, 8)
-shape = SubResource("RectangleShape2D_xybhk")
+shape = SubResource("RectangleShape2D_0ahb8")
 
-[node name="@CollisionShape2D@2966" type="CollisionShape2D" parent="Entities/Water" unique_id=79656225]
+[node name="@CollisionShape2D@2966" type="CollisionShape2D" parent="Entities/Water" unique_id=18217087]
 position = Vector2(320, 24)
-shape = SubResource("RectangleShape2D_xybhk")
+shape = SubResource("RectangleShape2D_0ahb8")
 
-[node name="@CollisionShape2D@2967" type="CollisionShape2D" parent="Entities/Water" unique_id=808067397]
+[node name="@CollisionShape2D@2967" type="CollisionShape2D" parent="Entities/Water" unique_id=1503429853]
 position = Vector2(320, 40)
-shape = SubResource("RectangleShape2D_xybhk")
+shape = SubResource("RectangleShape2D_0ahb8")
 
-[node name="@CollisionShape2D@2968" type="CollisionShape2D" parent="Entities/Water" unique_id=1285721129]
+[node name="@CollisionShape2D@2968" type="CollisionShape2D" parent="Entities/Water" unique_id=1388452058]
 position = Vector2(160, 56)
 shape = SubResource("RectangleShape2D_hrbcp")
 
-[node name="@CollisionShape2D@2969" type="CollisionShape2D" parent="Entities/Water" unique_id=1747164050]
+[node name="@CollisionShape2D@2969" type="CollisionShape2D" parent="Entities/Water" unique_id=1385002216]
 position = Vector2(496, 56)
 shape = SubResource("RectangleShape2D_wsd4q")
 
-[node name="@CollisionShape2D@2970" type="CollisionShape2D" parent="Entities/Water" unique_id=1823723682]
+[node name="@CollisionShape2D@2970" type="CollisionShape2D" parent="Entities/Water" unique_id=1245317070]
 position = Vector2(112, 72)
 shape = SubResource("RectangleShape2D_v7isl")
 
-[node name="@CollisionShape2D@2971" type="CollisionShape2D" parent="Entities/Water" unique_id=1420815188]
+[node name="@CollisionShape2D@2971" type="CollisionShape2D" parent="Entities/Water" unique_id=1343680485]
 position = Vector2(544, 72)
 shape = SubResource("RectangleShape2D_bgy1f")
 
-[node name="@CollisionShape2D@2972" type="CollisionShape2D" parent="Entities/Water" unique_id=303560034]
+[node name="@CollisionShape2D@2972" type="CollisionShape2D" parent="Entities/Water" unique_id=1957838533]
 position = Vector2(72, 88)
 shape = SubResource("RectangleShape2D_wfajo")
 
-[node name="@CollisionShape2D@2973" type="CollisionShape2D" parent="Entities/Water" unique_id=34180946]
+[node name="@CollisionShape2D@2973" type="CollisionShape2D" parent="Entities/Water" unique_id=16769957]
 position = Vector2(576, 88)
 shape = SubResource("RectangleShape2D_27spa")
 
-[node name="@CollisionShape2D@2974" type="CollisionShape2D" parent="Entities/Water" unique_id=1899908502]
+[node name="@CollisionShape2D@2974" type="CollisionShape2D" parent="Entities/Water" unique_id=2042143816]
 position = Vector2(64, 104)
 shape = SubResource("RectangleShape2D_27spa")
 
-[node name="@CollisionShape2D@2975" type="CollisionShape2D" parent="Entities/Water" unique_id=344312393]
+[node name="@CollisionShape2D@2975" type="CollisionShape2D" parent="Entities/Water" unique_id=1973265638]
 position = Vector2(592, 104)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2976" type="CollisionShape2D" parent="Entities/Water" unique_id=481638372]
+[node name="@CollisionShape2D@2976" type="CollisionShape2D" parent="Entities/Water" unique_id=997413144]
 position = Vector2(56, 120)
 shape = SubResource("RectangleShape2D_y42da")
 
-[node name="@CollisionShape2D@2977" type="CollisionShape2D" parent="Entities/Water" unique_id=1923834641]
+[node name="@CollisionShape2D@2977" type="CollisionShape2D" parent="Entities/Water" unique_id=403228981]
 position = Vector2(592, 120)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2978" type="CollisionShape2D" parent="Entities/Water" unique_id=1843910543]
+[node name="@CollisionShape2D@2978" type="CollisionShape2D" parent="Entities/Water" unique_id=1375423250]
 position = Vector2(48, 136)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2979" type="CollisionShape2D" parent="Entities/Water" unique_id=1284927430]
+[node name="@CollisionShape2D@2979" type="CollisionShape2D" parent="Entities/Water" unique_id=1504490282]
 position = Vector2(592, 136)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2980" type="CollisionShape2D" parent="Entities/Water" unique_id=1808399231]
+[node name="@CollisionShape2D@2980" type="CollisionShape2D" parent="Entities/Water" unique_id=686924638]
 position = Vector2(48, 152)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2981" type="CollisionShape2D" parent="Entities/Water" unique_id=726384644]
+[node name="@CollisionShape2D@2981" type="CollisionShape2D" parent="Entities/Water" unique_id=1923341530]
 position = Vector2(600, 152)
 shape = SubResource("RectangleShape2D_mrkiw")
 
-[node name="@CollisionShape2D@2982" type="CollisionShape2D" parent="Entities/Water" unique_id=75750214]
+[node name="@CollisionShape2D@2982" type="CollisionShape2D" parent="Entities/Water" unique_id=1209055001]
 position = Vector2(32, 344)
 shape = SubResource("RectangleShape2D_je2ja")
 
-[node name="@CollisionShape2D@2983" type="CollisionShape2D" parent="Entities/Water" unique_id=1633771915]
+[node name="@CollisionShape2D@2983" type="CollisionShape2D" parent="Entities/Water" unique_id=1452819095]
 position = Vector2(624, 344)
 shape = SubResource("RectangleShape2D_ae3cd")
 
-[node name="@CollisionShape2D@2984" type="CollisionShape2D" parent="Entities/Water" unique_id=1984957525]
+[node name="@CollisionShape2D@2984" type="CollisionShape2D" parent="Entities/Water" unique_id=296206889]
 position = Vector2(40, 360)
 shape = SubResource("RectangleShape2D_mrkiw")
 
-[node name="@CollisionShape2D@2985" type="CollisionShape2D" parent="Entities/Water" unique_id=1773122788]
+[node name="@CollisionShape2D@2985" type="CollisionShape2D" parent="Entities/Water" unique_id=839179617]
 position = Vector2(616, 360)
 shape = SubResource("RectangleShape2D_3yhjf")
 
-[node name="@CollisionShape2D@2986" type="CollisionShape2D" parent="Entities/Water" unique_id=1892151600]
+[node name="@CollisionShape2D@2986" type="CollisionShape2D" parent="Entities/Water" unique_id=1921280181]
 position = Vector2(56, 376)
 shape = SubResource("RectangleShape2D_y42da")
 
-[node name="@CollisionShape2D@2987" type="CollisionShape2D" parent="Entities/Water" unique_id=215553351]
+[node name="@CollisionShape2D@2987" type="CollisionShape2D" parent="Entities/Water" unique_id=195907642]
 position = Vector2(600, 376)
 shape = SubResource("RectangleShape2D_mrkiw")
 
-[node name="@CollisionShape2D@2988" type="CollisionShape2D" parent="Entities/Water" unique_id=19231655]
+[node name="@CollisionShape2D@2988" type="CollisionShape2D" parent="Entities/Water" unique_id=59396590]
 position = Vector2(56, 392)
 shape = SubResource("RectangleShape2D_y42da")
 
-[node name="@CollisionShape2D@2989" type="CollisionShape2D" parent="Entities/Water" unique_id=726323185]
+[node name="@CollisionShape2D@2989" type="CollisionShape2D" parent="Entities/Water" unique_id=1877676307]
 position = Vector2(592, 392)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2990" type="CollisionShape2D" parent="Entities/Water" unique_id=199381274]
+[node name="@CollisionShape2D@2990" type="CollisionShape2D" parent="Entities/Water" unique_id=616475632]
 position = Vector2(64, 408)
 shape = SubResource("RectangleShape2D_27spa")
 
-[node name="@CollisionShape2D@2991" type="CollisionShape2D" parent="Entities/Water" unique_id=816976097]
+[node name="@CollisionShape2D@2991" type="CollisionShape2D" parent="Entities/Water" unique_id=1491912511]
 position = Vector2(592, 408)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2992" type="CollisionShape2D" parent="Entities/Water" unique_id=1454862620]
+[node name="@CollisionShape2D@2992" type="CollisionShape2D" parent="Entities/Water" unique_id=587691111]
 position = Vector2(64, 424)
 shape = SubResource("RectangleShape2D_27spa")
 
-[node name="@CollisionShape2D@2993" type="CollisionShape2D" parent="Entities/Water" unique_id=50649336]
+[node name="@CollisionShape2D@2993" type="CollisionShape2D" parent="Entities/Water" unique_id=671964756]
 position = Vector2(584, 424)
 shape = SubResource("RectangleShape2D_y42da")
 
-[node name="@CollisionShape2D@2994" type="CollisionShape2D" parent="Entities/Water" unique_id=375753386]
+[node name="@CollisionShape2D@2994" type="CollisionShape2D" parent="Entities/Water" unique_id=1772677361]
 position = Vector2(88, 440)
 shape = SubResource("RectangleShape2D_nc04e")
 
-[node name="@CollisionShape2D@2995" type="CollisionShape2D" parent="Entities/Water" unique_id=2092876362]
+[node name="@CollisionShape2D@2995" type="CollisionShape2D" parent="Entities/Water" unique_id=1859412150]
 position = Vector2(576, 440)
 shape = SubResource("RectangleShape2D_27spa")
 
-[node name="@CollisionShape2D@2996" type="CollisionShape2D" parent="Entities/Water" unique_id=2128497211]
+[node name="@CollisionShape2D@2996" type="CollisionShape2D" parent="Entities/Water" unique_id=1247720423]
 position = Vector2(120, 456)
 shape = SubResource("RectangleShape2D_10jh2")
 
-[node name="@CollisionShape2D@2997" type="CollisionShape2D" parent="Entities/Water" unique_id=1333293468]
+[node name="@CollisionShape2D@2997" type="CollisionShape2D" parent="Entities/Water" unique_id=167395181]
 position = Vector2(552, 456)
 shape = SubResource("RectangleShape2D_nc04e")
 
-[node name="@CollisionShape2D@2998" type="CollisionShape2D" parent="Entities/Water" unique_id=274914227]
+[node name="@CollisionShape2D@2998" type="CollisionShape2D" parent="Entities/Water" unique_id=524343983]
 position = Vector2(144, 472)
 shape = SubResource("RectangleShape2D_wsd4q")
 
-[node name="@CollisionShape2D@2999" type="CollisionShape2D" parent="Entities/Water" unique_id=506211223]
+[node name="@CollisionShape2D@2999" type="CollisionShape2D" parent="Entities/Water" unique_id=850463683]
 position = Vector2(536, 472)
 shape = SubResource("RectangleShape2D_t4awp")
 
-[node name="@CollisionShape2D@3000" type="CollisionShape2D" parent="Entities/Water" unique_id=861096589]
+[node name="@CollisionShape2D@3000" type="CollisionShape2D" parent="Entities/Water" unique_id=1674927133]
 position = Vector2(320, 488)
-shape = SubResource("RectangleShape2D_xybhk")
+shape = SubResource("RectangleShape2D_0ahb8")
 
-[node name="@CollisionShape2D@3001" type="CollisionShape2D" parent="Entities/Water" unique_id=1620600159]
+[node name="@CollisionShape2D@3001" type="CollisionShape2D" parent="Entities/Water" unique_id=1639124402]
 position = Vector2(320, 504)
-shape = SubResource("RectangleShape2D_xybhk")
+shape = SubResource("RectangleShape2D_0ahb8")
 
-[node name="Crystal20" type="Node2D" parent="Entities" unique_id=319054066]
+[node name="Crystal19" type="Node2D" parent="Entities" unique_id=1166084256]
 position = Vector2(454, 366)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal20" unique_id=1326392951]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal19" unique_id=1860220606]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal21" type="Node2D" parent="Entities" unique_id=2004970023]
+[node name="Crystal20" type="Node2D" parent="Entities" unique_id=434286623]
 position = Vector2(169, 414)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal21" unique_id=1186786981]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal20" unique_id=337152910]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal22" type="Node2D" parent="Entities" unique_id=231573072]
+[node name="Crystal21" type="Node2D" parent="Entities" unique_id=519802469]
 position = Vector2(363, 398)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal22" unique_id=246823373]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal21" unique_id=156842120]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal23" type="Node2D" parent="Entities" unique_id=465628831]
+[node name="Crystal22" type="Node2D" parent="Entities" unique_id=1777858224]
 position = Vector2(395, 430)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal23" unique_id=1893414898]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal22" unique_id=1363208784]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal24" type="Node2D" parent="Entities" unique_id=649805566]
+[node name="Crystal23" type="Node2D" parent="Entities" unique_id=1316634737]
 position = Vector2(357, 94)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal24" unique_id=697912221]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal23" unique_id=1246239257]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal25" type="Node2D" parent="Entities" unique_id=185526444]
+[node name="Crystal24" type="Node2D" parent="Entities" unique_id=354577384]
 position = Vector2(534, 286)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal25" unique_id=1301972195]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal24" unique_id=740631670]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal26" type="Node2D" parent="Entities" unique_id=1538844584]
+[node name="Crystal25" type="Node2D" parent="Entities" unique_id=1498240164]
 position = Vector2(294, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal26" unique_id=48453931]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal25" unique_id=418317954]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal27" type="Node2D" parent="Entities" unique_id=1210617652]
+[node name="Crystal26" type="Node2D" parent="Entities" unique_id=152925250]
 position = Vector2(118, 222)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal27" unique_id=699272004]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal26" unique_id=1545322349]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal28" type="Node2D" parent="Entities" unique_id=198405871]
+[node name="Crystal27" type="Node2D" parent="Entities" unique_id=1915023720]
 position = Vector2(90, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal28" unique_id=754064301]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal27" unique_id=1770548578]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(32, 224, 16, 16)
 
-[node name="Crystal29" type="Node2D" parent="Entities" unique_id=300192081]
+[node name="Crystal28" type="Node2D" parent="Entities" unique_id=490681195]
 position = Vector2(165, 350)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal29" unique_id=1969924206]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal28" unique_id=542521538]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(32, 224, 16, 16)
 
-[node name="Crystal30" type="Node2D" parent="Entities" unique_id=1020916602]
+[node name="Crystal29" type="Node2D" parent="Entities" unique_id=2107820473]
 position = Vector2(360, 350)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal30" unique_id=492157377]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal29" unique_id=833420702]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal31" type="Node2D" parent="Entities" unique_id=649270069]
+[node name="Crystal30" type="Node2D" parent="Entities" unique_id=1477916369]
 position = Vector2(154, 126)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal31" unique_id=2124754234]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal30" unique_id=227676769]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal32" type="Node2D" parent="Entities" unique_id=443574564]
-position = Vector2(214, 142)
+[node name="Crystal31" type="Node2D" parent="Entities" unique_id=47946540]
+position = Vector2(121, 158)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal32" unique_id=1108248268]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal31" unique_id=244522659]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
-region_rect = Rect2(0, 224, 16, 16)
+region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal33" type="Node2D" parent="Entities" unique_id=620679333]
+[node name="Crystal32" type="Node2D" parent="Entities" unique_id=1358025388]
 position = Vector2(378, 318)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal33" unique_id=1215945253]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal32" unique_id=1327496546]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal34" type="Node2D" parent="Entities" unique_id=133484841]
-position = Vector2(392, 366)
+[node name="Crystal33" type="Node2D" parent="Entities" unique_id=744993203]
+position = Vector2(407, 142)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal34" unique_id=210685707]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal33" unique_id=197319355]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
-region_rect = Rect2(48, 224, 16, 16)
+region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal35" type="Node2D" parent="Entities" unique_id=363627927]
-position = Vector2(182, 366)
+[node name="Crystal34" type="Node2D" parent="Entities" unique_id=1823707991]
+position = Vector2(233, 110)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal35" unique_id=665078223]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal34" unique_id=1979948061]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal36" type="Node2D" parent="Entities" unique_id=193056897]
+[node name="Crystal35" type="Node2D" parent="Entities" unique_id=292656421]
 position = Vector2(410, 94)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal36" unique_id=2039727254]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal35" unique_id=310442217]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal37" type="Node2D" parent="Entities" unique_id=219164076]
+[node name="Crystal36" type="Node2D" parent="Entities" unique_id=832318179]
 position = Vector2(231, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal37" unique_id=2130423668]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal36" unique_id=1528776529]
+texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Rock38" type="StaticBody2D" parent="Entities" unique_id=1109233707]
-position = Vector2(304, 430)
-collision_mask = 0
+[node name="Crystal37" type="Node2D" parent="Entities" unique_id=400751142]
+position = Vector2(266, 318)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock38" unique_id=1887764474]
-texture = ExtResource("20_imsi3")
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal37" unique_id=2048687672]
+texture = ExtResource("21_l73kw")
 centered = false
-offset = Vector2(-16, -30)
+offset = Vector2(-8, -14)
 region_enabled = true
-region_rect = Rect2(256, 128, 32, 32)
+region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Rock38" unique_id=721734625]
-position = Vector2(0, -6)
-shape = SubResource("RectangleShape2D_b0mq3")
+[node name="Crystal38" type="Node2D" parent="Entities" unique_id=1933818207]
+position = Vector2(376, 334)
 
-[node name="Player" parent="Entities" unique_id=1192562686 instance=ExtResource("21_2netx")]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal38" unique_id=607215031]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(16, 224, 16, 16)
+
+[node name="Crystal39" type="Node2D" parent="Entities" unique_id=2043677471]
+position = Vector2(342, 414)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal39" unique_id=1490437688]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(48, 224, 16, 16)
+
+[node name="Crystal40" type="Node2D" parent="Entities" unique_id=1639129331]
+position = Vector2(309, 94)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal40" unique_id=1402194840]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(48, 224, 16, 16)
+
+[node name="Crystal41" type="Node2D" parent="Entities" unique_id=638537424]
+position = Vector2(106, 286)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal41" unique_id=853427650]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(32, 224, 16, 16)
+
+[node name="Crystal42" type="Node2D" parent="Entities" unique_id=286556558]
+position = Vector2(423, 94)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal42" unique_id=1681999212]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(16, 224, 16, 16)
+
+[node name="Crystal43" type="Node2D" parent="Entities" unique_id=2000001357]
+position = Vector2(315, 334)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal43" unique_id=1004240102]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(0, 224, 16, 16)
+
+[node name="Crystal44" type="Node2D" parent="Entities" unique_id=1022352504]
+position = Vector2(327, 414)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal44" unique_id=1482176059]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(32, 224, 16, 16)
+
+[node name="Crystal45" type="Node2D" parent="Entities" unique_id=1486662439]
+position = Vector2(554, 190)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal45" unique_id=1121397712]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(16, 224, 16, 16)
+
+[node name="Crystal46" type="Node2D" parent="Entities" unique_id=1371321912]
+position = Vector2(87, 190)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal46" unique_id=467055696]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(16, 224, 16, 16)
+
+[node name="Crystal47" type="Node2D" parent="Entities" unique_id=135041856]
+position = Vector2(151, 158)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal47" unique_id=58486406]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(0, 224, 16, 16)
+
+[node name="Crystal48" type="Node2D" parent="Entities" unique_id=1912795679]
+position = Vector2(326, 398)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal48" unique_id=304287993]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(32, 224, 16, 16)
+
+[node name="Crystal49" type="Node2D" parent="Entities" unique_id=1594584537]
+position = Vector2(247, 366)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal49" unique_id=1612725728]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(32, 224, 16, 16)
+
+[node name="Crystal50" type="Node2D" parent="Entities" unique_id=1534074544]
+position = Vector2(458, 398)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal50" unique_id=881442487]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(48, 224, 16, 16)
+
+[node name="Crystal51" type="Node2D" parent="Entities" unique_id=919120120]
+position = Vector2(423, 430)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal51" unique_id=1086413511]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(16, 224, 16, 16)
+
+[node name="Crystal52" type="Node2D" parent="Entities" unique_id=327051368]
+position = Vector2(104, 222)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal52" unique_id=1379640619]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(16, 224, 16, 16)
+
+[node name="Crystal53" type="Node2D" parent="Entities" unique_id=447333549]
+position = Vector2(197, 110)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal53" unique_id=2026336607]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(32, 224, 16, 16)
+
+[node name="Crystal54" type="Node2D" parent="Entities" unique_id=1196336424]
+position = Vector2(375, 142)
+
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal54" unique_id=800430831]
+texture = ExtResource("21_l73kw")
+centered = false
+offset = Vector2(-8, -14)
+region_enabled = true
+region_rect = Rect2(48, 224, 16, 16)
+
+[node name="Player" parent="Entities" unique_id=1485537438 instance=ExtResource("22_k8te5")]
 unique_name_in_owner = true
 position = Vector2(320, 280)
 
-[node name="Spawns" type="Node2D" parent="." unique_id=87521993]
+[node name="Spawns" type="Node2D" parent="." unique_id=1007019363]
 
-[node name="west" type="Marker2D" parent="Spawns" unique_id=1692008028]
+[node name="west" type="Marker2D" parent="Spawns" unique_id=1676886635]
 position = Vector2(96, 256)
 
-[node name="east" type="Marker2D" parent="Spawns" unique_id=1628280341]
+[node name="east" type="Marker2D" parent="Spawns" unique_id=354315862]
 position = Vector2(544, 256)
 
-[node name="Border" type="StaticBody2D" parent="." unique_id=893925621]
+[node name="Border" type="StaticBody2D" parent="." unique_id=1462704671]
 collision_mask = 0
 
-[node name="@CollisionShape2D@3002" type="CollisionShape2D" parent="Border" unique_id=287659925]
+[node name="@CollisionShape2D@3002" type="CollisionShape2D" parent="Border" unique_id=582407167]
 position = Vector2(320, 491)
 shape = SubResource("RectangleShape2D_dxgjh")
 
-[node name="@CollisionShape2D@3003" type="CollisionShape2D" parent="Border" unique_id=1011213431]
+[node name="@CollisionShape2D@3003" type="CollisionShape2D" parent="Border" unique_id=1097230281]
 position = Vector2(320, 21)
 shape = SubResource("RectangleShape2D_dxgjh")
 
-[node name="@CollisionShape2D@3004" type="CollisionShape2D" parent="Border" unique_id=2081756356]
+[node name="@CollisionShape2D@3004" type="CollisionShape2D" parent="Border" unique_id=1183810411]
 position = Vector2(21, 112)
 shape = SubResource("RectangleShape2D_xxf81")
 
-[node name="@CollisionShape2D@3005" type="CollisionShape2D" parent="Border" unique_id=2040806101]
+[node name="@CollisionShape2D@3005" type="CollisionShape2D" parent="Border" unique_id=987075200]
 position = Vector2(21, 400)
 shape = SubResource("RectangleShape2D_xxf81")
 
-[node name="@CollisionShape2D@3006" type="CollisionShape2D" parent="Border" unique_id=1975407437]
+[node name="@CollisionShape2D@3006" type="CollisionShape2D" parent="Border" unique_id=1658014781]
 position = Vector2(2, 256)
 shape = SubResource("RectangleShape2D_7isxc")
 
-[node name="@CollisionShape2D@3007" type="CollisionShape2D" parent="Border" unique_id=79620540]
+[node name="@CollisionShape2D@3007" type="CollisionShape2D" parent="Border" unique_id=239723642]
 position = Vector2(619, 112)
 shape = SubResource("RectangleShape2D_xxf81")
 
-[node name="@CollisionShape2D@3008" type="CollisionShape2D" parent="Border" unique_id=757834412]
+[node name="@CollisionShape2D@3008" type="CollisionShape2D" parent="Border" unique_id=1224039131]
 position = Vector2(619, 400)
 shape = SubResource("RectangleShape2D_xxf81")
 
-[node name="@CollisionShape2D@3009" type="CollisionShape2D" parent="Border" unique_id=1855847091]
+[node name="@CollisionShape2D@3009" type="CollisionShape2D" parent="Border" unique_id=1213118099]
 position = Vector2(638, 256)
 shape = SubResource("RectangleShape2D_7isxc")
 
-[node name="Portal_west" type="Area2D" parent="." unique_id=1005226315]
+[node name="Portal_west" type="Area2D" parent="." unique_id=446731825]
 position = Vector2(24, 256)
-script = ExtResource("22_l73kw")
+script = ExtResource("23_7yhrs")
 target_scene = "res://features/world/star2.tscn"
 target_spawn = "east"
 label = "◀ 수정 크레이터"
 side = -1
 
-[node name="@CollisionShape2D@3010" type="CollisionShape2D" parent="Portal_west" unique_id=1770946387]
+[node name="@CollisionShape2D@3010" type="CollisionShape2D" parent="Portal_west" unique_id=1265800818]
 shape = SubResource("RectangleShape2D_fkvx2")
 
-[node name="Portal_east" type="Area2D" parent="." unique_id=1481283463]
+[node name="Portal_east" type="Area2D" parent="." unique_id=749043476]
 position = Vector2(616, 256)
-script = ExtResource("22_l73kw")
+script = ExtResource("23_7yhrs")
 target_scene = "res://features/world/star3.tscn"
 target_spawn = "west"
 label = "별빛 이끼 들판 ▶"
 
-[node name="@CollisionShape2D@3011" type="CollisionShape2D" parent="Portal_east" unique_id=1299845502]
+[node name="@CollisionShape2D@3011" type="CollisionShape2D" parent="Portal_east" unique_id=338330223]
 shape = SubResource("RectangleShape2D_fkvx2")
 
-[node name="Gloom" type="CanvasModulate" parent="." unique_id=464506368]
+[node name="Gloom" type="CanvasModulate" parent="." unique_id=941963184]
 color = Color(0.8, 0.74, 1, 1)
 
-[node name="Backdrop" type="CanvasLayer" parent="." unique_id=240345969]
-script = ExtResource("23_k8te5")
+[node name="Backdrop" type="CanvasLayer" parent="." unique_id=2010565762]
+script = ExtResource("24_humq1")
 mode = 2
 
-[node name="Music" type="AudioStreamPlayer" parent="." unique_id=1739194615]
-stream = ExtResource("24_7yhrs")
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=600565101]
+stream = ExtResource("25_i8flp")
 volume_db = -10.0

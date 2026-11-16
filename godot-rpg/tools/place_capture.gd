@@ -6,4 +6,11 @@ func _ready() -> void:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--map="):
 			id = a.substr(6)
-	add_child((load("res://features/world/%s.tscn" % id) as PackedScene).instantiate())
+	var w := (load("res://features/world/%s.tscn" % id) as PackedScene).instantiate()
+	add_child(w)
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--at="):  # 용사를 그 칸으로(예: --at=10,30)
+			var xy := a.substr(5).split(",")
+			var pl := w.get_node_or_null(^"%Player") as Node2D
+			if pl:
+				pl.global_position = Vector2(int(xy[0]), int(xy[1])) * 16.0

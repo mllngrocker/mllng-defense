@@ -108,16 +108,27 @@ const MAIN: Array[Dictionary] = [
 	{"title": "검은 씨앗의 방", "desc": "뿌리 심장 앞을 지나 검은 씨앗의 방에 들어서자.", "type": "reach", "target": "root6", "count": 1, "gold": 300000, "gems": 800},
 	{"title": "한계를 넘어", "desc": "아무 캐릭터나 레벨 150을 만들자.", "type": "level", "target": "", "count": 150, "gold": 400000, "gems": 1500},
 	{"title": "고대 거인의 혼", "desc": "검은 씨앗에 먹혀 뿌리 심장을 붙든 고대 거인의 혼을 잠재우고 큰 나무를 되살리자!", "type": "boss", "target": "giant_soul", "count": 1, "gold": 600000, "gems": 5000},
-	{"title": "집으로", "desc": "레몬 마을로 돌아가 촌장에게 큰 나무가 되살아난 이야기를 전하자.", "type": "talk", "target": "촌장", "count": 1, "gold": 100000, "gems": 1000},
-	# 4부 9장 굶주린 별
-	{"title": "9장: 부서진 별의 신전", "desc": "검은 씨앗의 방 동쪽, 무너진 신전으로 가 보자.", "type": "reach", "target": "star_gate", "count": 1, "gold": 150000, "gems": 600},
-	{"title": "별빛 고리", "desc": "신전 북쪽 별빛 고리를 지나 별똥별 낙하지로 건너가자.", "type": "reach", "target": "star1", "count": 1, "gold": 150000, "gems": 600},
-	{"title": "별지기 야영지", "desc": "수정 크레이터를 지나 별지기에게 이 별의 이야기를 듣자.", "type": "talk", "target": "별지기", "count": 1, "gold": 180000, "gems": 700},
-	{"title": "별 정화", "desc": "굶주린 별의 몬스터를 200마리 물리치자.", "type": "kill", "target": "star", "count": 200, "gold": 350000, "gems": 1000},
+	# 4부 9장 굶주린 별(고대 거인의 혼을 잠재운 뒤 곧장 이어진다)
+	{"title": "9장: 별빛이 새는 곳", "desc": "검은 씨앗의 방 동쪽 벽 틈에서 별빛이 새어 나온다. 그쪽으로 가 보자.", "type": "reach", "target": "star_gate", "count": 1, "gold": 150000, "gems": 600},
+	{"title": "별지기 제자", "desc": "부서진 별의 신전에 있는 별지기 제자에게 말을 걸어 보자.", "type": "talk", "target": "별지기 제자", "count": 1, "gold": 120000, "gems": 500},
+	{"title": "별빛 고리", "desc": "신전 북쪽 별빛 고리를 지나 별 위로 건너가자.", "type": "reach", "target": "star1", "count": 1, "gold": 150000, "gems": 600},
+	{"title": "별그림자 걷어 내기", "desc": "별똥별 낙하지를 떠도는 별그림자를 40마리 물리치자.", "type": "kill", "target": "star_imp", "count": 40, "gold": 200000, "gems": 700},
+	{"title": "수정 크레이터", "desc": "운석이 떨어져 생긴 수정 크레이터로 가자.", "type": "reach", "target": "star2", "count": 1, "gold": 150000, "gems": 600},
+	{"title": "공허의 눈을 감겨라", "desc": "수정 사이에서 지켜보는 공허의 눈을 40마리 물리치자.", "type": "kill", "target": "void_eye", "count": 40, "gold": 220000, "gems": 700},
+	{"title": "별지기 야영지", "desc": "크레이터 너머 별지기에게 이 별의 이야기를 듣자.", "type": "talk", "target": "별지기", "count": 1, "gold": 180000, "gems": 700},
+	{"title": "하얀 빛의 정체", "desc": "별 관측자에게 밤마다 내려온다는 하얀 빛 이야기를 묻자.", "type": "talk", "target": "별 관측자", "count": 1, "gold": 150000, "gems": 600},
 	{"title": "별을 걷는 힘", "desc": "아무 캐릭터나 레벨 160을 만들자.", "type": "level", "target": "", "count": 160, "gold": 300000, "gems": 1000},
+	{"title": "별빛 이끼 들판", "desc": "야영지 동쪽 별빛 이끼 들판으로 나아가자.", "type": "reach", "target": "star3", "count": 1, "gold": 180000, "gems": 600},
+	{"title": "별빛 기사단", "desc": "길을 막는 별빛 기사를 50마리 물리치자.", "type": "kill", "target": "star_knight", "count": 50, "gold": 260000, "gems": 800},
+	{"title": "부서진 궤도", "desc": "끊어진 궤도 위, 운석 골렘이 지키는 길로 가자.", "type": "reach", "target": "star4", "count": 1, "gold": 200000, "gems": 700},
 	{"title": "운석 골렘", "desc": "부서진 궤도에서 길을 막은 운석 골렘을 부수자.", "type": "boss", "target": "meteor_golem", "count": 1, "gold": 400000, "gems": 2500},
+	{"title": "떠돌이 상인의 소문", "desc": "야영지의 떠돌이 상인에게 골렘이 남긴 말을 전하자.", "type": "talk", "target": "떠돌이 상인", "count": 1, "gold": 150000, "gems": 600},
+	{"title": "굶주림의 균열", "desc": "별 표면이 갈라진 굶주림의 균열로 들어가자.", "type": "reach", "target": "star5", "count": 1, "gold": 220000, "gems": 700},
+	{"title": "별 정화", "desc": "굶주린 별의 몬스터를 300마리 물리치자.", "type": "kill", "target": "star", "count": 300, "gold": 400000, "gems": 1200},
 	{"title": "별보다 빛나게", "desc": "아무 캐릭터나 레벨 170을 만들자.", "type": "level", "target": "", "count": 170, "gold": 400000, "gems": 1500},
-	{"title": "굶주린 별의 심장", "desc": "굶주림의 균열을 지나 별의 심장에 닿아 굶주림을 멈추자!", "type": "boss", "target": "star_heart", "count": 1, "gold": 700000, "gems": 6000},
+	{"title": "별의 심장 앞에서", "desc": "균열 끝, 굶주린 별의 심장으로 들어서자.", "type": "reach", "target": "star6", "count": 1, "gold": 250000, "gems": 800},
+	{"title": "굶주린 별의 심장", "desc": "별의 심장을 잠재워 굶주림을 멈추자!", "type": "boss", "target": "star_heart", "count": 1, "gold": 700000, "gems": 6000},
+	{"title": "하늘의 갈라진 틈", "desc": "별지기에게 돌아가 별을 깨운 하얀 날개 이야기를 전하자.", "type": "talk", "target": "별지기", "count": 1, "gold": 200000, "gems": 1500},
 ]
 
 const DAILY: Array[Dictionary] = [
@@ -208,6 +219,12 @@ func _sync_title() -> void:
 		return
 	if t == "*끝":
 		Save.quest["main"] = MAIN.size()
+		for k in MAIN.size():  # 끝낸 뒤 새 장이 생겼으면 그 장의 첫 퀘스트부터
+			if String(MAIN[k]["title"]).begins_with("9장") and not boss_defeated("star_heart"):
+				Save.quest["main"] = k
+				Save.quest["progress"] = 0
+				Save.quest["main_title"] = MAIN[k]["title"]
+				break
 		return
 	for k in MAIN.size():
 		if String(MAIN[k]["title"]) == t:
