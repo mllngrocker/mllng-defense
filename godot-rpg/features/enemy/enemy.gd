@@ -291,8 +291,8 @@ func _die() -> void:
 		Game.sfx(&"success", -2.0, 0.0)  # 보스 처치 팡파르
 		Quests.track("boss", kind)
 	# 같은 자리에 잠시 뒤 다시 나타난다(맵이 맡는다)
-	if scene_file_path != "":
-		get_tree().call_group(&"world", &"schedule_respawn", scene_file_path, home, 90.0 if is_boss else randf_range(10.0, 16.0))
+	if scene_file_path != "" and not is_boss:  # 보스는 한 번 잡으면 끝(다시 안 나옴)
+		get_tree().call_group(&"world", &"schedule_respawn", scene_file_path, home, randf_range(10.0, 16.0))
 	# 보상 조정: 일반 몬스터는 골드 절반, 보석은 확률 1/5 · 개수 30%(보스는 그대로). 경험치는 원래 값
 	var gold_got := roundi(gold_reward * BOSS_GOLD_MULT) if is_boss else maxi(1, roundi(gold_reward * GOLD_MULT))
 	Save.add_gold(gold_got)

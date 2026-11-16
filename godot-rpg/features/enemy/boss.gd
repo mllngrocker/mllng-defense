@@ -44,6 +44,7 @@ var pat_stage := 0
 var pat_dir := Vector2.ZERO
 var pat_pos := Vector2.ZERO  # 도약·장판 목표(맵 좌표)
 var _charge_hit := false
+var _roar_t := -1.0  # 대면 포효(충격파 고리) 진행 시간
 
 
 func _ready() -> void:
@@ -53,6 +54,8 @@ func _ready() -> void:
 	hp = max_hp
 	slam_damage = roundi(slam_damage * Enemy.DMG_MULT)
 	add_to_group(&"bosses")
+	if Game.dungeon == "" and Quests.boss_defeated(kind_id()):
+		queue_free.call_deferred()  # 이미 잡은 보스는 맵에 다시 나오지 않는다(로비·맵을 다녀와도)
 
 
 func _physics_process(delta: float) -> void:
@@ -66,8 +69,7 @@ func _physics_process(delta: float) -> void:
 		if d < WAKE_RANGE:
 			awake = true
 			Events.boss_hp.emit(boss_name, hp, max_hp)
-			Game.sfx(&"alert", 0.0, 0.0)
-			Game.add_shake(4.0)
+			_roar()
 		return
 	if pat != "":
 		_run_pattern(delta)
@@ -90,6 +92,26 @@ func _physics_process(delta: float) -> void:
 		telegraph_t = TELEGRAPH
 		attack_t = randf_range(2.2, 3.2) if _angry() else randf_range(3.2, 4.6)
 		Game.sfx(&"charge", -6.0, 0.0)
+
+
+## 대면 연출: 포효 → 화면이 크게 흔들리고 충격파가 퍼지며 용사가 한 번 밀려난다
+func _roar() -> void:
+	_roar_t = 0.0
+	Game.sfx(&"alert", 0.0, 0.0)
+	Game.sfx(&"boom", -2.0, 0.0)
+	Game.add_shake(12.0)
+	Game.flash(Color(1, 0.3, 0.3, 0.35), 0.18)
+	if is_instance_valid(target):
+		var away := global_position.direction_to(target.global_position)
+		target.knockback = (away if away != Vector2.ZERO else Vector2.DOWN) * 380.0
+
+
+func _process(delta: float) -> void:
+	if _roar_t >= 0.0:
+		_roar_t += delta
+		if _roar_t > 0.9:
+			_roar_t = -1.0
+		queue_redraw()
 
 
 # ── 고유 기술 ──
@@ -233,6 +255,12 @@ func take_hit(amount: int, from: Vector2, knock := 210.0, crit := false) -> void
 
 
 func _draw() -> void:
+	# 대면 포효: 퍼져 나가는 충격파 고리 두 겹
+	if _roar_t >= 0.0:
+		for k in 2:
+			var tt := clampf((_roar_t - k * 0.18) / 0.7, 0.0, 1.0)
+			if tt > 0.0 and tt < 1.0:
+				draw_arc(Vector2(0, -10), 20.0 + tt * 150.0, 0, TAU, 48, Color(1, 0.85, 0.7, (1.0 - tt) * 0.8), 6.0 * (1.0 - tt) + 1.0)
 	# 고유 기술 예고
 	var col := _color()
 	if pat == "charge" and pat_stage == 0:

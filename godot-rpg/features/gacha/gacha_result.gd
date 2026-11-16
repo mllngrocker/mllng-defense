@@ -124,6 +124,14 @@ func _process(delta: float) -> void:
 			_on_card_revealed(shown)
 			shown += 1
 		if shown == results.size() and reveal_t > _reveal_at(results.size() - 1) + FLIP_TIME and splash_i < 0:
+			if not ok_button.visible:
+				# "건너뛰기" 흰 버튼이 있던 바로 그 자리에 확인 버튼(연달아 톡톡 누를 수 있게)
+				ok_button.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+				ok_button.offset_left = skip_button.offset_left
+				ok_button.offset_right = skip_button.offset_right
+				ok_button.offset_top = skip_button.offset_top
+				ok_button.offset_bottom = skip_button.offset_bottom
+				ok_button.font_size = 18
 			ok_button.visible = true
 			skip_button.visible = false
 	for s in sparks:

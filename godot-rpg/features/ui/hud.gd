@@ -29,6 +29,11 @@ var _boss_name := ""  # 깨어난 보스(위쪽 큰 체력바)
 var _boss_hp := 0
 var _boss_max := 1
 var _boss_gone_t := 0.0
+var _boss_lag := 0.0  # 하얀 잔상 칸: 맞은 뒤 잠깐 남았다가 빨간 칸을 따라 줄어든다
+var _boss_hold := 0.0
+## 보스 체력바 모양(비교용): 0 가운데 크게 · 1 위쪽 얇게 · 2 아래쪽 얇게
+static var boss_bar_style := 1  # 사용자가 고름: 위쪽 얇게(맵을 덜 가린다)
+var _boss_hit_t := 0.0  # 맞은 순간 체력바가 살짝 번쩍·흔들
 var _note := ""  # 가운데 알림 띠(퀘스트 완료·보상)
 var _note_sub := ""
 var _note_t := 99.0
@@ -80,6 +85,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if _note_t < NOTE_TIME:
 		_note_t += delta
+		canvas.queue_redraw()
+	if _boss_name != "" and (_boss_lag > _boss_hp or _boss_hit_t > 0.0):
+		_boss_hit_t = maxf(0.0, _boss_hit_t - delta)
+		_boss_hold -= delta
+		if _boss_hold <= 0.0:
+			_boss_lag = move_toward(_boss_lag, float(_boss_hp), _boss_max * 0.9 * delta)
 		canvas.queue_redraw()
 	if _boss_name != "" and _boss_hp <= 0:
 		_boss_gone_t += delta
@@ -395,6 +406,10 @@ func _paint_tracker(ci: Control) -> void:
 func _on_boss_hp(name: String, bhp: int, bmax: int) -> void:
 	if _boss_name != name:
 		_show_note("보스 등장!", name)
+		_boss_lag = float(bhp)
+	elif bhp < _boss_hp:
+		_boss_hold = 0.45  # 잔상은 잠깐 버텼다가 줄어든다
+		_boss_hit_t = 0.18
 	_boss_name = name
 	_boss_hp = bhp
 	_boss_max = maxi(bmax, 1)
@@ -402,15 +417,51 @@ func _on_boss_hp(name: String, bhp: int, bmax: int) -> void:
 	canvas.queue_redraw()
 
 
-## 위쪽 가운데 보스 체력바(이름 + 금테 빨간 막대)
+## 위쪽 가운데 큰 보스 체력바: 이름표 + 금테 + 빨간 칸(지금 체력) 뒤로 하얀 잔상 칸(방금 깎인 만큼) + 10칸 눈금
 func _draw_boss_bar(ci: Control) -> void:
-	var w := 380.0
-	var r := Rect2(Vector2((ci.size.x - w) / 2.0, 186), Vector2(w, 22))
+	var w := minf(ci.size.x - 150.0, 420.0)  # 왼쪽 퀘스트 카드·오른쪽 버튼을 가리지 않게
+	var shake := Vector2(randf_range(-2, 2), randf_range(-1, 1)) * (_boss_hit_t / 0.18) if _boss_hit_t > 0.0 else Vector2.ZERO
+	var slim := boss_bar_style != 0
+	var y := 318.0 if boss_bar_style == 0 else (190.0 if boss_bar_style == 1 else ci.size.y - 372.0)
+	var r := Rect2(Vector2((ci.size.x - w) / 2.0, y) + shake, Vector2(w, 14.0 if slim else 26.0))
 	var a := clampf(1.0 - (_boss_gone_t - 1.0), 0.0, 1.0) if _boss_hp <= 0 else 1.0
-	ci.modulate.a = 1.0
-	Gt.title(ci, Vector2(ci.size.x / 2.0, r.position.y - 6), _boss_name, 18, Color(1, 0.85, 0.85, a), 1)
-	Gt.bar(ci, r, _boss_hp / float(_boss_max), Color("ff3b4d"))
-	Gt.text(ci, Vector2(ci.size.x / 2.0, r.position.y + 16), "%d / %d" % [maxi(_boss_hp, 0), _boss_max], 12, Color(1, 1, 1, a), 1, true, 3, Gt.INK)
+	if slim:
+		# 얇은 바: 이름은 바 바로 위 왼쪽에 작게, 남은 %는 오른쪽에
+		Gt.text(ci, r.position + Vector2(0, -7), "BOSS", 10, Color(1, 0.75, 0.3, a), 0, true, 3, Gt.INK, true)
+		Gt.text(ci, r.position + Vector2(36, -6), _boss_name, 14, Color(1, 0.92, 0.92, a), 0, true, 3, Gt.INK)
+	else:
+		# 이름표(가운데 위)
+		var tw := Gt.width(_boss_name, 18) + 64.0
+		var tag := Rect2(Vector2(ci.size.x / 2.0 - tw / 2.0, r.position.y - 30) + shake, Vector2(tw, 28))
+		Gt.pbox(ci, tag, Color("3a0d16", a), Gt.INK, 2, false, true)
+		Gt.text(ci, tag.position + Vector2(12, 19), "BOSS", 11, Color(1, 0.75, 0.3, a), 0, true, 3, Gt.INK, true)
+		Gt.title(ci, Vector2(tag.get_center().x + 14, tag.position.y + 21), _boss_name, 18, Color(1, 0.9, 0.9, a), 1)
+	# 틀
+	Gt.pbox(ci, r.grow(4.0), Color(Gt.INK, a), Gt.INK, 2, true, false)
+	Gt.round_line(ci, r.grow(4.0), 8, Color(Gt.FRAME_GOLD, a), 2.0)
+	var inner := r
+	ci.draw_rect(inner, Color(0.12, 0.04, 0.07, a))
+	var k_hp := clampf(_boss_hp / float(_boss_max), 0.0, 1.0)
+	var k_lag := clampf(_boss_lag / float(_boss_max), k_hp, 1.0)
+	# 하얀 잔상 칸
+	if k_lag > k_hp:
+		ci.draw_rect(Rect2(inner.position + Vector2(inner.size.x * k_hp, 0), Vector2(inner.size.x * (k_lag - k_hp), inner.size.y)), Color(1, 1, 1, 0.9 * a))
+	# 빨간 칸(위는 밝게, 아래는 어둡게)
+	if k_hp > 0.0:
+		var hr := Rect2(inner.position, Vector2(inner.size.x * k_hp, inner.size.y))
+		Gt.grad(ci, hr, Color(1.0, 0.36, 0.42, a), Color(0.72, 0.06, 0.16, a))
+		ci.draw_rect(Rect2(hr.position, Vector2(hr.size.x, 3)), Color(1, 0.8, 0.8, 0.6 * a))
+		if _boss_hit_t > 0.0:
+			ci.draw_rect(hr, Color(1, 1, 1, 0.35 * _boss_hit_t / 0.18 * a))  # 맞은 순간 번쩍
+	# 10칸 눈금
+	for i in range(1, 10):
+		var x := inner.position.x + inner.size.x * i / 10.0
+		ci.draw_line(Vector2(x, inner.position.y + 2), Vector2(x, inner.end.y - 2), Color(0, 0, 0, 0.35 * a), 1.5)
+	if slim:
+		Gt.text(ci, Vector2(r.end.x, r.position.y - 6), "%d%%" % ceili(k_hp * 100.0), 13, Color(1, 0.88, 0.88, a), 2, true, 3, Gt.INK)
+	else:
+		Gt.text(ci, Vector2(ci.size.x / 2.0, r.position.y + 19) + shake, "%d / %d" % [maxi(_boss_hp, 0), _boss_max], 13, Color(1, 1, 1, a), 1, true, 3, Gt.INK)
+		Gt.text(ci, Vector2(r.end.x, r.end.y + 16), "%d%%" % ceili(k_hp * 100.0), 12, Color(1, 0.85, 0.85, a), 2, true, 3, Gt.INK)
 
 
 func _show_note(title: String, sub: String) -> void:

@@ -82,7 +82,9 @@ func _check_map(key: String) -> void:
 			if key == "village":
 				ok = ok and npcs >= 10 and portals.size() == 4
 			if BOSS_MAPS.has(key):
-				ok = ok and world.find_children(BOSS_MAPS[key], "", true, false).size() == 1
+				# 이미 잡은 보스는 다시 나오지 않는다
+				var gone: bool = Quests.boss_defeated(String(BOSS_MAPS[key]).to_snake_case())
+				ok = ok and world.find_children(BOSS_MAPS[key], "", true, false).size() == (0 if gone else 1)
 				line += ", 보스 " + BOSS_MAPS[key]
 			_check(line, ok)
 		world.queue_free()
