@@ -289,6 +289,7 @@ func _die() -> void:
 			get_tree().create_timer(2.5, false).timeout.connect(func() -> void: StoryBox.play(world, "boss_" + kind))
 		Quests.mark_boss(kind)
 		Game.sfx(&"success", -2.0, 0.0)  # 보스 처치 팡파르
+		Game.boss_finale(global_position + Vector2(0, -10), get_parent())  # 슬로모션·번쩍·보상 터짐
 		Quests.track("boss", kind)
 	# 같은 자리에 잠시 뒤 다시 나타난다(맵이 맡는다)
 	if scene_file_path != "" and not is_boss:  # 보스는 한 번 잡으면 끝(다시 안 나옴)

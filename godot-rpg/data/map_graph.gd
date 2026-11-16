@@ -916,6 +916,12 @@ const DATA := {
 				"to": "root5",
 				"x": 24.0,
 				"y": 240.0
+			},
+			{
+				"boss": "giant_soul",
+				"to": "star_gate",
+				"x": 616.0,
+				"y": 240.0
 			}
 		],
 		"mobs": [
@@ -1325,6 +1331,178 @@ const DATA := {
 			"설산 파수꾼"
 		],
 		"scene": "res://features/world/snowgate.tscn"
+	},
+	"star1": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star_gate",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "star2",
+				"x": 776.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"star_imp",
+			"meteor_lizard"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star1.tscn"
+	},
+	"star2": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star1",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "star_town",
+				"x": 808.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"crystal_beast",
+			"void_eye"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star2.tscn"
+	},
+	"star3": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star_town",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "star4",
+				"x": 840.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"star_knight",
+			"comet_wisp"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star3.tscn"
+	},
+	"star4": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star3",
+				"x": 24.0,
+				"y": 240.0
+			},
+			{
+				"boss": "meteor_golem",
+				"to": "star5",
+				"x": 1000.0,
+				"y": 240.0
+			}
+		],
+		"mobs": [
+			"meteor_golem",
+			"void_ogre",
+			"meteor_lizard"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star4.tscn"
+	},
+	"star5": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star4",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "star6",
+				"x": 840.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"hunger_fiend",
+			"star_drake"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star5.tscn"
+	},
+	"star6": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star5",
+				"x": 24.0,
+				"y": 256.0
+			}
+		],
+		"mobs": [
+			"star_heart",
+			"star_horn",
+			"hunger_fiend"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star6.tscn"
+	},
+	"star_gate": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "root6",
+				"x": 24.0,
+				"y": 240.0
+			},
+			{
+				"boss": "giant_soul",
+				"to": "star1",
+				"x": 320.0,
+				"y": 24.0
+			}
+		],
+		"mobs": [],
+		"npcs": [
+			"별지기 제자"
+		],
+		"scene": "res://features/world/star_gate.tscn"
+	},
+	"star_town": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star2",
+				"x": 24.0,
+				"y": 256.0
+			},
+			{
+				"boss": "",
+				"to": "star3",
+				"x": 616.0,
+				"y": 256.0
+			}
+		],
+		"mobs": [],
+		"npcs": [
+			"별지기",
+			"별 관측자",
+			"떠돌이 상인"
+		],
+		"scene": "res://features/world/star_town.tscn"
 	},
 	"swamp": {
 		"doors": [

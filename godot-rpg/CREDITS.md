@@ -28,3 +28,5 @@ git에 올리지 않는 소재(`assets/_zips`, `assets/_raw`, `assets/vendor`)�
 - zneeke「Dark Fantasy Big Boss 1」무료판(https://zneeke.itch.io/dark-fantasy-big-boss-1) — 상업 OK, 재배포 금지. `assets/vendor/monsters/`(git 제외) 검은 정원사
 - Shikashi「Fantasy Icons Pack」(https://shikashipx.itch.io/shikashis-fantasy-icons-pack) — 작가: Matt Firth(shikashipx), game-icons.net 바탕, 상업 OK, 출처 표기. `assets/vendor/gear_icons/`(git 제외) 장비 그림(색 바꿈)
 - Cainos「Pixel Art Icon Pack - RPG」(https://cainos.itch.io/pixel-art-icon-pack-rpg) — 상업 OK, 재배포 금지. `assets/vendor/gear_icons/`(git 제외) 장비 그림 일부
+- 「Mecha-stone Golem 0.1」(itch.io, Darkpixel-Kronovi 무료 소재로 받음) — `assets/vendor/monsters/meteor_golem.png`(git 제외) 9장 중간 보스 운석 골렘(보랏빛으로 다시 칠함)
+- 보스 무기 `assets/vendor/star/`(git 제외): Ravenmore 무기 아이콘을 다시 칠한 것

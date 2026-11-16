@@ -38,6 +38,11 @@ const MOBS: Array = [
 	["root_mole", "흙두더지", false], ["root_shroom", "푸른 버섯", false], ["root_beast", "잿빛 야수", false], ["seed_guard", "씨앗 수호자", false], ["seed_fiend", "씨앗 마귀", false], ["root_zombie", "썩은 뿌리 좀비", false], ["root_ogre", "뿌리 오우거", false], ["horn_beast", "뿔 짐승", false], ["burrow_spider", "벌레굴 거미", false],
 	["root_worm", "뿌리 먹는 벌레왕", true],
 	["giant_soul", "고대 거인의 혼", true],
+	["star_imp", "별그림자", false], ["meteor_lizard", "운석 도마뱀", false], ["crystal_beast", "수정 짐승", false], ["void_eye", "공허의 눈", false],
+	["star_knight", "별빛 기사", false], ["comet_wisp", "혜성 도깨비불", false], ["void_ogre", "공허 오우거", false],
+	["meteor_golem", "운석 골렘", true],
+	["hunger_fiend", "굶주린 마귀", false], ["star_drake", "별빛 용인", false], ["star_horn", "별뿔 짐승", false],
+	["star_heart", "굶주린 별의 심장", true],
 ]
 
 ## 챕터 보상: [이 보스까지가 한 챕터, 이름, 보석]. 그 챕터 몬스터(보스 포함)를 모두 한 번씩 잡으면 받는다
@@ -46,6 +51,7 @@ const CHAPTERS: Array = [
 	["yeti_king", "설산", 250], ["kraken", "해저 신전", 300], ["mist_apostle", "안개 군도", 350],
 	["black_gardener", "검은 정원", 400], ["flame_dragon", "용암 지대", 450], ["demon_lord", "지옥", 500],
 	["storm_king", "천공의 탑", 600], ["giant_soul", "큰 나무 뿌리", 800],
+	["star_heart", "굶주린 별", 1000],
 ]
 ## 한 몬스터를 이만큼 잡으면 보석(자동으로 받음)
 const MASTERY_KILLS := 100

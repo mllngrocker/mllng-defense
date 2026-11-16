@@ -2,14 +2,14 @@ class_name SkillTree
 extends RefCounted
 ## 캐릭터별 스킬 트리: 액티브 6개(a1 고유기 → a2 → a3 오의, 그 상위 기술 a4·a5·a6) + 패시브 4개(p1 공격 → p4 스킬 숙련, p2 체력, p3 급소).
 ## 전투엔 액티브 중 3개를 골라 칸에 끼운다(Save.skill_slots). 상위 기술은 Lv.90·110·130 + 아래 기술 Lv.15에 열린다.
-## 스킬 레벨 합 = 캐릭터 레벨(고유기 Lv.1은 처음부터). 상한은 모두 15라서 Lv.150이면 15×10 = 150으로 딱 꽉 찬다.
+## 스킬 레벨 합 = 캐릭터 레벨(고유기 Lv.1은 처음부터). 상한은 모두 20이라 Lv.200이면 20×10 = 200으로 딱 꽉 찬다.
 ## 스킬 창의 "한번에 찍기"로 한꺼번에 배분.
 ## 메이플처럼 단계가 있다: 2번째 액티브는 캐릭터 Lv.30 + 고유기 Lv.10 + 패시브 합 20,
 ## 오의(3번째)는 Lv.70 + 2번째 Lv.10 + 패시브 합 30이어야 배운다(GATE).
 ## 액티브 동작은 SkillCaster의 10가지 중에서 고른다(behavior). 그림은 assets/vendor/skill_icons/<icon>.png(없으면 속성 기호).
 
-const MAX_LV := 15  # 패시브 상한
-const ACTIVE_MAX := 15  # 액티브 상한
+const MAX_LV := 20  # 패시브 상한(만렙 200)
+const ACTIVE_MAX := 20  # 액티브 상한(만렙 200)
 const MASTER_LV := 15
 const TRAINING_GEMS := 150  # 트레이닝 북 1권 값(보석)
 const MASTER_GEMS := 800  # 마스터 북 1권 값(보석)

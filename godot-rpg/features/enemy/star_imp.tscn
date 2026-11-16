@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/vendor/monsters/shade.png" id="2_tex"]
+
+[node name="StarImp" instance=ExtResource("1_base")]
+kind = 3
+max_hp = 19500
+speed = 42.0
+damage = 250
+chase_range = 120.0
+gold_reward = 470
+gem_chance = 0.3
+gem_reward = 85
+drop_chance = 0.3
+anim_fps = 14.0
+side_frames = 24
+attack_frames = 24
+
+[node name="Sprite" parent="." index="1"]
+modulate = Color(0.85, 0.70, 1.25, 1)
+texture = ExtResource("2_tex")
+scale = Vector2(0.4179, 0.4179)
+offset = Vector2(0, -48.5)
+hframes = 48
+vframes = 1

@@ -54,7 +54,7 @@ func _ready() -> void:
 		if Gear.level_of(Gear.roll(false, 125)) == 120:
 			lv120 += 1
 	_check("Lv.125면 Lv.120 장비가 주로 나온다 (%d/200)" % lv120, lv120 > 110 and Gear.level_of(Gear.roll(false, 5)) == 1)
-	_check("장비 목록 38종 × 16레벨, 예전 정예 = Lv.40", Gear.ids().size() == 608 and Gear.level_of(&"neck4_t2") == 40 and Gear.has_id(&"neck4_l150") and not Gear.has_id(&"neck4_l155"))
+	_check("장비 목록 38종 × 21레벨, 예전 정예 = Lv.40", Gear.ids().size() == 798 and Gear.level_of(&"neck4_t2") == 40 and Gear.has_id(&"neck4_l150") and not Gear.has_id(&"neck4_l155"))
 	# 골드 강화 + 분해하면 강화가 이어진다
 	Save.gear["boots3_l20"] = 0
 	Save.gold = 100000000

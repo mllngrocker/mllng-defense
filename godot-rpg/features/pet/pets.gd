@@ -19,6 +19,8 @@ const DATA: Dictionary[StringName, Array] = {
 	&"root_larva": ["아기 애벌레", "res://assets/ninja/actor/root_larva.png", 1.35, {"atk": 0.35, "hp": 0.20}, "뿌리 먹는 벌레왕 첫 처치"],
 	&"garden_owl": ["밤 부엉이", "res://assets/ninja/actor/garden_owl.png", 1.6, {"atk": 0.45, "crit": 0.08}, "검은 정원사 첫 처치"],
 	&"gold_dragon": ["황금 아기 용", "res://assets/ninja/actor/dragon_y.png", 2.0, {"atk": 0.60, "hp": 0.30}, "고대 거인의 혼 첫 처치"],
+	&"meteor_ember": ["운석 불씨", "res://assets/ninja/actor/flam2.png", 2.1, {"atk": 0.62, "crit": 0.04}, "운석 골렘 첫 처치"],
+	&"star_heartling": ["별빛 하트", "res://assets/ninja/actor/heart_green.png", 2.3, {"atk": 0.70, "hp": 0.35}, "굶주린 별의 심장 첫 처치"],
 	&"axolot": ["우파", "res://assets/ninja/actor/axolot.png", 0.5, {"hp": 0.06}, "펫 소환 ★3"],
 	&"butterfly": ["나풀이", "res://assets/ninja/actor/butterfly.png", 0.45, {"gold": 0.08}, "펫 소환 ★3"],
 	&"rat": ["찍찍이", "res://assets/ninja/actor/rat.png", 0.45, {"crit": 0.03}, "펫 소환 ★3"],
@@ -74,6 +76,8 @@ const BOSS_REWARDS := {
 	"root_worm": [&"root_larva", &"root_lance"],
 	"black_gardener": [&"garden_owl", &"gardener_scythe"],
 	"mist_apostle": [&"mist_wisp", &"mist_blade"],
+	"meteor_golem": [&"meteor_ember", &"meteor_maul"],
+	"star_heart": [&"star_heartling", &"star_eye_staff"],
 }
 const BONUS_NAMES := {"atk": "공격력", "hp": "체력", "crit": "치명타", "gold": "골드 획득"}
 

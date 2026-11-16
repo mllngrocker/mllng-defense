@@ -93,6 +93,7 @@ func apply_volume() -> void:
 ## 다른 맵으로 이동(이동문에서 부른다). 저장하고 장면을 바꾼다.
 func go_to(scene_path: String, spawn: String) -> void:
 	next_spawn = spawn
+	_slowmo = false
 	Engine.time_scale = 1.0
 	Save.save_game()
 	get_tree().change_scene_to_file.call_deferred(scene_path)
@@ -128,6 +129,26 @@ func hitstop(duration: float) -> void:
 		return
 	Engine.time_scale = 0.05
 	await get_tree().create_timer(duration, true, false, true).timeout
+	Engine.time_scale = SLOWMO if _slowmo else 1.0
+
+
+## 보스 처치 연출: 잠깐 슬로모션 + 하얀 번쩍 + 큰 흔들림 + 금화·보석이 터져 나온다
+const SLOWMO := 0.25
+var _slowmo := false
+
+
+func boss_finale(at: Vector2, parent: Node) -> void:
+	_slowmo = true
+	Engine.time_scale = SLOWMO
+	flash(Color(1, 1, 1, 0.75), 0.35)
+	add_shake(14.0)
+	sfx(&"boom", 0.0, 0.0)
+	if is_instance_valid(parent):
+		var loot := BossLoot.new()
+		loot.position = at
+		parent.add_child(loot)
+	await get_tree().create_timer(0.9, true, false, true).timeout  # 진짜 시간 0.9초
+	_slowmo = false
 	Engine.time_scale = 1.0
 
 

@@ -74,6 +74,8 @@ const DATA: Dictionary[StringName, Array] = {
 	&"root_lance": ["생명 뿌리창", 5, 460, 0.18, "벌레왕에게서 되찾은 큰 나무의 뿌리로 깎은 창", true],
 	&"gardener_scythe": ["검은 정원사의 낫", 5, 160, 0.22, "검은 씨앗을 거두던 낫. 이제는 생명을 지킨다", true],
 	&"mist_blade": ["안개를 가르는 검", 5, 112, 0.24, "사도의 가면이 깨지며 남은 푸른 검", true],
+	&"meteor_maul": ["운석 망치", 5, 600, 0.12, "운석 골렘의 몸에서 떼어 낸 별빛 망치", true],
+	&"star_eye_staff": ["별눈 지팡이", 5, 700, 0.20, "잠든 별의 눈동자를 박은 지팡이", true],
 }
 ## 무기 종류: 공격 느낌이 달라진다. [이름, 효과 설명, {배율}]
 ## speed 공격 속도 · dmg 평타 피해 · area 칼 판정 크기 · range 발사체 거리 · knock 밀쳐내기 · skill 스킬 피해
@@ -95,7 +97,7 @@ const KIND_OF := {
 	&"gardener_scythe": "spear", &"harpoon": "spear", &"frost_trident": "spear", &"gold_spear": "spear", &"holy_lance": "spear", &"jade_glaive": "spear",
 	&"longbow": "bow", &"bow": "bow", &"storm_bow": "bow", &"slingshot": "bow",
 	&"fairy_wand": "staff", &"tome": "staff", &"wand": "staff", &"amber_staff": "staff", &"ruby_staff": "staff", &"sun_scepter": "staff",
-	&"red_fan": "fan", &"violet_fan": "fan",
+	&"red_fan": "fan", &"violet_fan": "fan", &"meteor_maul": "blunt", &"star_eye_staff": "staff",
 	&"blood_fang": "dagger", &"doom_axe": "blunt", &"crimson_lance": "spear", &"eclipse_bow": "bow", &"abyss_staff": "staff",
 }
 
@@ -127,6 +129,8 @@ const TEX_PATH: Dictionary[StringName, String] = {
 	&"holy_lance": "res://assets/weapons2/holy_lance.png",
 	&"jade_glaive": "res://assets/vendor/willibab/jade_glaive.png",
 	&"storm_bow": "res://assets/vendor/ravenmore/weapons/longbow.png",
+	&"meteor_maul": "res://assets/vendor/star/meteor_maul.png",
+	&"star_eye_staff": "res://assets/vendor/star/star_eye_staff.png",
 	&"chaos_sword": "res://assets/vendor/mythic/chaos_sword.png",
 	&"blood_fang": "res://assets/vendor/mythic/blood_fang.png",
 	&"doom_axe": "res://assets/vendor/mythic/doom_axe.png",

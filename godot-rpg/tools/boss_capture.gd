@@ -27,3 +27,5 @@ func _physics_process(_delta: float) -> void:
 	if frame == 30 or frame == 50 or frame == 52 or frame == 54:
 		if is_instance_valid(boss):
 			boss.take_hit(roundi(boss.max_hp * 0.07), player.global_position)
+	if frame == 90 and "--kill" in OS.get_cmdline_user_args() and is_instance_valid(boss):
+		boss.take_hit(boss.hp + 10, player.global_position)  # 처치 연출 보기

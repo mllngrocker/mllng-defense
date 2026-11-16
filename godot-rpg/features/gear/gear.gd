@@ -24,7 +24,7 @@ const MOB_WEIGHTS: Array[float] = [0.0, 60.0, 28.0, 10.0, 2.0, 0.0]  # 신화는
 const BOSS_WEIGHTS: Array[float] = [0.0, 0.0, 50.0, 38.0, 12.0, 0.0]
 ## 장비 레벨: Lv.1·10·20 … 150(id 뒤에 "_l50"). 레벨이 높을수록 세고, 그 레벨이 돼야 낀다. 몬스터는 용사 레벨에 맞는 장비를 떨어뜨린다.
 ## (예전 정예 "_t2" = Lv.40, 고대 "_t3" = Lv.90으로 읽는다)
-const LEVELS: Array[int] = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150]
+const LEVELS: Array[int] = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200]
 const LEVEL_MULT := 0.04  # 장비 레벨 1마다 효과 +4%(Lv.150 ≈ 7배)
 ## 골드 강화: +1마다 효과 +3%, 최대 +100. 분해하면 강화 수치가 같은 부위 다음 새 장비로 이어진다
 const MAX_ENH := 100
@@ -252,7 +252,7 @@ static func roll(boss := false, level := -1) -> StringName:
 static func level_for(level: int) -> int:
 	if level < 10:
 		return 1
-	var l := mini(int(level / 10) * 10, 150)
+	var l := mini(int(level / 10) * 10, 200)
 	if randf() < 0.3:
 		l -= 10
 	return maxi(l, 1)

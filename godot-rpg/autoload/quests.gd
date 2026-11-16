@@ -19,6 +19,7 @@ const REGION_KINDS := {
 	"sky": ["star_gargoyle", "storm_birdman", "sky_skeleton", "bird_man", "war_rooster", "bamboo", "bamboo_y", "gold_racoon", "heart_green", "sky_spirit", "sky_bat", "storm_king"],
 	"root": ["seed_guard", "seed_fiend", "burrow_spider", "horn_beast", "root_larva", "root_larva_b", "root_mollusc", "root_mole", "root_shroom", "root_beast", "root_worm", "giant_soul"],
 	"garden": ["dark_zombie", "thorn_fiend", "rose_witch", "grass_zombie", "garden_moth", "garden_owl", "garden_owl2", "garden_lizard", "garden_lizard2", "garden_snake", "garden_spider", "garden_beast", "black_gardener"],
+	"star": ["star_imp", "meteor_lizard", "crystal_beast", "void_eye", "star_knight", "comet_wisp", "void_ogre", "hunger_fiend", "star_drake", "star_horn", "meteor_golem", "star_heart"],
 	"mist": ["star_wisp", "tower_guard", "coral_octo", "wreck_knight", "shade", "mist_octo", "mist_fish", "mist_skull", "mist_wisp", "mist_lantern", "mist_slime", "mist_snake", "mist_apostle"],
 }
 
@@ -108,6 +109,15 @@ const MAIN: Array[Dictionary] = [
 	{"title": "한계를 넘어", "desc": "아무 캐릭터나 레벨 150을 만들자.", "type": "level", "target": "", "count": 150, "gold": 400000, "gems": 1500},
 	{"title": "고대 거인의 혼", "desc": "검은 씨앗에 먹혀 뿌리 심장을 붙든 고대 거인의 혼을 잠재우고 큰 나무를 되살리자!", "type": "boss", "target": "giant_soul", "count": 1, "gold": 600000, "gems": 5000},
 	{"title": "집으로", "desc": "레몬 마을로 돌아가 촌장에게 큰 나무가 되살아난 이야기를 전하자.", "type": "talk", "target": "촌장", "count": 1, "gold": 100000, "gems": 1000},
+	# 4부 9장 굶주린 별
+	{"title": "9장: 부서진 별의 신전", "desc": "검은 씨앗의 방 동쪽, 무너진 신전으로 가 보자.", "type": "reach", "target": "star_gate", "count": 1, "gold": 150000, "gems": 600},
+	{"title": "별빛 고리", "desc": "신전 북쪽 별빛 고리를 지나 별똥별 낙하지로 건너가자.", "type": "reach", "target": "star1", "count": 1, "gold": 150000, "gems": 600},
+	{"title": "별지기 야영지", "desc": "수정 크레이터를 지나 별지기에게 이 별의 이야기를 듣자.", "type": "talk", "target": "별지기", "count": 1, "gold": 180000, "gems": 700},
+	{"title": "별 정화", "desc": "굶주린 별의 몬스터를 200마리 물리치자.", "type": "kill", "target": "star", "count": 200, "gold": 350000, "gems": 1000},
+	{"title": "별을 걷는 힘", "desc": "아무 캐릭터나 레벨 160을 만들자.", "type": "level", "target": "", "count": 160, "gold": 300000, "gems": 1000},
+	{"title": "운석 골렘", "desc": "부서진 궤도에서 길을 막은 운석 골렘을 부수자.", "type": "boss", "target": "meteor_golem", "count": 1, "gold": 400000, "gems": 2500},
+	{"title": "별보다 빛나게", "desc": "아무 캐릭터나 레벨 170을 만들자.", "type": "level", "target": "", "count": 170, "gold": 400000, "gems": 1500},
+	{"title": "굶주린 별의 심장", "desc": "굶주림의 균열을 지나 별의 심장에 닿아 굶주림을 멈추자!", "type": "boss", "target": "star_heart", "count": 1, "gold": 700000, "gems": 6000},
 ]
 
 const DAILY: Array[Dictionary] = [

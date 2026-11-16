@@ -75,6 +75,8 @@ func _ready() -> void:
 	IdleReward.try_show.call_deferred(self)  # 꺼 둔 사이 쌓인 방치 보상
 	if Save.persist and not Save.settings.has("nick"):
 		_open_intro.call_deferred(not Save.fresh)  # 처음: 이름 → 동료 고르기(예전 세이브는 이름만)
+	elif Save.settings.has("nick"):
+		Attendance.try_show.call_deferred(self)  # 하루 한 번 출석 달력
 
 
 func _process(delta: float) -> void:

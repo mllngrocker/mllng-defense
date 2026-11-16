@@ -38,7 +38,7 @@ func _ready() -> void:
 	while Save.skill_level(id, "p3") < 10:
 		Save.learn_skill(id, "p3")
 	_check("Lv.70 + 두 번째 10 + 패시브 30 → 오의", Save.learn_skill(id, "a3"))
-	_check("상한: 모두 15", Save.skill_cap(id, "a1") == 15 and Save.skill_cap(id, "p1") == 15)
+	_check("상한: 모두 20", Save.skill_cap(id, "a1") == 20 and Save.skill_cap(id, "p1") == 20)
 	var pts := Save.skill_points(id)
 	Save.skill_bonus[String(id)] = 5
 	_check("포인트 = 레벨(옛 트레이닝 북 보너스는 안 셈)", Save.skill_points(id) == pts)
@@ -60,19 +60,19 @@ func _ready() -> void:
 	Save.owned[String(id)]["level"] = 80
 	Save.auto_skill(id)
 	_check("Lv.80 한번에: 2번째·오의도 찍힘 (a2 %d · a3 %d · 패시브 %d)" % [Save.skill_level(id, "a2"), Save.skill_level(id, "a3"), SkillTree.passive_sum(id)], Save.skill_level(id, "a2") >= 10 and Save.skill_level(id, "a3") >= 1 and Save.skill_points(id) == 0)
-	Save.owned[String(id)]["level"] = 150
+	Save.owned[String(id)]["level"] = 200
 	Save.auto_skill(id)
 	var total := 0
 	for n: String in ["a1", "a2", "a3", "a4", "a5", "a6", "p1", "p2", "p3", "p4"]:
 		total += Save.skill_level(id, n)
-	_check("Lv.150 한번에: 모든 스킬 꽉, 합 150 (%d)" % total, total == 150 and Save.skill_points(id) == 0)
+	_check("Lv.200 한번에: 모든 스킬 꽉, 합 200 (%d)" % total, total == 200 and Save.skill_points(id) == 0)
 	Save.owned[String(id)]["level"] = 80
 	Save.skill_lv = {}
 	Save.auto_skill(id)
 	# 상위 기술·칸 끼우기
 	Save.owned[String(id)]["level"] = 150
 	Save.auto_skill(id)
-	_check("Lv.150: 상위 기술 4·5·6번도 15", Save.skill_level(id, "a4") == 15 and Save.skill_level(id, "a6") == 15)
+	_check("Lv.150: 상위 기술 4·5·6번도 15", Save.skill_level(id, "a4") >= 15 and Save.skill_level(id, "a6") >= 15)
 	_check("상위 기술 피해는 바탕 기술의 1.6배", is_equal_approx(SkillTree.power(id, "a4"), SkillTree.power(id, "a1") * SkillTree.UP_POWER))
 	Save.set_slot(id, 0, "a4")
 	_check("1칸에 상위 기술 끼우기", Save.slots_of(id) == ["a4", "a2", "a3"])

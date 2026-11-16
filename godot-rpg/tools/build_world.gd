@@ -367,7 +367,7 @@ const MORE_MAPS: Array[Dictionary] = [
 	{"path": "res://features/world/root2.tscn", "title": "빛나는 뿌리 동굴", "w": 52, "h": 40, "seed": 602, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
 			{"side": "west", "to": "res://features/world/root1.tscn", "spawn": "east", "label": "◀ 뿌리 내리막길", "at": 19},
 			{"side": "east", "to": "res://features/world/root_town.tscn", "spawn": "west", "label": "새싹 마을 ▶", "at": 19},
-		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 26, "bushes": 0, "flowers": 0, "spawns": [["root_shroom", 6, 6, 60], ["root_larva_b", 6, 6, 60]], "crystals": 30, "tint": Color(0.72, 0.88, 0.74)},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 26, "bushes": 0, "flowers": 0, "spawns": [["root_shroom", 6, 6, 60], ["root_larva_b", 6, 6, 60]], "crystals": 30, "tint": Color(0.72, 0.88, 0.74)},  # 동굴 바닥엔 밝은 모래 테 물이 어울리지 않아 연못·강 없음
 	{"path": "res://features/world/root3.tscn", "title": "썩은 물길", "w": 56, "h": 40, "seed": 603, "ground": SWAMP_GROUND, "music": "res://assets/ninja/music/swamp.ogg", "border": "dead", "gaps": [
 			{"side": "west", "to": "res://features/world/root_town.tscn", "spawn": "east", "label": "◀ 새싹 마을", "at": 19},
 			{"side": "east", "to": "res://features/world/root4.tscn", "spawn": "west", "label": "벌레 굴 ▶", "at": 19},
@@ -375,14 +375,44 @@ const MORE_MAPS: Array[Dictionary] = [
 	{"path": "res://features/world/root4.tscn", "title": "벌레 굴", "w": 72, "h": 24, "seed": 604, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
 			{"side": "west", "to": "res://features/world/root3.tscn", "spawn": "east", "label": "◀ 썩은 물길", "at": 11},
 			{"side": "east", "to": "res://features/world/root5.tscn", "spawn": "west", "label": "뿌리 심장 앞 ▶", "at": 11},
-		], "clearings": 4, "ponds": 1, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["horn_beast", 4, 6, 60], ["burrow_spider", 6, 6, 60]], "crystals": 8, "tint": Color(0.72, 0.88, 0.74), "bosses": [["root_worm", Vector2i(58, 12)]]},
+		], "clearings": 4, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["horn_beast", 4, 6, 60], ["burrow_spider", 6, 6, 60]], "crystals": 8, "tint": Color(0.72, 0.88, 0.74), "bosses": [["root_worm", Vector2i(58, 12)]]},  # 동굴 바닥엔 밝은 모래 테 물이 어울리지 않아 연못·강 없음
 	{"path": "res://features/world/root5.tscn", "title": "뿌리 심장 앞", "w": 54, "h": 40, "seed": 605, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
 			{"side": "west", "to": "res://features/world/root4.tscn", "spawn": "east", "label": "◀ 벌레 굴", "at": 19},
 			{"side": "east", "to": "res://features/world/root6.tscn", "spawn": "west", "label": "검은 씨앗의 방 ▶", "at": 19},
-		], "clearings": 3, "ponds": 2, "rivers": 1, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["root_ogre", 4, 6, 60], ["root_beast", 5, 6, 60]], "crystals": 20, "river_width": 2.0, "tint": Color(0.72, 0.88, 0.74)},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["root_ogre", 4, 6, 60], ["root_beast", 5, 6, 60]], "crystals": 20, "river_width": 2.0, "tint": Color(0.72, 0.88, 0.74)},  # 동굴 바닥엔 밝은 모래 테 물이 어울리지 않아 연못·강 없음
 	{"path": "res://features/world/root6.tscn", "title": "검은 씨앗의 방", "w": 40, "h": 30, "seed": 606, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
 			{"side": "west", "to": "res://features/world/root5.tscn", "spawn": "east", "label": "◀ 뿌리 심장 앞", "at": 14},
-		], "clearings": 1, "ponds": 1, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 24, "bushes": 0, "flowers": 0, "spawns": [["seed_fiend", 4, 6, 60], ["seed_guard", 4, 6, 60]], "crystals": 14, "tint": Color(0.66, 0.74, 0.7), "bosses": [["giant_soul", Vector2i(28, 15)]]},
+			{"side": "east", "to": "res://features/world/star_gate.tscn", "spawn": "west", "label": "부서진 별의 신전 ▶", "at": 14, "lock": "giant_soul", "lock_title": "8장 보스 고대 거인의 혼"},
+		], "clearings": 1, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 24, "bushes": 0, "flowers": 0, "spawns": [["seed_fiend", 4, 6, 60], ["seed_guard", 4, 6, 60]], "crystals": 14, "tint": Color(0.66, 0.74, 0.7), "bosses": [["giant_soul", Vector2i(28, 15)]]},  # 동굴 바닥엔 밝은 모래 테 물이 어울리지 않아 연못·강 없음
+	# ── 4부 9장: 굶주린 별 ──
+	{"path": "res://features/world/star_gate.tscn", "title": "부서진 별의 신전", "w": 40, "h": 30, "seed": 1001, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/shore.ogg", "border": "rock", "gaps": [
+			{"side": "west", "to": "res://features/world/root6.tscn", "spawn": "east", "label": "◀ 검은 씨앗의 방", "at": 14},
+			{"side": "north", "to": "res://features/world/star1.tscn", "spawn": "west", "label": "별빛 고리", "at": 19, "lock": "giant_soul", "lock_title": "8장 보스 고대 거인의 혼"},
+		], "hub": Vector2i(20, 16), "clearings": 1, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 10, "bushes": 0, "flowers": 0, "spawns": [], "crystals": 24, "star_gate": true, "tint": Color(0.78, 0.74, 0.95),
+		"npcs": [["별지기 제자", "villagers/v05_mist", Vector2i(23, 12), ["이 고리는 별로 이어지는 옛 전이문이에요.", "거인의 혼이 잠들자 고리에 다시 별빛이 들어왔어요!", "북쪽 고리 안으로 들어가면 굶주린 별 위로 건너가요."]]]},
+	{"path": "res://features/world/star1.tscn", "title": "별똥별 낙하지", "w": 50, "h": 40, "seed": 1011, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/star_gate.tscn", "spawn": "north", "label": "◀ 부서진 별의 신전", "at": 19},
+			{"side": "east", "to": "res://features/world/star2.tscn", "spawn": "west", "label": "수정 크레이터 ▶", "at": 19},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 26, "bushes": 0, "flowers": 0, "spawns": [["star_imp", 7, 6, 60], ["meteor_lizard", 6, 6, 60]], "crystals": 26, "isle": true, "backdrop": "space", "tint": Color(0.82, 0.72, 1.0)},
+	{"path": "res://features/world/star2.tscn", "title": "수정 크레이터", "w": 52, "h": 40, "seed": 1012, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/star1.tscn", "spawn": "east", "label": "◀ 별똥별 낙하지", "at": 19},
+			{"side": "east", "to": "res://features/world/star_town.tscn", "spawn": "west", "label": "별지기 야영지 ▶", "at": 19},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 22, "bushes": 0, "flowers": 0, "spawns": [["crystal_beast", 6, 6, 60], ["void_eye", 6, 6, 60]], "crystals": 60, "isle": true, "backdrop": "space", "tint": Color(0.82, 0.72, 1.0)},
+	{"path": "res://features/world/star3.tscn", "title": "별빛 이끼 들판", "w": 54, "h": 40, "seed": 1013, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/field.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/star_town.tscn", "spawn": "east", "label": "◀ 별지기 야영지", "at": 19},
+			{"side": "east", "to": "res://features/world/star4.tscn", "spawn": "west", "label": "부서진 궤도 ▶", "at": 19},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 10, "big_trees": 6, "big_tree_set": "dead", "rocks": 12, "bushes": 20, "flowers": 60, "spawns": [["star_knight", 5, 6, 60], ["comet_wisp", 6, 6, 60]], "crystals": 20, "isle": true, "backdrop": "space", "tint": Color(0.74, 0.66, 1.0)},
+	{"path": "res://features/world/star4.tscn", "title": "부서진 궤도", "w": 64, "h": 30, "seed": 1014, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/star3.tscn", "spawn": "east", "label": "◀ 별빛 이끼 들판", "at": 14},
+			{"side": "east", "to": "res://features/world/star5.tscn", "spawn": "west", "label": "굶주림의 균열 ▶", "at": 14, "lock": "meteor_golem", "lock_title": "9장 중간 보스 운석 골렘"},
+		], "clearings": 4, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["void_ogre", 4, 6, 60], ["meteor_lizard", 5, 6, 60]], "crystals": 30, "isle": true, "backdrop": "space", "tint": Color(0.82, 0.72, 1.0), "bosses": [["meteor_golem", Vector2i(50, 15)]]},
+	{"path": "res://features/world/star5.tscn", "title": "굶주림의 균열", "w": 54, "h": 40, "seed": 1015, "ground": HELL_GROUND, "music": "res://assets/ninja/music/hell_deep.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/star4.tscn", "spawn": "east", "label": "◀ 부서진 궤도", "at": 19},
+			{"side": "east", "to": "res://features/world/star6.tscn", "spawn": "west", "label": "굶주린 별의 심장 ▶", "at": 19},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 24, "bushes": 0, "flowers": 0, "spawns": [["hunger_fiend", 5, 6, 60], ["star_drake", 4, 6, 60]], "crystals": 24, "isle": true, "backdrop": "space", "tint": Color(0.8, 0.62, 0.95)},
+	{"path": "res://features/world/star6.tscn", "title": "굶주린 별의 심장", "w": 40, "h": 32, "seed": 1016, "ground": HELL_GROUND, "music": "res://assets/ninja/music/hell_deep.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/star5.tscn", "spawn": "east", "label": "◀ 굶주림의 균열", "at": 15},
+		], "clearings": 1, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 16, "bushes": 0, "flowers": 0, "spawns": [["star_horn", 4, 6, 60], ["hunger_fiend", 4, 6, 60]], "crystals": 20, "isle": true, "backdrop": "space", "tint": Color(0.86, 0.62, 0.98), "bosses": [["star_heart", Vector2i(26, 16)]]},
 	# ── 2부 7장: 검은 정원 ──
 	{"path": "res://features/world/garden1.tscn", "title": "시든 꽃길", "w": 52, "h": 40, "seed": 701, "ground": SWAMP_GROUND, "music": "res://assets/ninja/music/ruinvillage.ogg", "border": "hedge", "gaps": [
 			{"side": "west", "to": DESERT_TOWN, "spawn": "north", "label": "◀ 오아시스 마을", "at": 19},
@@ -427,7 +457,7 @@ const MORE_MAPS: Array[Dictionary] = [
 	{"path": "res://features/world/mist5.tscn", "title": "별무리 절벽", "w": 54, "h": 40, "seed": 805, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/cave.ogg", "border": "rock", "gaps": [
 			{"side": "west", "to": "res://features/world/mist4.tscn", "spawn": "east", "label": "◀ 유령 등대 길", "at": 19},
 			{"side": "east", "to": "res://features/world/mist6.tscn", "spawn": "west", "label": "별을 삼킨 탑 ▶", "at": 19},
-		], "clearings": 3, "ponds": 2, "rivers": 1, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["mist_wisp", 6, 6, 60], ["mist_snake", 6, 6, 60]], "crystals": 34, "river_width": 2.0, "tint": Color(0.72, 0.8, 1.0), "fog": true},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 30, "bushes": 0, "flowers": 0, "spawns": [["mist_wisp", 6, 6, 60], ["mist_snake", 6, 6, 60]], "crystals": 34, "river_width": 2.0, "tint": Color(0.72, 0.8, 1.0), "fog": true},  # 동굴 바닥엔 밝은 모래 테 물이 어울리지 않아 연못·강 없음
 	{"path": "res://features/world/mist6.tscn", "title": "별을 삼킨 탑", "w": 48, "h": 30, "seed": 806, "ground": GRASS_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
 			{"side": "west", "to": "res://features/world/mist5.tscn", "spawn": "east", "label": "◀ 별무리 절벽", "at": 14},
 		], "clearings": 3, "ponds": 2, "rivers": 0, "trees": 20, "big_trees": 4, "rocks": 8, "bushes": 10, "flowers": 20, "spawns": [["tower_guard", 4, 6, 60], ["star_wisp", 5, 6, 60]], "temple": true, "rooms": 3, "tint": Color(0.7, 0.76, 1.0), "bosses": [["mist_apostle", Vector2i(36, 14)]], "fog": true},
@@ -437,6 +467,23 @@ const MORE_MAPS: Array[Dictionary] = [
 
 ## 지역 마을: 레몬 마을과 같은 집·광장 짜임에 땅·사람·말이 다르다. villagers 칸은 광장 기준
 const TOWN_MAPS: Array[Dictionary] = [
+	{
+		"path": "res://features/world/star_town.tscn", "title": "별지기 야영지", "w": 40, "h": 32, "seed": 68, "wobble": 0.0,
+		"backdrop": "space", "ground": CAVE_GROUND, "music": "res://assets/ninja/music/town2.ogg", "border": "none", "isle": true,
+		"house_set": "res://assets/towns/mist.png", "roads": {"h": [0, 40], "v": [0, 0], "plaza": 3.6}, "torii": false, "tint": Color(0.8, 0.74, 1.0),
+		"gaps": [
+			{"side": "west", "to": "res://features/world/star2.tscn", "spawn": "east", "label": "◀ 수정 크레이터"},
+			{"side": "east", "to": "res://features/world/star3.tscn", "spawn": "west", "label": "별빛 이끼 들판 ▶"},
+		],
+		"ponds": 0, "trees": 0, "big_trees": 0, "rocks": 10, "bushes": 0, "flowers": 0, "crystals": 18,  # 별 위 황무지: 나무·풀 없이 바위·수정만
+		"layout": "isles", "props": "camp", "village": true, "spawns": [],
+		"villagers": [
+			["별지기", "villagers/v05_mist", Vector2i(-3, -3), ["별을 지키는 일족, 별지기라네. 이 별은 오래전부터 잠들어 있었지.", "그런데 누군가 별의 봉인을 풀었어. 별이 깨어나 굶주리기 시작했다네.", "별의 심장까지 가면 굶주림을 멈출 수 있을 걸세. 길은 동쪽이야."]],
+			["별 관측자", "villagers/v13_mist", Vector2i(10, 4), ["밤마다 하늘 위에서 하얀 빛이 내려와요. 저 빛이 봉인을 푼 것 같아요.", "부서진 궤도에 운석 골렘이 길을 막고 있어요."]],
+			["떠돌이 상인", "villagers/v14_mist", Vector2i(-11, 5), ["별 조각은 비싸게 팔리지! 근데 요즘은 별이 오히려 사람을 먹으려 들어서 장사가 안 돼."]],
+		],
+		"critters": [["cat", Vector2i(4, 7)]],
+	},
 	{
 		"path": DESERT_TOWN, "title": "오아시스 마을", "w": 40, "h": 30, "seed": 61, "wobble": 0.0,
 		"ground": SAND_GROUND, "music": "res://assets/ninja/music/village.ogg", "border": "desert", "border_palms": 0.8,
@@ -659,7 +706,7 @@ func _build_map(m: Dictionary) -> void:
 		_block(Vector2i(0, 0), Vector2i(W, int(m["top_rows"]) + 1))
 	_make_water(start)
 	_paint_ground(ground)
-	if cfg.get("isle", false) and cfg.get("backdrop", "") == "sky":
+	if cfg.get("isle", false) and cfg.get("backdrop", "") == "sky":  # 나무 난간은 하늘섬만(별 위는 맨 바위 끝)
 		_make_rails()
 	if cfg.get("pave", false):  # 포장길(지금은 안 씀: 흙길이 더 낫다고 함)
 		_pave(ground)
@@ -695,7 +742,7 @@ func _finish_map(m: Dictionary) -> void:
 		var bd := CanvasLayer.new()
 		bd.name = "Backdrop"
 		bd.set_script(load("res://features/world/backdrop_layer.gd"))
-		bd.set(&"mode", 1 if m["backdrop"] == "sea" else 0)
+		bd.set(&"mode", {"sky": 0, "sea": 1, "space": 2}.get(m["backdrop"], 0))
 		bd.set(&"height", float(m.get("sky_h", 0.0)))
 		_add(world, bd)
 		world.set_meta(&"map_size", Vector2i(W, H))
@@ -996,7 +1043,7 @@ func _paint_ground(ground: TileMapLayer) -> void:
 		for x in W:
 			var c := Vector2i(x, y)
 			var fsrc: int = ground_set.get("src", FLOOR)
-			if wet.has(c) and cfg.get("backdrop", "") == "sky":
+			if wet.has(c) and cfg.get("backdrop", "") in ["sky", "space"]:
 				continue
 			if wet.has(c) and overlay:
 				ground.set_cell(c, fsrc, ground_set["base"])
@@ -1106,7 +1153,7 @@ func _make_village(parent: Node, center: Vector2i) -> void:
 	var well_c := center + (Vector2i(-1, -1) if layout in ["ring", "arc"] else Vector2i(4, -4))
 	if layout != "":
 		_blob(Vector2(center), 4.2)
-		_town_props(parent, center, layout)
+		_town_props(parent, center, cfg.get("props", layout))  # "props"로 소품 묶음만 따로 고를 수 있다
 	_sprite_prop(parent, desert_tex, WELL, Vector2(well_c * T) + Vector2(T, 2 * T - 2.0), Vector2(26, 12), "Well")
 	_block(well_c - Vector2i.ONE, Vector2i(4, 4))
 	# 마을 사람
@@ -1249,6 +1296,7 @@ const TOWN_PROP_SETS := {
 	"isles": ["flower_pot", "flower_pot", "planter", "planter", "bench", "bench", "lamp", "lamp", "bush_flower", "bush_flower", "sign"],
 	"arc": ["planter", "planter", "flower_pot", "flower_pot", "beehive", "beehive", "bush_flower", "bush_flower", "bush", "bench", "sign"],
 	"harbor": ["crate", "crate", "crate", "crate", "barrel", "barrel", "barrel", "lamp", "lamp", "lamp", "lamp", "bench", "bin", "rocks", "sign"],
+	"camp": ["lamp", "lamp", "lamp", "crate", "crate", "barrel", "barrel", "rocks", "rocks", "big_rock", "bench", "sign"],  # 황무지 야영지(풀·꽃 없음)
 }
 
 
@@ -2058,6 +2106,8 @@ func _scatter_props(parent: Node, start: Vector2i) -> void:
 		_make_garden(parent, start)
 	if cfg.get("vine", false):
 		_make_vine_ruins(parent, start)
+	if cfg.get("star_gate", false):
+		_make_star_ruins(parent, start)
 	_scatter(start, int(cfg["bushes"]), 3000, func(c: Vector2i) -> bool:
 		if not _area_free(c, Vector2i.ONE, false):
 			return false
@@ -2304,6 +2354,40 @@ func _make_vine_ruins(parent: Node, start: Vector2i) -> void:
 	deco.set(&"area", Vector2(W * T, H * T))
 	deco.set(&"gate", Vector2(gate_x, 2.2 * T))
 	_add(world, deco)
+
+## 부서진 별의 신전: 북쪽에 금 간 돌 아치(전이문), 둘레에 쓰러진 석상·기둥, 별빛 고리·빛기둥·별 가루(star_gate_deco.gd)
+func _make_star_ruins(parent: Node, start: Vector2i) -> void:
+	var gt := load("res://assets/garden/garden_props.png") as Texture2D
+	var stone := Color(0.78, 0.74, 0.92)
+	var gate_x := 0
+	for g: Dictionary in cfg["gaps"]:
+		if g["side"] == "north":
+			gate_x = (_gap_at(g) + 1) * T
+	var arch := _sprite_prop(parent, gt, Rect2i(5, 5, 3, 3), Vector2(gate_x, 4.6 * T), Vector2.ZERO, "StarGate")
+	arch.modulate = Color(0.85, 0.8, 1.0)
+	arch.scale = Vector2(1.7, 1.7)
+	arch.z_index = 1
+	var statues: Array[Rect2i] = [Rect2i(0, 2, 1, 3), Rect2i(1, 2, 2, 3), Rect2i(5, 2, 2, 2)]
+	_scatter(start, 8, 2000, func(c: Vector2i) -> bool:
+		if not _place_garden(parent, gt, c, statues[rng.randi() % statues.size()], Vector2(14, 8), "Statue"):
+			return false
+		var st := parent.get_child(parent.get_child_count() - 1) as Node2D
+		st.modulate = stone
+		st.rotation = rng.randf_range(-0.25, 0.25)  # 기울어진 기둥
+		return true)
+	_scatter(start, 3, 2000, func(c: Vector2i) -> bool:
+		if not _area_free(c - Vector2i.ONE, Vector2i(5, 5), true):
+			return false
+		_sprite_prop(parent, gt, Rect2i(5, 5, 3, 3), Vector2(c * T) + Vector2(1.5 * T, 3 * T - 2.0), Vector2.ZERO, "Arch").modulate = stone
+		_block(c, Vector2i(3, 3))
+		return true)
+	var deco := Node2D.new()
+	deco.name = "StarGateDeco"
+	deco.set_script(load("res://features/world/star_gate_deco.gd"))
+	deco.set(&"area", Vector2(W * T, H * T))
+	deco.set(&"gate", Vector2(gate_x, 2.2 * T))
+	_add(world, deco)
+
 
 func _place_garden(parent: Node, tex: Texture2D, c: Vector2i, r: Rect2i, solid: Vector2, kind: String) -> bool:
 	if not _area_free(c - Vector2i.ONE, r.size + Vector2i(2, 2), true):

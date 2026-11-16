@@ -1,7 +1,7 @@
 extends CanvasLayer
 ## 맵 뒤 배경: 하늘섬·천공의 탑은 구름 바다(위층일수록 어둡고 별), 해저 신전은 바다. build_world가 붙인다.
 
-@export var mode := 0  # 0 하늘, 1 바다
+@export var mode := 0  # 0 하늘, 1 바다, 2 우주
 @export var height := 0.0
 var _mat: ShaderMaterial
 

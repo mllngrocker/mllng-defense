@@ -22,12 +22,13 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	t += delta
+	_toast_t = maxf(0.0, _toast_t - delta)
 	queue_redraw()
 
 
 func _panel() -> Rect2:
 	var w := minf(size.x - 40.0, 440.0)
-	return Rect2(Vector2((size.x - w) / 2.0, size.y * 0.5 - 250.0), Vector2(w, 500))
+	return Rect2(Vector2((size.x - w) / 2.0, size.y * 0.5 - 280.0), Vector2(w, 560))
 
 
 func _slider(i: int) -> Rect2:
@@ -40,10 +41,17 @@ func _toggle() -> Rect2:
 	return Rect2(Vector2(p.end.x - 120, p.position.y + 318), Vector2(84, 36))
 
 
+## 백업 코드 복사(0) · 코드로 불러오기(1)
+func _backup_btn(i: int) -> Rect2:
+	var p := _panel()
+	var w := (p.size.x - 92) / 2.0
+	return Rect2(p.position + Vector2(40 + i * (w + 12), 372), Vector2(w, 40))
+
+
 ## 처음부터 하기(맨 아래 큰 버튼 위)
 func _reset_btn() -> Rect2:
 	var p := _panel()
-	return Rect2(p.position + Vector2(40, 364), Vector2(p.size.x - 80, 34))
+	return Rect2(p.position + Vector2(40, 424), Vector2(p.size.x - 80, 34))
 
 
 func _btn(i: int) -> Rect2:
@@ -67,6 +75,10 @@ func _gui_input(e: InputEvent) -> void:
 				Game.sfx(&"pickup", -8.0, 0.0)
 			elif _reset_btn().has_point(mb.position):
 				_ask_reset()
+			elif _backup_btn(0).has_point(mb.position):
+				_copy_code()
+			elif _backup_btn(1).has_point(mb.position):
+				_paste_code()
 			elif _btn(0).has_point(mb.position):
 				close()
 			elif _btn(1).has_point(mb.position):
@@ -97,6 +109,55 @@ func _ask_reset() -> void:
 		get_tree().paused = false
 		get_tree().change_scene_to_file(MENU_SCENE))
 	add_child(box)
+
+
+## 백업 코드 복사: 클립보드에 넣고, 휴대폰 웹이면 코드가 담긴 입력창도 띄워 직접 복사할 수 있게
+func _copy_code() -> void:
+	var code := Save.export_code()
+	if code == "":
+		return
+	DisplayServer.clipboard_set(code)
+	Game.sfx(&"success", -6.0, 0.0)
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval("window.prompt('백업 코드예요. 길게 눌러 전부 복사해 메모장 등에 보관하세요', %s)" % JSON.stringify(code), true)
+	_say("백업 코드를 복사했어요! 메모장에 붙여 보관하세요")
+
+
+## 코드로 불러오기: 휴대폰 웹은 입력창, PC는 클립보드에서 읽고 → 한 번 더 묻고 덮어쓴다
+func _paste_code() -> void:
+	var code := ""
+	if OS.has_feature("web"):
+		code = str(JavaScriptBridge.eval("(window.prompt('백업 코드를 붙여넣어 주세요', '') || '')", true))
+	else:
+		code = DisplayServer.clipboard_get()
+	if not code.strip_edges().begins_with(Save.CODE_HEAD):
+		Game.sfx(&"hurt", -8.0, 0.0)
+		_say("올바른 백업 코드가 아니에요")
+		return
+	var box := ConfirmBox.new()
+	box.title = "이 코드로 불러올까요?"
+	box.sub = "지금 저장이 코드 속 저장으로 바뀌어요. 되돌릴 수 없어요."
+	box.yes_label = "불러오기"
+	box.no_label = "취소"
+	box.process_mode = Node.PROCESS_MODE_ALWAYS
+	box.answered.connect(func(yes: bool) -> void:
+		if not yes:
+			return
+		if Save.import_code(code):
+			get_tree().paused = false
+			get_tree().change_scene_to_file(MENU_SCENE)
+		else:
+			_say("코드를 읽지 못했어요(잘린 곳이 없는지 확인해 주세요)"))
+	add_child(box)
+
+
+var _toast := ""
+var _toast_t := 0.0
+
+
+func _say(text: String) -> void:
+	_toast = text
+	_toast_t = 2.2
 
 
 func _set_from(x: float) -> void:
@@ -149,6 +210,12 @@ func _draw() -> void:
 	draw_circle(Vector2(kx, tr.get_center().y), 14.0, Gt.INK)
 	draw_circle(Vector2(kx, tr.get_center().y), 11.0, Color.WHITE)
 	Gt.text(self, Vector2(tr.get_center().x + (-12 if on else 12), tr.position.y + 24), "켬" if on else "끔", 13, Color.WHITE, 1, true, 3, Gt.INK)
+	# 백업 코드(복사 · 불러오기)
+	Gt.text(self, Vector2(_panel().position.x + 40, _backup_btn(0).position.y - 8), "백업 코드 (기기를 바꾸거나 캐시를 지워도 되살려요)", 12, Gt.NAVY_SOFT, 0, false)
+	for i in 2:
+		var bb := _backup_btn(i)
+		Gt.pbox(self, bb, Color("e3efff") if i == 0 else Color("e9f8e4"), Gt.INK, 2, false, true)
+		Gt.text(self, Vector2(bb.get_center().x, bb.position.y + 26), ["백업 코드 복사", "코드로 불러오기"][i], 15, Gt.NAVY, 1)
 	# 처음부터 하기(빨간 테두리 작은 버튼)
 	var rb := _reset_btn()
 	Gt.pbox(self, rb, Color("ffe1e1"), Color("c0392b"), 2, false, true)
@@ -161,3 +228,8 @@ func _draw() -> void:
 		Gt.button(self, b, kinds[i])
 		Gt.title(self, Vector2(b.get_center().x, b.position.y + 38), labels[i], 20, Color.WHITE, 1)
 	Gt.text(self, Vector2(p.get_center().x, p.end.y + 26), "Esc · P 키로도 열고 닫아요", 12, Color.WHITE, 1, true, 3, Gt.INK)
+	if _toast_t > 0.0:
+		var w := Gt.width(_toast, 15) + 36
+		var tr2 := Rect2(Vector2((size.x - w) / 2.0, p.position.y - 54), Vector2(w, 40))
+		Gt.pbox(self, tr2, Color(Gt.NAVY, 0.95))
+		Gt.text(self, Vector2(tr2.get_center().x, tr2.position.y + 26), _toast, 15, Color.WHITE, 1)

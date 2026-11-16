@@ -36,6 +36,8 @@ const PATTERNS := {
 	"root_worm": [["puddle", "charge"], Color("8ccf5a")],
 	"black_gardener": [["blink", "puddle", "ring"], Color("a35cff")],
 	"mist_apostle": [["blink", "ring", "charge"], Color("8fd3ff")],
+	"meteor_golem": [["jump", "charge", "ring"], Color("c08cff")],
+	"star_heart": [["ring", "blink", "puddle", "ring"], Color("ff5ad8")],
 }
 var skill_t := 5.0
 var pat := ""  # 지금 쓰는 기술
@@ -55,7 +57,14 @@ func _ready() -> void:
 	slam_damage = roundi(slam_damage * Enemy.DMG_MULT)
 	add_to_group(&"bosses")
 	if Game.dungeon == "" and Quests.boss_defeated(kind_id()):
-		queue_free.call_deferred()  # 이미 잡은 보스는 맵에 다시 나오지 않는다(로비·맵을 다녀와도)
+		# 이미 잡은 보스는 맵에 다시 나오지 않는다(로비·맵을 다녀와도). 깨어나 체력바를 띄우기 전에 바로 꺼 둔다
+		awake = true
+		hp = 0
+		visible = false
+		set_physics_process(false)
+		remove_from_group(&"enemies")
+		remove_from_group(&"bosses")
+		queue_free.call_deferred()
 
 
 func _physics_process(delta: float) -> void:

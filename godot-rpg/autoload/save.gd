@@ -7,7 +7,7 @@ const STARTERS: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3"]
 ## 아바타 화면에 보이는 순서(전체 캐릭터, ★3 → ★5)
 const ROSTER: Array[StringName] = [&"kemo1", &"kemo2", &"kemo3", &"fairy3", &"maid2", &"maid3", &"elf1", &"elf2", &"devil4", &"fairy2", &"maid1",
 	&"maid4", &"fairy1", &"devil1", &"elf3", &"devil3", &"scarlet", &"elf4", &"devil2"]
-const MAX_LEVEL := 150  # 2부에서 100 → 150
+const MAX_LEVEL := 200  # 2부에서 100 → 150, 3부 뒤(9·10장)로 200
 const MAX_STARS := 6  # 성장 효과 줄 수(별 승급으로 차례로 열린다)
 ## 별 등급: 타고난 등급(★3~5)에 중복으로 얻은 별을 더한다. 최대 7성(큰 빨간 별 하나로 보인다)
 const MAX_RANK := 7
@@ -298,7 +298,8 @@ func auto_skill(id: StringName) -> int:
 	skill_lv[String(id)] = d
 	var n := 0
 	# 단계: 다음 스킬이 열리는 조건부터 채우고(고유기 10 → 패시브 합 20 → 2번째 10 → 패시브 합 30 → 오의 10), 그다음 액티브·패시브를 끝까지
-	var stages: Array = [["a1", 10], ["P", 20], ["a2", 10], ["P", 30], ["a3", 10], ["a1", 15], ["a2", 15], ["a3", 15], ["a4", 15], ["a5", 15], ["a6", 15], ["P", 60]]
+	var stages: Array = [["a1", 10], ["P", 20], ["a2", 10], ["P", 30], ["a3", 10], ["a1", 15], ["a2", 15], ["a3", 15], ["a4", 15], ["a5", 15], ["a6", 15], ["P", 60],
+		["a1", 20], ["a2", 20], ["a3", 20], ["a4", 20], ["a5", 20], ["a6", 20], ["P", 80]]  # Lv.150 뒤: 상한 20까지
 	for st: Array in stages:
 		while skill_points(id) > 0:
 			var pick := ""
@@ -1010,6 +1011,46 @@ func load_game() -> void:
 	if weapons.is_empty():
 		weapons[String(Weapons.STARTER)] = 0
 		equip[String(selected)] = String(Weapons.STARTER)
+
+
+## 백업 코드: 저장 전체를 압축해 글자로(휴대폰 캐시를 지워도 이 코드로 되살린다)
+const CODE_HEAD := "YGM1:"
+
+
+func export_code() -> String:
+	save_game()
+	var text := FileAccess.get_file_as_string(PATH) if FileAccess.file_exists(PATH) else ""
+	if text == "":
+		return ""
+	var raw := text.to_utf8_buffer()
+	return CODE_HEAD + str(raw.size()) + ":" + Marshalls.raw_to_base64(raw.compress(FileAccess.COMPRESSION_DEFLATE))
+
+
+## 코드로 불러오기: 맞는 코드면 저장 파일을 바꾸고 다시 읽는다. 성공하면 true
+func import_code(code: String) -> bool:
+	code = code.strip_edges().replace(" ", "").replace("\n", "")
+	if not code.begins_with(CODE_HEAD):
+		return false
+	var rest := code.trim_prefix(CODE_HEAD)
+	var colon := rest.find(":")
+	if colon <= 0:
+		return false
+	var size := int(rest.left(colon))
+	var packed := Marshalls.base64_to_raw(rest.substr(colon + 1))
+	if size <= 0 or packed.is_empty():
+		return false
+	var raw := packed.decompress(size, FileAccess.COMPRESSION_DEFLATE)
+	var text := raw.get_string_from_utf8()
+	var parsed: Variant = JSON.parse_string(text)
+	if not (parsed is Dictionary) or not (parsed as Dictionary).has("owned"):
+		return false
+	var f := FileAccess.open(PATH, FileAccess.WRITE)
+	if f == null:
+		return false
+	f.store_string(text)
+	f.close()
+	load_game()
+	return true
 
 
 func save_game() -> void:
