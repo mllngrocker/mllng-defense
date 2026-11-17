@@ -80,8 +80,10 @@ func _ready() -> void:
 	if hard:
 		_unshade.call_deferred()
 	_warm_nav.call_deferred()
-	if Game.dungeon == "" and Quests.boss_defeated(kind_id()):
-		# 이미 잡은 보스는 맵에 다시 나오지 않는다(로비·맵을 다녀와도). 깨어나 체력바를 띄우기 전에 바로 꺼 둔다
+	var rest := Quests.boss_rest_left(kind_id())
+	if Game.dungeon == "" and rest > 0.0:
+		# 잡은 지 30분이 안 된 보스는 아직 안 나온다. 깨어나 체력바를 띄우기 전에 꺼 두고, 남은 시간 뒤 다시 나오게 맡긴다
+		get_tree().call_group.call_deferred(&"world", &"schedule_respawn", scene_file_path, position, rest + 1.0)
 		awake = true
 		hp = 0
 		visible = false

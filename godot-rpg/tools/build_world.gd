@@ -542,7 +542,7 @@ const TOWN_MAPS: Array[Dictionary] = [
 	{
 		"path": "res://features/world/star_town.tscn", "title": "별지기 야영지", "w": 40, "h": 32, "seed": 68, "wobble": 0.0,
 		"backdrop": "space", "ground": CAVE_GROUND, "music": "res://assets/ninja/music/town2.ogg", "border": "none", "isle": true,
-		"house_set": "res://assets/towns/mist.png", "roads": {"h": [0, 40], "v": [0, 0], "plaza": 3.6}, "torii": false, "tint": Color(0.8, 0.74, 1.0),
+		"sick": true, "house_set": "res://assets/towns/ruin_star.png", "roads": {"h": [0, 40], "v": [0, 0], "plaza": 3.6}, "torii": false, "tint": Color(0.8, 0.74, 1.0),
 		"gaps": [
 			{"side": "west", "to": "res://features/world/star_gate.tscn", "spawn": "north", "label": "◀ 부서진 별의 신전"},
 			{"side": "east", "to": "res://features/world/star1.tscn", "spawn": "west", "label": "별똥별 낙하지 ▶"},
@@ -628,7 +628,7 @@ const TOWN_MAPS: Array[Dictionary] = [
 	{
 		"path": "res://features/world/heaven_town.tscn", "title": "빛의 정원 마을", "w": 40, "h": 32, "seed": 69, "wobble": 0.0,
 		"backdrop": "heaven", "sky_h": 0.05, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/town2.ogg", "border": "none", "isle": true,
-		"house_set": "res://assets/towns/sky.png", "roads": {"h": [0, 40], "v": [0, 0], "plaza": 3.6}, "torii": false, "tint": Color(1.0, 0.97, 0.88),
+		"sick": true, "house_set": "res://assets/towns/ruin_heaven.png", "roads": {"h": [0, 40], "v": [0, 0], "plaza": 3.6}, "torii": false, "tint": Color(1.0, 0.97, 0.88),
 		"gaps": [
 			{"side": "west", "to": "res://features/world/heaven2.tscn", "spawn": "east", "label": "◀ 구름 계단"},
 			{"side": "east", "to": "res://features/world/heaven3.tscn", "spawn": "west", "label": "백금 회랑 ▶"},
@@ -1273,7 +1273,7 @@ func _make_village(parent: Node, center: Vector2i) -> void:
 	_sprite_prop(parent, desert_tex, WELL, Vector2(well_c * T) + Vector2(T, 2 * T - 2.0), Vector2(26, 12), "Well")
 	_block(well_c - Vector2i.ONE, Vector2i(4, 4))
 	# 마을 사람
-	_make_npcs(parent, cfg.get("villagers", VILLAGERS), center)
+	_make_npcs(parent, cfg.get("villagers", VILLAGERS), center, cfg.get("sick", false))
 	# 동물
 	var critter_script := load("res://features/npc/critter.gd") as Script
 	var critters: Array = cfg.get("critters", [["cat", Vector2i(-6, 3)], ["cat", Vector2i(8, -3)], ["chicken", Vector2i(-11, 9)], ["chicken", Vector2i(-10, 10)], ["chicken", Vector2i(12, 9)],
@@ -1291,7 +1291,7 @@ func _make_village(parent: Node, center: Vector2i) -> void:
 
 
 ## 사람: [이름, 그림, 칸(origin 기준), 대사]
-func _make_npcs(parent: Node, list: Array, origin: Vector2i) -> void:
+func _make_npcs(parent: Node, list: Array, origin: Vector2i, sick := false) -> void:
 	var npc_script := load("res://features/npc/npc.gd") as Script
 	for v: Array in list:
 		var npc := StaticBody2D.new()
@@ -1302,6 +1302,8 @@ func _make_npcs(parent: Node, list: Array, origin: Vector2i) -> void:
 		npc.set(&"display_name", v[0])
 		npc.set(&"sheet", load(("res://assets/%s.png" if "/" in String(v[1]) else "res://assets/ninja/actor/npc/%s.png") % v[1]))
 		npc.set(&"lines", PackedStringArray(v[3]))
+		if sick:
+			npc.set(&"sick", true)
 		_add(parent, npc)
 		_block(cell - Vector2i.ONE, Vector2i(3, 3))
 

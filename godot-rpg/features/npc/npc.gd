@@ -9,6 +9,8 @@ const LINE_TIME := 3.2
 @export var display_name := ""
 @export var sheet: Texture2D
 @export var lines: PackedStringArray = []
+## 무너진 마을(별지기 야영지·빛의 정원) 주민: 핏기 없는 얼굴, 휘청거림, 가끔 콜록콜록, 이마에 붕대
+@export var sick := false
 
 var sprite: Sprite2D
 var near := false
@@ -35,6 +37,9 @@ func _ready() -> void:
 		sprite.offset = Vector2(0, -sheet.get_height() / 4.0 + 3.0)
 		sprite.scale = Vector2.ONE * 0.72  # 주인공 캐릭터와 비슷한 키로
 	add_child(sprite)
+	if sick:
+		sprite.modulate = Color(0.74, 0.84, 0.7)  # 핏기 없는 얼굴
+		sprite.show_behind_parent = true  # 붕대·땀을 몸 위에 그리게
 	var cs := CollisionShape2D.new()
 	var shape := CircleShape2D.new()
 	shape.radius = 5.0
@@ -46,6 +51,10 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
+	if sick:  # 힘없이 휘청: 몸이 천천히 좌우로 기울고, 콜록할 때 움찔
+		var cough := fmod(_t + get_instance_id() % 7, 6.0)
+		sprite.rotation = sin(_t * 1.3) * 0.06 + (sin(cough * 40.0) * 0.05 if cough < 0.4 else 0.0)
+		sprite.position.y = 1.0 if cough < 0.4 else 0.0
 	var p := get_tree().get_first_node_in_group(&"player") as Node2D
 	var was := near
 	near = p != null and p.global_position.distance_to(global_position) < TALK_RANGE
@@ -94,6 +103,8 @@ func _draw() -> void:
 	draw_set_transform(Vector2(0, -36 if big else -26), 0.0, Vector2.ONE * 0.5)
 	var q := Quests.current()
 	var wanted: bool = not q.is_empty() and q["type"] == "talk" and q["target"] == display_name and not Quests.main_done()
+	if sick and not (near and not lines.is_empty()):
+		_draw_sick()
 	if near and not lines.is_empty():
 		_bubble(lines[line_i])
 	elif wanted:
@@ -110,6 +121,29 @@ func _draw() -> void:
 		for i in 3:
 			draw_rect(Rect2(-9 + i * 7, -14 + bob, 4, 4), Gt.NAVY)
 	draw_set_transform(Vector2.ZERO)
+
+
+## 아픈 주민 표시: 이마 붕대·식은땀 방울, 콜록할 때 "콜록" 글자와 입김
+func _draw_sick() -> void:
+	draw_set_transform(Vector2.ZERO)
+	var top := -22.0 if big else -12.0
+	var tilt := sprite.rotation
+	var band := Vector2(sin(tilt) * 10.0, top)
+	draw_line(band + Vector2(-7, 0), band + Vector2(7, -1), Color(0.25, 0.2, 0.2), 4.0)
+	draw_line(band + Vector2(-6, 0), band + Vector2(6, -1), Color(0.97, 0.95, 0.9), 2.5)
+	draw_circle(band + Vector2(3, -1), 1.8, Color(0.85, 0.25, 0.25))
+	var drop := fmod(_t * 0.8 + get_instance_id() % 5, 2.0)
+	if drop < 1.2:
+		var dp := band + Vector2(-6, 3 + drop * 4.0)
+		draw_circle(dp, 1.4, Color(0.6, 0.85, 1.0, 1.0 - drop / 1.2))
+	var cough := fmod(_t + get_instance_id() % 7, 6.0)
+	if cough < 1.0:
+		var a := 1.0 - cough
+		var cp := band + Vector2(8 + cough * 8.0, -4 - cough * 6.0)
+		draw_circle(cp, 2.0 + cough * 2.0, Color(0.9, 0.9, 0.9, a * 0.5))
+		draw_set_transform(cp + Vector2(4, -4), 0.0, Vector2.ONE * 0.4)
+		Gt.text(self, Vector2.ZERO, "콜록", 22, Color(1, 1, 1, a), 1, true, 4, Color(Gt.INK, a))
+	draw_set_transform(Vector2(0, -36 if big else -26), 0.0, Vector2.ONE * 0.5)
 
 
 func _bubble(text: String) -> void:

@@ -557,508 +557,507 @@ size = Vector2(304, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fkvx2"]
 size = Vector2(16, 48)
 
-[node name="World" type="Node2D" unique_id=1428491065]
+[node name="World" type="Node2D" unique_id=1566953703]
 script = ExtResource("1_bdqis")
 map_title = "물방울 마을"
 metadata/map_size = Vector2i(44, 30)
 
-[node name="HUD" parent="." unique_id=524825676 instance=ExtResource("2_gkjh5")]
+[node name="HUD" parent="." unique_id=1141518323 instance=ExtResource("2_gkjh5")]
 
-[node name="Ground" type="TileMapLayer" parent="." unique_id=2086967366]
+[node name="Ground" type="TileMapLayer" parent="." unique_id=70882347]
 tile_map_data = PackedByteArray("AAAFAAYAAAAAAAwAAAAGAAYAAAAAAAwAAAAHAAYAAAAAAAwAAAAIAAYAAAAAAAwAAAAJAAYAAAAAAAwAAAAKAAYAAAAAAAwAAAALAAYAAAAAAAwAAAAFAAcAAAAAAAwAAAAGAAcAAAAAAAwAAAAHAAcAAAAAAAwAAAAIAAcAAAAAAAwAAAAJAAcAAAAAAAwAAAAKAAcAAAAAAAwAAAALAAcAAAAAAAwAAAAFAAgAAAAAAAwAAAAGAAgAAAAAAAwAAAAHAAgAAAAAAAwAAAAIAAgAAAAAAAwAAAAJAAgAAAAAAAwAAAAKAAgAAAAAAAwAAAALAAgAAAAAAAwAAAAFAAkAAAAAAAwAAAAGAAkAAAAAAAwAAAAHAAkAAAAAAAwAAAAIAAkAAAAAAAwAAAAJAAkAAAAAAAwAAAAKAAkAAAAAAAwAAAALAAkAAAAAAAwAAAAFAAoAAAAAAAwAAAAGAAoAAAAAAAwAAAAHAAoAAAAAAAwAAAAIAAoAAAAAAAwAAAAJAAoAAAAAAAwAAAAKAAoAAAAAAAwAAAALAAoAAAAAAAwAAAAFAAsAAAAAAAwAAAAGAAsAAAAAAAwAAAAHAAsAAAAAAAwAAAAIAAsAAAAAAAwAAAAJAAsAAAAAAAwAAAAKAAsAAAAAAAwAAAALAAsAAAAAAAwAAAAFAAwAAAAAAAwAAAAGAAwAAAAAAAwAAAAHAAwAAAAAAAwAAAAIAAwAAAAAAAwAAAAJAAwAAAAAAAwAAAAKAAwAAAAAAAwAAAALAAwAAAAAAAwAAAAFAA0AAAAAAAwAAAAGAA0AAAAAAAwAAAAHAA0AAAAAAAwAAAAIAA0AAAAAAAwAAAAJAA0AAAAAAAwAAAAKAA0AAAAAAAwAAAALAA0AAAAAAAwAAAAFAA4AAAAAAAwAAAAGAA4AAAAAAAwAAAAHAA4AAAAAAAwAAAAIAA4AAAAAAAwAAAAJAA4AAAAAAAwAAAAKAA4AAAAAAAwAAAALAA4AAAAAAAwAAAAFAA8AAAAAAAwAAAAGAA8AAAAAAAwAAAAHAA8AAAAAAAwAAAAIAA8AAAAAAAwAAAAJAA8AAAAAAAwAAAAKAA8AAAAAAAwAAAALAA8AAAAAAAwAAAAFABAAAAAAAAwAAAAGABAAAAAAAAwAAAAHABAAAAAAAAwAAAAIABAAAAAAAAwAAAAJABAAAAAAAAwAAAAKABAAAAAAAAwAAAALABAAAAAAAAwAAAAFABEAAAAAAAwAAAAGABEAAAAAAAwAAAAHABEAAAAAAAwAAAAIABEAAAAAAAwAAAAJABEAAAAAAAwAAAAKABEAAAAAAAwAAAALABEAAAAAAAwAAAAFABIAAAAAAAwAAAAGABIAAAAAAAwAAAAHABIAAAAAAAwAAAAIABIAAAAAAAwAAAAJABIAAAAAAAwAAAAKABIAAAAAAAwAAAALABIAAAAAAAwAAAARAA0AAAAAAAwAAAASAA0AAAAAAAwAAAATAA0AAAAAAAwAAAAUAA0AAAAAAAwAAAAVAA0AAAAAAAwAAAAWAA0AAAAAAAwAAAAXAA0AAAAAAAwAAAAYAA0AAAAAAAwAAAARAA4AAAAAAAwAAAASAA4AAAAAAAwAAAATAA4AAAAAAAwAAAAUAA4AAAAAAAwAAAAVAA4AAAAAAAwAAAAWAA4AAAAAAAwAAAAXAA4AAAAAAAwAAAAYAA4AAAAAAAwAAAARAA8AAAAAAAwAAAASAA8AAAAAAAwAAAATAA8AAAAAAAwAAAAUAA8AAAAAAAwAAAAVAA8AAAAAAAwAAAAWAA8AAAAAAAwAAAAXAA8AAAAAAAwAAAAYAA8AAAAAAAwAAAARABAAAAAAAAwAAAASABAAAAAAAAwAAAATABAAAAAAAAwAAAAUABAAAAAAAAwAAAAVABAAAAAAAAwAAAAWABAAAAAAAAwAAAAXABAAAAAAAAwAAAAYABAAAAAAAAwAAAARABEAAAAAAAwAAAASABEAAAAAAAwAAAATABEAAAAAAAwAAAAUABEAAAAAAAwAAAAVABEAAAAAAAwAAAAWABEAAAAAAAwAAAAXABEAAAAAAAwAAAAYABEAAAAAAAwAAAARABIAAAAAAAwAAAASABIAAAAAAAwAAAATABIAAAAAAAwAAAAUABIAAAAAAAwAAAAVABIAAAAAAAwAAAAWABIAAAAAAAwAAAAXABIAAAAAAAwAAAAYABIAAAAAAAwAAAARABMAAAAAAAwAAAASABMAAAAAAAwAAAATABMAAAAAAAwAAAAUABMAAAAAAAwAAAAVABMAAAAAAAwAAAAWABMAAAAAAAwAAAAXABMAAAAAAAwAAAAYABMAAAAAAAwAAAARABQAAAAAAAwAAAASABQAAAAAAAwAAAATABQAAAAAAAwAAAAUABQAAAAAAAwAAAAVABQAAAAAAAwAAAAWABQAAAAAAAwAAAAXABQAAAAAAAwAAAAYABQAAAAAAAwAAAARABUAAAAAAAwAAAASABUAAAAAAAwAAAATABUAAAAAAAwAAAAUABUAAAAAAAwAAAAVABUAAAAAAAwAAAAWABUAAAAAAAwAAAAXABUAAAAAAAwAAAAYABUAAAAAAAwAAAAeAAgAAAAAAAwAAAAfAAgAAAAAAAwAAAAgAAgAAAAAAAwAAAAhAAgAAAAAAAwAAAAiAAgAAAAAAAwAAAAjAAgAAAAAAAwAAAAkAAgAAAAAAAwAAAAeAAkAAAAAAAwAAAAfAAkAAAAAAAwAAAAgAAkAAAAAAAwAAAAhAAkAAAAAAAwAAAAiAAkAAAAAAAwAAAAjAAkAAAAAAAwAAAAkAAkAAAAAAAwAAAAeAAoAAAAAAAwAAAAfAAoAAAAAAAwAAAAgAAoAAAAAAAwAAAAhAAoAAAAAAAwAAAAiAAoAAAAAAAwAAAAjAAoAAAAAAAwAAAAkAAoAAAAAAAwAAAAeAAsAAAAAAAwAAAAfAAsAAAAAAAwAAAAgAAsAAAAAAAwAAAAhAAsAAAAAAAwAAAAiAAsAAAAAAAwAAAAjAAsAAAAAAAwAAAAkAAsAAAAAAAwAAAAeAAwAAAAAAAwAAAAfAAwAAAAAAAwAAAAgAAwAAAAAAAwAAAAhAAwAAAAAAAwAAAAiAAwAAAAAAAwAAAAjAAwAAAAAAAwAAAAkAAwAAAAAAAwAAAAeAA0AAAAAAAwAAAAfAA0AAAAAAAwAAAAgAA0AAAAAAAwAAAAhAA0AAAAAAAwAAAAiAA0AAAAAAAwAAAAjAA0AAAAAAAwAAAAkAA0AAAAAAAwAAAAeAA4AAAAAAAwAAAAfAA4AAAAAAAwAAAAgAA4AAAAAAAwAAAAhAA4AAAAAAAwAAAAiAA4AAAAAAAwAAAAjAA4AAAAAAAwAAAAkAA4AAAAAAAwAAAAeAA8AAAAAAAwAAAAfAA8AAAAAAAwAAAAgAA8AAAAAAAwAAAAhAA8AAAAAAAwAAAAiAA8AAAAAAAwAAAAjAA8AAAAAAAwAAAAkAA8AAAAAAAwAAAAeABAAAAAAAAwAAAAfABAAAAAAAAwAAAAgABAAAAAAAAwAAAAhABAAAAAAAAwAAAAiABAAAAAAAAwAAAAjABAAAAAAAAwAAAAkABAAAAAAAAwAAAAeABEAAAAAAAwAAAAfABEAAAAAAAwAAAAgABEAAAAAAAwAAAAhABEAAAAAAAwAAAAiABEAAAAAAAwAAAAjABEAAAAAAAwAAAAkABEAAAAAAAwAAAAeABIAAAAAAAwAAAAfABIAAAAAAAwAAAAgABIAAAAAAAwAAAAhABIAAAAAAAwAAAAiABIAAAAAAAwAAAAjABIAAAAAAAwAAAAkABIAAAAAAAwAAAAeABMAAAAAAAwAAAAfABMAAAAAAAwAAAAgABMAAAAAAAwAAAAhABMAAAAAAAwAAAAiABMAAAAAAAwAAAAjABMAAAAAAAwAAAAkABMAAAAAAAwAAAAAAA0AAAAAAAwAAAAAAA4AAAAAAAwAAAAAAA8AAAAAAAwAAAABAA0AAAAAAAwAAAABAA4AAAAAAAwAAAABAA8AAAAAAAwAAAACAA0AAAAAAAwAAAACAA4AAAAAAAwAAAACAA8AAAAAAAwAAAADAA0AAAAAAAwAAAADAA4AAAAAAAwAAAADAA8AAAAAAAwAAAAEAA0AAAAAAAwAAAAEAA4AAAAAAAwAAAAEAA8AAAAAAAwAAAADAAsAAAAAAAwAAAADAAwAAAAAAAwAAAAEAAsAAAAAAAwAAAAEAAwAAAAAAAwAAAAMAAsAAAAAAAwAAAAMAAwAAAAAAAwAAAAMAA0AAAAAAAwAAAANAAsAAAAAAAwAAAANAAwAAAAAAAwAAAANAA0AAAAAAAwAAAAOAAsAAAAAAAwAAAAOAAwAAAAAAAwAAAAOAA0AAAAAAAwAAAAPAAsAAAAAAAwAAAAPAAwAAAAAAAwAAAAPAA0AAAAAAAwAAAANAA4AAAAAAAwAAAANAA8AAAAAAAwAAAANABAAAAAAAAwAAAANABEAAAAAAAwAAAANABIAAAAAAAwAAAAOAA4AAAAAAAwAAAAOAA8AAAAAAAwAAAAOABAAAAAAAAwAAAAOABEAAAAAAAwAAAAOABIAAAAAAAwAAAAPAA4AAAAAAAwAAAAPAA8AAAAAAAwAAAAPABAAAAAAAAwAAAAPABEAAAAAAAwAAAAPABIAAAAAAAwAAAAQABAAAAAAAAwAAAAQABEAAAAAAAwAAAAQABIAAAAAAAwAAAAZABAAAAAAAAwAAAAZABEAAAAAAAwAAAAZABIAAAAAAAwAAAAaABAAAAAAAAwAAAAaABEAAAAAAAwAAAAaABIAAAAAAAwAAAAbABAAAAAAAAwAAAAbABEAAAAAAAwAAAAbABIAAAAAAAwAAAAcABAAAAAAAAwAAAAcABEAAAAAAAwAAAAcABIAAAAAAAwAAAAaAA0AAAAAAAwAAAAaAA4AAAAAAAwAAAAaAA8AAAAAAAwAAAAbAA0AAAAAAAwAAAAbAA4AAAAAAAwAAAAbAA8AAAAAAAwAAAAcAA0AAAAAAAwAAAAcAA4AAAAAAAwAAAAcAA8AAAAAAAwAAAAdAA0AAAAAAAwAAAAdAA4AAAAAAAwAAAAdAA8AAAAAAAwAAAAlAA0AAAAAAAwAAAAlAA4AAAAAAAwAAAAlAA8AAAAAAAwAAAAmAA0AAAAAAAwAAAAmAA4AAAAAAAwAAAAmAA8AAAAAAAwAAAAnAA0AAAAAAAwAAAAnAA4AAAAAAAwAAAAnAA8AAAAAAAwAAAAoAA0AAAAAAAwAAAAoAA4AAAAAAAwAAAAoAA8AAAAAAAwAAAApAA0AAAAAAAwAAAApAA4AAAAAAAwAAAApAA8AAAAAAAwAAAAqAA0AAAAAAAwAAAAqAA4AAAAAAAwAAAAqAA8AAAAAAAwAAAArAA0AAAAAAAwAAAArAA4AAAAAAAwAAAArAA8AAAAAAAwAAAA=")
 tile_set = SubResource("TileSet_kpwf8")
 
-[node name="Deco" type="TileMapLayer" parent="." unique_id=1717647523]
+[node name="Deco" type="TileMapLayer" parent="." unique_id=611052991]
 tile_map_data = PackedByteArray("AAAFAAYAAQAAAAEAAAAGAAYAAQABAAEAAAAHAAYAAQACAAEAAAAIAAYAAQACAAEAAAAJAAYAAQACAAEAAAAKAAYAAQADAAEAAAALAAYAAQAEAAEAAAAFAAcAAQAAAAIAAAAGAAcAAQABAAIAAAAHAAcAAQACAAIAAAAIAAcAAQACAAIAAAAJAAcAAQACAAIAAAAKAAcAAQADAAIAAAALAAcAAQAEAAIAAAAFAAgAAQAAAAMAAAAGAAgAAQABAAMAAAAHAAgAAQACAAMAAAAIAAgAAQACAAMAAAAJAAgAAQACAAMAAAAKAAgAAQADAAMAAAALAAgAAQAEAAMAAAAFAAkAAQAAAAMAAAAGAAkAAQABAAMAAAAHAAkAAQACAAMAAAAIAAkAAQACAAMAAAAJAAkAAQACAAMAAAAKAAkAAQADAAMAAAALAAkAAQAEAAMAAAAFAAoAAQAAAAMAAAAGAAoAAQABAAMAAAAHAAoAAQACAAMAAAAIAAoAAQACAAMAAAAJAAoAAQACAAMAAAAKAAoAAQADAAMAAAALAAoAAQAEAAMAAAAFAAsAAQAAAAMAAAAGAAsAAQABAAMAAAAHAAsAAQACAAMAAAAIAAsAAQACAAMAAAAJAAsAAQACAAMAAAAKAAsAAQADAAMAAAALAAsAAQAEAAMAAAAFAAwAAQAAAAMAAAAGAAwAAQABAAMAAAAHAAwAAQACAAMAAAAIAAwAAQACAAMAAAAJAAwAAQACAAMAAAAKAAwAAQADAAMAAAALAAwAAQAEAAMAAAAFAA0AAQAAAAMAAAAGAA0AAQABAAMAAAAHAA0AAQACAAMAAAAIAA0AAQACAAMAAAAJAA0AAQACAAMAAAAKAA0AAQADAAMAAAALAA0AAQAEAAMAAAAFAA4AAQAAAAMAAAAGAA4AAQABAAMAAAAHAA4AAQACAAMAAAAIAA4AAQACAAMAAAAJAA4AAQACAAMAAAAKAA4AAQADAAMAAAALAA4AAQAEAAMAAAAFAA8AAQAAAAMAAAAGAA8AAQABAAMAAAAHAA8AAQACAAMAAAAIAA8AAQACAAMAAAAJAA8AAQACAAMAAAAKAA8AAQADAAMAAAALAA8AAQAEAAMAAAAFABAAAQAAAAMAAAAGABAAAQABAAMAAAAHABAAAQACAAMAAAAIABAAAQACAAMAAAAJABAAAQACAAMAAAAKABAAAQADAAMAAAALABAAAQAEAAMAAAAFABEAAQAAAAQAAAAGABEAAQABAAQAAAAHABEAAQACAAQAAAAIABEAAQACAAQAAAAJABEAAQACAAQAAAAKABEAAQADAAQAAAALABEAAQAEAAQAAAAFABIAAQAAAAUAAAAGABIAAQABAAUAAAAHABIAAQACAAUAAAAIABIAAQACAAUAAAAJABIAAQACAAUAAAAKABIAAQADAAUAAAALABIAAQAEAAUAAAARAA0AAQAAAAEAAAASAA0AAQABAAEAAAATAA0AAQACAAEAAAAUAA0AAQACAAEAAAAVAA0AAQACAAEAAAAWAA0AAQACAAEAAAAXAA0AAQADAAEAAAAYAA0AAQAEAAEAAAARAA4AAQAAAAIAAAASAA4AAQABAAIAAAATAA4AAQACAAIAAAAUAA4AAQACAAIAAAAVAA4AAQACAAIAAAAWAA4AAQACAAIAAAAXAA4AAQADAAIAAAAYAA4AAQAEAAIAAAARAA8AAQAAAAMAAAASAA8AAQABAAMAAAATAA8AAQACAAMAAAAUAA8AAQACAAMAAAAVAA8AAQACAAMAAAAWAA8AAQACAAMAAAAXAA8AAQADAAMAAAAYAA8AAQAEAAMAAAARABAAAQAAAAMAAAASABAAAQABAAMAAAATABAAAQACAAMAAAAUABAAAQACAAMAAAAVABAAAQACAAMAAAAWABAAAQACAAMAAAAXABAAAQADAAMAAAAYABAAAQAEAAMAAAARABEAAQAAAAMAAAASABEAAQABAAMAAAATABEAAQACAAMAAAAUABEAAQACAAMAAAAVABEAAQACAAMAAAAWABEAAQACAAMAAAAXABEAAQADAAMAAAAYABEAAQAEAAMAAAARABIAAQAAAAMAAAASABIAAQABAAMAAAATABIAAQACAAMAAAAUABIAAQACAAMAAAAVABIAAQACAAMAAAAWABIAAQACAAMAAAAXABIAAQADAAMAAAAYABIAAQAEAAMAAAARABMAAQAAAAMAAAASABMAAQABAAMAAAATABMAAQACAAMAAAAUABMAAQACAAMAAAAVABMAAQACAAMAAAAWABMAAQACAAMAAAAXABMAAQADAAMAAAAYABMAAQAEAAMAAAARABQAAQAAAAQAAAASABQAAQABAAQAAAATABQAAQACAAQAAAAUABQAAQACAAQAAAAVABQAAQACAAQAAAAWABQAAQACAAQAAAAXABQAAQADAAQAAAAYABQAAQAEAAQAAAARABUAAQAAAAUAAAASABUAAQABAAUAAAATABUAAQACAAUAAAAUABUAAQACAAUAAAAVABUAAQACAAUAAAAWABUAAQACAAUAAAAXABUAAQADAAUAAAAYABUAAQAEAAUAAAAeAAgAAQAAAAEAAAAfAAgAAQABAAEAAAAgAAgAAQACAAEAAAAhAAgAAQACAAEAAAAiAAgAAQACAAEAAAAjAAgAAQADAAEAAAAkAAgAAQAEAAEAAAAeAAkAAQAAAAIAAAAfAAkAAQABAAIAAAAgAAkAAQACAAIAAAAhAAkAAQACAAIAAAAiAAkAAQACAAIAAAAjAAkAAQADAAIAAAAkAAkAAQAEAAIAAAAeAAoAAQAAAAMAAAAfAAoAAQABAAMAAAAgAAoAAQACAAMAAAAhAAoAAQACAAMAAAAiAAoAAQACAAMAAAAjAAoAAQADAAMAAAAkAAoAAQAEAAMAAAAeAAsAAQAAAAMAAAAfAAsAAQABAAMAAAAgAAsAAQACAAMAAAAhAAsAAQACAAMAAAAiAAsAAQACAAMAAAAjAAsAAQADAAMAAAAkAAsAAQAEAAMAAAAeAAwAAQAAAAMAAAAfAAwAAQABAAMAAAAgAAwAAQACAAMAAAAhAAwAAQACAAMAAAAiAAwAAQACAAMAAAAjAAwAAQADAAMAAAAkAAwAAQAEAAMAAAAeAA0AAQAAAAMAAAAfAA0AAQABAAMAAAAgAA0AAQACAAMAAAAhAA0AAQACAAMAAAAiAA0AAQACAAMAAAAjAA0AAQADAAMAAAAkAA0AAQAEAAMAAAAeAA4AAQAAAAMAAAAfAA4AAQABAAMAAAAgAA4AAQACAAMAAAAhAA4AAQACAAMAAAAiAA4AAQACAAMAAAAjAA4AAQADAAMAAAAkAA4AAQAEAAMAAAAeAA8AAQAAAAMAAAAfAA8AAQABAAMAAAAgAA8AAQACAAMAAAAhAA8AAQACAAMAAAAiAA8AAQACAAMAAAAjAA8AAQADAAMAAAAkAA8AAQAEAAMAAAAeABAAAQAAAAMAAAAfABAAAQABAAMAAAAgABAAAQACAAMAAAAhABAAAQACAAMAAAAiABAAAQACAAMAAAAjABAAAQADAAMAAAAkABAAAQAEAAMAAAAeABEAAQAAAAMAAAAfABEAAQABAAMAAAAgABEAAQACAAMAAAAhABEAAQACAAMAAAAiABEAAQACAAMAAAAjABEAAQADAAMAAAAkABEAAQAEAAMAAAAeABIAAQAAAAQAAAAfABIAAQABAAQAAAAgABIAAQACAAQAAAAhABIAAQACAAQAAAAiABIAAQACAAQAAAAjABIAAQADAAQAAAAkABIAAQAEAAQAAAAeABMAAQAAAAUAAAAfABMAAQABAAUAAAAgABMAAQACAAUAAAAhABMAAQACAAUAAAAiABMAAQACAAUAAAAjABMAAQADAAUAAAAkABMAAQAEAAUAAAAAAA0AAQACAAMAAAAAAA4AAQACAAMAAAAAAA8AAQACAAMAAAABAA0AAQACAAMAAAABAA4AAQACAAMAAAABAA8AAQACAAMAAAACAA0AAQACAAMAAAACAA4AAQACAAMAAAACAA8AAQACAAMAAAADAA0AAQACAAMAAAADAA4AAQACAAMAAAADAA8AAQACAAMAAAAEAA0AAQACAAMAAAAEAA4AAQACAAMAAAAEAA8AAQACAAMAAAADAAsAAQACAAMAAAADAAwAAQACAAMAAAAEAAsAAQACAAMAAAAEAAwAAQACAAMAAAAMAAsAAQACAAMAAAAMAAwAAQACAAMAAAAMAA0AAQACAAMAAAANAAsAAQACAAMAAAANAAwAAQACAAMAAAANAA0AAQACAAMAAAAOAAsAAQACAAMAAAAOAAwAAQACAAMAAAAOAA0AAQACAAMAAAAPAAsAAQACAAMAAAAPAAwAAQACAAMAAAAPAA0AAQACAAMAAAANAA4AAQACAAMAAAANAA8AAQACAAMAAAANABAAAQACAAMAAAANABEAAQACAAMAAAANABIAAQACAAMAAAAOAA4AAQACAAMAAAAOAA8AAQACAAMAAAAOABAAAQACAAMAAAAOABEAAQACAAMAAAAOABIAAQACAAMAAAAPAA4AAQACAAMAAAAPAA8AAQACAAMAAAAPABAAAQACAAMAAAAPABEAAQACAAMAAAAPABIAAQACAAMAAAAQABAAAQACAAMAAAAQABEAAQACAAMAAAAQABIAAQACAAMAAAAZABAAAQACAAMAAAAZABEAAQACAAMAAAAZABIAAQACAAMAAAAaABAAAQACAAMAAAAaABEAAQACAAMAAAAaABIAAQACAAMAAAAbABAAAQACAAMAAAAbABEAAQACAAMAAAAbABIAAQACAAMAAAAcABAAAQACAAMAAAAcABEAAQACAAMAAAAcABIAAQACAAMAAAAaAA0AAQACAAMAAAAaAA4AAQACAAMAAAAaAA8AAQACAAMAAAAbAA0AAQACAAMAAAAbAA4AAQACAAMAAAAbAA8AAQACAAMAAAAcAA0AAQACAAMAAAAcAA4AAQACAAMAAAAcAA8AAQACAAMAAAAdAA0AAQACAAMAAAAdAA4AAQACAAMAAAAdAA8AAQACAAMAAAAlAA0AAQACAAMAAAAlAA4AAQACAAMAAAAlAA8AAQACAAMAAAAmAA0AAQACAAMAAAAmAA4AAQACAAMAAAAmAA8AAQACAAMAAAAnAA0AAQACAAMAAAAnAA4AAQACAAMAAAAnAA8AAQACAAMAAAAoAA0AAQACAAMAAAAoAA4AAQACAAMAAAAoAA8AAQACAAMAAAApAA0AAQACAAMAAAApAA4AAQACAAMAAAApAA8AAQACAAMAAAAqAA0AAQACAAMAAAAqAA4AAQACAAMAAAAqAA8AAQACAAMAAAArAA0AAQACAAMAAAArAA4AAQACAAMAAAArAA8AAQACAAMAAAAFAAQAAQANAAEAAAAGAAQAAQAMAAEAAAAHAAQAAQANAAEAAAAIAAQAAQAMAAEAAAAJAAQAAQANAAEAAAAKAAQAAQAMAAEAAAALAAQAAQANAAEAAAAEAAUAAQAMAAIAAAAFAAUAAQANAAIAAAAGAAUAAQAMAAIAAAAHAAUAAQANAAIAAAAIAAUAAQAMAAIAAAAJAAUAAQANAAIAAAAKAAUAAQAMAAIAAAALAAUAAQANAAIAAAAMAAUAAQAMAAIAAAAEAAYAAQAMAAEAAAAMAAYAAQAMAAEAAAAeAAYAAQAMAAEAAAAfAAYAAQANAAEAAAAgAAYAAQAMAAEAAAAhAAYAAQANAAEAAAAiAAYAAQAMAAEAAAAjAAYAAQANAAEAAAAkAAYAAQAMAAEAAAAEAAcAAQAMAAIAAAAMAAcAAQAMAAIAAAAdAAcAAQANAAIAAAAeAAcAAQAMAAIAAAAfAAcAAQANAAIAAAAgAAcAAQAMAAIAAAAhAAcAAQANAAIAAAAiAAcAAQAMAAIAAAAjAAcAAQANAAIAAAAkAAcAAQAMAAIAAAAlAAcAAQANAAIAAAAEAAgAAQAMAAEAAAAMAAgAAQAMAAEAAAAdAAgAAQANAAEAAAAlAAgAAQANAAEAAAADAAkAAQANAAIAAAAEAAkAAQAMAAIAAAAMAAkAAQAMAAIAAAANAAkAAQANAAIAAAAOAAkAAQAMAAIAAAAPAAkAAQANAAIAAAAdAAkAAQANAAIAAAAlAAkAAQANAAIAAAACAAoAAQAMAAEAAAADAAoAAQANAAEAAAAEAAoAAQAMAAEAAAAMAAoAAQAMAAEAAAANAAoAAQANAAEAAAAOAAoAAQAMAAEAAAAPAAoAAQANAAEAAAAQAAoAAQAMAAEAAAAdAAoAAQANAAEAAAAlAAoAAQANAAEAAAAAAAsAAQAMAAIAAAABAAsAAQANAAIAAAACAAsAAQAMAAIAAAAQAAsAAQAMAAIAAAARAAsAAQANAAIAAAASAAsAAQAMAAIAAAATAAsAAQANAAIAAAAUAAsAAQAMAAIAAAAVAAsAAQANAAIAAAAWAAsAAQAMAAIAAAAXAAsAAQANAAIAAAAYAAsAAQAMAAIAAAAaAAsAAQAMAAIAAAAbAAsAAQANAAIAAAAcAAsAAQAMAAIAAAAdAAsAAQANAAIAAAAlAAsAAQANAAIAAAAmAAsAAQAMAAIAAAAnAAsAAQANAAIAAAAoAAsAAQAMAAIAAAApAAsAAQANAAIAAAAqAAsAAQAMAAIAAAArAAsAAQANAAIAAAAAAAwAAQAMAAEAAAABAAwAAQANAAEAAAACAAwAAQAMAAEAAAAQAAwAAQAMAAEAAAARAAwAAQANAAEAAAASAAwAAQAMAAEAAAATAAwAAQANAAEAAAAUAAwAAQAMAAEAAAAVAAwAAQANAAEAAAAWAAwAAQAMAAEAAAAXAAwAAQANAAEAAAAYAAwAAQAMAAEAAAAZAAwAAQANAAEAAAAaAAwAAQAMAAEAAAAbAAwAAQANAAEAAAAcAAwAAQAMAAEAAAAdAAwAAQANAAEAAAAlAAwAAQANAAEAAAAmAAwAAQAMAAEAAAAnAAwAAQANAAEAAAAoAAwAAQAMAAEAAAApAAwAAQANAAEAAAAqAAwAAQAMAAEAAAArAAwAAQANAAEAAAAQAA0AAQAMAAIAAAAZAA0AAQANAAIAAAAMAA4AAQAMAAEAAAAQAA4AAQAMAAEAAAAZAA4AAQANAAEAAAAMAA8AAQAMAAIAAAAQAA8AAQAMAAIAAAAZAA8AAQANAAIAAAAAABAAAQAMAAEAAAABABAAAQANAAEAAAACABAAAQAMAAEAAAADABAAAQANAAEAAAAEABAAAQAMAAEAAAAMABAAAQAMAAEAAAAdABAAAQANAAEAAAAlABAAAQANAAEAAAAmABAAAQAMAAEAAAAnABAAAQANAAEAAAAoABAAAQAMAAEAAAApABAAAQANAAEAAAAqABAAAQAMAAEAAAArABAAAQANAAEAAAAEABEAAQAMAAIAAAAMABEAAQAMAAIAAAAdABEAAQANAAIAAAAlABEAAQANAAIAAAAEABIAAQAMAAEAAAAMABIAAQAMAAEAAAAdABIAAQANAAEAAAAlABIAAQANAAEAAAAFABMAAQANAAIAAAAGABMAAQAMAAIAAAAHABMAAQANAAIAAAAIABMAAQAMAAIAAAAJABMAAQANAAIAAAAKABMAAQAMAAIAAAALABMAAQANAAIAAAANABMAAQANAAIAAAAOABMAAQAMAAIAAAAPABMAAQANAAIAAAAQABMAAQAMAAIAAAAZABMAAQANAAIAAAAaABMAAQAMAAIAAAAbABMAAQANAAIAAAAcABMAAQAMAAIAAAAdABMAAQANAAIAAAAlABMAAQANAAIAAAAQABQAAQAMAAEAAAAZABQAAQANAAEAAAAeABQAAQAMAAEAAAAfABQAAQANAAEAAAAgABQAAQAMAAEAAAAhABQAAQANAAEAAAAiABQAAQAMAAEAAAAjABQAAQANAAEAAAAkABQAAQAMAAEAAAAQABUAAQAMAAIAAAAZABUAAQANAAIAAAARABYAAQANAAEAAAASABYAAQAMAAEAAAATABYAAQANAAEAAAAUABYAAQAMAAEAAAAVABYAAQANAAEAAAAWABYAAQAMAAEAAAAXABYAAQANAAEAAAAYABYAAQAMAAEAAAA=")
 tile_set = SubResource("TileSet_f6al4")
 
-[node name="Entities" type="Node2D" parent="." unique_id=945601966]
+[node name="Entities" type="Node2D" parent="." unique_id=1615475173]
 y_sort_enabled = true
 
-[node name="Pillar1" type="StaticBody2D" parent="Entities" unique_id=581693721]
+[node name="Pillar1" type="StaticBody2D" parent="Entities" unique_id=1978331419]
 position = Vector2(120, 144)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar1" unique_id=288356383]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar1" unique_id=2095382172]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar1" unique_id=412300235]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar1" unique_id=9253627]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Pillar2" type="StaticBody2D" parent="Entities" unique_id=71023227]
+[node name="Pillar2" type="StaticBody2D" parent="Entities" unique_id=567592215]
 position = Vector2(120, 288)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar2" unique_id=403566980]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar2" unique_id=1503222952]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar2" unique_id=890475075]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar2" unique_id=2010241769]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Pillar3" type="StaticBody2D" parent="Entities" unique_id=1259384163]
+[node name="Pillar3" type="StaticBody2D" parent="Entities" unique_id=795142303]
 position = Vector2(152, 144)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar3" unique_id=275377307]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar3" unique_id=143742613]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar3" unique_id=645286317]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar3" unique_id=1097942103]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Pillar4" type="StaticBody2D" parent="Entities" unique_id=1641003840]
+[node name="Pillar4" type="StaticBody2D" parent="Entities" unique_id=278945480]
 position = Vector2(152, 288)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar4" unique_id=2027981754]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar4" unique_id=1157218374]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar4" unique_id=1245230565]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar4" unique_id=1028503755]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Urn5" type="Node2D" parent="Entities" unique_id=971458833]
+[node name="Urn5" type="Node2D" parent="Entities" unique_id=2122868119]
 position = Vector2(152, 176)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Urn5" unique_id=1292823522]
+[node name="Sprite" type="Sprite2D" parent="Entities/Urn5" unique_id=341167380]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 320, 16, 16)
 
-[node name="Urn6" type="Node2D" parent="Entities" unique_id=1679017385]
+[node name="Urn6" type="Node2D" parent="Entities" unique_id=1773607341]
 position = Vector2(168, 176)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Urn6" unique_id=1779031456]
+[node name="Sprite" type="Sprite2D" parent="Entities/Urn6" unique_id=2137782261]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 320, 16, 16)
 
-[node name="Pillar7" type="StaticBody2D" parent="Entities" unique_id=1600197965]
+[node name="Pillar7" type="StaticBody2D" parent="Entities" unique_id=256882060]
 position = Vector2(312, 256)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar7" unique_id=953706705]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar7" unique_id=1530064014]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar7" unique_id=897640180]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar7" unique_id=1178251605]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Pillar8" type="StaticBody2D" parent="Entities" unique_id=905855718]
+[node name="Pillar8" type="StaticBody2D" parent="Entities" unique_id=1182756824]
 position = Vector2(312, 336)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar8" unique_id=799674651]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar8" unique_id=1635366278]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar8" unique_id=1983248910]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar8" unique_id=1529393093]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Pillar9" type="StaticBody2D" parent="Entities" unique_id=1930190132]
+[node name="Pillar9" type="StaticBody2D" parent="Entities" unique_id=984182766]
 position = Vector2(360, 256)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar9" unique_id=466657348]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar9" unique_id=1999534153]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar9" unique_id=1189514521]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar9" unique_id=1896885713]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Pillar10" type="StaticBody2D" parent="Entities" unique_id=1904106876]
+[node name="Pillar10" type="StaticBody2D" parent="Entities" unique_id=1407231700]
 position = Vector2(360, 336)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar10" unique_id=2143003737]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar10" unique_id=248857410]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar10" unique_id=1021027515]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar10" unique_id=682643198]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Pillar11" type="StaticBody2D" parent="Entities" unique_id=1846255866]
+[node name="Pillar11" type="StaticBody2D" parent="Entities" unique_id=944823763]
 position = Vector2(520, 176)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar11" unique_id=1753095408]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar11" unique_id=273782278]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar11" unique_id=859379204]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar11" unique_id=774846921]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Pillar12" type="StaticBody2D" parent="Entities" unique_id=168681854]
+[node name="Pillar12" type="StaticBody2D" parent="Entities" unique_id=1920311288]
 position = Vector2(520, 304)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar12" unique_id=1249176660]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar12" unique_id=411462820]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar12" unique_id=738671868]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar12" unique_id=1962125840]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Pillar13" type="StaticBody2D" parent="Entities" unique_id=236860676]
+[node name="Pillar13" type="StaticBody2D" parent="Entities" unique_id=1800346040]
 position = Vector2(552, 176)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar13" unique_id=288970212]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar13" unique_id=1300092536]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar13" unique_id=3806953]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar13" unique_id=1962383855]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Pillar14" type="StaticBody2D" parent="Entities" unique_id=2113261480]
+[node name="Pillar14" type="StaticBody2D" parent="Entities" unique_id=777918416]
 position = Vector2(552, 304)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Pillar14" unique_id=1736139689]
+[node name="Sprite" type="Sprite2D" parent="Entities/Pillar14" unique_id=678367967]
 texture = ExtResource("12_gwhn0")
 centered = false
 offset = Vector2(-8, -46)
 region_enabled = true
 region_rect = Rect2(32, 304, 16, 48)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar14" unique_id=231324193]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Pillar14" unique_id=1896257347]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_wqbpo")
 
-[node name="Statue14" type="AnimatedSprite2D" parent="Entities" unique_id=741959687]
+[node name="Statue14" type="AnimatedSprite2D" parent="Entities" unique_id=411515256]
 position = Vector2(528, 153.6)
 sprite_frames = SubResource("SpriteFrames_id2r0")
 autoplay = "default"
 flip_h = true
 
-[node name="NpcVillagers_v 21 Sea" type="StaticBody2D" parent="Entities" unique_id=2138729102]
+[node name="NpcVillagers_v 21 Sea" type="StaticBody2D" parent="Entities" unique_id=1414829422]
 position = Vector2(136, 238)
 script = ExtResource("14_f86mr")
 display_name = "신전지기"
 sheet = ExtResource("15_a2l21")
 lines = PackedStringArray("물속에도 사람이 산다니 놀랐지? 우린 신전을 지키는 물방울 일족이야.", "크라켄님이 갑자기 사나워지셨어. 하늘에서 검은 물이 스며든 뒤로…")
 
-[node name="NpcVillagers_v 12 Sea" type="StaticBody2D" parent="Entities" unique_id=52708371]
+[node name="NpcVillagers_v 12 Sea" type="StaticBody2D" parent="Entities" unique_id=1051288550]
 position = Vector2(312, 286)
 script = ExtResource("14_f86mr")
 display_name = "물방울 상인"
 sheet = ExtResource("16_if0mv")
 lines = PackedStringArray("해저 신전 깊은 곳엔 해신의 제단이 있어요.", "몬스터는 제단 쪽에서 계속 몰려와요.")
 
-[node name="NpcVillagers_v 02 Sea" type="StaticBody2D" parent="Entities" unique_id=1564735972]
+[node name="NpcVillagers_v 02 Sea" type="StaticBody2D" parent="Entities" unique_id=1519478613]
 position = Vector2(520, 254)
 script = ExtResource("14_f86mr")
 display_name = "늙은 학자"
 sheet = ExtResource("17_83gxx")
 lines = PackedStringArray("서고의 옛 기록에 따르면 대륙의 모든 생명은 하늘의 큰 나무에서 왔다네.", "몬스터도 마찬가지일지 모르지…")
 
-[node name="Player" parent="Entities" unique_id=1269018498 instance=ExtResource("18_g0w62")]
+[node name="Player" parent="Entities" unique_id=1209463813 instance=ExtResource("18_g0w62")]
 unique_name_in_owner = true
 position = Vector2(136, 208)
-character_override = null
 
-[node name="Spawns" type="Node2D" parent="." unique_id=1473067677]
+[node name="Spawns" type="Node2D" parent="." unique_id=443817449]
 
-[node name="west" type="Marker2D" parent="Spawns" unique_id=1470372882]
+[node name="west" type="Marker2D" parent="Spawns" unique_id=1613156058]
 position = Vector2(96, 240)
 
-[node name="east" type="Marker2D" parent="Spawns" unique_id=84949491]
+[node name="east" type="Marker2D" parent="Spawns" unique_id=1510889987]
 position = Vector2(608, 240)
 
-[node name="TempleWalls" type="StaticBody2D" parent="." unique_id=1895778334]
+[node name="TempleWalls" type="StaticBody2D" parent="." unique_id=1283847281]
 collision_mask = 0
 
-[node name="@CollisionShape2D@4187" type="CollisionShape2D" parent="TempleWalls" unique_id=2071210077]
+[node name="@CollisionShape2D@4187" type="CollisionShape2D" parent="TempleWalls" unique_id=1955949736]
 position = Vector2(352, 8)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4188" type="CollisionShape2D" parent="TempleWalls" unique_id=1187867436]
+[node name="@CollisionShape2D@4188" type="CollisionShape2D" parent="TempleWalls" unique_id=1819751879]
 position = Vector2(352, 24)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4189" type="CollisionShape2D" parent="TempleWalls" unique_id=808927713]
+[node name="@CollisionShape2D@4189" type="CollisionShape2D" parent="TempleWalls" unique_id=1518449116]
 position = Vector2(352, 40)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4190" type="CollisionShape2D" parent="TempleWalls" unique_id=686799629]
+[node name="@CollisionShape2D@4190" type="CollisionShape2D" parent="TempleWalls" unique_id=2047203564]
 position = Vector2(352, 56)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4191" type="CollisionShape2D" parent="TempleWalls" unique_id=396683582]
+[node name="@CollisionShape2D@4191" type="CollisionShape2D" parent="TempleWalls" unique_id=1800591784]
 position = Vector2(352, 72)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4192" type="CollisionShape2D" parent="TempleWalls" unique_id=34292882]
+[node name="@CollisionShape2D@4192" type="CollisionShape2D" parent="TempleWalls" unique_id=601239958]
 position = Vector2(352, 88)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4193" type="CollisionShape2D" parent="TempleWalls" unique_id=1777262083]
+[node name="@CollisionShape2D@4193" type="CollisionShape2D" parent="TempleWalls" unique_id=1468770920]
 position = Vector2(40, 104)
 shape = SubResource("RectangleShape2D_6xshw")
 
-[node name="@CollisionShape2D@4194" type="CollisionShape2D" parent="TempleWalls" unique_id=1160886371]
+[node name="@CollisionShape2D@4194" type="CollisionShape2D" parent="TempleWalls" unique_id=1635548793]
 position = Vector2(448, 104)
 shape = SubResource("RectangleShape2D_084sh")
 
-[node name="@CollisionShape2D@4195" type="CollisionShape2D" parent="TempleWalls" unique_id=614916724]
+[node name="@CollisionShape2D@4195" type="CollisionShape2D" parent="TempleWalls" unique_id=1921334626]
 position = Vector2(40, 120)
 shape = SubResource("RectangleShape2D_6xshw")
 
-[node name="@CollisionShape2D@4196" type="CollisionShape2D" parent="TempleWalls" unique_id=371350538]
+[node name="@CollisionShape2D@4196" type="CollisionShape2D" parent="TempleWalls" unique_id=1703231038]
 position = Vector2(448, 120)
 shape = SubResource("RectangleShape2D_084sh")
 
-[node name="@CollisionShape2D@4197" type="CollisionShape2D" parent="TempleWalls" unique_id=1018410438]
+[node name="@CollisionShape2D@4197" type="CollisionShape2D" parent="TempleWalls" unique_id=1127383189]
 position = Vector2(40, 136)
 shape = SubResource("RectangleShape2D_6xshw")
 
-[node name="@CollisionShape2D@4198" type="CollisionShape2D" parent="TempleWalls" unique_id=1180570780]
+[node name="@CollisionShape2D@4198" type="CollisionShape2D" parent="TempleWalls" unique_id=1029043288]
 position = Vector2(336, 136)
 shape = SubResource("RectangleShape2D_jew6a")
 
-[node name="@CollisionShape2D@4199" type="CollisionShape2D" parent="TempleWalls" unique_id=1429893881]
+[node name="@CollisionShape2D@4199" type="CollisionShape2D" parent="TempleWalls" unique_id=1108558326]
 position = Vector2(648, 136)
 shape = SubResource("RectangleShape2D_d6eac")
 
-[node name="@CollisionShape2D@4200" type="CollisionShape2D" parent="TempleWalls" unique_id=2081120880]
+[node name="@CollisionShape2D@4200" type="CollisionShape2D" parent="TempleWalls" unique_id=1662877231]
 position = Vector2(40, 152)
 shape = SubResource("RectangleShape2D_6xshw")
 
-[node name="@CollisionShape2D@4201" type="CollisionShape2D" parent="TempleWalls" unique_id=1000942955]
+[node name="@CollisionShape2D@4201" type="CollisionShape2D" parent="TempleWalls" unique_id=1387698039]
 position = Vector2(336, 152)
 shape = SubResource("RectangleShape2D_jew6a")
 
-[node name="@CollisionShape2D@4202" type="CollisionShape2D" parent="TempleWalls" unique_id=1515002685]
+[node name="@CollisionShape2D@4202" type="CollisionShape2D" parent="TempleWalls" unique_id=990965811]
 position = Vector2(648, 152)
 shape = SubResource("RectangleShape2D_d6eac")
 
-[node name="@CollisionShape2D@4203" type="CollisionShape2D" parent="TempleWalls" unique_id=1111439706]
+[node name="@CollisionShape2D@4203" type="CollisionShape2D" parent="TempleWalls" unique_id=494201474]
 position = Vector2(40, 168)
 shape = SubResource("RectangleShape2D_6xshw")
 
-[node name="@CollisionShape2D@4204" type="CollisionShape2D" parent="TempleWalls" unique_id=617097121]
+[node name="@CollisionShape2D@4204" type="CollisionShape2D" parent="TempleWalls" unique_id=748642311]
 position = Vector2(336, 168)
 shape = SubResource("RectangleShape2D_jew6a")
 
-[node name="@CollisionShape2D@4205" type="CollisionShape2D" parent="TempleWalls" unique_id=317381011]
+[node name="@CollisionShape2D@4205" type="CollisionShape2D" parent="TempleWalls" unique_id=1453289571]
 position = Vector2(648, 168)
 shape = SubResource("RectangleShape2D_d6eac")
 
-[node name="@CollisionShape2D@4206" type="CollisionShape2D" parent="TempleWalls" unique_id=1358063500]
+[node name="@CollisionShape2D@4206" type="CollisionShape2D" parent="TempleWalls" unique_id=1629255704]
 position = Vector2(24, 184)
 shape = SubResource("RectangleShape2D_qujc5")
 
-[node name="@CollisionShape2D@4207" type="CollisionShape2D" parent="TempleWalls" unique_id=1647351769]
+[node name="@CollisionShape2D@4207" type="CollisionShape2D" parent="TempleWalls" unique_id=2124839743]
 position = Vector2(368, 184)
 shape = SubResource("RectangleShape2D_pqi7j")
 
-[node name="@CollisionShape2D@4208" type="CollisionShape2D" parent="TempleWalls" unique_id=573189202]
+[node name="@CollisionShape2D@4208" type="CollisionShape2D" parent="TempleWalls" unique_id=1911155028]
 position = Vector2(648, 184)
 shape = SubResource("RectangleShape2D_d6eac")
 
-[node name="@CollisionShape2D@4209" type="CollisionShape2D" parent="TempleWalls" unique_id=181458442]
+[node name="@CollisionShape2D@4209" type="CollisionShape2D" parent="TempleWalls" unique_id=1907696734]
 position = Vector2(24, 200)
 shape = SubResource("RectangleShape2D_qujc5")
 
-[node name="@CollisionShape2D@4210" type="CollisionShape2D" parent="TempleWalls" unique_id=102448175]
+[node name="@CollisionShape2D@4210" type="CollisionShape2D" parent="TempleWalls" unique_id=1800963436]
 position = Vector2(368, 200)
 shape = SubResource("RectangleShape2D_pqi7j")
 
-[node name="@CollisionShape2D@4211" type="CollisionShape2D" parent="TempleWalls" unique_id=39262109]
+[node name="@CollisionShape2D@4211" type="CollisionShape2D" parent="TempleWalls" unique_id=943797394]
 position = Vector2(648, 200)
 shape = SubResource("RectangleShape2D_d6eac")
 
-[node name="@CollisionShape2D@4212" type="CollisionShape2D" parent="TempleWalls" unique_id=350133019]
+[node name="@CollisionShape2D@4212" type="CollisionShape2D" parent="TempleWalls" unique_id=1973803154]
 position = Vector2(264, 216)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4213" type="CollisionShape2D" parent="TempleWalls" unique_id=901985422]
+[node name="@CollisionShape2D@4213" type="CollisionShape2D" parent="TempleWalls" unique_id=711476871]
 position = Vector2(408, 216)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4214" type="CollisionShape2D" parent="TempleWalls" unique_id=1663406234]
+[node name="@CollisionShape2D@4214" type="CollisionShape2D" parent="TempleWalls" unique_id=468498053]
 position = Vector2(200, 232)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4215" type="CollisionShape2D" parent="TempleWalls" unique_id=1369434042]
+[node name="@CollisionShape2D@4215" type="CollisionShape2D" parent="TempleWalls" unique_id=472775713]
 position = Vector2(264, 232)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4216" type="CollisionShape2D" parent="TempleWalls" unique_id=1567431580]
+[node name="@CollisionShape2D@4216" type="CollisionShape2D" parent="TempleWalls" unique_id=173262452]
 position = Vector2(408, 232)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4217" type="CollisionShape2D" parent="TempleWalls" unique_id=54129893]
+[node name="@CollisionShape2D@4217" type="CollisionShape2D" parent="TempleWalls" unique_id=649531803]
 position = Vector2(200, 248)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4218" type="CollisionShape2D" parent="TempleWalls" unique_id=1800937473]
+[node name="@CollisionShape2D@4218" type="CollisionShape2D" parent="TempleWalls" unique_id=1896095672]
 position = Vector2(264, 248)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4219" type="CollisionShape2D" parent="TempleWalls" unique_id=1464511760]
+[node name="@CollisionShape2D@4219" type="CollisionShape2D" parent="TempleWalls" unique_id=1139774801]
 position = Vector2(408, 248)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4220" type="CollisionShape2D" parent="TempleWalls" unique_id=1230497680]
+[node name="@CollisionShape2D@4220" type="CollisionShape2D" parent="TempleWalls" unique_id=610334816]
 position = Vector2(40, 264)
 shape = SubResource("RectangleShape2D_6xshw")
 
-[node name="@CollisionShape2D@4221" type="CollisionShape2D" parent="TempleWalls" unique_id=1728128840]
+[node name="@CollisionShape2D@4221" type="CollisionShape2D" parent="TempleWalls" unique_id=1039889010]
 position = Vector2(200, 264)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4222" type="CollisionShape2D" parent="TempleWalls" unique_id=387462352]
+[node name="@CollisionShape2D@4222" type="CollisionShape2D" parent="TempleWalls" unique_id=2083828496]
 position = Vector2(472, 264)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4223" type="CollisionShape2D" parent="TempleWalls" unique_id=617941011]
+[node name="@CollisionShape2D@4223" type="CollisionShape2D" parent="TempleWalls" unique_id=1031718555]
 position = Vector2(648, 264)
 shape = SubResource("RectangleShape2D_d6eac")
 
-[node name="@CollisionShape2D@4224" type="CollisionShape2D" parent="TempleWalls" unique_id=2109579842]
+[node name="@CollisionShape2D@4224" type="CollisionShape2D" parent="TempleWalls" unique_id=1127388378]
 position = Vector2(40, 280)
 shape = SubResource("RectangleShape2D_6xshw")
 
-[node name="@CollisionShape2D@4225" type="CollisionShape2D" parent="TempleWalls" unique_id=1580400162]
+[node name="@CollisionShape2D@4225" type="CollisionShape2D" parent="TempleWalls" unique_id=1025023936]
 position = Vector2(200, 280)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4226" type="CollisionShape2D" parent="TempleWalls" unique_id=2085992391]
+[node name="@CollisionShape2D@4226" type="CollisionShape2D" parent="TempleWalls" unique_id=973675644]
 position = Vector2(472, 280)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4227" type="CollisionShape2D" parent="TempleWalls" unique_id=41455876]
+[node name="@CollisionShape2D@4227" type="CollisionShape2D" parent="TempleWalls" unique_id=1741189495]
 position = Vector2(648, 280)
 shape = SubResource("RectangleShape2D_d6eac")
 
-[node name="@CollisionShape2D@4228" type="CollisionShape2D" parent="TempleWalls" unique_id=1530181772]
+[node name="@CollisionShape2D@4228" type="CollisionShape2D" parent="TempleWalls" unique_id=716870783]
 position = Vector2(40, 296)
 shape = SubResource("RectangleShape2D_6xshw")
 
-[node name="@CollisionShape2D@4229" type="CollisionShape2D" parent="TempleWalls" unique_id=546801871]
+[node name="@CollisionShape2D@4229" type="CollisionShape2D" parent="TempleWalls" unique_id=1676947434]
 position = Vector2(200, 296)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4230" type="CollisionShape2D" parent="TempleWalls" unique_id=1171580598]
+[node name="@CollisionShape2D@4230" type="CollisionShape2D" parent="TempleWalls" unique_id=1072616270]
 position = Vector2(472, 296)
 shape = SubResource("RectangleShape2D_vqyhw")
 
-[node name="@CollisionShape2D@4231" type="CollisionShape2D" parent="TempleWalls" unique_id=757527444]
+[node name="@CollisionShape2D@4231" type="CollisionShape2D" parent="TempleWalls" unique_id=2146239479]
 position = Vector2(648, 296)
 shape = SubResource("RectangleShape2D_d6eac")
 
-[node name="@CollisionShape2D@4232" type="CollisionShape2D" parent="TempleWalls" unique_id=874695569]
+[node name="@CollisionShape2D@4232" type="CollisionShape2D" parent="TempleWalls" unique_id=311342432]
 position = Vector2(136, 312)
 shape = SubResource("RectangleShape2D_y0s2g")
 
-[node name="@CollisionShape2D@4233" type="CollisionShape2D" parent="TempleWalls" unique_id=824315696]
+[node name="@CollisionShape2D@4233" type="CollisionShape2D" parent="TempleWalls" unique_id=892323466]
 position = Vector2(440, 312)
 shape = SubResource("RectangleShape2D_6xshw")
 
-[node name="@CollisionShape2D@4234" type="CollisionShape2D" parent="TempleWalls" unique_id=1074240343]
+[node name="@CollisionShape2D@4234" type="CollisionShape2D" parent="TempleWalls" unique_id=494612378]
 position = Vector2(648, 312)
 shape = SubResource("RectangleShape2D_d6eac")
 
-[node name="@CollisionShape2D@4235" type="CollisionShape2D" parent="TempleWalls" unique_id=1961851813]
+[node name="@CollisionShape2D@4235" type="CollisionShape2D" parent="TempleWalls" unique_id=1559901186]
 position = Vector2(136, 328)
 shape = SubResource("RectangleShape2D_y0s2g")
 
-[node name="@CollisionShape2D@4236" type="CollisionShape2D" parent="TempleWalls" unique_id=1319529050]
+[node name="@CollisionShape2D@4236" type="CollisionShape2D" parent="TempleWalls" unique_id=597013794]
 position = Vector2(552, 328)
 shape = SubResource("RectangleShape2D_2klgq")
 
-[node name="@CollisionShape2D@4237" type="CollisionShape2D" parent="TempleWalls" unique_id=1962703660]
+[node name="@CollisionShape2D@4237" type="CollisionShape2D" parent="TempleWalls" unique_id=633276]
 position = Vector2(136, 344)
 shape = SubResource("RectangleShape2D_y0s2g")
 
-[node name="@CollisionShape2D@4238" type="CollisionShape2D" parent="TempleWalls" unique_id=1285359659]
+[node name="@CollisionShape2D@4238" type="CollisionShape2D" parent="TempleWalls" unique_id=858321655]
 position = Vector2(552, 344)
 shape = SubResource("RectangleShape2D_2klgq")
 
-[node name="@CollisionShape2D@4239" type="CollisionShape2D" parent="TempleWalls" unique_id=959934656]
+[node name="@CollisionShape2D@4239" type="CollisionShape2D" parent="TempleWalls" unique_id=63298874]
 position = Vector2(352, 360)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4240" type="CollisionShape2D" parent="TempleWalls" unique_id=1800701616]
+[node name="@CollisionShape2D@4240" type="CollisionShape2D" parent="TempleWalls" unique_id=592680146]
 position = Vector2(352, 376)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4241" type="CollisionShape2D" parent="TempleWalls" unique_id=1815602036]
+[node name="@CollisionShape2D@4241" type="CollisionShape2D" parent="TempleWalls" unique_id=13627934]
 position = Vector2(352, 392)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4242" type="CollisionShape2D" parent="TempleWalls" unique_id=1045909112]
+[node name="@CollisionShape2D@4242" type="CollisionShape2D" parent="TempleWalls" unique_id=944627014]
 position = Vector2(352, 408)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4243" type="CollisionShape2D" parent="TempleWalls" unique_id=492998016]
+[node name="@CollisionShape2D@4243" type="CollisionShape2D" parent="TempleWalls" unique_id=625580829]
 position = Vector2(352, 424)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4244" type="CollisionShape2D" parent="TempleWalls" unique_id=1731289366]
+[node name="@CollisionShape2D@4244" type="CollisionShape2D" parent="TempleWalls" unique_id=1343279784]
 position = Vector2(352, 440)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4245" type="CollisionShape2D" parent="TempleWalls" unique_id=1326568077]
+[node name="@CollisionShape2D@4245" type="CollisionShape2D" parent="TempleWalls" unique_id=1660910811]
 position = Vector2(352, 456)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="@CollisionShape2D@4246" type="CollisionShape2D" parent="TempleWalls" unique_id=1545746312]
+[node name="@CollisionShape2D@4246" type="CollisionShape2D" parent="TempleWalls" unique_id=2146589768]
 position = Vector2(352, 472)
 shape = SubResource("RectangleShape2D_no2ri")
 
-[node name="Portal_west" type="Area2D" parent="." unique_id=1263767859]
+[node name="Portal_west" type="Area2D" parent="." unique_id=1259165545]
 position = Vector2(24, 240)
 script = ExtResource("19_vg86b")
 target_scene = "res://features/world/temple2.tscn"
@@ -1066,26 +1065,26 @@ target_spawn = "east"
 label = "◀ 물길 회랑"
 side = -1
 
-[node name="@CollisionShape2D@4247" type="CollisionShape2D" parent="Portal_west" unique_id=625270586]
+[node name="@CollisionShape2D@4247" type="CollisionShape2D" parent="Portal_west" unique_id=1725354900]
 shape = SubResource("RectangleShape2D_fkvx2")
 
-[node name="Portal_east" type="Area2D" parent="." unique_id=1200994787]
+[node name="Portal_east" type="Area2D" parent="." unique_id=1488193123]
 position = Vector2(680, 240)
 script = ExtResource("19_vg86b")
 target_scene = "res://features/world/temple3.tscn"
 target_spawn = "west"
 label = "수몰된 서고 ▶"
 
-[node name="@CollisionShape2D@4248" type="CollisionShape2D" parent="Portal_east" unique_id=1662125117]
+[node name="@CollisionShape2D@4248" type="CollisionShape2D" parent="Portal_east" unique_id=1601152596]
 shape = SubResource("RectangleShape2D_fkvx2")
 
-[node name="Gloom" type="CanvasModulate" parent="." unique_id=1127583148]
+[node name="Gloom" type="CanvasModulate" parent="." unique_id=2140426524]
 color = Color(0.82, 0.92, 1, 1)
 
-[node name="Backdrop" type="CanvasLayer" parent="." unique_id=975623228]
+[node name="Backdrop" type="CanvasLayer" parent="." unique_id=577544759]
 script = ExtResource("20_7neks")
 mode = 1
 
-[node name="Music" type="AudioStreamPlayer" parent="." unique_id=303225702]
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=1404854190]
 stream = ExtResource("21_03ask")
 volume_db = -10.0

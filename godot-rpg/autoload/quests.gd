@@ -406,7 +406,20 @@ func mark_boss(kind: String) -> void:
 	if not Save.quest.has("bosses"):
 		Save.quest["bosses"] = {}
 	Save.quest["bosses"][kind] = true
+	if not Save.quest.has("boss_t"):
+		Save.quest["boss_t"] = {}
+	Save.quest["boss_t"][kind] = Time.get_unix_time_from_system()
 	Save.save_game()
+
+
+## 보스는 잡고 30분 뒤 다시 나온다. 아직 쉬는 중이면 남은 초(아니면 0)
+const BOSS_RESPAWN := 1800.0
+
+func boss_rest_left(kind: String) -> float:
+	if not Save.quest.get("bosses", {}).has(kind):
+		return 0.0
+	var t := float(Save.quest.get("boss_t", {}).get(kind, 0.0))
+	return maxf(0.0, t + BOSS_RESPAWN - Time.get_unix_time_from_system())
 
 
 ## 옛 세이브 보정: 장 순서를 바꾸면서 퀘스트 번호만 앞으로 가 있고 그 앞 장 보스 기록이 없는 경우가 생겼다.

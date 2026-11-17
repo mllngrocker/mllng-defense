@@ -207,7 +207,26 @@ func _on_player_died() -> void:
 	Save.place = {}  # 쓰러지면 마을에서 다시
 	Save.save_game()
 	await get_tree().create_timer(2.0).timeout
-	Game.go_to(VILLAGE_SCENE, "")
+	Game.go_to(_nearest_town(), "")
+
+
+## 쓰러진 맵에서 열린 이동문을 따라 가장 가까운 마을(맵 연결 지도로 넓이 우선 탐색)
+func _nearest_town() -> String:
+	var start := map_id()
+	var seen := {start: true}
+	var queue: Array[String] = [start]
+	while not queue.is_empty():
+		var id: String = queue.pop_front()
+		if id in Items.TOWNS and MapGraph.DATA.has(id):
+			return String(MapGraph.DATA[id]["scene"])
+		if not MapGraph.DATA.has(id):
+			continue
+		for d: Dictionary in MapGraph.DATA[id]["doors"]:
+			var to := String(d["to"])
+			if not seen.has(to) and Quests.boss_defeated(String(d["boss"])):
+				seen[to] = true
+				queue.append(to)
+	return VILLAGE_SCENE
 
 
 ## 맵 범위: 땅 층이 비어 있는 하늘·바다 배경 맵은 map_size 메타(build_world가 넣는다)

@@ -107,7 +107,7 @@ func _tap_npc(pos: Vector2) -> bool:
 	var world_pos := get_viewport().get_canvas_transform().affine_inverse() * pos
 	for n in get_tree().get_nodes_in_group(&"npcs"):
 		var npc := n as Npc
-		if npc and world_pos.distance_to(npc.global_position + Vector2(0, -12)) < 18.0 and p.global_position.distance_to(npc.global_position) < 96.0:
+		if npc and world_pos.distance_to(npc.global_position + Vector2(0, -12)) < 26.0 and p.global_position.distance_to(npc.global_position) < 140.0:
 			npc.talk()
 			return true
 	return false
@@ -172,8 +172,18 @@ func _draw() -> void:
 	# 공격 버튼(칼 그림)
 	var attack_down := &"attack" in button_touches.values()
 	var ac := attack_center() + (Vector2(0, 3) if attack_down else Vector2.ZERO)
-	Gt.ring_button(self, ac, ATTACK_R - 4.0, Color("ff5d8f"), attack_down)
-	Gt.icon(self, &"sword", ac + Vector2(0, -2), ATTACK_R * 1.25)
+	var pl := _player()
+	if pl and pl.hp > 0 and pl._npc_near() != null:  # 마을 사람 앞: 칼 버튼이 "대화" 버튼으로
+		Gt.ring_button(self, ac, ATTACK_R - 4.0, Gt.YELLOW, attack_down)
+		var bc := ac + Vector2(0, -10)
+		Gt.pbox(self, Rect2(bc - Vector2(26, 18), Vector2(52, 34)), Color.WHITE, Gt.INK, 3, false, false)
+		draw_colored_polygon(PackedVector2Array([bc + Vector2(-8, 15), bc + Vector2(4, 15), bc + Vector2(-10, 26)]), Gt.INK)
+		for i in 3:
+			draw_circle(bc + Vector2(-12 + i * 12, -1), 4.0, Gt.NAVY)
+		Gt.title(self, ac + Vector2(0, 36), "대화", 18, Color.WHITE, 1)
+	else:
+		Gt.ring_button(self, ac, ATTACK_R - 4.0, Color("ff5d8f"), attack_down)
+		Gt.icon(self, &"sword", ac + Vector2(0, -2), ATTACK_R * 1.25)
 	# 구르기 버튼
 	var dash_down := &"dash" in button_touches.values()
 	var dc := dash_center() + (Vector2(0, 3) if dash_down else Vector2.ZERO)

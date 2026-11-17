@@ -18,7 +18,7 @@ const BOOKS: Dictionary[String, Array] = {
 ## 가방 창에서 바로 쓸 수 있는 것(강화석은 장비 창에서 쓴다)
 const USABLE: Array[StringName] = [&"return_scroll", &"potion", &"mana_potion"]
 ## 마을 맵(귀환서로 돌아갈 수 있는 곳)
-const TOWNS: Array[String] = ["village", "desert_town", "snow_town", "temple_town", "lava_town", "sky_town", "root_town", "mist_town"]
+const TOWNS: Array[String] = ["village", "desert_town", "snow_town", "temple_town", "lava_town", "sky_town", "root_town", "mist_town", "star_town", "heaven_town"]
 ## 몬스터가 떨어뜨릴 확률(보스는 아래 BOSS_DROP)
 const DROP := {&"potion": 0.05, &"mana_potion": 0.06, &"return_scroll": 0.025}
 const BOSS_DROP := {&"potion": 3, &"mana_potion": 3, &"return_scroll": 2}
