@@ -702,6 +702,8 @@ func _paint_card(ci: Control, id: StringName) -> void:
 	if id == viewing:
 		Gt.pbox(ci, r.grow(4), Gt.YELLOW, Gt.INK, 2, false, false)
 	Gt.char_card(ci, data, r, owned)
+	if owned and Save.rank_of(id) >= 6:  # 6성 금테·루비(빛 훑기), 7성 핏빛 신화 테두리(불꽃·무지개)
+		Gt.tier_frame(ci, r, 4 if Save.rank_of(id) >= 7 else 3, Save.ROSTER.find(id))
 	if id == Save.selected:
 		var tag := Rect2(r.position + Vector2(-4, -6), Vector2(40, 20))
 		Gt.tag(ci, tag, Gt.PINK)

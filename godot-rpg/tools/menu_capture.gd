@@ -10,6 +10,12 @@ func _ready() -> void:
 	Save.persist = false
 	Save.gold = 1240
 	Save.away_seconds = 0  # 방치 보상 창이 가리지 않게
+	if "--tiers" in OS.get_cmdline_user_args():  # 카드 테두리 확인: 앞 캐릭터 둘을 6성·7성으로
+		for k in 2:
+			var id := String(Save.ROSTER[k])
+			var e: Dictionary = Save.owned.get(id, {})
+			e["stars"] = 6 + k - Save.character(StringName(id)).rarity
+			Save.owned[id] = e
 	menu = (load("res://features/menu/main_menu.tscn") as PackedScene).instantiate()
 	add_child(menu)
 
