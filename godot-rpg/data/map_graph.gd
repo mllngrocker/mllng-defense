@@ -1336,7 +1336,7 @@ const DATA := {
 		"doors": [
 			{
 				"boss": "",
-				"to": "star_gate",
+				"to": "star_town",
 				"x": 24.0,
 				"y": 320.0
 			},
@@ -1354,6 +1354,68 @@ const DATA := {
 		"npcs": [],
 		"scene": "res://features/world/star1.tscn"
 	},
+	"star10": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star9",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "star11",
+				"x": 840.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"hunger_fiend",
+			"star_drake"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star10.tscn"
+	},
+	"star11": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star10",
+				"x": 24.0,
+				"y": 272.0
+			},
+			{
+				"boss": "void_mage",
+				"to": "star12",
+				"x": 936.0,
+				"y": 272.0
+			}
+		],
+		"mobs": [
+			"void_mage",
+			"hunger_fiend",
+			"star_horn"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star11.tscn"
+	},
+	"star12": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star11",
+				"x": 24.0,
+				"y": 256.0
+			}
+		],
+		"mobs": [
+			"star_lich",
+			"star_horn",
+			"hunger_fiend"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star12.tscn"
+	},
 	"star2": {
 		"doors": [
 			{
@@ -1364,7 +1426,7 @@ const DATA := {
 			},
 			{
 				"boss": "",
-				"to": "star_town",
+				"to": "star3",
 				"x": 808.0,
 				"y": 320.0
 			}
@@ -1380,18 +1442,19 @@ const DATA := {
 		"doors": [
 			{
 				"boss": "",
-				"to": "star_town",
+				"to": "star2",
 				"x": 24.0,
 				"y": 320.0
 			},
 			{
-				"boss": "",
+				"boss": "meteor_golem",
 				"to": "star4",
 				"x": 840.0,
 				"y": 320.0
 			}
 		],
 		"mobs": [
+			"meteor_golem",
 			"star_knight",
 			"comet_wisp"
 		],
@@ -1404,19 +1467,19 @@ const DATA := {
 				"boss": "",
 				"to": "star3",
 				"x": 24.0,
-				"y": 240.0
+				"y": 288.0
 			},
 			{
-				"boss": "meteor_golem",
+				"boss": "",
 				"to": "star5",
-				"x": 1000.0,
-				"y": 240.0
+				"x": 872.0,
+				"y": 288.0
 			}
 		],
 		"mobs": [
-			"meteor_golem",
-			"void_ogre",
-			"meteor_lizard"
+			"star_imp",
+			"crystal_beast",
+			"comet_wisp"
 		],
 		"npcs": [],
 		"scene": "res://features/world/star4.tscn"
@@ -1432,13 +1495,13 @@ const DATA := {
 			{
 				"boss": "",
 				"to": "star6",
-				"x": 840.0,
+				"x": 776.0,
 				"y": 320.0
 			}
 		],
 		"mobs": [
-			"hunger_fiend",
-			"star_drake"
+			"meteor_lizard",
+			"void_ogre"
 		],
 		"npcs": [],
 		"scene": "res://features/world/star5.tscn"
@@ -1449,16 +1512,90 @@ const DATA := {
 				"boss": "",
 				"to": "star5",
 				"x": 24.0,
-				"y": 256.0
+				"y": 240.0
+			},
+			{
+				"boss": "star_heart",
+				"to": "star7",
+				"x": 1000.0,
+				"y": 240.0
 			}
 		],
 		"mobs": [
 			"star_heart",
-			"star_horn",
-			"hunger_fiend"
+			"void_ogre",
+			"meteor_lizard"
 		],
 		"npcs": [],
 		"scene": "res://features/world/star6.tscn"
+	},
+	"star7": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star6",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "star8",
+				"x": 840.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"void_eye",
+			"star_knight"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star7.tscn"
+	},
+	"star8": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star7",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "star9",
+				"x": 808.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"void_eye",
+			"void_ogre",
+			"star_horn"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star8.tscn"
+	},
+	"star9": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star8",
+				"x": 24.0,
+				"y": 304.0
+			},
+			{
+				"boss": "star_eater",
+				"to": "star10",
+				"x": 872.0,
+				"y": 304.0
+			}
+		],
+		"mobs": [
+			"star_eater",
+			"star_drake",
+			"star_horn"
+		],
+		"npcs": [],
+		"scene": "res://features/world/star9.tscn"
 	},
 	"star_gate": {
 		"doors": [
@@ -1470,7 +1607,7 @@ const DATA := {
 			},
 			{
 				"boss": "giant_soul",
-				"to": "star1",
+				"to": "star_town",
 				"x": 320.0,
 				"y": 24.0
 			}
@@ -1485,13 +1622,13 @@ const DATA := {
 		"doors": [
 			{
 				"boss": "",
-				"to": "star2",
+				"to": "star_gate",
 				"x": 24.0,
 				"y": 256.0
 			},
 			{
 				"boss": "",
-				"to": "star3",
+				"to": "star1",
 				"x": 616.0,
 				"y": 256.0
 			}

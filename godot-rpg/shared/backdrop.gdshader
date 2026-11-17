@@ -33,14 +33,16 @@ void fragment() {
 		float st = step(0.995 - height * 0.006, hash(floor((SCREEN_UV * res + cam * 0.1) / 3.0)));
 		col += vec3(st) * height * (0.6 + 0.4 * sin(TIME * 3.0 + hash(floor(SCREEN_UV * res / 3.0)) * 6.0));
 	} else if (mode == 2) {
+		float mn = height;  // 별 섬 험악함 0(잔잔) ~ 1(별의 심장)
 		col = mix(vec3(0.05, 0.02, 0.10), vec3(0.12, 0.04, 0.18), SCREEN_UV.y);
-		float n1 = fbm(p * 0.9 + vec2(TIME * 0.01, 0.0));
+		col = mix(col, mix(vec3(0.06, 0.0, 0.02), vec3(0.16, 0.02, 0.05), SCREEN_UV.y), mn);
+		float n1 = fbm(p * 0.9 + vec2(TIME * (0.01 + mn * 0.03), 0.0));
 		float n2 = fbm(p * 1.7 - vec2(0.0, TIME * 0.012) + 3.0);
-		col += vec3(0.45, 0.12, 0.55) * smoothstep(0.45, 0.85, n1) * 0.55;  // 보라 성운
-		col += vec3(0.15, 0.25, 0.6) * smoothstep(0.5, 0.9, n2) * 0.4;   // 푸른 성운
+		col += mix(vec3(0.45, 0.12, 0.55), vec3(0.7, 0.08, 0.12), mn) * smoothstep(0.45 - mn * 0.15, 0.85, n1) * (0.55 + mn * 0.25);  // 보라 → 핏빛 성운
+		col += vec3(0.15, 0.25, 0.6) * smoothstep(0.5, 0.9, n2) * 0.4 * (1.0 - mn);   // 푸른 성운은 점점 사라짐
 		vec2 sp = floor((SCREEN_UV * res + cam * 0.08) / 2.5);
 		float r = hash(sp);
-		col += vec3(step(0.993, r)) * (0.5 + 0.5 * sin(TIME * 2.5 + r * 40.0));
+		col += vec3(step(0.993 + mn * 0.005, r)) * (0.5 + 0.5 * sin(TIME * 2.5 + r * 40.0)) * (1.0 - mn * 0.6);  // 별빛도 먹혀 흐려짐
 		// 고리 달린 큰 행성(화면 오른쪽 위, 아주 천천히 따라 움직임)
 		vec2 pc = vec2(0.78, 0.2) * res - cam * 0.02;
 		vec2 q = SCREEN_UV * res - pc;
@@ -49,12 +51,16 @@ void fragment() {
 		if (d < pr) {
 			float shade = clamp(dot(normalize(vec3(q / pr, sqrt(max(0.0, 1.0 - dot(q / pr, q / pr))))), normalize(vec3(-0.5, -0.6, 0.6))), 0.0, 1.0);
 			col = mix(vec3(0.18, 0.06, 0.25), vec3(0.85, 0.45, 0.9), shade) * (0.8 + 0.2 * fbm(q / pr * 3.0));
+			col = mix(col, mix(vec3(0.2, 0.0, 0.03), vec3(0.95, 0.2, 0.2), shade) * (0.8 + 0.2 * fbm(q / pr * 3.0)), mn);
 		}
 		vec2 rq = vec2(q.x, q.y * 3.2);
 		float rd = length(rq);
 		if (rd > pr * 1.25 && rd < pr * 1.6 && !(d < pr && q.y < 0.0)) {
-			col = mix(col, vec3(0.95, 0.75, 1.0), 0.55);
+			col = mix(col, mix(vec3(0.95, 0.75, 1.0), vec3(1.0, 0.5, 0.45), mn), 0.55);
 		}
+		// 험악할수록 화면 가장자리가 붉게 고동친다(굶주린 별의 맥박)
+		float vig = length(SCREEN_UV - 0.5) * 1.4;
+		col += vec3(0.5, 0.0, 0.05) * smoothstep(0.45, 1.0, vig) * mn * mn * (0.55 + 0.45 * sin(TIME * 2.2));
 	} else {
 		col = mix(vec3(0.05, 0.25, 0.42), vec3(0.01, 0.08, 0.2), SCREEN_UV.y);
 		float w = fbm(p * 3.0 + vec2(TIME * 0.05, TIME * 0.03));

@@ -25,7 +25,9 @@ git에 올리지 않는 소재(`assets/_zips`, `assets/_raw`, `assets/vendor`)�
 - LimeZu「Serene Village Revamped」(https://limezu.itch.io/serenevillagerevamped) — CC BY 4.0, 출처: LimeZu (https://limezu.itch.io/). `assets/towns/` 마을 집
 - SorceressGameLab「Top down RPG tileset」(https://sorceressgamelab.itch.io/top-down-rpg-tileset) — 상업 OK, 출처 선택. `assets/towns/` 사막·눈 마을 집
 - Admurin「FREE: Monster Pack」(https://admurin.itch.io/monster-pack) — 상업 OK, 재배포 금지. `assets/vendor/admurin/`(git 제외) 토끼 2종
-- zneeke「Dark Fantasy Big Boss 1」무료판(https://zneeke.itch.io/dark-fantasy-big-boss-1) — 상업 OK, 재배포 금지. `assets/vendor/monsters/`(git 제외) 검은 정원사
+- zneeke「Dark Fantasy Big Boss 1」무료판(https://zneeke.itch.io/dark-fantasy-big-boss-1) — 상업 OK, 재배포 금지. `assets/vendor/monsters/`(git 제외) 검은 정원사 · 9장 별을 먹는 자(보라 테두리로 다시 칠함)
+- CreativeKind「Necromancer」(https://creativekind.itch.io/necromancer-free) — `assets/vendor/monsters/star_lich.png`(git 제외) 9장 최종 보스 별을 삼킨 사령왕(테두리 덧칠)
+- fangondev「UNDEAD - Enemy Pack 2」Dark Mage(https://fangondev.itch.io/undead-enemy-pack-2) — 무료·상업 OK. `assets/vendor/monsters/void_mage.png`(git 제외) 9장 중간 보스 공허의 마도사(보라로 다시 칠함)
 - Shikashi「Fantasy Icons Pack」(https://shikashipx.itch.io/shikashis-fantasy-icons-pack) — 작가: Matt Firth(shikashipx), game-icons.net 바탕, 상업 OK, 출처 표기. `assets/vendor/gear_icons/`(git 제외) 장비 그림(색 바꿈)
 - Cainos「Pixel Art Icon Pack - RPG」(https://cainos.itch.io/pixel-art-icon-pack-rpg) — 상업 OK, 재배포 금지. `assets/vendor/gear_icons/`(git 제외) 장비 그림 일부
 - 「Mecha-stone Golem 0.1」(itch.io, Darkpixel-Kronovi 무료 소재로 받음) — `assets/vendor/monsters/meteor_golem.png`(git 제외) 9장 중간 보스 운석 골렘(보랏빛으로 다시 칠함)

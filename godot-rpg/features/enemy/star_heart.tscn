@@ -12,27 +12,29 @@ size = Vector2(44, 26)
 script = ExtResource("3_boss")
 boss_name = "굶주린 별의 심장"
 slam_radius = 104.0
-slam_damage = 620
+slam_damage = 775
 summon = ExtResource("4_minion")
 kind = 2
-max_hp = 560000
+max_hp = 520000
 speed = 26.0
-damage = 380
+damage = 475
 chase_range = 180.0
 anim_fps = 9.0
 gold_reward = 260000
 gem_chance = 1.0
 gem_reward = 15000
 drop_chance = 1.0
+hard = true
+aura_scale = 1.8
 
 [node name="Shadow" parent="." index="0"]
-scale = Vector2(3.8, 3.8)
+scale = Vector2(5.2, 5.2)
 
 [node name="Sprite" parent="." index="1"]
 modulate = Color(1.4, 0.6, 1.5, 1)
 texture = ExtResource("2_tex")
-offset = Vector2(0, -12)
-scale = Vector2(4.2, 4.2)
+offset = Vector2(0, -14)
+scale = Vector2(6.5, 6.5)
 
 [node name="Body" parent="." index="2"]
 position = Vector2(0, -9)

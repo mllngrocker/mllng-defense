@@ -1,0 +1,44 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/vendor/monsters/star_eater.png" id="2_tex"]
+[ext_resource type="Script" path="res://features/enemy/boss.gd" id="3_boss"]
+[ext_resource type="PackedScene" path="res://features/enemy/hunger_fiend.tscn" id="4_minion"]
+
+[sub_resource type="RectangleShape2D" id="big_shape"]
+size = Vector2(56, 28)
+
+[node name="StarEater" instance=ExtResource("1_base")]
+script = ExtResource("3_boss")
+boss_name = "별을 먹는 자"
+slam_radius = 120.0
+slam_damage = 875
+summon = ExtResource("4_minion")
+kind = 3
+max_hp = 700000
+speed = 30.0
+damage = 525
+chase_range = 170.0
+anim_fps = 8.0
+side_frames = 8
+attack_frames = 8
+gold_reward = 320000
+gem_chance = 1.0
+gem_reward = 18000
+drop_chance = 1.0
+hard = true
+aura_scale = 1.9
+
+[node name="Shadow" parent="." index="0"]
+scale = Vector2(5.0, 5.0)
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource("2_tex")
+offset = Vector2(0, -30.0)
+scale = Vector2(3.0, 3.0)
+hframes = 16
+vframes = 1
+
+[node name="Body" parent="." index="2"]
+position = Vector2(0, -9)
+shape = SubResource("big_shape")

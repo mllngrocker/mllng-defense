@@ -40,9 +40,12 @@ const MOBS: Array = [
 	["giant_soul", "고대 거인의 혼", true],
 	["star_imp", "별그림자", false], ["meteor_lizard", "운석 도마뱀", false], ["crystal_beast", "수정 짐승", false], ["void_eye", "공허의 눈", false],
 	["star_knight", "별빛 기사", false], ["comet_wisp", "혜성 도깨비불", false], ["void_ogre", "공허 오우거", false],
-	["meteor_golem", "운석 골렘", true],
+	["meteor_golem", "자수정 골렘", true],
 	["hunger_fiend", "굶주린 마귀", false], ["star_drake", "별빛 용인", false], ["star_horn", "별뿔 짐승", false],
 	["star_heart", "굶주린 별의 심장", true],
+	["star_eater", "별을 먹는 자", true],
+	["void_mage", "공허의 마도사", true],
+	["star_lich", "별을 삼킨 사령왕", true],
 ]
 
 ## 챕터 보상: [이 보스까지가 한 챕터, 이름, 보석]. 그 챕터 몬스터(보스 포함)를 모두 한 번씩 잡으면 받는다
@@ -51,7 +54,7 @@ const CHAPTERS: Array = [
 	["yeti_king", "설산", 250], ["kraken", "해저 신전", 300], ["mist_apostle", "안개 군도", 350],
 	["black_gardener", "검은 정원", 400], ["flame_dragon", "용암 지대", 450], ["demon_lord", "지옥", 500],
 	["storm_king", "천공의 탑", 600], ["giant_soul", "큰 나무 뿌리", 800],
-	["star_heart", "굶주린 별", 1000],
+	["star_lich", "굶주린 별", 1500],
 ]
 ## 한 몬스터를 이만큼 잡으면 보석(자동으로 받음)
 const MASTERY_KILLS := 100

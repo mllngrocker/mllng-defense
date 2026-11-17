@@ -2,7 +2,7 @@ class_name MapView
 extends Control
 ## 지도 창(화면 전체, 여는 동안 게임이 멈춘다): 위쪽 탭으로 "지역 지도"와 "월드 지도"를 오간다.
 ## 지역 지도: 지금 맵의 땅 타일 색을 그대로 줄여 그린 그림 + 내 위치·이동문·보스·마을 사람·몬스터 표시.
-## 월드 지도: 대륙 그림 위에 마을 → 초원 → 언덕 → 숲 → 사막 3장, 서쪽 해저 신전·북쪽 설산(잠김).
+## 월드 지도: 대륙 그림(오른쪽 위 버튼으로 별 지도) 위에 마을 → 초원 → 언덕 → 숲 → 사막 3장, 서쪽 해저 신전·북쪽 설산(잠김).
 
 signal closed
 
@@ -68,13 +68,6 @@ const REGIONS: Array[Dictionary] = [
 	{"id": "root5", "name": "뿌리 심장 앞", "pos": Vector2(0.62, 0.66), "color": Color("b58a4a"), "info": "8장 · 추천 Lv.148~150", "mobs": "잿빛 야수 · 초록 달팽이", "boss": "", "boss_name": "", "lock": "storm_king", "lock_name": "폭풍새 왕"},
 	{"id": "root6", "name": "검은 씨앗의 방", "pos": Vector2(0.57, 0.63), "color": Color("b58a4a"), "info": "마지막 장 · 추천 Lv.150", "mobs": "잿빛 야수 · 푸른 애벌레", "boss": "giant_soul", "boss_name": "고대 거인의 혼", "lock": "storm_king", "lock_name": "폭풍새 왕"},
 	{"id": "star_gate", "name": "부서진 별의 신전", "pos": Vector2(0.52, 0.69), "color": Color("c9b8ff"), "info": "전이 신전 · 몬스터 없음", "mobs": "별빛 고리", "boss": "", "boss_name": "", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
-	{"id": "star1", "name": "별똥별 낙하지", "pos": Vector2(0.06, 0.12), "color": Color("b07cff"), "info": "9장 · 추천 Lv.150~154", "mobs": "별그림자 · 운석 도마뱀", "boss": "", "boss_name": "", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
-	{"id": "star2", "name": "수정 크레이터", "pos": Vector2(0.13, 0.07), "color": Color("b07cff"), "info": "9장 · 추천 Lv.153~157", "mobs": "수정 짐승 · 공허의 눈", "boss": "", "boss_name": "", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
-	{"id": "star_town", "name": "별지기 야영지", "pos": Vector2(0.22, 0.04), "color": Color("e6dcff"), "info": "별 위 마을 · 몬스터 없음", "mobs": "별지기 · 별 관측자 · 떠돌이 상인", "boss": "", "boss_name": "", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
-	{"id": "star3", "name": "별빛 이끼 들판", "pos": Vector2(0.31, 0.08), "color": Color("b07cff"), "info": "9장 · 추천 Lv.157~162", "mobs": "별빛 기사 · 혜성 도깨비불", "boss": "", "boss_name": "", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
-	{"id": "star4", "name": "부서진 궤도", "pos": Vector2(0.39, 0.03), "color": Color("b07cff"), "info": "9장 · 추천 Lv.162~166", "mobs": "공허 오우거 · 운석 도마뱀", "boss": "meteor_golem", "boss_name": "운석 골렘", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
-	{"id": "star5", "name": "굶주림의 균열", "pos": Vector2(0.62, 0.04), "color": Color("b07cff"), "info": "9장 · 추천 Lv.166~171", "mobs": "굶주린 마귀 · 별빛 용인", "boss": "", "boss_name": "", "lock": "meteor_golem", "lock_name": "운석 골렘"},
-	{"id": "star6", "name": "굶주린 별의 심장", "pos": Vector2(0.71, 0.08), "color": Color("b07cff"), "info": "9장 마지막 · 추천 Lv.171~175", "mobs": "별뿔 짐승 · 굶주린 마귀", "boss": "star_heart", "boss_name": "굶주린 별의 심장", "lock": "meteor_golem", "lock_name": "운석 골렘"},
 	{"id": "garden1", "name": "시든 꽃길", "pos": Vector2(0.94, 0.58), "color": Color("9a5cff"), "info": "5장 · 추천 Lv.80~83", "mobs": "푸른 나방 · 초록 도마뱀", "boss": "", "boss_name": "", "lock": "mist_apostle", "lock_name": "안개의 사도"},
 	{"id": "garden2", "name": "가시덤불 미로", "pos": Vector2(0.91, 0.52), "color": Color("9a5cff"), "info": "5장 · 추천 Lv.82~85", "mobs": "검은 뱀 · 독거미", "boss": "", "boss_name": "", "lock": "mist_apostle", "lock_name": "안개의 사도"},
 	{"id": "garden3", "name": "검은 연못", "pos": Vector2(0.95, 0.46), "color": Color("9a5cff"), "info": "5장 · 추천 Lv.84~87", "mobs": "부엉이 · 푸른 도마뱀", "boss": "", "boss_name": "", "lock": "mist_apostle", "lock_name": "안개의 사도"},
@@ -89,6 +82,25 @@ const REGIONS: Array[Dictionary] = [
 	{"id": "mist5", "name": "별무리 절벽", "pos": Vector2(0.46, 0.84), "color": Color("3fe0c8"), "info": "4장 · 추천 Lv.73~76", "mobs": "붉은 뱀 · 도깨비불 · 푸른 해골", "boss": "", "boss_name": "", "lock": "kraken", "lock_name": "심해의 크라켄"},
 	{"id": "mist6", "name": "별을 삼킨 탑", "pos": Vector2(0.41, 0.81), "color": Color("3fe0c8"), "info": "4장 끝 · 추천 Lv.75~80", "mobs": "유령 등불 · 붉은 뱀", "boss": "mist_apostle", "boss_name": "안개의 사도", "lock": "kraken", "lock_name": "심해의 크라켄"},
 ]
+## 별 지도(assets/ui/space_map_art.png, 사용자가 준 그림): 월드 지도의 "별 지도" 버튼으로 바꿔 본다
+const SPACE_REGIONS: Array[Dictionary] = [
+	{"id": "star_town", "name": "별지기 야영지", "pos": Vector2(0.081, 0.74), "color": Color("e6dcff"), "info": "별 위 첫 야영지 · 몬스터 없음", "mobs": "별지기 · 별 관측자 · 떠돌이 상인", "boss": "", "boss_name": "", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
+	{"id": "star1", "name": "별똥별 낙하지", "pos": Vector2(0.17, 0.66), "color": Color("b07cff"), "info": "9장 · 추천 Lv.150~154", "mobs": "별그림자 · 운석 도마뱀", "boss": "", "boss_name": "", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
+	{"id": "star2", "name": "수정 크레이터", "pos": Vector2(0.27, 0.75), "color": Color("b07cff"), "info": "9장 · 추천 Lv.152~156", "mobs": "수정 짐승 · 공허의 눈", "boss": "", "boss_name": "", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
+	{"id": "star3", "name": "별빛 이끼 들판", "pos": Vector2(0.22, 0.52), "color": Color("b07cff"), "info": "9장 첫 중간 보스 · 추천 Lv.155~159", "mobs": "별빛 기사 · 혜성 도깨비불", "boss": "meteor_golem", "boss_name": "자수정 골렘", "lock": "giant_soul", "lock_name": "고대 거인의 혼"},
+	{"id": "star4", "name": "별가루 언덕", "pos": Vector2(0.33, 0.46), "color": Color("b483f2"), "info": "9장 · 추천 Lv.157~161", "mobs": "별그림자 · 수정 짐승 · 혜성 도깨비불", "boss": "", "boss_name": "", "lock": "meteor_golem", "lock_name": "자수정 골렘"},
+	{"id": "star5", "name": "떠도는 운석 무덤", "pos": Vector2(0.33, 0.63), "color": Color("b886e0"), "info": "9장 · 추천 Lv.160~164", "mobs": "운석 도마뱀 · 공허 오우거", "boss": "", "boss_name": "", "lock": "meteor_golem", "lock_name": "자수정 골렘"},
+	{"id": "star6", "name": "굶주린 별의 심장", "pos": Vector2(0.42, 0.79), "color": Color("bd85cf"), "info": "9장 중간 보스 · 추천 Lv.162~166", "mobs": "공허 오우거 · 운석 도마뱀", "boss": "star_heart", "boss_name": "굶주린 별의 심장", "lock": "meteor_golem", "lock_name": "자수정 골렘"},
+	{"id": "star7", "name": "검게 탄 평원", "pos": Vector2(0.51, 0.74), "color": Color("c47cba"), "info": "9장 · 추천 Lv.165~169", "mobs": "공허의 눈 · 별빛 기사", "boss": "", "boss_name": "", "lock": "star_heart", "lock_name": "굶주린 별의 심장"},
+	{"id": "star8", "name": "공허의 소용돌이", "pos": Vector2(0.58, 0.79), "color": Color("cc6fa6"), "info": "9장 · 추천 Lv.167~171", "mobs": "공허의 눈 · 공허 오우거 · 별뿔 짐승", "boss": "", "boss_name": "", "lock": "star_heart", "lock_name": "굶주린 별의 심장"},
+	{"id": "star9", "name": "물어뜯긴 대지", "pos": Vector2(0.63, 0.62), "color": Color("d26391"), "info": "9장 중간 보스 · 추천 Lv.170~174", "mobs": "별빛 용인 · 별뿔 짐승", "boss": "star_eater", "boss_name": "별을 먹는 자", "lock": "star_heart", "lock_name": "굶주린 별의 심장"},
+	{"id": "star10", "name": "굶주림의 균열", "pos": Vector2(0.56, 0.63), "color": Color("d8577c"), "info": "9장 · 추천 Lv.172~176", "mobs": "굶주린 마귀 · 별빛 용인", "boss": "", "boss_name": "", "lock": "star_eater", "lock_name": "별을 먹는 자"},
+	{"id": "star11", "name": "붉게 고동치는 길", "pos": Vector2(0.55, 0.47), "color": Color("de4b66"), "info": "9장 중간 보스 · 추천 Lv.175~179", "mobs": "굶주린 마귀 · 별뿔 짐승", "boss": "void_mage", "boss_name": "공허의 마도사", "lock": "star_eater", "lock_name": "별을 먹는 자"},
+	{"id": "star12", "name": "별을 삼킨 왕좌", "pos": Vector2(0.494, 0.55), "color": Color("e63e50"), "info": "9장 마지막 · 최종 보스 · 추천 Lv.177~181", "mobs": "별뿔 짐승 · 굶주린 마귀", "boss": "star_lich", "boss_name": "별을 삼킨 사령왕", "lock": "void_mage", "lock_name": "공허의 마도사"},
+	{"id": "heaven", "name": "천계", "pos": Vector2(0.814, 0.26), "color": Color("fff3c4"), "info": "10장 · 준비 중", "mobs": "???", "boss": "", "boss_name": "", "lock": "star_lich", "lock_name": "별을 삼킨 사령왕", "soon": true},
+]
+const SPACE_ROUTES := []  # 별 지도는 그림에 길이 그려져 있어서 점선 없음
+const SPACE_MAP := preload("res://assets/ui/space_map_art.png")
 ## 지도 위 길(이어진 맵 id 쌍)
 const ROUTES := [["village", "field"], ["field", "hill"], ["field", "vine"], ["vine", "root1"], ["hill", "forest"], ["forest", "desert"], ["desert", "desert_town"], ["desert_town", "desert2"], ["desert2", "desert3"], ["village", "swamp"], ["swamp", "waterfall"], ["swamp", "beach"], ["swamp", "ruinvillage"], ["ruinvillage", "crystalcave"], ["village", "snowgate"], ["snowgate", "snow1"], ["snow1", "snow_town"], ["snow_town", "snow2"], ["snow2", "snow3"], ["snow3", "snow4"], ["snow4", "snow5"], ["snow5", "snow6"], ["village", "shore"], ["shore", "temple1"], ["temple1", "temple2"], ["temple2", "temple_town"], ["temple_town", "temple3"], ["temple3", "temple4"], ["temple4", "temple5"], ["temple5", "temple6"], ["desert3", "lava1"], ["desert_town", "garden1"], ["forest", "sky1"], ["root1", "sky1"], ["lava1", "lava2"], ["lava2", "lava3"], ["lava3", "lava_town"], ["lava_town", "lava4"], ["lava4", "lava5"], ["lava5", "lava6"], ["lava6", "hell1"], ["hell1", "hell2"], ["hell2", "hell3"], ["hell3", "hell4"], ["hell4", "hell5"], ["hell5", "hell6"], ["sky1", "sky2"], ["sky2", "sky_town"], ["sky_town", "sky3"], ["sky3", "sky4"], ["sky4", "sky5"], ["sky5", "sky6"], ["root1", "root2"], ["root2", "root_town"], ["root_town", "root3"], ["root3", "root4"], ["root4", "root5"], ["root5", "root6"], ["garden1", "garden2"], ["garden2", "garden3"], ["garden3", "garden4"], ["garden4", "garden5"], ["garden5", "garden6"], ["beach", "mist1"], ["mist1", "mist_town"], ["mist_town", "mist2"], ["mist2", "mist3"], ["mist3", "mist4"], ["mist4", "mist5"], ["mist5", "mist6"]]
 const WORLD_MAP := preload("res://assets/ui/world_map_art.png")  # 사용자가 준 월드 지도 그림
@@ -100,6 +112,21 @@ var map_cells := Vector2i.ZERO
 var t := 0.0
 var _tile_colors: Dictionary = {}
 var sel := ""  # 월드 지도에서 고른 지역(처음엔 지금 있는 곳)
+var space := false  # 월드 지도 탭에서 별 지도를 보는 중
+
+
+func _regions() -> Array[Dictionary]:
+	return SPACE_REGIONS if space else REGIONS
+
+
+func _art() -> Texture2D:
+	return SPACE_MAP if space else WORLD_MAP
+
+
+## 월드 지도 그림 오른쪽 위 "별 지도 / 대륙 지도" 바꾸기 버튼
+func _swap_rect() -> Rect2:
+	var dst := _world_dst(_body_rect())
+	return Rect2(Vector2(dst.end.x - 112, dst.position.y + 6), Vector2(106, 32))
 
 
 func _ready() -> void:
@@ -111,6 +138,9 @@ func _ready() -> void:
 	world = get_tree().get_first_node_in_group(&"world") as Node2D
 	if world:
 		_build_texture()
+		if world.has_method(&"map_id"):
+			var id := String(world.call(&"map_id"))
+			space = id.begins_with("star") and id != "star_gate"  # 별 위에 있으면 처음부터 별 지도
 	get_tree().paused = true
 	Game.sfx(&"pickup", -6.0, 0.0)
 
@@ -143,7 +173,14 @@ func _gui_input(e: InputEvent) -> void:
 		tab = 0
 	elif _tab_rect(1).has_point(p):
 		tab = 1
+	elif tab == 1 and _swap_rect().has_point(p):
+		space = not space
+		sel = ""
+		Game.sfx(&"pickup", -8.0, 0.0)
 	elif tab == 1 and _go_rect().has_point(p):
+		if _find(sel).get("soon", false):
+			Events.notice.emit("길찾기", "천계는 아직 준비 중이에요")
+			return
 		var why := Travel.go_to(get_tree(), sel)  # 고른 곳으로 길찾기
 		if why == "":
 			Events.notice.emit("길찾기", "%s(으)로 가는 중 · 조이스틱을 움직이면 멈춰요" % _region_name(sel))
@@ -155,7 +192,7 @@ func _gui_input(e: InputEvent) -> void:
 		# 가장 가까운 동그라미(손가락 크기쯤 안)
 		var best := ""
 		var best_d := 22.0
-		for reg: Dictionary in REGIONS:
+		for reg: Dictionary in _regions():
 			var d := p.distance_to(dst.position + reg["pos"] * dst.size)
 			if d < best_d:
 				best_d = d
@@ -171,11 +208,15 @@ func _go_rect() -> Rect2:
 	return Rect2(Vector2(body.end.x - 118, body.end.y - 46), Vector2(106, 36))
 
 
-func _region_name(id: String) -> String:
-	for reg: Dictionary in REGIONS:
+func _find(id: String) -> Dictionary:
+	for reg: Dictionary in SPACE_REGIONS + REGIONS:
 		if reg["id"] == id:
-			return reg["name"]
-	return id
+			return reg
+	return {}
+
+
+func _region_name(id: String) -> String:
+	return _find(id).get("name", id)
 
 
 # ── 지도 그림 만들기 ──
@@ -253,7 +294,7 @@ func _body_rect() -> Rect2:
 ## 월드 지도 그림이 들어갈 자리(아래 정보 카드 자리를 빼고 비율 맞춰서)
 func _world_dst(body: Rect2) -> Rect2:
 	var avail := Rect2(body.position, Vector2(body.size.x, body.size.y - 128))
-	var ts := Vector2(WORLD_MAP.get_size())
+	var ts := Vector2(_art().get_size())
 	var k := minf(avail.size.x / ts.x, avail.size.y / ts.y)
 	return Rect2(avail.position + Vector2((avail.size.x - ts.x * k) / 2.0, 0), ts * k)
 
@@ -348,22 +389,22 @@ func _draw_region(body: Rect2) -> void:
 	Gt.text(self, Vector2(body.position.x + 6, ly + 34), "M 키나 닫기 버튼으로 지도를 닫아요", 12, Gt.NAVY_SOFT, 0, false)
 
 
-## 월드 지도: 대륙 그림 위에 지역 표시·길·잠금, 아래에 고른 지역 정보
+## 월드 지도: 대륙 그림(오른쪽 위 버튼으로 별 지도) 위에 지역 표시·길·잠금, 아래에 고른 지역 정보
 func _draw_world(body: Rect2) -> void:
 	var here := ""
 	if world and world.has_method(&"map_id"):
 		here = world.call(&"map_id")
-	if sel == "":
-		sel = here if here != "" else "village"
+	var by_id := {}
+	for reg: Dictionary in _regions():
+		by_id[reg["id"]] = reg
+	if sel == "" or not by_id.has(sel):
+		sel = here if by_id.has(here) else ("star_town" if space else "village")
 	var dst := _world_dst(body)
 	Gt.pbox(self, dst.grow(5), Color("3a2546"), Gt.INK, 2, true, false)
-	draw_texture_rect(WORLD_MAP, dst, false)
-	var by_id := {}
-	for reg: Dictionary in REGIONS:
-		by_id[reg["id"]] = reg
+	draw_texture_rect(_art(), dst, false)
 	var at := func(id: String) -> Vector2: return dst.position + (by_id[id]["pos"] as Vector2) * dst.size
 	# 길(점선): 열린 길은 크림색, 잠긴 길은 흐린 회색
-	for r: Array in ROUTES:
+	for r: Array in (SPACE_ROUTES if space else ROUTES):
 		var a: Vector2 = at.call(r[0])
 		var b: Vector2 = at.call(r[1])
 		var open := Quests.boss_defeated(by_id[r[1]]["lock"])
@@ -375,9 +416,9 @@ func _draw_world(body: Rect2) -> void:
 			draw_circle(q, 2.0, Color(Gt.INK, 0.75 if open else 0.4))
 			draw_circle(q, 1.3, Color("fff3c4") if open else Color(0.85, 0.82, 0.9, 0.55))
 	# 맵 동그라미(이름은 고른 것만)
-	for reg: Dictionary in REGIONS:
+	for reg: Dictionary in _regions():
 		var q: Vector2 = at.call(reg["id"])
-		var locked := not Quests.boss_defeated(reg["lock"])
+		var locked: bool = not Quests.boss_defeated(reg["lock"]) or reg.get("soon", false)
 		var col: Color = reg["color"]
 		if reg["id"] == sel:
 			draw_circle(q, 12.0 + 2.0 * sin(t * 5.0), Color(1, 1, 1, 0.5))
@@ -415,16 +456,24 @@ func _draw_world(body: Rect2) -> void:
 		draw_colored_polygon(PackedVector2Array([Vector2(sq.x - 5, lr.end.y), Vector2(sq.x + 5, lr.end.y), Vector2(sq.x, lr.end.y + 6)]), Gt.INK)
 		Gt.text(self, Vector2(lr.get_center().x, lr.position.y + 17), label, 13, Gt.NAVY, 1)
 	# 고른 지역 정보 카드
-	var reg: Dictionary = by_id.get(sel, REGIONS[0])
+	# 별 지도 / 대륙 지도 바꾸기 버튼(별빛이 살짝 일렁임)
+	var sw := _swap_rect()
+	Gt.pbox(self, sw, Color("2b1f4a") if not space else Color("4f8a3a"), Gt.INK, 2, true, true)
+	draw_rect(sw.grow(-3), Color(0.8, 0.7, 1.0, 0.10 + 0.08 * sin(t * 3.0)) if not space else Color(1, 1, 1, 0.06))
+	Gt.text(self, Vector2(sw.get_center().x, sw.position.y + 22), "별 지도 ▶" if not space else "◀ 대륙 지도", 14, Color.WHITE, 1, true, 3, Gt.INK)
+	var reg: Dictionary = by_id.get(sel, _regions()[0])
 	var r := Rect2(Vector2(body.position.x, dst.end.y + 12), Vector2(body.size.x, body.end.y - dst.end.y - 12))
-	var locked := not Quests.boss_defeated(reg["lock"])
+	var soon: bool = reg.get("soon", false)
+	var locked: bool = not Quests.boss_defeated(reg["lock"]) or soon
 	var col: Color = reg["color"]
 	Gt.pbox(self, r, col.lerp(Color.WHITE, 0.6) if not locked else Color("d8d2de"), Gt.INK, 3, true, true)
 	Gt.round_grad(self, Rect2(r.position + Vector2(5, 5), Vector2(12, r.size.y - 10)), 4, col.lightened(0.2), col.darkened(0.2))
 	Gt.text(self, r.position + Vector2(28, 30), reg["name"], 19, Gt.NAVY)
 	Gt.text(self, r.position + Vector2(32 + Gt.width(reg["name"], 19), 29), reg["info"], 12, Gt.NAVY_SOFT, 0, false)
 	Gt.text(self, r.position + Vector2(28, 56), ("만나는 사람: " if reg["id"] in ["village", "shore", "snowgate"] or String(reg["id"]).ends_with("_town") else "몬스터: ") + String(reg["mobs"]), 13, Gt.NAVY, 0, false)
-	if locked:
+	if soon:
+		Gt.text(self, r.position + Vector2(28, 80), "하늘의 갈라진 틈 너머 · 10장 「천계」 준비 중", 13, Color("8a6d1f"))
+	elif locked:
 		Gt.text(self, r.position + Vector2(28, 80), "🔒 %s 처치 후 열림" % reg["lock_name"], 13, Color("c0392b"))
 	elif reg["boss"] != "":
 		var dead := Quests.boss_defeated(reg["boss"])

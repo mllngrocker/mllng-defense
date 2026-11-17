@@ -13,10 +13,17 @@ func _ready() -> void:
 		if a.begins_with("--style="):
 			(load("res://features/ui/hud.gd") as GDScript).set(&"boss_bar_style", int(a.trim_prefix("--style=")))
 	Save.quest["bosses"] = {}
-	world = (load("res://features/world/forest.tscn") as PackedScene).instantiate()
+	var map := "forest"
+	var who := "KingSlime"
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--map="):
+			map = a.trim_prefix("--map=")
+		if a.begins_with("--boss="):
+			who = a.trim_prefix("--boss=")
+	world = (load("res://features/world/%s.tscn" % map) as PackedScene).instantiate()
 	add_child(world)
 	player = world.get_node(^"%Player") as Player
-	boss = world.find_children("KingSlime", "", true, false)[0] as Enemy
+	boss = world.find_children(who, "", true, false)[0] as Enemy
 	player.max_hp = 99999
 	player.hp = 99999
 	player.global_position = boss.global_position + Vector2(0, 90)

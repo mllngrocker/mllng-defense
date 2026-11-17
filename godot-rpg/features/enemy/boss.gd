@@ -16,6 +16,9 @@ const TELEGRAPH := 0.9
 @export var slam_damage := 20
 const BOSS_HP_MULT := 1.6
 @export var summon: PackedScene
+## 9장부터: 기술을 쉴 새 없이 이어 쓰고(콤보), 체력 반 아래면 2페이즈(더 빨라짐), 발밑에 마법진
+@export var hard := false
+@export var aura_scale := 1.0
 
 var awake := false
 var attack_t := 2.5
@@ -36,8 +39,11 @@ const PATTERNS := {
 	"root_worm": [["puddle", "charge"], Color("8ccf5a")],
 	"black_gardener": [["blink", "puddle", "ring"], Color("a35cff")],
 	"mist_apostle": [["blink", "ring", "charge"], Color("8fd3ff")],
-	"meteor_golem": [["jump", "charge", "ring"], Color("c08cff")],
-	"star_heart": [["ring", "blink", "puddle", "ring"], Color("ff5ad8")],
+	"meteor_golem": [["jump", "charge", "rain", "nova", "jump"], Color("c08cff")],
+	"star_heart": [["spiral", "ring", "nova", "puddle", "blink", "rain"], Color("ff5ad8")],
+	"star_eater": [["blink", "charge", "rain", "cross", "puddle", "nova"], Color("b05cff")],
+	"void_mage": [["beam", "blink", "spiral", "beam", "rain", "cross"], Color("7a5cff")],
+	"star_lich": [["beam", "cross", "rain", "spiral", "nova", "blink", "beam"], Color("ffd06a")],
 }
 var skill_t := 5.0
 var pat := ""  # 지금 쓰는 기술
@@ -47,6 +53,12 @@ var pat_dir := Vector2.ZERO
 var pat_pos := Vector2.ZERO  # 도약·장판 목표(맵 좌표)
 var _charge_hit := false
 var _roar_t := -1.0  # 대면 포효(충격파 고리) 진행 시간
+var _beams: Array = []  # 빔 각도(라디안)
+var _beam_hit := false
+var _phase2 := false
+var _aura := 0.0
+const BEAM_LEN := 440.0
+const BEAM_W := 13.0
 
 
 func _ready() -> void:
@@ -80,12 +92,19 @@ func _physics_process(delta: float) -> void:
 			Events.boss_hp.emit(boss_name, hp, max_hp)
 			_roar()
 		return
+	if hard and not _phase2 and _angry():
+		_phase2 = true
+		_roar()
+		Events.notice.emit(boss_name, "분노! 기술이 쉴 새 없이 쏟아진다")
 	if pat != "":
 		_run_pattern(delta)
 		return
 	skill_t -= delta
 	if skill_t <= 0.0 and telegraph_t < 0.0 and PATTERNS.has(kind_id()):
-		skill_t = randf_range(3.5, 5.0) if _angry() else randf_range(5.0, 7.0)
+		if hard:
+			skill_t = randf_range(0.8, 1.4) if _angry() else randf_range(1.5, 2.4)
+		else:
+			skill_t = randf_range(3.5, 5.0) if _angry() else randf_range(5.0, 7.0)
 		var list: Array = PATTERNS[kind_id()][0]
 		_start_pattern(list[randi() % list.size()])
 		return
@@ -116,6 +135,9 @@ func _roar() -> void:
 
 
 func _process(delta: float) -> void:
+	if hard and awake and hp > 0:
+		_aura += delta
+		queue_redraw()
 	if _roar_t >= 0.0:
 		_roar_t += delta
 		if _roar_t > 0.9:
@@ -150,6 +172,34 @@ func _start_pattern(p: String) -> void:
 		"blink":
 			pat_t = 0.35
 			Game.sfx(&"skill_dark", -4.0, 0.0)
+		"beam":  # 용사 쪽으로 부채꼴 빔(예고선 → 발사)
+			pat_t = 0.7 if not _angry() else 0.55
+			var base := (target.global_position - _core()).angle()
+			var n := 5 if _angry() else 3
+			_beams.clear()
+			for i in n:
+				_beams.append(base + (i - (n - 1) / 2.0) * 0.38)
+			_beam_hit = false
+			Game.sfx(&"charge", -2.0, 0.0)
+		"cross":  # 십자 빔이 보스를 축으로 돈다(빔 사이로 따라 돌며 피해야 함)
+			pat_t = 0.7
+			var n := 6 if _angry() else 4
+			var a0 := randf() * TAU
+			_beams.clear()
+			for i in n:
+				_beams.append(a0 + i * TAU / n)
+			pat_dir = Vector2(1.0 if randf() < 0.5 else -1.0, 0.0)  # 도는 방향
+			Game.sfx(&"charge", -2.0, 0.0)
+		"rain":  # 용사를 쫓아 연달아 떨어지는 빛 덩이
+			pat_t = 0.15
+			Game.sfx(&"skill_dark", -4.0, 0.0)
+		"spiral":  # 나선 탄막
+			pat_t = 2.4 if _angry() else 1.8
+			pat_dir = Vector2.from_angle(randf() * TAU)
+			Game.sfx(&"charge", -4.0, 0.0)
+		"nova":  # 커지는 충격파(닿는 순간 구르기)
+			pat_t = 0.65
+			Game.sfx(&"charge", -2.0, 0.0)
 	queue_redraw()
 
 
@@ -197,6 +247,58 @@ func _run_pattern(delta: float) -> void:
 				global_position = pat_pos
 				_slam()
 				_end_pattern()
+		"beam":
+			if pat_stage == 0 and pat_t <= 0.0:
+				pat_stage = 1
+				pat_t = 0.32
+				Game.sfx(&"skill_light", 0.0)
+				Game.add_shake(6.0)
+				Game.flash(Color(_color(), 0.18), 0.1)
+			elif pat_stage == 1:
+				_beam_check(roundi(damage * 1.7))
+				if pat_t <= 0.0:
+					_beams.clear()
+					_end_pattern()
+		"cross":
+			if pat_stage == 0 and pat_t <= 0.0:
+				pat_stage = 1
+				pat_t = 2.6 if _angry() else 2.0
+				Game.sfx(&"skill_light", -2.0)
+				Game.add_shake(5.0)
+			elif pat_stage == 1:
+				var spd := (1.25 if _angry() else 0.9) * pat_dir.x
+				for i in _beams.size():
+					_beams[i] += spd * delta
+				_beam_check(roundi(damage * 1.2))
+				if pat_t <= 0.0:
+					_beams.clear()
+					_end_pattern()
+		"rain":
+			if pat_t <= 0.0:
+				var lead: Vector2 = target.velocity * 0.35
+				BossMark.drop(_effects_parent(), target.global_position + lead + Vector2.from_angle(randf() * TAU) * randf_range(0.0, 26.0), 30.0, 0.7, roundi(damage * 1.3), _color())
+				pat_stage += 1
+				pat_t = 0.11 if _angry() else 0.15
+				if pat_stage >= (16 if _angry() else 10):
+					_end_pattern()
+		"spiral":
+			pat_stage += 1
+			if pat_stage % 4 == 0:
+				var arms := 4 if _angry() else 3
+				var a := pat_dir.angle() + pat_t * 3.4
+				for k in arms:
+					BossShot.fire(_effects_parent(), _core(), Vector2.from_angle(a + k * TAU / arms) * 118.0, roundi(damage * 0.5), _color())
+			if pat_t <= 0.0:
+				_end_pattern()
+		"nova":
+			if pat_t <= 0.0:
+				BossNova.fire(_effects_parent(), global_position, roundi(damage * 1.4), _color(), 250.0 if _angry() else 215.0)
+				Game.sfx(&"boom", -4.0)
+				Game.add_shake(5.0)
+				pat_stage += 1
+				pat_t = 0.5
+				if pat_stage >= (3 if _angry() else 2):
+					_end_pattern()
 		"blink":
 			if pat_stage == 0:
 				sprite.modulate.a = clampf(pat_t / 0.35, 0.0, 1.0)
@@ -218,6 +320,26 @@ func _end_pattern() -> void:
 	pat = ""
 	velocity = Vector2.ZERO
 	queue_redraw()
+	if hard and randf() < (0.75 if _angry() else 0.45):
+		skill_t = minf(skill_t, 0.25)  # 콤보: 바로 다음 기술
+
+
+## 빔·탄이 나가는 자리(몸 가운데)
+func _core() -> Vector2:
+	return global_position + Vector2(0, -14)
+
+
+## 빔에 닿았는지(한 번 맞으면 그 기술 동안 무적 시간이 있어서 연속으로 깎이진 않는다)
+func _beam_check(dmg: int) -> void:
+	if target == null or target.hp <= 0:
+		return
+	var rel := target.global_position - _core()
+	for a: float in _beams:
+		var dir := Vector2.from_angle(a)
+		var along := rel.dot(dir)
+		if along > 0.0 and along < BEAM_LEN and absf(rel.cross(dir)) < BEAM_W:
+			target.take_hit(dmg, _core(), 240.0)
+			return
 
 
 ## 벽·물 속이 아닌 가까운 빈 자리(맵 길찾기 격자 사용)
@@ -264,6 +386,51 @@ func take_hit(amount: int, from: Vector2, knock := 210.0, crit := false) -> void
 
 
 func _draw() -> void:
+	# 9장 보스 발밑 마법진(두 겹 고리 + 도는 별 문양, 2페이즈면 더 밝고 빠르게)
+	if hard and awake and hp > 0:
+		var col0 := _color()
+		var rr := 46.0 * aura_scale
+		var sp := 1.8 if _phase2 else 0.9
+		draw_set_transform(Vector2(0, -2), 0.0, Vector2(1.0, 0.5))
+		draw_circle(Vector2.ZERO, rr * 1.05, Color(col0, 0.10 + (0.08 if _phase2 else 0.0)))
+		draw_arc(Vector2.ZERO, rr, 0, TAU, 64, Color(col0.lightened(0.2), 0.75), 2.0, true)
+		draw_arc(Vector2.ZERO, rr * 0.78, 0, TAU, 64, Color(col0, 0.55), 1.5, true)
+		for i in 6:
+			var a := _aura * sp + i * TAU / 6.0
+			var q := Vector2.from_angle(a) * rr * 0.89
+			draw_colored_polygon(PackedVector2Array([q + Vector2(0, -5), q + Vector2(3, 0), q + Vector2(0, 5), q + Vector2(-3, 0)]), Color(1, 1, 1, 0.8))
+		for i in 3:
+			var a := -_aura * sp * 0.7 + i * TAU / 3.0
+			draw_line(Vector2.from_angle(a) * rr * 0.78, Vector2.from_angle(a + TAU / 3.0) * rr * 0.78, Color(col0.lightened(0.3), 0.5), 1.5)
+		draw_set_transform(Vector2.ZERO)
+		# 위로 떠오르는 빛 알갱이
+		for i in 8:
+			var ph := fmod(_aura * 0.6 + i * 0.125, 1.0)
+			var x := sin(i * 2.4 + _aura) * rr * 0.7
+			draw_circle(Vector2(x, -ph * 70.0 * aura_scale), 1.8 * (1.0 - ph) + 0.6, Color(col0.lightened(0.4), 1.0 - ph))
+	# 빔: 예고(깜빡이는 가는 선) → 발사(굵은 빛줄기 + 하얀 심)
+	if not _beams.is_empty():
+		var c := Vector2(0, -14)
+		var bc := _color()
+		var firing := pat_stage == 1
+		for a: float in _beams:
+			var d := Vector2.from_angle(a)
+			var end := c + d * BEAM_LEN
+			if not firing:
+				var bl := 0.5 + 0.5 * sin(_aura * 30.0 + Time.get_ticks_msec() * 0.03)
+				draw_line(c, end, Color(bc, 0.18), BEAM_W * 2.0)
+				draw_line(c, end, Color(bc.lightened(0.3), 0.5 + 0.4 * bl), 1.5)
+			else:
+				var w := BEAM_W * (1.0 + 0.15 * sin(Time.get_ticks_msec() * 0.05))
+				draw_line(c, end, Color(bc, 0.45), w * 2.2)
+				draw_line(c, end, Color(bc.lightened(0.35), 0.9), w)
+				draw_line(c, end, Color(1, 1, 1, 0.95), w * 0.35)
+				draw_circle(c, w * 1.2, Color(1, 1, 1, 0.8))
+	# 나선·충격파 기 모으기
+	if pat == "nova" or pat == "spiral":
+		var k := 1.0 - clampf(pat_t / 0.65, 0.0, 1.0) if pat == "nova" else 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.02)
+		draw_circle(Vector2(0, -14), 10.0 + 14.0 * k, Color(_color().lightened(0.3), 0.35))
+		draw_circle(Vector2(0, -14), 5.0 + 6.0 * k, Color(1, 1, 1, 0.7))
 	# 대면 포효: 퍼져 나가는 충격파 고리 두 겹
 	if _roar_t >= 0.0:
 		for k in 2:

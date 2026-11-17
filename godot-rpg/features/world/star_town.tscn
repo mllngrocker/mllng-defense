@@ -412,7 +412,7 @@ size = Vector2(42, 8)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eb26y"]
 size = Vector2(26, 12)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_0ahb8"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xdoy3"]
 size = Vector2(632, 10)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hrbcp"]
@@ -472,888 +472,888 @@ size = Vector2(4, 64)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fkvx2"]
 size = Vector2(16, 48)
 
-[node name="World" type="Node2D" unique_id=201145266]
+[node name="World" type="Node2D" unique_id=2080024968]
 script = ExtResource("1_4iky1")
 map_title = "별지기 야영지"
 metadata/map_size = Vector2i(40, 32)
 
-[node name="HUD" parent="." unique_id=1449922582 instance=ExtResource("2_t46ay")]
+[node name="HUD" parent="." unique_id=232258838 instance=ExtResource("2_t46ay")]
 
-[node name="IsleRim" type="Node2D" parent="." unique_id=1515117498]
+[node name="IsleRim" type="Node2D" parent="." unique_id=561729176]
 script = ExtResource("3_60bq7")
 size_cells = Vector2i(40, 32)
 mask = PackedByteArray("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
 
-[node name="Ground" type="TileMapLayer" parent="." unique_id=1592615454]
+[node name="Ground" type="TileMapLayer" parent="." unique_id=595269524]
 tile_map_data = PackedByteArray("AAAUAAMABQAAAAUAAAAVAAMABQAAAAUAAAAOAAQABQAAAAUAAAAPAAQABQABAAUAAAAQAAQABQAAAAUAAAARAAQABQAAAAUAAAASAAQABQAAAAUAAAATAAQABQAEAAUAAAAUAAQABQAAAAUAAAAVAAQABQAAAAUAAAAWAAQABQADAAUAAAAXAAQABQAAAAUAAAAYAAQABQAAAAUAAAAZAAQABQAAAAUAAAAaAAQABQAAAAUAAAAbAAQABQAAAAUAAAAJAAUABQAAAAUAAAAKAAUABQAAAAUAAAALAAUABQAAAAUAAAAMAAUABQAAAAUAAAANAAUABQAAAAUAAAAOAAUABQAAAAUAAAAPAAUABQAAAAUAAAAQAAUABQAAAAUAAAARAAUABQABAAUAAAASAAUABQAAAAUAAAATAAUABQAAAAUAAAAUAAUABQAEAAUAAAAVAAUABQAAAAUAAAAWAAUABQAAAAUAAAAXAAUABQAAAAUAAAAYAAUABQAAAAUAAAAZAAUABQAAAAUAAAAaAAUABQAAAAUAAAAbAAUABQAAAAUAAAAcAAUABQAAAAUAAAAdAAUABQAAAAUAAAAeAAUABQAAAAUAAAAfAAUABQAAAAUAAAAIAAYABQACAAUAAAAJAAYABQAAAAUAAAAKAAYABQACAAUAAAALAAYABQAAAAUAAAAMAAYABQAAAAUAAAANAAYABQAAAAUAAAAOAAYABQAAAAUAAAAPAAYABQACAAUAAAAQAAYABQAAAAUAAAARAAYABQAAAAUAAAASAAYABQAAAAUAAAATAAYABQAAAAUAAAAUAAYABQAAAAUAAAAVAAYABQAAAAUAAAAWAAYABQAAAAUAAAAXAAYABQAAAAUAAAAYAAYABQACAAUAAAAZAAYABQAAAAUAAAAaAAYABQAAAAUAAAAbAAYABQAAAAUAAAAcAAYABQADAAUAAAAdAAYABQAEAAUAAAAeAAYABQAAAAUAAAAfAAYABQAAAAUAAAAgAAYABQAAAAUAAAAhAAYABQAAAAUAAAAHAAcABQAEAAUAAAAIAAcABQAAAAUAAAAJAAcABQAAAAUAAAAKAAcABQACAAUAAAALAAcABQAAAAUAAAAMAAcABQAAAAUAAAANAAcABQAAAAUAAAAOAAcABQAAAAUAAAAPAAcABQAAAAUAAAAQAAcABQAAAAUAAAARAAcABQACAAUAAAASAAcABQAAAAUAAAATAAcABQAAAAUAAAAUAAcABQACAAUAAAAVAAcABQAAAAUAAAAWAAcABQACAAUAAAAXAAcABQAAAAUAAAAYAAcABQACAAUAAAAZAAcABQAAAAUAAAAaAAcABQAAAAUAAAAbAAcABQAAAAUAAAAcAAcABQAAAAUAAAAdAAcABQAEAAUAAAAeAAcABQAAAAUAAAAfAAcABQAEAAUAAAAgAAcABQAAAAUAAAAhAAcABQAAAAUAAAAGAAgABQAAAAUAAAAHAAgABQAAAAUAAAAIAAgABQAAAAUAAAAJAAgABQAEAAUAAAAKAAgABQAAAAUAAAALAAgABQACAAUAAAAMAAgABQAAAAUAAAANAAgABQAAAAUAAAAOAAgABQAAAAUAAAAPAAgABQAAAAUAAAAQAAgABQAAAAUAAAARAAgABQAAAAUAAAASAAgABQAAAAUAAAATAAgABQACAAUAAAAUAAgABQAAAAUAAAAVAAgABQAAAAUAAAAWAAgABQAAAAUAAAAXAAgABQABAAUAAAAYAAgABQAAAAUAAAAZAAgABQAAAAUAAAAaAAgABQAAAAUAAAAbAAgABQABAAUAAAAcAAgABQAAAAUAAAAdAAgABQAAAAUAAAAeAAgABQAAAAUAAAAfAAgABQAAAAUAAAAgAAgABQAAAAUAAAAhAAgABQAAAAUAAAAGAAkABQAAAAUAAAAHAAkABQAAAAUAAAAIAAkABQAAAAUAAAAJAAkABQACAAUAAAAKAAkABQAAAAUAAAALAAkABQADAAUAAAAMAAkABQAAAAUAAAANAAkABQAAAAUAAAAOAAkABQAAAAUAAAAPAAkABQAAAAUAAAAQAAkABQAAAAUAAAARAAkABQADAAUAAAASAAkABQAAAAUAAAATAAkABQAAAAUAAAAUAAkABQAAAAUAAAAVAAkABQAAAAUAAAAWAAkABQAAAAUAAAAXAAkABQAAAAUAAAAYAAkABQAAAAUAAAAZAAkABQAAAAUAAAAaAAkABQAAAAUAAAAbAAkABQADAAUAAAAcAAkABQAAAAUAAAAdAAkABQAAAAUAAAAeAAkABQAAAAUAAAAfAAkABQAAAAUAAAAgAAkABQAAAAUAAAAhAAkABQAAAAUAAAAiAAkABQAAAAUAAAAAAAoABQAAAAUAAAABAAoABQAAAAUAAAACAAoABQAAAAUAAAADAAoABQADAAUAAAAEAAoABQAAAAUAAAAFAAoABQAAAAUAAAAGAAoABQAAAAUAAAAHAAoABQAAAAUAAAAIAAoABQAAAAUAAAAJAAoABQAAAAUAAAAKAAoABQACAAUAAAALAAoABQAAAAUAAAAMAAoABQAAAAUAAAANAAoABQAAAAUAAAAOAAoABQAAAAUAAAAPAAoABQAAAAUAAAAQAAoABQAEAAUAAAARAAoABQAAAAUAAAASAAoABQAAAAUAAAATAAoABQAAAAUAAAAUAAoABQAAAAUAAAAVAAoABQAAAAUAAAAWAAoABQAAAAUAAAAXAAoABQAAAAUAAAAYAAoABQAAAAUAAAAZAAoABQAAAAUAAAAaAAoABQAAAAUAAAAbAAoABQAAAAUAAAAcAAoABQAAAAUAAAAdAAoABQAAAAUAAAAeAAoABQAAAAUAAAAfAAoABQAAAAUAAAAgAAoABQAAAAUAAAAhAAoABQAAAAUAAAAiAAoABQAAAAUAAAAjAAoABQAAAAUAAAAkAAoABQAAAAUAAAAlAAoABQAAAAUAAAAmAAoABQADAAUAAAAnAAoABQAAAAUAAAAAAAsABQAAAAUAAAABAAsABQAAAAUAAAACAAsABQAAAAUAAAADAAsABQAAAAUAAAAEAAsABQAAAAUAAAAFAAsABQAAAAUAAAAGAAsABQAAAAUAAAAHAAsABQAAAAUAAAAIAAsABQADAAUAAAAJAAsABQABAAUAAAAKAAsABQABAAUAAAALAAsABQADAAUAAAAMAAsABQAAAAUAAAANAAsABQAAAAUAAAAOAAsABQAAAAUAAAAPAAsABQAAAAUAAAAQAAsABQACAAUAAAARAAsABQAAAAUAAAASAAsABQAAAAAAAAATAAsABQACAAAAAAAUAAsABQAAAAUAAAAVAAsABQAAAAUAAAAWAAsABQAAAAUAAAAXAAsABQAAAAUAAAAYAAsABQAAAAUAAAAZAAsABQAAAAUAAAAaAAsABQAAAAUAAAAbAAsABQAAAAUAAAAcAAsABQAAAAUAAAAdAAsABQAAAAUAAAAeAAsABQAAAAUAAAAfAAsABQAAAAUAAAAgAAsABQAAAAUAAAAhAAsABQAAAAUAAAAiAAsABQAAAAUAAAAjAAsABQABAAUAAAAkAAsABQAAAAUAAAAlAAsABQAAAAUAAAAmAAsABQAAAAUAAAAnAAsABQAEAAUAAAAAAAwABQADAAUAAAABAAwABQABAAUAAAACAAwABQAAAAUAAAADAAwABQAAAAUAAAAEAAwABQAAAAUAAAAFAAwABQAAAAUAAAAGAAwABQAAAAUAAAAHAAwABQAAAAUAAAAIAAwABQAAAAUAAAAJAAwABQAAAAUAAAAKAAwABQAAAAUAAAALAAwABQAAAAUAAAAMAAwABQAAAAUAAAANAAwABQAEAAUAAAAOAAwABQAAAAUAAAAPAAwABQAAAAUAAAAQAAwABQAAAAUAAAARAAwABQAAAAAAAAASAAwABQAGAAIAAAATAAwABQAFAAIAAAAUAAwABQABAAAAAAAVAAwABQACAAAAAAAWAAwABQAAAAUAAAAXAAwABQABAAUAAAAYAAwABQAAAAUAAAAZAAwABQAAAAUAAAAaAAwABQAAAAUAAAAbAAwABQAAAAUAAAAcAAwABQAEAAUAAAAdAAwABQAAAAUAAAAeAAwABQAAAAUAAAAfAAwABQAAAAUAAAAgAAwABQAAAAUAAAAhAAwABQAAAAUAAAAiAAwABQAAAAUAAAAjAAwABQAAAAUAAAAkAAwABQAAAAUAAAAlAAwABQAAAAUAAAAmAAwABQAAAAUAAAAnAAwABQAAAAUAAAAAAA0ABQACAAUAAAABAA0ABQAAAAUAAAACAA0ABQAAAAUAAAADAA0ABQAAAAUAAAAEAA0ABQAAAAUAAAAFAA0ABQADAAUAAAAGAA0ABQAAAAUAAAAHAA0ABQAAAAUAAAAIAA0ABQAAAAUAAAAJAA0ABQAAAAUAAAAKAA0ABQAAAAUAAAALAA0ABQAAAAUAAAAMAA0ABQAAAAUAAAANAA0ABQAAAAUAAAAOAA0ABQAAAAUAAAAPAA0ABQAAAAUAAAAQAA0ABQAAAAAAAAARAA0ABQAGAAIAAAASAA0ABQABAAEAAAATAA0ABQABAAEAAAAUAA0ABQABAAEAAAAVAA0ABQAFAAIAAAAWAA0ABQACAAAAAAAXAA0ABQAAAAUAAAAYAA0ABQAAAAUAAAAZAA0ABQAAAAUAAAAaAA0ABQAAAAUAAAAbAA0ABQAAAAUAAAAcAA0ABQAAAAUAAAAdAA0ABQAAAAUAAAAeAA0ABQAAAAUAAAAfAA0ABQAAAAUAAAAgAA0ABQAAAAUAAAAhAA0ABQAAAAUAAAAiAA0ABQAAAAUAAAAjAA0ABQAAAAUAAAAkAA0ABQAAAAUAAAAlAA0ABQABAAUAAAAmAA0ABQAAAAUAAAAnAA0ABQAAAAUAAAAAAA4ABQAAAAUAAAABAA4ABQAAAAUAAAACAA4ABQAAAAUAAAADAA4ABQAAAAUAAAAEAA4ABQAAAAUAAAAFAA4ABQAAAAUAAAAGAA4ABQAAAAUAAAAHAA4ABQAAAAUAAAAIAA4ABQAAAAUAAAAJAA4ABQAAAAUAAAAKAA4ABQAAAAUAAAALAA4ABQAAAAUAAAAMAA4ABQAAAAUAAAANAA4ABQAAAAUAAAAOAA4ABQAAAAUAAAAPAA4ABQAAAAUAAAAQAA4ABQAAAAEAAAARAA4ABQABAAEAAAASAA4ABQABAAEAAAATAA4ABQABAAEAAAAUAA4ABQABAAEAAAAVAA4ABQABAAEAAAAWAA4ABQAFAAIAAAAXAA4ABQABAAAAAAAYAA4ABQABAAAAAAAZAA4ABQABAAAAAAAaAA4ABQABAAAAAAAbAA4ABQABAAAAAAAcAA4ABQACAAAAAAAdAA4ABQAAAAUAAAAeAA4ABQAAAAUAAAAfAA4ABQACAAUAAAAgAA4ABQAAAAUAAAAhAA4ABQAAAAUAAAAiAA4ABQAAAAUAAAAjAA4ABQAAAAUAAAAkAA4ABQAAAAUAAAAlAA4ABQAAAAUAAAAmAA4ABQAAAAUAAAAnAA4ABQAAAAUAAAAAAA8ABQABAAAAAAABAA8ABQABAAAAAAACAA8ABQABAAAAAAADAA8ABQABAAAAAAAEAA8ABQABAAAAAAAFAA8ABQABAAAAAAAGAA8ABQABAAAAAAAHAA8ABQABAAAAAAAIAA8ABQABAAAAAAAJAA8ABQABAAAAAAAKAA8ABQABAAAAAAALAA8ABQABAAAAAAAMAA8ABQABAAAAAAANAA8ABQABAAAAAAAOAA8ABQABAAAAAAAPAA8ABQABAAAAAAAQAA8ABQAGAAIAAAARAA8ABQABAAEAAAASAA8ABQABAAEAAAATAA8ABQABAAEAAAAUAA8ABQABAAEAAAAVAA8ABQABAAEAAAAWAA8ABQABAAEAAAAXAA8ABQABAAEAAAAYAA8ABQABAAEAAAAZAA8ABQABAAEAAAAaAA8ABQABAAEAAAAbAA8ABQABAAEAAAAcAA8ABQAFAAIAAAAdAA8ABQABAAAAAAAeAA8ABQABAAAAAAAfAA8ABQABAAAAAAAgAA8ABQABAAAAAAAhAA8ABQABAAAAAAAiAA8ABQABAAAAAAAjAA8ABQABAAAAAAAkAA8ABQABAAAAAAAlAA8ABQABAAAAAAAmAA8ABQABAAAAAAAnAA8ABQABAAAAAAAAABAABQABAAIAAAABABAABQABAAIAAAACABAABQABAAIAAAADABAABQABAAIAAAAEABAABQABAAIAAAAFABAABQABAAIAAAAGABAABQABAAIAAAAHABAABQABAAIAAAAIABAABQABAAIAAAAJABAABQABAAIAAAAKABAABQABAAIAAAALABAABQABAAIAAAAMABAABQABAAIAAAANABAABQABAAIAAAAOABAABQAGAAEAAAAPABAABQABAAEAAAAQABAABQABAAEAAAARABAABQABAAEAAAASABAABQABAAEAAAATABAABQABAAEAAAAUABAABQABAAEAAAAVABAABQABAAEAAAAWABAABQABAAEAAAAXABAABQABAAEAAAAYABAABQABAAEAAAAZABAABQAFAAEAAAAaABAABQABAAIAAAAbABAABQABAAIAAAAcABAABQABAAIAAAAdABAABQABAAIAAAAeABAABQABAAIAAAAfABAABQABAAIAAAAgABAABQABAAIAAAAhABAABQABAAIAAAAiABAABQABAAIAAAAjABAABQABAAIAAAAkABAABQABAAIAAAAlABAABQABAAIAAAAmABAABQABAAIAAAAnABAABQABAAIAAAAAABEABQAAAAUAAAABABEABQAAAAUAAAACABEABQAAAAUAAAADABEABQAAAAUAAAAEABEABQAAAAUAAAAFABEABQAAAAUAAAAGABEABQAAAAUAAAAHABEABQAAAAUAAAAIABEABQAAAAUAAAAJABEABQAAAAUAAAAKABEABQAEAAUAAAALABEABQACAAUAAAAMABEABQABAAUAAAANABEABQAAAAUAAAAOABEABQAAAAEAAAAPABEABQABAAEAAAAQABEABQABAAEAAAARABEABQABAAEAAAASABEABQABAAEAAAATABEABQABAAEAAAAUABEABQABAAEAAAAVABEABQABAAEAAAAWABEABQABAAEAAAAXABEABQABAAEAAAAYABEABQABAAEAAAAZABEABQACAAEAAAAaABEABQABAAUAAAAbABEABQAAAAUAAAAcABEABQAAAAUAAAAdABEABQAAAAUAAAAeABEABQAAAAUAAAAfABEABQAAAAUAAAAgABEABQABAAUAAAAhABEABQAAAAUAAAAiABEABQAAAAUAAAAjABEABQAAAAUAAAAkABEABQAAAAUAAAAlABEABQAAAAUAAAAmABEABQAAAAUAAAAnABEABQAAAAUAAAAAABIABQAAAAUAAAABABIABQAAAAUAAAACABIABQAAAAUAAAADABIABQACAAUAAAAEABIABQAAAAUAAAAFABIABQAAAAUAAAAGABIABQAAAAUAAAAHABIABQAEAAUAAAAIABIABQADAAUAAAAJABIABQAAAAUAAAAKABIABQAAAAUAAAALABIABQAAAAUAAAAMABIABQAAAAAAAAANABIABQABAAAAAAAOABIABQAGAAIAAAAPABIABQAFAAEAAAAQABIABQABAAIAAAARABIABQABAAIAAAASABIABQAGAAEAAAATABIABQABAAEAAAAUABIABQAFAAEAAAAVABIABQABAAIAAAAWABIABQABAAIAAAAXABIABQABAAIAAAAYABIABQAGAAEAAAAZABIABQAFAAIAAAAaABIABQACAAAAAAAbABIABQADAAUAAAAcABIABQAAAAUAAAAdABIABQAAAAUAAAAeABIABQAAAAUAAAAfABIABQAAAAUAAAAgABIABQAAAAUAAAAhABIABQAAAAUAAAAiABIABQAAAAUAAAAjABIABQAAAAUAAAAkABIABQAAAAUAAAAlABIABQACAAUAAAAmABIABQAAAAUAAAAnABIABQAAAAUAAAAAABMABQAAAAUAAAABABMABQACAAUAAAACABMABQABAAUAAAADABMABQAAAAUAAAAEABMABQAAAAUAAAAFABMABQAAAAUAAAAGABMABQAAAAUAAAAHABMABQAAAAUAAAAIABMABQAAAAUAAAAJABMABQAAAAUAAAAKABMABQAAAAAAAAALABMABQABAAAAAAAMABMABQAFAAEAAAANABMABQABAAIAAAAOABMABQABAAIAAAAPABMABQACAAIAAAAQABMABQAAAAUAAAARABMABQACAAUAAAASABMABQAAAAIAAAATABMABQABAAIAAAAUABMABQACAAIAAAAVABMABQAAAAUAAAAWABMABQAAAAUAAAAXABMABQAAAAUAAAAYABMABQAAAAIAAAAZABMABQAGAAEAAAAaABMABQAFAAIAAAAbABMABQACAAAAAAAcABMABQABAAUAAAAdABMABQAAAAUAAAAeABMABQAAAAUAAAAfABMABQAEAAUAAAAgABMABQAAAAUAAAAhABMABQAAAAUAAAAiABMABQAAAAUAAAAjABMABQAAAAUAAAAkABMABQAAAAUAAAAlABMABQAAAAUAAAAmABMABQAAAAUAAAAnABMABQAAAAUAAAAAABQABQAAAAUAAAABABQABQAAAAUAAAACABQABQAAAAUAAAADABQABQAAAAUAAAAEABQABQAAAAUAAAAFABQABQAAAAUAAAAGABQABQAAAAUAAAAHABQABQAAAAUAAAAIABQABQAAAAUAAAAJABQABQAAAAUAAAAKABQABQAAAAIAAAALABQABQABAAIAAAAMABQABQACAAIAAAANABQABQAAAAUAAAAOABQABQAAAAUAAAAPABQABQACAAUAAAAQABQABQAAAAUAAAARABQABQAAAAUAAAASABQABQADAAUAAAATABQABQAAAAUAAAAUABQABQAAAAUAAAAVABQABQAAAAUAAAAWABQABQAAAAUAAAAXABQABQAAAAUAAAAYABQABQAAAAUAAAAZABQABQAAAAIAAAAaABQABQABAAIAAAAbABQABQAGAAEAAAAcABQABQABAAAAAAAdABQABQACAAAAAAAeABQABQAAAAUAAAAfABQABQAAAAUAAAAgABQABQAAAAUAAAAhABQABQACAAUAAAAiABQABQAAAAUAAAAjABQABQAAAAUAAAAkABQABQAAAAUAAAAlABQABQAAAAUAAAAmABQABQAAAAUAAAAnABQABQAAAAUAAAAEABUABQACAAUAAAAFABUABQAAAAUAAAAGABUABQAAAAUAAAAHABUABQAAAAUAAAAIABUABQAAAAUAAAAJABUABQAAAAUAAAAKABUABQACAAUAAAALABUABQAAAAUAAAAMABUABQAAAAUAAAANABUABQAAAAUAAAAOABUABQAAAAUAAAAPABUABQAAAAUAAAAQABUABQAEAAUAAAARABUABQAAAAUAAAASABUABQAEAAUAAAATABUABQABAAUAAAAUABUABQAAAAUAAAAVABUABQAAAAUAAAAWABUABQABAAUAAAAXABUABQAEAAUAAAAYABUABQAAAAUAAAAZABUABQAAAAUAAAAaABUABQAAAAUAAAAbABUABQAAAAIAAAAcABUABQABAAIAAAAdABUABQAGAAEAAAAeABUABQACAAAAAAAfABUABQAAAAUAAAAgABUABQAAAAUAAAAhABUABQAAAAUAAAAiABUABQACAAUAAAAjABUABQAAAAUAAAAkABUABQAAAAUAAAAlABUABQAAAAUAAAAFABYABQAAAAUAAAAGABYABQAEAAUAAAAHABYABQAAAAUAAAAIABYABQAAAAUAAAAJABYABQACAAUAAAAKABYABQAAAAUAAAALABYABQAAAAUAAAAMABYABQAAAAUAAAANABYABQAAAAUAAAAOABYABQAAAAUAAAAPABYABQAAAAUAAAAQABYABQAAAAUAAAARABYABQAAAAUAAAASABYABQACAAUAAAATABYABQAAAAUAAAAUABYABQAAAAUAAAAVABYABQAAAAUAAAAWABYABQAAAAUAAAAXABYABQAAAAUAAAAYABYABQADAAUAAAAZABYABQAAAAUAAAAaABYABQAAAAUAAAAbABYABQAAAAUAAAAcABYABQAAAAUAAAAdABYABQAAAAIAAAAeABYABQACAAIAAAAfABYABQAAAAUAAAAgABYABQAAAAUAAAAhABYABQAAAAUAAAAiABYABQAAAAUAAAAjABYABQAAAAUAAAAkABYABQAAAAUAAAAHABcABQAAAAUAAAAIABcABQAAAAUAAAAJABcABQAAAAUAAAAKABcABQACAAUAAAALABcABQAAAAUAAAAMABcABQAAAAUAAAANABcABQABAAUAAAAOABcABQAAAAUAAAAPABcABQAAAAUAAAAQABcABQAAAAUAAAARABcABQAAAAUAAAASABcABQAAAAUAAAATABcABQAAAAUAAAAUABcABQAAAAUAAAAVABcABQAAAAUAAAAWABcABQAAAAUAAAAXABcABQAAAAUAAAAYABcABQAAAAUAAAAZABcABQAAAAUAAAAaABcABQAAAAUAAAAbABcABQAAAAUAAAAcABcABQAAAAUAAAAdABcABQAAAAUAAAAeABcABQAAAAUAAAAfABcABQAAAAUAAAAgABcABQAAAAUAAAAhABcABQAAAAUAAAAiABcABQAAAAUAAAAHABgABQAAAAUAAAAIABgABQADAAUAAAAJABgABQAAAAUAAAAKABgABQAAAAUAAAALABgABQAEAAUAAAAMABgABQACAAUAAAANABgABQAAAAUAAAAOABgABQAAAAUAAAAPABgABQAAAAUAAAAQABgABQAAAAUAAAARABgABQAAAAUAAAASABgABQAEAAUAAAATABgABQAAAAUAAAAUABgABQAAAAUAAAAVABgABQAAAAUAAAAWABgABQAAAAUAAAAXABgABQAAAAUAAAAYABgABQAAAAUAAAAZABgABQAAAAUAAAAaABgABQAAAAUAAAAbABgABQACAAUAAAAcABgABQAAAAUAAAAdABgABQAAAAUAAAAeABgABQAAAAUAAAAfABgABQADAAUAAAAgABgABQAAAAUAAAAhABgABQAAAAUAAAAIABkABQAAAAUAAAAJABkABQACAAUAAAAKABkABQAEAAUAAAALABkABQAAAAUAAAAMABkABQAAAAUAAAANABkABQAAAAUAAAAOABkABQAAAAUAAAAPABkABQAAAAUAAAAQABkABQAAAAUAAAARABkABQAAAAUAAAASABkABQACAAUAAAATABkABQABAAUAAAAUABkABQAAAAUAAAAVABkABQAAAAUAAAAWABkABQAEAAUAAAAXABkABQAAAAUAAAAYABkABQAAAAUAAAAZABkABQAAAAUAAAAaABkABQAAAAUAAAAbABkABQAAAAUAAAAcABkABQAAAAUAAAAdABkABQAAAAUAAAAeABkABQAAAAUAAAAfABkABQAAAAUAAAAgABkABQAAAAUAAAAhABkABQAAAAUAAAAIABoABQAAAAUAAAAJABoABQAAAAUAAAAKABoABQAAAAUAAAALABoABQACAAUAAAAMABoABQAAAAUAAAANABoABQAAAAUAAAAOABoABQAAAAUAAAAPABoABQAAAAUAAAAQABoABQAAAAUAAAARABoABQAAAAUAAAASABoABQAAAAUAAAATABoABQAAAAUAAAAUABoABQACAAUAAAAVABoABQAAAAUAAAAWABoABQABAAUAAAAXABoABQAAAAUAAAAYABoABQAAAAUAAAAZABoABQAAAAUAAAAaABoABQAAAAUAAAAbABoABQAAAAUAAAAcABoABQAAAAUAAAAdABoABQAAAAUAAAAeABoABQAAAAUAAAAfABoABQAAAAUAAAAgABoABQAAAAUAAAALABsABQAAAAUAAAAMABsABQACAAUAAAANABsABQAAAAUAAAAOABsABQAAAAUAAAAPABsABQAAAAUAAAAQABsABQAAAAUAAAARABsABQAEAAUAAAASABsABQAAAAUAAAATABsABQAEAAUAAAAUABsABQAAAAUAAAAVABsABQAAAAUAAAAWABsABQAAAAUAAAAXABsABQAAAAUAAAAYABsABQAAAAUAAAAZABsABQAAAAUAAAAaABsABQAAAAUAAAAbABsABQAEAAUAAAAcABsABQAAAAUAAAAdABsABQAAAAUAAAAeABsABQACAAUAAAAfABsABQAAAAUAAAAPABwABQAAAAUAAAAQABwABQAAAAUAAAARABwABQAAAAUAAAASABwABQAAAAUAAAATABwABQAAAAUAAAAUABwABQAAAAUAAAAVABwABQAAAAUAAAAWABwABQAAAAUAAAAXABwABQAAAAUAAAAYABwABQAAAAUAAAAZABwABQAAAAUAAAAaABwABQAAAAUAAAAbABwABQAAAAUAAAAcABwABQAEAAUAAAASAB0ABQAAAAUAAAATAB0ABQAAAAUAAAAUAB0ABQAAAAUAAAAVAB0ABQAAAAUAAAAWAB0ABQAAAAUAAAAXAB0ABQABAAUAAAAYAB0ABQAEAAUAAAAZAB0ABQAAAAUAAAAaAB0ABQAAAAUAAAA=")
 tile_set = SubResource("TileSet_kpwf8")
 
-[node name="Entities" type="Node2D" parent="." unique_id=781541397]
+[node name="Entities" type="Node2D" parent="." unique_id=1354222796]
 y_sort_enabled = true
 
-[node name="House1" type="StaticBody2D" parent="Entities" unique_id=1740710856]
+[node name="House1" type="StaticBody2D" parent="Entities" unique_id=1154053610]
 position = Vector2(184, 238)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/House1" unique_id=618573265]
+[node name="Sprite" type="Sprite2D" parent="Entities/House1" unique_id=382297019]
 texture = ExtResource("12_yjr1t")
 centered = false
 offset = Vector2(-40, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 80, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/House1" unique_id=714619755]
+[node name="Shape" type="CollisionShape2D" parent="Entities/House1" unique_id=1513836623]
 position = Vector2(0, -13)
 shape = SubResource("RectangleShape2D_l3wbw")
 
-[node name="House2" type="StaticBody2D" parent="Entities" unique_id=1399841960]
+[node name="House2" type="StaticBody2D" parent="Entities" unique_id=305494093]
 position = Vector2(440, 222)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/House2" unique_id=1064905065]
+[node name="Sprite" type="Sprite2D" parent="Entities/House2" unique_id=819997798]
 texture = ExtResource("12_yjr1t")
 centered = false
 offset = Vector2(-40, -62)
 region_enabled = true
 region_rect = Rect2(80, 0, 80, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/House2" unique_id=528438717]
+[node name="Shape" type="CollisionShape2D" parent="Entities/House2" unique_id=1349172809]
 position = Vector2(0, -13)
 shape = SubResource("RectangleShape2D_l3wbw")
 
-[node name="House3" type="StaticBody2D" parent="Entities" unique_id=1205359674]
+[node name="House3" type="StaticBody2D" parent="Entities" unique_id=1985994898]
 position = Vector2(168, 302)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/House3" unique_id=1043101715]
+[node name="Sprite" type="Sprite2D" parent="Entities/House3" unique_id=1042940391]
 texture = ExtResource("12_yjr1t")
 centered = false
 offset = Vector2(-40, -62)
 region_enabled = true
 region_rect = Rect2(160, 0, 80, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/House3" unique_id=1237952193]
+[node name="Shape" type="CollisionShape2D" parent="Entities/House3" unique_id=300332419]
 position = Vector2(0, -13)
 shape = SubResource("RectangleShape2D_l3wbw")
 
-[node name="House4" type="StaticBody2D" parent="Entities" unique_id=1890596623]
+[node name="House4" type="StaticBody2D" parent="Entities" unique_id=137243019]
 position = Vector2(472, 334)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/House4" unique_id=1493263186]
+[node name="Sprite" type="Sprite2D" parent="Entities/House4" unique_id=758186042]
 texture = ExtResource("12_yjr1t")
 centered = false
 offset = Vector2(-40, -62)
 region_enabled = true
 region_rect = Rect2(240, 0, 80, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/House4" unique_id=1514408272]
+[node name="Shape" type="CollisionShape2D" parent="Entities/House4" unique_id=217976475]
 position = Vector2(0, -13)
 shape = SubResource("RectangleShape2D_l3wbw")
 
-[node name="House5" type="StaticBody2D" parent="Entities" unique_id=776732814]
+[node name="House5" type="StaticBody2D" parent="Entities" unique_id=84762899]
 position = Vector2(296, 174)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/House5" unique_id=290059415]
+[node name="Sprite" type="Sprite2D" parent="Entities/House5" unique_id=415840046]
 texture = ExtResource("12_yjr1t")
 centered = false
 offset = Vector2(-40, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 80, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/House5" unique_id=1088124256]
+[node name="Shape" type="CollisionShape2D" parent="Entities/House5" unique_id=2008115530]
 position = Vector2(0, -13)
 shape = SubResource("RectangleShape2D_l3wbw")
 
-[node name="Prop6" type="StaticBody2D" parent="Entities" unique_id=488881380]
+[node name="Prop6" type="StaticBody2D" parent="Entities" unique_id=389364644]
 position = Vector2(344, 126)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop6" unique_id=1645577887]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop6" unique_id=329180186]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 16, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop6" unique_id=1340383319]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop6" unique_id=1984158998]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop7" type="StaticBody2D" parent="Entities" unique_id=901791345]
+[node name="Prop7" type="StaticBody2D" parent="Entities" unique_id=664954361]
 position = Vector2(184, 190)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop7" unique_id=1422066730]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop7" unique_id=1858088089]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 16, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop7" unique_id=282422042]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop7" unique_id=1290519754]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop8" type="StaticBody2D" parent="Entities" unique_id=474694386]
+[node name="Prop8" type="StaticBody2D" parent="Entities" unique_id=296036831]
 position = Vector2(440, 174)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop8" unique_id=248604432]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop8" unique_id=1504905424]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 16, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop8" unique_id=1327258726]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop8" unique_id=529037202]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop9" type="StaticBody2D" parent="Entities" unique_id=647283464]
+[node name="Prop9" type="StaticBody2D" parent="Entities" unique_id=616922952]
 position = Vector2(376, 158)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop9" unique_id=1941033377]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop9" unique_id=449039605]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -62)
 region_enabled = true
 region_rect = Rect2(0, 0, 16, 64)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop9" unique_id=784252230]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop9" unique_id=1101065940]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop10" type="StaticBody2D" parent="Entities" unique_id=1258220397]
+[node name="Prop10" type="StaticBody2D" parent="Entities" unique_id=1006036908]
 position = Vector2(376, 366)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop10" unique_id=705096205]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop10" unique_id=907883012]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -30)
 region_enabled = true
 region_rect = Rect2(96, 32, 16, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop10" unique_id=1401358639]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop10" unique_id=1044726061]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop11" type="StaticBody2D" parent="Entities" unique_id=536907623]
+[node name="Prop11" type="StaticBody2D" parent="Entities" unique_id=102580104]
 position = Vector2(312, 382)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop11" unique_id=1112790922]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop11" unique_id=1752491313]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -30)
 region_enabled = true
 region_rect = Rect2(96, 32, 16, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop11" unique_id=391551770]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop11" unique_id=1024993167]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop12" type="StaticBody2D" parent="Entities" unique_id=445099097]
+[node name="Prop12" type="StaticBody2D" parent="Entities" unique_id=598172347]
 position = Vector2(248, 382)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop12" unique_id=1359476005]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop12" unique_id=569976231]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -30)
 region_enabled = true
 region_rect = Rect2(96, 32, 16, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop12" unique_id=1719678893]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop12" unique_id=330020673]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_bjw4m")
 
-[node name="Prop13" type="StaticBody2D" parent="Entities" unique_id=1057102752]
+[node name="Prop13" type="StaticBody2D" parent="Entities" unique_id=1294333782]
 position = Vector2(320, 366)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop13" unique_id=950367918]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop13" unique_id=938454502]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(144, 32, 32, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop13" unique_id=2010512308]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop13" unique_id=625449763]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_gocut")
 
-[node name="Prop14" type="StaticBody2D" parent="Entities" unique_id=26314992]
+[node name="Prop14" type="StaticBody2D" parent="Entities" unique_id=1507912765]
 position = Vector2(272, 366)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop14" unique_id=402570777]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop14" unique_id=1957965697]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(144, 32, 32, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop14" unique_id=488735629]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop14" unique_id=1557379007]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_gocut")
 
-[node name="Prop15" type="StaticBody2D" parent="Entities" unique_id=589213937]
+[node name="Prop15" type="StaticBody2D" parent="Entities" unique_id=1154529602]
 position = Vector2(200, 142)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop15" unique_id=1088721241]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop15" unique_id=1558967713]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-24, -30)
 region_enabled = true
 region_rect = Rect2(16, 32, 48, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Prop15" unique_id=1904351054]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Prop15" unique_id=876270848]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_nrj2n")
 
-[node name="Prop16" type="Node2D" parent="Entities" unique_id=782814315]
+[node name="Prop16" type="Node2D" parent="Entities" unique_id=342389507]
 position = Vector2(408, 126)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Prop16" unique_id=353140292]
+[node name="Sprite" type="Sprite2D" parent="Entities/Prop16" unique_id=845143956]
 texture = ExtResource("13_vbs8g")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(272, 48, 16, 16)
 
-[node name="Well17" type="StaticBody2D" parent="Entities" unique_id=202768518]
+[node name="Well17" type="StaticBody2D" parent="Entities" unique_id=805260800]
 position = Vector2(384, 206)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Well17" unique_id=650517809]
+[node name="Sprite" type="Sprite2D" parent="Entities/Well17" unique_id=337702147]
 texture = ExtResource("14_57g3p")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(0, 48, 32, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Well17" unique_id=155003637]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Well17" unique_id=1849574972]
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_eb26y")
 
-[node name="NpcVillagers_v 05 Mist" type="StaticBody2D" parent="Entities" unique_id=719810660]
+[node name="NpcVillagers_v 05 Mist" type="StaticBody2D" parent="Entities" unique_id=469706654]
 position = Vector2(264, 206)
 script = ExtResource("15_fsrdd")
 display_name = "별지기"
 sheet = ExtResource("16_rdirs")
 lines = PackedStringArray("별을 지키는 일족, 별지기라네. 이 별은 오래전부터 잠들어 있었지.", "그런데 누군가 별의 봉인을 풀었어. 별이 깨어나 굶주리기 시작했다네.", "별의 심장까지 가면 굶주림을 멈출 수 있을 걸세. 길은 동쪽이야.")
 
-[node name="NpcVillagers_v 13 Mist" type="StaticBody2D" parent="Entities" unique_id=988735208]
+[node name="NpcVillagers_v 13 Mist" type="StaticBody2D" parent="Entities" unique_id=1991760613]
 position = Vector2(424, 366)
 script = ExtResource("15_fsrdd")
 display_name = "별 관측자"
 sheet = ExtResource("17_g11wn")
 lines = PackedStringArray("밤마다 하늘 위에서 하얀 빛이 내려와요. 저 빛이 봉인을 푼 것 같아요.", "부서진 궤도에 운석 골렘이 길을 막고 있어요.")
 
-[node name="NpcVillagers_v 14 Mist" type="StaticBody2D" parent="Entities" unique_id=1916211755]
+[node name="NpcVillagers_v 14 Mist" type="StaticBody2D" parent="Entities" unique_id=1375039511]
 position = Vector2(136, 334)
 script = ExtResource("15_fsrdd")
 display_name = "떠돌이 상인"
 sheet = ExtResource("18_pmxcc")
 lines = PackedStringArray("별 조각은 비싸게 팔리지! 근데 요즘은 별이 오히려 사람을 먹으려 들어서 장사가 안 돼.")
 
-[node name="Critter17" type="Node2D" parent="Entities" unique_id=1093724164]
+[node name="Critter17" type="Node2D" parent="Entities" unique_id=1646004621]
 position = Vector2(376, 366)
 script = ExtResource("19_imsi3")
 sheet = ExtResource("20_2netx")
 speed = 10.0
 
-[node name="Water" type="StaticBody2D" parent="Entities" unique_id=722806927]
+[node name="Water" type="StaticBody2D" parent="Entities" unique_id=1688685470]
 collision_mask = 0
 
-[node name="@CollisionShape2D@2965" type="CollisionShape2D" parent="Entities/Water" unique_id=878259551]
+[node name="@CollisionShape2D@3342" type="CollisionShape2D" parent="Entities/Water" unique_id=1605123461]
 position = Vector2(320, 8)
-shape = SubResource("RectangleShape2D_0ahb8")
+shape = SubResource("RectangleShape2D_xdoy3")
 
-[node name="@CollisionShape2D@2966" type="CollisionShape2D" parent="Entities/Water" unique_id=18217087]
+[node name="@CollisionShape2D@3343" type="CollisionShape2D" parent="Entities/Water" unique_id=1778335577]
 position = Vector2(320, 24)
-shape = SubResource("RectangleShape2D_0ahb8")
+shape = SubResource("RectangleShape2D_xdoy3")
 
-[node name="@CollisionShape2D@2967" type="CollisionShape2D" parent="Entities/Water" unique_id=1503429853]
+[node name="@CollisionShape2D@3344" type="CollisionShape2D" parent="Entities/Water" unique_id=760550975]
 position = Vector2(320, 40)
-shape = SubResource("RectangleShape2D_0ahb8")
+shape = SubResource("RectangleShape2D_xdoy3")
 
-[node name="@CollisionShape2D@2968" type="CollisionShape2D" parent="Entities/Water" unique_id=1388452058]
+[node name="@CollisionShape2D@3345" type="CollisionShape2D" parent="Entities/Water" unique_id=1353111387]
 position = Vector2(160, 56)
 shape = SubResource("RectangleShape2D_hrbcp")
 
-[node name="@CollisionShape2D@2969" type="CollisionShape2D" parent="Entities/Water" unique_id=1385002216]
+[node name="@CollisionShape2D@3346" type="CollisionShape2D" parent="Entities/Water" unique_id=151327539]
 position = Vector2(496, 56)
 shape = SubResource("RectangleShape2D_wsd4q")
 
-[node name="@CollisionShape2D@2970" type="CollisionShape2D" parent="Entities/Water" unique_id=1245317070]
+[node name="@CollisionShape2D@3347" type="CollisionShape2D" parent="Entities/Water" unique_id=1968635578]
 position = Vector2(112, 72)
 shape = SubResource("RectangleShape2D_v7isl")
 
-[node name="@CollisionShape2D@2971" type="CollisionShape2D" parent="Entities/Water" unique_id=1343680485]
+[node name="@CollisionShape2D@3348" type="CollisionShape2D" parent="Entities/Water" unique_id=2144352146]
 position = Vector2(544, 72)
 shape = SubResource("RectangleShape2D_bgy1f")
 
-[node name="@CollisionShape2D@2972" type="CollisionShape2D" parent="Entities/Water" unique_id=1957838533]
+[node name="@CollisionShape2D@3349" type="CollisionShape2D" parent="Entities/Water" unique_id=1512917728]
 position = Vector2(72, 88)
 shape = SubResource("RectangleShape2D_wfajo")
 
-[node name="@CollisionShape2D@2973" type="CollisionShape2D" parent="Entities/Water" unique_id=16769957]
+[node name="@CollisionShape2D@3350" type="CollisionShape2D" parent="Entities/Water" unique_id=498563662]
 position = Vector2(576, 88)
 shape = SubResource("RectangleShape2D_27spa")
 
-[node name="@CollisionShape2D@2974" type="CollisionShape2D" parent="Entities/Water" unique_id=2042143816]
+[node name="@CollisionShape2D@3351" type="CollisionShape2D" parent="Entities/Water" unique_id=545702571]
 position = Vector2(64, 104)
 shape = SubResource("RectangleShape2D_27spa")
 
-[node name="@CollisionShape2D@2975" type="CollisionShape2D" parent="Entities/Water" unique_id=1973265638]
+[node name="@CollisionShape2D@3352" type="CollisionShape2D" parent="Entities/Water" unique_id=62942301]
 position = Vector2(592, 104)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2976" type="CollisionShape2D" parent="Entities/Water" unique_id=997413144]
+[node name="@CollisionShape2D@3353" type="CollisionShape2D" parent="Entities/Water" unique_id=851899961]
 position = Vector2(56, 120)
 shape = SubResource("RectangleShape2D_y42da")
 
-[node name="@CollisionShape2D@2977" type="CollisionShape2D" parent="Entities/Water" unique_id=403228981]
+[node name="@CollisionShape2D@3354" type="CollisionShape2D" parent="Entities/Water" unique_id=1731053676]
 position = Vector2(592, 120)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2978" type="CollisionShape2D" parent="Entities/Water" unique_id=1375423250]
+[node name="@CollisionShape2D@3355" type="CollisionShape2D" parent="Entities/Water" unique_id=1035689457]
 position = Vector2(48, 136)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2979" type="CollisionShape2D" parent="Entities/Water" unique_id=1504490282]
+[node name="@CollisionShape2D@3356" type="CollisionShape2D" parent="Entities/Water" unique_id=1363427810]
 position = Vector2(592, 136)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2980" type="CollisionShape2D" parent="Entities/Water" unique_id=686924638]
+[node name="@CollisionShape2D@3357" type="CollisionShape2D" parent="Entities/Water" unique_id=750657652]
 position = Vector2(48, 152)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2981" type="CollisionShape2D" parent="Entities/Water" unique_id=1923341530]
+[node name="@CollisionShape2D@3358" type="CollisionShape2D" parent="Entities/Water" unique_id=2029095809]
 position = Vector2(600, 152)
 shape = SubResource("RectangleShape2D_mrkiw")
 
-[node name="@CollisionShape2D@2982" type="CollisionShape2D" parent="Entities/Water" unique_id=1209055001]
+[node name="@CollisionShape2D@3359" type="CollisionShape2D" parent="Entities/Water" unique_id=1094182504]
 position = Vector2(32, 344)
 shape = SubResource("RectangleShape2D_je2ja")
 
-[node name="@CollisionShape2D@2983" type="CollisionShape2D" parent="Entities/Water" unique_id=1452819095]
+[node name="@CollisionShape2D@3360" type="CollisionShape2D" parent="Entities/Water" unique_id=1508121452]
 position = Vector2(624, 344)
 shape = SubResource("RectangleShape2D_ae3cd")
 
-[node name="@CollisionShape2D@2984" type="CollisionShape2D" parent="Entities/Water" unique_id=296206889]
+[node name="@CollisionShape2D@3361" type="CollisionShape2D" parent="Entities/Water" unique_id=1610956935]
 position = Vector2(40, 360)
 shape = SubResource("RectangleShape2D_mrkiw")
 
-[node name="@CollisionShape2D@2985" type="CollisionShape2D" parent="Entities/Water" unique_id=839179617]
+[node name="@CollisionShape2D@3362" type="CollisionShape2D" parent="Entities/Water" unique_id=49070426]
 position = Vector2(616, 360)
 shape = SubResource("RectangleShape2D_3yhjf")
 
-[node name="@CollisionShape2D@2986" type="CollisionShape2D" parent="Entities/Water" unique_id=1921280181]
+[node name="@CollisionShape2D@3363" type="CollisionShape2D" parent="Entities/Water" unique_id=954665388]
 position = Vector2(56, 376)
 shape = SubResource("RectangleShape2D_y42da")
 
-[node name="@CollisionShape2D@2987" type="CollisionShape2D" parent="Entities/Water" unique_id=195907642]
+[node name="@CollisionShape2D@3364" type="CollisionShape2D" parent="Entities/Water" unique_id=716166993]
 position = Vector2(600, 376)
 shape = SubResource("RectangleShape2D_mrkiw")
 
-[node name="@CollisionShape2D@2988" type="CollisionShape2D" parent="Entities/Water" unique_id=59396590]
+[node name="@CollisionShape2D@3365" type="CollisionShape2D" parent="Entities/Water" unique_id=681104070]
 position = Vector2(56, 392)
 shape = SubResource("RectangleShape2D_y42da")
 
-[node name="@CollisionShape2D@2989" type="CollisionShape2D" parent="Entities/Water" unique_id=1877676307]
+[node name="@CollisionShape2D@3366" type="CollisionShape2D" parent="Entities/Water" unique_id=2076285229]
 position = Vector2(592, 392)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2990" type="CollisionShape2D" parent="Entities/Water" unique_id=616475632]
+[node name="@CollisionShape2D@3367" type="CollisionShape2D" parent="Entities/Water" unique_id=1212836083]
 position = Vector2(64, 408)
 shape = SubResource("RectangleShape2D_27spa")
 
-[node name="@CollisionShape2D@2991" type="CollisionShape2D" parent="Entities/Water" unique_id=1491912511]
+[node name="@CollisionShape2D@3368" type="CollisionShape2D" parent="Entities/Water" unique_id=1601215475]
 position = Vector2(592, 408)
 shape = SubResource("RectangleShape2D_gcx6g")
 
-[node name="@CollisionShape2D@2992" type="CollisionShape2D" parent="Entities/Water" unique_id=587691111]
+[node name="@CollisionShape2D@3369" type="CollisionShape2D" parent="Entities/Water" unique_id=375047138]
 position = Vector2(64, 424)
 shape = SubResource("RectangleShape2D_27spa")
 
-[node name="@CollisionShape2D@2993" type="CollisionShape2D" parent="Entities/Water" unique_id=671964756]
+[node name="@CollisionShape2D@3370" type="CollisionShape2D" parent="Entities/Water" unique_id=2024439915]
 position = Vector2(584, 424)
 shape = SubResource("RectangleShape2D_y42da")
 
-[node name="@CollisionShape2D@2994" type="CollisionShape2D" parent="Entities/Water" unique_id=1772677361]
+[node name="@CollisionShape2D@3371" type="CollisionShape2D" parent="Entities/Water" unique_id=1857093140]
 position = Vector2(88, 440)
 shape = SubResource("RectangleShape2D_nc04e")
 
-[node name="@CollisionShape2D@2995" type="CollisionShape2D" parent="Entities/Water" unique_id=1859412150]
+[node name="@CollisionShape2D@3372" type="CollisionShape2D" parent="Entities/Water" unique_id=2091597649]
 position = Vector2(576, 440)
 shape = SubResource("RectangleShape2D_27spa")
 
-[node name="@CollisionShape2D@2996" type="CollisionShape2D" parent="Entities/Water" unique_id=1247720423]
+[node name="@CollisionShape2D@3373" type="CollisionShape2D" parent="Entities/Water" unique_id=513173581]
 position = Vector2(120, 456)
 shape = SubResource("RectangleShape2D_10jh2")
 
-[node name="@CollisionShape2D@2997" type="CollisionShape2D" parent="Entities/Water" unique_id=167395181]
+[node name="@CollisionShape2D@3374" type="CollisionShape2D" parent="Entities/Water" unique_id=2536995]
 position = Vector2(552, 456)
 shape = SubResource("RectangleShape2D_nc04e")
 
-[node name="@CollisionShape2D@2998" type="CollisionShape2D" parent="Entities/Water" unique_id=524343983]
+[node name="@CollisionShape2D@3375" type="CollisionShape2D" parent="Entities/Water" unique_id=1665995332]
 position = Vector2(144, 472)
 shape = SubResource("RectangleShape2D_wsd4q")
 
-[node name="@CollisionShape2D@2999" type="CollisionShape2D" parent="Entities/Water" unique_id=850463683]
+[node name="@CollisionShape2D@3376" type="CollisionShape2D" parent="Entities/Water" unique_id=1017784718]
 position = Vector2(536, 472)
 shape = SubResource("RectangleShape2D_t4awp")
 
-[node name="@CollisionShape2D@3000" type="CollisionShape2D" parent="Entities/Water" unique_id=1674927133]
+[node name="@CollisionShape2D@3377" type="CollisionShape2D" parent="Entities/Water" unique_id=868882658]
 position = Vector2(320, 488)
-shape = SubResource("RectangleShape2D_0ahb8")
+shape = SubResource("RectangleShape2D_xdoy3")
 
-[node name="@CollisionShape2D@3001" type="CollisionShape2D" parent="Entities/Water" unique_id=1639124402]
+[node name="@CollisionShape2D@3378" type="CollisionShape2D" parent="Entities/Water" unique_id=359088997]
 position = Vector2(320, 504)
-shape = SubResource("RectangleShape2D_0ahb8")
+shape = SubResource("RectangleShape2D_xdoy3")
 
-[node name="Crystal19" type="Node2D" parent="Entities" unique_id=1166084256]
+[node name="Crystal19" type="Node2D" parent="Entities" unique_id=2008889186]
 position = Vector2(454, 366)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal19" unique_id=1860220606]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal19" unique_id=1544733723]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal20" type="Node2D" parent="Entities" unique_id=434286623]
+[node name="Crystal20" type="Node2D" parent="Entities" unique_id=650720348]
 position = Vector2(169, 414)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal20" unique_id=337152910]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal20" unique_id=716383804]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal21" type="Node2D" parent="Entities" unique_id=519802469]
+[node name="Crystal21" type="Node2D" parent="Entities" unique_id=582418013]
 position = Vector2(363, 398)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal21" unique_id=156842120]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal21" unique_id=1256442752]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal22" type="Node2D" parent="Entities" unique_id=1777858224]
+[node name="Crystal22" type="Node2D" parent="Entities" unique_id=1583653152]
 position = Vector2(395, 430)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal22" unique_id=1363208784]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal22" unique_id=181227613]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal23" type="Node2D" parent="Entities" unique_id=1316634737]
+[node name="Crystal23" type="Node2D" parent="Entities" unique_id=2001229482]
 position = Vector2(357, 94)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal23" unique_id=1246239257]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal23" unique_id=1502522624]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal24" type="Node2D" parent="Entities" unique_id=354577384]
+[node name="Crystal24" type="Node2D" parent="Entities" unique_id=2071777199]
 position = Vector2(534, 286)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal24" unique_id=740631670]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal24" unique_id=104685598]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal25" type="Node2D" parent="Entities" unique_id=1498240164]
+[node name="Crystal25" type="Node2D" parent="Entities" unique_id=653106727]
 position = Vector2(294, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal25" unique_id=418317954]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal25" unique_id=79436807]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal26" type="Node2D" parent="Entities" unique_id=152925250]
+[node name="Crystal26" type="Node2D" parent="Entities" unique_id=585362799]
 position = Vector2(118, 222)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal26" unique_id=1545322349]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal26" unique_id=1253232338]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal27" type="Node2D" parent="Entities" unique_id=1915023720]
+[node name="Crystal27" type="Node2D" parent="Entities" unique_id=476418727]
 position = Vector2(90, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal27" unique_id=1770548578]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal27" unique_id=514506895]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(32, 224, 16, 16)
 
-[node name="Crystal28" type="Node2D" parent="Entities" unique_id=490681195]
+[node name="Crystal28" type="Node2D" parent="Entities" unique_id=280063831]
 position = Vector2(165, 350)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal28" unique_id=542521538]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal28" unique_id=204237048]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(32, 224, 16, 16)
 
-[node name="Crystal29" type="Node2D" parent="Entities" unique_id=2107820473]
+[node name="Crystal29" type="Node2D" parent="Entities" unique_id=445717489]
 position = Vector2(360, 350)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal29" unique_id=833420702]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal29" unique_id=1841554858]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal30" type="Node2D" parent="Entities" unique_id=1477916369]
+[node name="Crystal30" type="Node2D" parent="Entities" unique_id=310266997]
 position = Vector2(154, 126)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal30" unique_id=227676769]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal30" unique_id=2146663532]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal31" type="Node2D" parent="Entities" unique_id=47946540]
+[node name="Crystal31" type="Node2D" parent="Entities" unique_id=336576969]
 position = Vector2(121, 158)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal31" unique_id=244522659]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal31" unique_id=853701978]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal32" type="Node2D" parent="Entities" unique_id=1358025388]
+[node name="Crystal32" type="Node2D" parent="Entities" unique_id=1678107359]
 position = Vector2(378, 318)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal32" unique_id=1327496546]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal32" unique_id=1147946731]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal33" type="Node2D" parent="Entities" unique_id=744993203]
+[node name="Crystal33" type="Node2D" parent="Entities" unique_id=133916578]
 position = Vector2(407, 142)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal33" unique_id=197319355]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal33" unique_id=1772932891]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal34" type="Node2D" parent="Entities" unique_id=1823707991]
+[node name="Crystal34" type="Node2D" parent="Entities" unique_id=777058573]
 position = Vector2(233, 110)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal34" unique_id=1979948061]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal34" unique_id=1302733065]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal35" type="Node2D" parent="Entities" unique_id=292656421]
+[node name="Crystal35" type="Node2D" parent="Entities" unique_id=118657935]
 position = Vector2(410, 94)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal35" unique_id=310442217]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal35" unique_id=344736921]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal36" type="Node2D" parent="Entities" unique_id=832318179]
+[node name="Crystal36" type="Node2D" parent="Entities" unique_id=659304346]
 position = Vector2(231, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal36" unique_id=1528776529]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal36" unique_id=38178776]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal37" type="Node2D" parent="Entities" unique_id=400751142]
+[node name="Crystal37" type="Node2D" parent="Entities" unique_id=214803931]
 position = Vector2(266, 318)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal37" unique_id=2048687672]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal37" unique_id=1234476713]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal38" type="Node2D" parent="Entities" unique_id=1933818207]
+[node name="Crystal38" type="Node2D" parent="Entities" unique_id=1386672529]
 position = Vector2(376, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal38" unique_id=607215031]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal38" unique_id=112783745]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal39" type="Node2D" parent="Entities" unique_id=2043677471]
+[node name="Crystal39" type="Node2D" parent="Entities" unique_id=1041351082]
 position = Vector2(342, 414)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal39" unique_id=1490437688]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal39" unique_id=1033118999]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal40" type="Node2D" parent="Entities" unique_id=1639129331]
+[node name="Crystal40" type="Node2D" parent="Entities" unique_id=380168742]
 position = Vector2(309, 94)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal40" unique_id=1402194840]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal40" unique_id=287187780]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal41" type="Node2D" parent="Entities" unique_id=638537424]
+[node name="Crystal41" type="Node2D" parent="Entities" unique_id=1290352623]
 position = Vector2(106, 286)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal41" unique_id=853427650]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal41" unique_id=327649348]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(32, 224, 16, 16)
 
-[node name="Crystal42" type="Node2D" parent="Entities" unique_id=286556558]
+[node name="Crystal42" type="Node2D" parent="Entities" unique_id=1055523079]
 position = Vector2(423, 94)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal42" unique_id=1681999212]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal42" unique_id=1351511941]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal43" type="Node2D" parent="Entities" unique_id=2000001357]
+[node name="Crystal43" type="Node2D" parent="Entities" unique_id=1842056725]
 position = Vector2(315, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal43" unique_id=1004240102]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal43" unique_id=1777563743]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal44" type="Node2D" parent="Entities" unique_id=1022352504]
+[node name="Crystal44" type="Node2D" parent="Entities" unique_id=1797226447]
 position = Vector2(327, 414)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal44" unique_id=1482176059]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal44" unique_id=907117839]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(32, 224, 16, 16)
 
-[node name="Crystal45" type="Node2D" parent="Entities" unique_id=1486662439]
+[node name="Crystal45" type="Node2D" parent="Entities" unique_id=1804957549]
 position = Vector2(554, 190)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal45" unique_id=1121397712]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal45" unique_id=1939760565]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal46" type="Node2D" parent="Entities" unique_id=1371321912]
+[node name="Crystal46" type="Node2D" parent="Entities" unique_id=1230277680]
 position = Vector2(87, 190)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal46" unique_id=467055696]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal46" unique_id=1674922647]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal47" type="Node2D" parent="Entities" unique_id=135041856]
+[node name="Crystal47" type="Node2D" parent="Entities" unique_id=546247262]
 position = Vector2(151, 158)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal47" unique_id=58486406]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal47" unique_id=943472348]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(0, 224, 16, 16)
 
-[node name="Crystal48" type="Node2D" parent="Entities" unique_id=1912795679]
+[node name="Crystal48" type="Node2D" parent="Entities" unique_id=823848524]
 position = Vector2(326, 398)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal48" unique_id=304287993]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal48" unique_id=839739839]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(32, 224, 16, 16)
 
-[node name="Crystal49" type="Node2D" parent="Entities" unique_id=1594584537]
+[node name="Crystal49" type="Node2D" parent="Entities" unique_id=1234152307]
 position = Vector2(247, 366)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal49" unique_id=1612725728]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal49" unique_id=187132931]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(32, 224, 16, 16)
 
-[node name="Crystal50" type="Node2D" parent="Entities" unique_id=1534074544]
+[node name="Crystal50" type="Node2D" parent="Entities" unique_id=1004350333]
 position = Vector2(458, 398)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal50" unique_id=881442487]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal50" unique_id=2076340648]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal51" type="Node2D" parent="Entities" unique_id=919120120]
+[node name="Crystal51" type="Node2D" parent="Entities" unique_id=56483205]
 position = Vector2(423, 430)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal51" unique_id=1086413511]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal51" unique_id=88292835]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal52" type="Node2D" parent="Entities" unique_id=327051368]
+[node name="Crystal52" type="Node2D" parent="Entities" unique_id=1264973923]
 position = Vector2(104, 222)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal52" unique_id=1379640619]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal52" unique_id=1717572289]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal53" type="Node2D" parent="Entities" unique_id=447333549]
+[node name="Crystal53" type="Node2D" parent="Entities" unique_id=673763128]
 position = Vector2(197, 110)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal53" unique_id=2026336607]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal53" unique_id=1367530006]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(32, 224, 16, 16)
 
-[node name="Crystal54" type="Node2D" parent="Entities" unique_id=1196336424]
+[node name="Crystal54" type="Node2D" parent="Entities" unique_id=1852597705]
 position = Vector2(375, 142)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal54" unique_id=800430831]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal54" unique_id=70160299]
 texture = ExtResource("21_l73kw")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Player" parent="Entities" unique_id=1485537438 instance=ExtResource("22_k8te5")]
+[node name="Player" parent="Entities" unique_id=884963856 instance=ExtResource("22_k8te5")]
 unique_name_in_owner = true
 position = Vector2(320, 280)
 
-[node name="Spawns" type="Node2D" parent="." unique_id=1007019363]
+[node name="Spawns" type="Node2D" parent="." unique_id=1406962228]
 
-[node name="west" type="Marker2D" parent="Spawns" unique_id=1676886635]
+[node name="west" type="Marker2D" parent="Spawns" unique_id=1909452670]
 position = Vector2(96, 256)
 
-[node name="east" type="Marker2D" parent="Spawns" unique_id=354315862]
+[node name="east" type="Marker2D" parent="Spawns" unique_id=160400069]
 position = Vector2(544, 256)
 
-[node name="Border" type="StaticBody2D" parent="." unique_id=1462704671]
+[node name="Border" type="StaticBody2D" parent="." unique_id=887628057]
 collision_mask = 0
 
-[node name="@CollisionShape2D@3002" type="CollisionShape2D" parent="Border" unique_id=582407167]
+[node name="@CollisionShape2D@3379" type="CollisionShape2D" parent="Border" unique_id=999056153]
 position = Vector2(320, 491)
 shape = SubResource("RectangleShape2D_dxgjh")
 
-[node name="@CollisionShape2D@3003" type="CollisionShape2D" parent="Border" unique_id=1097230281]
+[node name="@CollisionShape2D@3380" type="CollisionShape2D" parent="Border" unique_id=1113120225]
 position = Vector2(320, 21)
 shape = SubResource("RectangleShape2D_dxgjh")
 
-[node name="@CollisionShape2D@3004" type="CollisionShape2D" parent="Border" unique_id=1183810411]
+[node name="@CollisionShape2D@3381" type="CollisionShape2D" parent="Border" unique_id=2036877375]
 position = Vector2(21, 112)
 shape = SubResource("RectangleShape2D_xxf81")
 
-[node name="@CollisionShape2D@3005" type="CollisionShape2D" parent="Border" unique_id=987075200]
+[node name="@CollisionShape2D@3382" type="CollisionShape2D" parent="Border" unique_id=698805894]
 position = Vector2(21, 400)
 shape = SubResource("RectangleShape2D_xxf81")
 
-[node name="@CollisionShape2D@3006" type="CollisionShape2D" parent="Border" unique_id=1658014781]
+[node name="@CollisionShape2D@3383" type="CollisionShape2D" parent="Border" unique_id=354229020]
 position = Vector2(2, 256)
 shape = SubResource("RectangleShape2D_7isxc")
 
-[node name="@CollisionShape2D@3007" type="CollisionShape2D" parent="Border" unique_id=239723642]
+[node name="@CollisionShape2D@3384" type="CollisionShape2D" parent="Border" unique_id=95378628]
 position = Vector2(619, 112)
 shape = SubResource("RectangleShape2D_xxf81")
 
-[node name="@CollisionShape2D@3008" type="CollisionShape2D" parent="Border" unique_id=1224039131]
+[node name="@CollisionShape2D@3385" type="CollisionShape2D" parent="Border" unique_id=1407007013]
 position = Vector2(619, 400)
 shape = SubResource("RectangleShape2D_xxf81")
 
-[node name="@CollisionShape2D@3009" type="CollisionShape2D" parent="Border" unique_id=1213118099]
+[node name="@CollisionShape2D@3386" type="CollisionShape2D" parent="Border" unique_id=1696219553]
 position = Vector2(638, 256)
 shape = SubResource("RectangleShape2D_7isxc")
 
-[node name="Portal_west" type="Area2D" parent="." unique_id=446731825]
+[node name="Portal_west" type="Area2D" parent="." unique_id=1333356616]
 position = Vector2(24, 256)
 script = ExtResource("23_7yhrs")
-target_scene = "res://features/world/star2.tscn"
-target_spawn = "east"
-label = "◀ 수정 크레이터"
+target_scene = "res://features/world/star_gate.tscn"
+target_spawn = "north"
+label = "◀ 부서진 별의 신전"
 side = -1
 
-[node name="@CollisionShape2D@3010" type="CollisionShape2D" parent="Portal_west" unique_id=1265800818]
+[node name="@CollisionShape2D@3387" type="CollisionShape2D" parent="Portal_west" unique_id=521744774]
 shape = SubResource("RectangleShape2D_fkvx2")
 
-[node name="Portal_east" type="Area2D" parent="." unique_id=749043476]
+[node name="Portal_east" type="Area2D" parent="." unique_id=721257668]
 position = Vector2(616, 256)
 script = ExtResource("23_7yhrs")
-target_scene = "res://features/world/star3.tscn"
+target_scene = "res://features/world/star1.tscn"
 target_spawn = "west"
-label = "별빛 이끼 들판 ▶"
+label = "별똥별 낙하지 ▶"
 
-[node name="@CollisionShape2D@3011" type="CollisionShape2D" parent="Portal_east" unique_id=338330223]
+[node name="@CollisionShape2D@3388" type="CollisionShape2D" parent="Portal_east" unique_id=1809258823]
 shape = SubResource("RectangleShape2D_fkvx2")
 
-[node name="Gloom" type="CanvasModulate" parent="." unique_id=941963184]
+[node name="Gloom" type="CanvasModulate" parent="." unique_id=822116413]
 color = Color(0.8, 0.74, 1, 1)
 
-[node name="Backdrop" type="CanvasLayer" parent="." unique_id=2010565762]
+[node name="Backdrop" type="CanvasLayer" parent="." unique_id=1869374515]
 script = ExtResource("24_humq1")
 mode = 2
 
-[node name="Music" type="AudioStreamPlayer" parent="." unique_id=600565101]
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=1691068954]
 stream = ExtResource("25_i8flp")
 volume_db = -10.0

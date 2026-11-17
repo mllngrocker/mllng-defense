@@ -10,14 +10,14 @@ size = Vector2(40, 22)
 
 [node name="MeteorGolem" instance=ExtResource("1_base")]
 script = ExtResource("3_boss")
-boss_name = "운석 골렘"
+boss_name = "자수정 골렘"
 slam_radius = 96.0
-slam_damage = 560
+slam_damage = 700
 summon = ExtResource("4_minion")
 kind = 3
 max_hp = 420000
 speed = 30.0
-damage = 330
+damage = 412
 chase_range = 170.0
 anim_fps = 8.0
 side_frames = 8
@@ -26,14 +26,16 @@ gold_reward = 200000
 gem_chance = 1.0
 gem_reward = 12000
 drop_chance = 1.0
+hard = true
+aura_scale = 1.5
 
 [node name="Shadow" parent="." index="0"]
-scale = Vector2(3.4, 3.4)
+scale = Vector2(4.2, 4.2)
 
 [node name="Sprite" parent="." index="1"]
 texture = ExtResource("2_tex")
-offset = Vector2(0, -34.0)
-scale = Vector2(1.5, 1.5)
+offset = Vector2(0, -36.0)
+scale = Vector2(2.0, 2.0)
 hframes = 15
 vframes = 1
 

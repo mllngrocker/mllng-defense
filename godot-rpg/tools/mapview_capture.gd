@@ -10,7 +10,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS  # 지도가 게임을 멈춰도 녹화 진행
 	Save.persist = false
 	Save.quest.erase("bosses")
-	world = (load("res://features/world/shore.tscn") as PackedScene).instantiate()
+	world = (load("res://features/world/%s.tscn" % ("star_town" if "--space" in OS.get_cmdline_user_args() else "shore")) as PackedScene).instantiate()
 	world.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(world)
 	var gate := world.find_children("Portal_*", "", true, false)[0] as Node2D
