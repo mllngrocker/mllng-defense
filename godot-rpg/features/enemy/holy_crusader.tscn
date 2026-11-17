@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/vendor/heaven/holy_crusader.png" id="2_tex"]
+
+[node name="HolyCrusader" instance=ExtResource("1_base")]
+kind = 0
+max_hp = 38000
+speed = 34.0
+damage = 415
+chase_range = 120.0
+gold_reward = 790
+gem_chance = 0.3
+gem_reward = 131
+drop_chance = 0.3
+anim_fps = 6.0
+side_frames = 4
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource("2_tex")
+scale = Vector2(2.2, 2.2)
+offset = Vector2(0, -8.0)
+hframes = 4
+vframes = 1

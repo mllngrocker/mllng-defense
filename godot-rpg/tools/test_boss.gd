@@ -31,7 +31,7 @@ func _ready() -> void:
 	boss.global_position = player.global_position + Vector2(60, 0)
 	boss._start_pattern("ring")
 	await _frames(40)
-	var shots := world.find_children("*", "BossShot", true, false).size()
+	var shots := BossShot.count(world)
 	_check("탄막: 둥글게 탄을 쏜다 (%d발)" % shots, shots >= 10)
 	# 장판
 	boss._start_pattern("puddle")

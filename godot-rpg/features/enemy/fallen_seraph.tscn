@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/vendor/heaven/fallen_seraph.png" id="2_tex"]
+
+[node name="FallenSeraph" instance=ExtResource("1_base")]
+kind = 3
+max_hp = 38000
+speed = 44.0
+damage = 470
+chase_range = 200.0
+gold_reward = 0
+gem_chance = 0.0
+gem_reward = 0
+drop_chance = 0.0
+anim_fps = 8.0
+side_frames = 4
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource("2_tex")
+scale = Vector2(0.75, 0.75)
+offset = Vector2(0, -34)
+hframes = 4
+vframes = 1

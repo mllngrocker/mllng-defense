@@ -19,6 +19,8 @@ const BOSS_HP_MULT := 1.6
 ## 9장부터: 기술을 쉴 새 없이 이어 쓰고(콤보), 체력 반 아래면 2페이즈(더 빨라짐), 발밑에 마법진
 @export var hard := false
 @export var aura_scale := 1.0
+## 최종 보스 극악: 기술 간격 더 짧게·콤보 더 자주·체력 1/4 아래 3페이즈(심판)
+@export var brutal := false
 
 var awake := false
 var attack_t := 2.5
@@ -44,6 +46,11 @@ const PATTERNS := {
 	"star_eater": [["blink", "charge", "rain", "cross", "puddle", "nova"], Color("b05cff")],
 	"void_mage": [["beam", "blink", "spiral", "beam", "rain", "cross"], Color("7a5cff")],
 	"star_lich": [["beam", "cross", "rain", "spiral", "nova", "blink", "beam"], Color("ffd06a")],
+	"heaven_guard": [["jump", "nova", "cross", "rain", "charge", "beam"], Color("fff0a0")],
+	"sword_saint": [["slashwave", "flashdash", "genesis", "slashwave", "blink", "cross"], Color("ffe9a8")],
+	"knight_captain": [["flashdash", "slashwave", "genesis", "nova", "jump", "beam"], Color("ffd770")],
+	"heaven_king": [["slashwave", "genesis", "flashdash", "cross", "nova", "spiral"], Color("ffcf5a")],
+	"archangel": [["genesis", "slashwave", "beam", "summon", "flashdash", "cross", "spiral", "genesis", "blink", "nova", "rain"], Color("fff6d0")],
 }
 var skill_t := 5.0
 var pat := ""  # 지금 쓰는 기술
@@ -56,6 +63,8 @@ var _roar_t := -1.0  # 대면 포효(충격파 고리) 진행 시간
 var _beams: Array = []  # 빔 각도(라디안)
 var _beam_hit := false
 var _phase2 := false
+var _phase3 := false
+var _trail_t := 0.0
 var _aura := 0.0
 const BEAM_LEN := 440.0
 const BEAM_W := 13.0
@@ -68,6 +77,9 @@ func _ready() -> void:
 	hp = max_hp
 	slam_damage = roundi(slam_damage * Enemy.DMG_MULT)
 	add_to_group(&"bosses")
+	if hard:
+		_unshade.call_deferred()
+	_warm_nav.call_deferred()
 	if Game.dungeon == "" and Quests.boss_defeated(kind_id()):
 		# 이미 잡은 보스는 맵에 다시 나오지 않는다(로비·맵을 다녀와도). 깨어나 체력바를 띄우기 전에 바로 꺼 둔다
 		awake = true
@@ -96,12 +108,21 @@ func _physics_process(delta: float) -> void:
 		_phase2 = true
 		_roar()
 		Events.notice.emit(boss_name, "분노! 기술이 쉴 새 없이 쏟아진다")
+	if brutal and not _phase3 and hp < max_hp / 4 and pat == "":
+		_phase3 = true
+		_roar()
+		Game.flash(Color(1, 1, 0.9, 0.6), 0.4)
+		Events.notice.emit(boss_name, "최후의 심판 — 빛이 닿지 않는 자리를 찾아라!")
+		_start_pattern("judgement")
+		return
 	if pat != "":
 		_run_pattern(delta)
 		return
 	skill_t -= delta
 	if skill_t <= 0.0 and telegraph_t < 0.0 and PATTERNS.has(kind_id()):
-		if hard:
+		if brutal:
+			skill_t = randf_range(0.45, 0.8) if _angry() else randf_range(0.9, 1.4)
+		elif hard:
 			skill_t = randf_range(0.8, 1.4) if _angry() else randf_range(1.5, 2.4)
 		else:
 			skill_t = randf_range(3.5, 5.0) if _angry() else randf_range(5.0, 7.0)
@@ -200,6 +221,23 @@ func _start_pattern(p: String) -> void:
 		"nova":  # 커지는 충격파(닿는 순간 구르기)
 			pat_t = 0.65
 			Game.sfx(&"charge", -2.0, 0.0)
+		"genesis":  # 하늘에서 빛기둥이 용사 둘레로 몇 겹 내려앉는다
+			pat_t = 0.2
+			Game.sfx(&"skill_light", -2.0, 0.0)
+		"summon":  # 타락 천사 소환
+			pat_t = 0.7
+			Game.sfx(&"skill_dark", -2.0, 0.0)
+		"slashwave":  # 검을 휘둘러 초승달 검기 파동을 연달아(맵 끝까지 날아감)
+			pat_t = 0.4
+			Game.sfx(&"charge", -4.0, 0.0)
+		"flashdash":  # 하얀 섬광을 남기며 연속 돌진(지나간 자리가 뒤늦게 터진다)
+			pat_t = 0.45
+			pat_dir = global_position.direction_to(target.global_position)
+			_trail_t = 0.0
+			Game.sfx(&"charge", -2.0, 0.0)
+		"judgement":  # 3페이즈: 넓은 땅 전체에 빛기둥, 빈자리 두 칸만 안전
+			pat_t = 0.3
+			Game.sfx(&"alert", 0.0, 0.0)
 	queue_redraw()
 
 
@@ -283,7 +321,7 @@ func _run_pattern(delta: float) -> void:
 					_end_pattern()
 		"spiral":
 			pat_stage += 1
-			if pat_stage % 4 == 0:
+			if pat_stage % 6 == 0:
 				var arms := 4 if _angry() else 3
 				var a := pat_dir.angle() + pat_t * 3.4
 				for k in arms:
@@ -299,6 +337,86 @@ func _run_pattern(delta: float) -> void:
 				pat_t = 0.5
 				if pat_stage >= (3 if _angry() else 2):
 					_end_pattern()
+		"genesis":
+			if pat_t <= 0.0:
+				var c := target.global_position + target.velocity * 0.25
+				var ring := 6 + (2 if _angry() else 0)
+				var rad := 46.0 + pat_stage * 18.0
+				BossMark.drop(_effects_parent(), c, 34.0, 0.85, roundi(damage * 1.5), _color(), true)
+				for k in ring:
+					var a := k * TAU / ring + pat_stage * 0.5
+					BossMark.drop(_effects_parent(), c + Vector2(cos(a), sin(a) * 0.7) * rad, 30.0, 0.95, roundi(damage * 1.3), _color(), true)
+				pat_stage += 1
+				pat_t = 0.32
+				if pat_stage >= (5 if brutal else (4 if _angry() else 3)):
+					_end_pattern()
+		"summon":
+			if pat_t <= 0.0:
+				minions = minions.filter(func(m: Node2D) -> bool: return is_instance_valid(m))
+				if summon:
+					for i in mini(3, 6 - minions.size()):
+						var at := _safe_pos(global_position + Vector2.from_angle(randf() * TAU) * randf_range(50.0, 90.0))
+						BossMark.drop(_effects_parent(), at, 26.0, 0.25, 0, _color(), true)
+						var m := summon.instantiate() as Node2D
+						m.position = at
+						_effects_parent().add_child(m)
+						minions.append(m)
+				Game.flash(Color(1, 1, 0.9, 0.25), 0.15)
+				_end_pattern()
+		"slashwave":
+			if pat_t <= 0.0:
+				var base := (target.global_position - _core()).angle()
+				var n := 7 if _angry() else 5
+				for k in n:
+					var a := base + (k - (n - 1) / 2.0) * 0.32 + (0.16 if pat_stage % 2 == 1 else 0.0)
+					BossWave.fire(_effects_parent(), _core(), Vector2.from_angle(a), roundi(damage * 1.4), _color(), 250.0 + pat_stage * 25.0)
+				Game.sfx(&"slash", -2.0)
+				Game.add_shake(3.0)
+				pat_stage += 1
+				pat_t = 0.28
+				if pat_stage >= (5 if brutal else (4 if _angry() else 3)):
+					_end_pattern()
+		"flashdash":
+			if pat_stage % 2 == 0 and pat_t <= 0.0:
+				pat_stage += 1
+				pat_t = 0.32
+				_charge_hit = false
+				Game.sfx(&"dash", 0.0)
+				Game.flash(Color(1, 1, 1, 0.18), 0.08)
+			elif pat_stage % 2 == 1:
+				velocity = pat_dir * 430.0
+				move_and_slide()
+				_trail_t -= delta
+				if _trail_t <= 0.0:
+					_trail_t = 0.035
+					BossMark.drop(_effects_parent(), global_position, 22.0, 0.5, roundi(damage * 1.1), Color(1, 1, 1), false)
+				if not _charge_hit and target.global_position.distance_to(global_position) < 28.0:
+					_charge_hit = true
+					target.take_hit(roundi(damage * 1.6), global_position, 340.0)
+				if pat_t <= 0.0:
+					velocity = Vector2.ZERO
+					pat_stage += 1
+					if pat_stage >= (8 if brutal else 6):
+						_end_pattern()
+					else:
+						pat_t = 0.3  # 다음 돌진 조준
+						pat_dir = global_position.direction_to(target.global_position)
+		"judgement":
+			if pat_t <= 0.0:
+				var c := target.global_position
+				var cells: Array[Vector2] = []
+				for gy in range(-3, 4):
+					for gx in range(-4, 5):
+						cells.append(c + Vector2(gx * 56.0, gy * 40.0))
+				cells.shuffle()
+				var safe := [cells.pop_back(), cells.pop_back()]
+				for sp: Vector2 in safe:
+					BossMark.drop(_effects_parent(), sp, 22.0, 1.5, 0, Color(0.5, 1.0, 0.6), false)  # 초록 원 = 안전한 자리
+				for q: Vector2 in cells:
+					BossMark.drop(_effects_parent(), q, 36.0, 1.6, roundi(damage * 2.2), _color(), true)
+				Game.add_shake(8.0)
+				_end_pattern()
+				skill_t = 2.2
 		"blink":
 			if pat_stage == 0:
 				sprite.modulate.a = clampf(pat_t / 0.35, 0.0, 1.0)
@@ -320,8 +438,28 @@ func _end_pattern() -> void:
 	pat = ""
 	velocity = Vector2.ZERO
 	queue_redraw()
-	if hard and randf() < (0.75 if _angry() else 0.45):
+	if hard and randf() < (0.85 if brutal else (0.75 if _angry() else 0.45)):
 		skill_t = minf(skill_t, 0.25)  # 콤보: 바로 다음 기술
+
+
+## 길찾기 격자는 처음 쓸 때 맵 전체 칸을 물리 검사해서 만든다 → 기술 중이 아니라 맵 열 때 미리
+func _warm_nav() -> void:
+	var world := get_tree().get_first_node_in_group(&"world")
+	if world and world.has_method(&"nav_path"):
+		world.call(&"nav_path", global_position, global_position)
+
+
+## 9장 보스는 맵 색칠(CanvasModulate, 붉은 별 맵 등)을 되돌려 원래 색 그대로 또렷하게 보이게
+func _unshade() -> void:
+	var world := get_tree().get_first_node_in_group(&"world")
+	if world == null:
+		return
+	for n in world.find_children("*", "CanvasModulate", true, false):
+		var c := (n as CanvasModulate).color
+		var undo := Color(1.0 / maxf(c.r, 0.2), 1.0 / maxf(c.g, 0.2), 1.0 / maxf(c.b, 0.2))
+		sprite.self_modulate = undo
+		self_modulate = undo
+		return
 
 
 ## 빔·탄이 나가는 자리(몸 가운데)
@@ -361,6 +499,9 @@ func _slam() -> void:
 	var c := global_position
 	var fx := Fx.spawn(_effects_parent(), EXPLOSION, 9, c + Vector2(0, -8), 18.0)
 	fx.scale = Vector2.ONE * (slam_radius / 20.0)
+	if hard:  # 9장부터: 내려치기 폭발도 보스 색(천계는 하얀 금빛)
+		fx.modulate = _color().lightened(0.3)
+		fx.scale *= 0.75
 	var ring := Fx.spawn(_effects_parent(), CIRCLE, 4, c, 14.0)
 	ring.scale = Vector2(slam_radius / 14.0, slam_radius / 28.0)
 	Game.sfx(&"boom", 0.0)
@@ -426,6 +567,18 @@ func _draw() -> void:
 				draw_line(c, end, Color(bc.lightened(0.35), 0.9), w)
 				draw_line(c, end, Color(1, 1, 1, 0.95), w * 0.35)
 				draw_circle(c, w * 1.2, Color(1, 1, 1, 0.8))
+	# 섬광 돌진: 조준 중엔 하얀 예고선, 달리는 중엔 뒤로 하얀 잔광
+	if pat == "flashdash":
+		if pat_stage % 2 == 0:
+			var bl := 0.5 + 0.5 * sin(Time.get_ticks_msec() * 0.04)
+			draw_line(Vector2(0, -10), Vector2(0, -10) + pat_dir * 190.0, Color(1, 1, 1, 0.25), 22.0)
+			draw_line(Vector2(0, -10), Vector2(0, -10) + pat_dir * 190.0, Color(1, 1, 1, 0.5 + 0.4 * bl), 2.0)
+		else:
+			draw_line(Vector2(0, -12), Vector2(0, -12) - pat_dir * 90.0, Color(1, 1, 1, 0.35), 26.0)
+			draw_line(Vector2(0, -12), Vector2(0, -12) - pat_dir * 70.0, Color(1, 1, 0.92, 0.9), 8.0)
+	if pat == "slashwave":
+		var k2 := 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.03)
+		draw_arc(Vector2(0, -14), 26.0, 0, TAU, 24, Color(_color(), 0.5 * k2), 4.0)
 	# 나선·충격파 기 모으기
 	if pat == "nova" or pat == "spiral":
 		var k := 1.0 - clampf(pat_t / 0.65, 0.0, 1.0) if pat == "nova" else 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.02)

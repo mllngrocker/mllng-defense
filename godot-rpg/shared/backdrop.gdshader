@@ -61,6 +61,20 @@ void fragment() {
 		// 험악할수록 화면 가장자리가 붉게 고동친다(굶주린 별의 맥박)
 		float vig = length(SCREEN_UV - 0.5) * 1.4;
 		col += vec3(0.5, 0.0, 0.05) * smoothstep(0.45, 1.0, vig) * mn * mn * (0.55 + 0.45 * sin(TIME * 2.2));
+	} else if (mode == 3) {
+		// 천계: 금빛 하늘 + 아래로 흐르는 구름 바다 + 내리쬐는 빛줄기. height = 타락한 정도(0 금빛 ~ 1 잿빛·붉은 균열)
+		float fl = height;
+		col = mix(vec3(1.0, 0.93, 0.74), vec3(0.98, 0.80, 0.55), SCREEN_UV.y);
+		col = mix(col, mix(vec3(0.62, 0.58, 0.6), vec3(0.42, 0.32, 0.36), SCREEN_UV.y), fl * 0.8);
+		float c1 = fbm(p * 1.4 + vec2(TIME * 0.02, 0.0));
+		float c2 = fbm(p * 2.6 - vec2(TIME * 0.015, 0.0) + 5.0);
+		float cloud = smoothstep(0.4, 0.75, c1 * 0.65 + c2 * 0.45);
+		col = mix(col, mix(vec3(1.0, 0.99, 0.95), vec3(0.8, 0.76, 0.78), fl), cloud * 0.85);
+		float ray = pow(max(0.0, sin((SCREEN_UV.x + SCREEN_UV.y * 0.35) * 18.0 + TIME * 0.3)), 8.0) * (1.0 - SCREEN_UV.y);
+		col += vec3(1.0, 0.9, 0.6) * ray * 0.25 * (1.0 - fl);
+		// 타락할수록 붉은 균열이 하늘에 번진다
+		float crack = smoothstep(0.62, 0.66, fbm(p * 3.0 + 9.0)) * fl;
+		col = mix(col, vec3(0.75, 0.12, 0.18), crack * (0.6 + 0.4 * sin(TIME * 2.0)));
 	} else {
 		col = mix(vec3(0.05, 0.25, 0.42), vec3(0.01, 0.08, 0.2), SCREEN_UV.y);
 		float w = fbm(p * 3.0 + vec2(TIME * 0.05, TIME * 0.03));

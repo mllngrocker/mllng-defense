@@ -330,6 +330,298 @@ const DATA := {
 		"npcs": [],
 		"scene": "res://features/world/garden6.tscn"
 	},
+	"heaven1": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "star_town",
+				"x": 400.0,
+				"y": 624.0
+			},
+			{
+				"boss": "",
+				"to": "heaven2",
+				"x": 400.0,
+				"y": 24.0
+			}
+		],
+		"mobs": [
+			"cherub",
+			"heaven_wisp",
+			"resolute_angel"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven1.tscn"
+	},
+	"heaven10": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven9",
+				"x": 24.0,
+				"y": 272.0
+			},
+			{
+				"boss": "",
+				"to": "heaven11",
+				"x": 936.0,
+				"y": 272.0
+			}
+		],
+		"mobs": [
+			"fallen_planetar",
+			"judgement_eye"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven10.tscn"
+	},
+	"heaven11": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven10",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "heaven_king",
+				"to": "heaven12",
+				"x": 840.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"heaven_king",
+			"mad_priest",
+			"fallen_deva",
+			"fallen_knight"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven11.tscn"
+	},
+	"heaven12": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven11",
+				"x": 24.0,
+				"y": 256.0
+			}
+		],
+		"mobs": [
+			"archangel",
+			"fallen_planetar",
+			"fallen_deva"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven12.tscn"
+	},
+	"heaven2": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven1",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "heaven_town",
+				"x": 808.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"cherub",
+			"resolute_angel",
+			"heaven_spirit"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven2.tscn"
+	},
+	"heaven3": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven_town",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "sword_saint",
+				"to": "heaven4",
+				"x": 840.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"sword_saint",
+			"resolute_angel",
+			"holy_halberd"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven3.tscn"
+	},
+	"heaven4": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven3",
+				"x": 24.0,
+				"y": 288.0
+			},
+			{
+				"boss": "",
+				"to": "heaven5",
+				"x": 872.0,
+				"y": 288.0
+			}
+		],
+		"mobs": [
+			"cherub",
+			"holy_crusader",
+			"heaven_spirit"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven4.tscn"
+	},
+	"heaven5": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven4",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "heaven6",
+				"x": 808.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"holy_crusader",
+			"holy_blade",
+			"heaven_knight"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven5.tscn"
+	},
+	"heaven6": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven5",
+				"x": 24.0,
+				"y": 240.0
+			},
+			{
+				"boss": "heaven_guard",
+				"to": "heaven7",
+				"x": 1000.0,
+				"y": 240.0
+			}
+		],
+		"mobs": [
+			"heaven_guard",
+			"holy_halberd",
+			"sword_archon"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven6.tscn"
+	},
+	"heaven7": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven6",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "heaven8",
+				"x": 840.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"sword_archon",
+			"planetar",
+			"marble_gargoyle"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven7.tscn"
+	},
+	"heaven8": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven7",
+				"x": 24.0,
+				"y": 320.0
+			},
+			{
+				"boss": "",
+				"to": "heaven9",
+				"x": 840.0,
+				"y": 320.0
+			}
+		],
+		"mobs": [
+			"mad_priest",
+			"fallen_deva"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven8.tscn"
+	},
+	"heaven9": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven8",
+				"x": 24.0,
+				"y": 304.0
+			},
+			{
+				"boss": "knight_captain",
+				"to": "heaven10",
+				"x": 872.0,
+				"y": 304.0
+			}
+		],
+		"mobs": [
+			"knight_captain",
+			"fallen_deva",
+			"fallen_knight"
+		],
+		"npcs": [],
+		"scene": "res://features/world/heaven9.tscn"
+	},
+	"heaven_town": {
+		"doors": [
+			{
+				"boss": "",
+				"to": "heaven2",
+				"x": 24.0,
+				"y": 256.0
+			},
+			{
+				"boss": "",
+				"to": "heaven3",
+				"x": 616.0,
+				"y": 256.0
+			}
+		],
+		"mobs": [],
+		"npcs": [
+			"빛의 수호자",
+			"어린 천사",
+			"천계 기록관"
+		],
+		"scene": "res://features/world/heaven_town.tscn"
+	},
 	"hell1": {
 		"doors": [
 			{
@@ -1631,6 +1923,12 @@ const DATA := {
 				"to": "star1",
 				"x": 616.0,
 				"y": 256.0
+			},
+			{
+				"boss": "star_lich",
+				"to": "heaven1",
+				"x": 320.0,
+				"y": 24.0
 			}
 		],
 		"mobs": [],

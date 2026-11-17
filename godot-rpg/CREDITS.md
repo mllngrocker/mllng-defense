@@ -32,3 +32,7 @@ git에 올리지 않는 소재(`assets/_zips`, `assets/_raw`, `assets/vendor`)�
 - Cainos「Pixel Art Icon Pack - RPG」(https://cainos.itch.io/pixel-art-icon-pack-rpg) — 상업 OK, 재배포 금지. `assets/vendor/gear_icons/`(git 제외) 장비 그림 일부
 - 「Mecha-stone Golem 0.1」(itch.io, Darkpixel-Kronovi 무료 소재로 받음) — `assets/vendor/monsters/meteor_golem.png`(git 제외) 9장 중간 보스 운석 골렘(보랏빛으로 다시 칠함)
 - 보스 무기 `assets/vendor/star/`(git 제외): Ravenmore 무기 아이콘을 다시 칠한 것
+- Delta(deltasquib)「Pix-Realms - Holy Knights Pack 1」(https://deltasquib.itch.io/pix-realms-holy-knights-pack-1) — CC0. `assets/monsters2/holy_halberd.png`·`holy_blade.png` 10장 천계 창병·성검사
+- DeepDiveGameStudio「Holy Asset Pack」기본판(https://deepdivegamestudio.itch.io/holyassetpack) — 상업 OK, 재배포 금지. `assets/vendor/heaven/`(git 제외) 10장 천사·성전사·사제(타락 버전은 다시 칠함)
+- LuizMelo「Fantasy Warrior」「Medieval Warrior Pack 3」「Medieval King Pack 2」「EVil Wizard 2」(https://luizmelo.itch.io) — CC0. `assets/vendor/heaven/`(하얀 성광색으로 다시 칠함) 10장 보스 백은의 검성·성광 기사단장·천계의 왕·타락한 대천사
+- RDBI(Nutsa)「Fallen Angels」(https://rdbi.itch.io/fallen-angels) — 상업 OK, 재배포 금지. `assets/vendor/heaven/fallen_seraph.png`(git 제외) 대천사가 부르는 타락한 세라핌

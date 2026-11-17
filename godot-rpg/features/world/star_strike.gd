@@ -7,6 +7,7 @@ const STILL_TIME := 2.6  # 이만큼 거의 안 움직이면 노림 운석
 const STILL_DIST := 26.0
 
 @export var menace := 0.0  # 0 잔잔 ~ 1 별의 심장 근처
+@export var heaven := false  # 천계: "심판의 빛"(금빛)
 
 var _next := 5.0
 var _strikes: Array[Dictionary] = []  # {pos, r, t, warn, dmg, big, done}
@@ -40,7 +41,7 @@ func _physics_process(delta: float) -> void:
 				_add(p.global_position, 64.0 + 26.0 * menace, true)
 				if not _warned:
 					_warned = true
-					Events.notice.emit("별이 노린다!", "한자리에 서 있으면 위험해요 · 움직이거나 구르세요")
+					Events.notice.emit("심판의 빛!" if heaven else "별이 노린다!", "한자리에 서 있으면 위험해요 · 움직이거나 구르세요")
 		# 무작위 습격(뒤로 갈수록 자주·여러 개)
 		_next -= delta
 		if _next <= 0.0:
@@ -56,6 +57,13 @@ func _physics_process(delta: float) -> void:
 
 func _add(at: Vector2, r: float, big: bool, delay := 0.0) -> void:
 	var warn := lerpf(1.35, 0.95, menace) + (0.25 if big else 0.0)
+	if heaven:  # 천계: 하늘에서 거대한 빛기둥이 내려앉는다(BossMark 빛기둥, 한 노드가 한꺼번에 그림)
+		var p := _player()
+		var frac := lerpf(0.3, 0.7, menace) * (1.5 if big else 1.0)
+		var dmg := roundi((p.max_hp if p else 100) * frac)
+		BossMark.drop(get_parent(), at, r * (1.15 if big else 1.0), warn + delay, maxi(1, dmg), Color(1.0, 0.78, 0.3) if not big else Color(1.0, 0.6, 0.2), true, 0.0)
+		Game.sfx(&"skill_light", -10.0 if not big else -4.0, 0.05)
+		return
 	_strikes.append({"pos": at, "r": r, "t": -delay, "warn": warn, "big": big, "done": false})
 	Game.sfx(&"alert", -8.0 if not big else -2.0, 0.05)
 
@@ -84,6 +92,8 @@ func _draw() -> void:
 		var r: float = s["r"]
 		var warn: float = s["warn"]
 		var col := Color(1.0, 0.25, 0.4) if not s["big"] else Color(1.0, 0.15, 0.6)
+		if heaven:
+			col = Color(1.0, 0.78, 0.25) if not s["big"] else Color(1.0, 0.55, 0.15)
 		draw_set_transform(pos, 0.0, Vector2(1.0, 0.6))
 		if t < warn:
 			var k := t / warn

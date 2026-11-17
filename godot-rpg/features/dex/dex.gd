@@ -46,6 +46,15 @@ const MOBS: Array = [
 	["star_eater", "별을 먹는 자", true],
 	["void_mage", "공허의 마도사", true],
 	["star_lich", "별을 삼킨 사령왕", true],
+	["heaven_wisp", "천상의 도깨비불", false], ["heaven_spirit", "성광 정령", false], ["heaven_bird", "백익 새인간", false], ["heaven_knight", "빛의 기사", false],
+	["marble_gargoyle", "대리석 가고일", false], ["heaven_drake", "백금 용인", false],
+	["cherub", "꼬마 천사", false], ["resolute_angel", "결의의 천사", false], ["holy_crusader", "성전사", false], ["holy_halberd", "천계 창병", false], ["holy_blade", "천계 성검사", false], ["sword_archon", "검의 천사장", false], ["planetar", "빛의 천사장", false],
+	["sword_saint", "백은의 검성", true],
+	["heaven_guard", "천계의 문지기", true],
+	["knight_captain", "성광 기사단장", true], ["heaven_king", "천계의 왕", true], ["fallen_seraph", "타락한 세라핌", false],
+	["archangel", "타락한 대천사", true],
+	["fallen_deva", "타락한 천사", false], ["mad_priest", "광신 사제", false], ["fallen_planetar", "타락한 천사장", false],
+	["fallen_knight", "타락한 성기사", false], ["judgement_eye", "심판의 눈", false],
 ]
 
 ## 챕터 보상: [이 보스까지가 한 챕터, 이름, 보석]. 그 챕터 몬스터(보스 포함)를 모두 한 번씩 잡으면 받는다
@@ -54,7 +63,7 @@ const CHAPTERS: Array = [
 	["yeti_king", "설산", 250], ["kraken", "해저 신전", 300], ["mist_apostle", "안개 군도", 350],
 	["black_gardener", "검은 정원", 400], ["flame_dragon", "용암 지대", 450], ["demon_lord", "지옥", 500],
 	["storm_king", "천공의 탑", 600], ["giant_soul", "큰 나무 뿌리", 800],
-	["star_lich", "굶주린 별", 1500],
+	["star_lich", "굶주린 별", 1500], ["archangel", "천계", 3000],
 ]
 ## 한 몬스터를 이만큼 잡으면 보석(자동으로 받음)
 const MASTERY_KILLS := 100

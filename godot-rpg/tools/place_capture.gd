@@ -6,6 +6,11 @@ func _ready() -> void:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--map="):
 			id = a.substr(6)
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--pet="):  # 데리고 다닐 펫(예: --pet=lich_skull)
+			Save.pet = a.substr(6)
+			if not Save.pets.has(Save.pet):
+				Save.pets[Save.pet] = 1
 	var w := (load("res://features/world/%s.tscn" % id) as PackedScene).instantiate()
 	add_child(w)
 	for a in OS.get_cmdline_user_args():

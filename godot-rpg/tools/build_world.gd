@@ -384,6 +384,54 @@ const MORE_MAPS: Array[Dictionary] = [
 			{"side": "west", "to": "res://features/world/root5.tscn", "spawn": "east", "label": "◀ 뿌리 심장 앞", "at": 14},
 			{"side": "east", "to": "res://features/world/star_gate.tscn", "spawn": "west", "label": "부서진 별의 신전 ▶", "at": 14, "lock": "giant_soul", "lock_title": "8장 보스 고대 거인의 혼"},
 		], "clearings": 1, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 24, "bushes": 0, "flowers": 0, "spawns": [["seed_fiend", 4, 6, 60], ["seed_guard", 4, 6, 60]], "crystals": 14, "tint": Color(0.66, 0.74, 0.7), "bosses": [["giant_soul", Vector2i(28, 15)]]},  # 동굴 바닥엔 밝은 모래 테 물이 어울리지 않아 연못·강 없음
+	# ── 4부 10장: 천계(야영지 북쪽 하늘 틈, 타락할수록 하늘에 붉은 균열) ──
+	{"path": "res://features/world/heaven1.tscn", "title": "갈라진 하늘 틈", "w": 50, "h": 40, "seed": 1101, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "south", "to": "res://features/world/star_town.tscn", "spawn": "north", "label": "▼ 별지기 야영지", "at": 24},
+			{"side": "north", "to": "res://features/world/heaven2.tscn", "spawn": "west", "label": "구름 계단 ▶", "at": 24},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 30, "spawns": [["cherub", 6, 6, 60], ["heaven_wisp", 5, 6, 60], ["resolute_angel", 2, 6, 60]], "crystals": 30, "isle": true, "backdrop": "heaven", "sky_h": 0.0, "tint": Color(1.0, 0.96, 0.86)},
+	{"path": "res://features/world/heaven2.tscn", "title": "구름 계단", "w": 52, "h": 40, "seed": 1102, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven1.tscn", "spawn": "north", "label": "◀ 갈라진 하늘 틈", "at": 19},
+			{"side": "east", "to": "res://features/world/heaven_town.tscn", "spawn": "west", "label": "빛의 정원 마을 ▶", "at": 19},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 30, "spawns": [["cherub", 5, 6, 60], ["resolute_angel", 5, 6, 60], ["heaven_spirit", 3, 6, 60]], "crystals": 30, "isle": true, "backdrop": "heaven", "sky_h": 0.05, "tint": Color(0.989, 0.943, 0.85)},
+	{"path": "res://features/world/heaven3.tscn", "title": "백금 회랑", "w": 54, "h": 40, "seed": 1103, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven_town.tscn", "spawn": "east", "label": "◀ 빛의 정원 마을", "at": 19},
+			{"side": "east", "to": "res://features/world/heaven4.tscn", "spawn": "west", "label": "빛의 분수 정원 ▶", "at": 19, "lock": "sword_saint", "lock_title": "10장 중간 보스 백은의 검성"},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 30, "spawns": [["resolute_angel", 6, 6, 60], ["holy_halberd", 5, 6, 60]], "crystals": 34, "isle": true, "backdrop": "heaven", "sky_h": 0.12, "tint": Color(0.974, 0.919, 0.836), "bosses": [["sword_saint", Vector2i(42, 19)]]},
+	{"path": "res://features/world/heaven4.tscn", "title": "빛의 분수 정원", "w": 56, "h": 36, "seed": 1104, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven3.tscn", "spawn": "east", "label": "◀ 백금 회랑", "at": 17},
+			{"side": "east", "to": "res://features/world/heaven5.tscn", "spawn": "west", "label": "천사의 훈련장 ▶", "at": 17},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 30, "spawns": [["cherub", 5, 6, 60], ["holy_crusader", 4, 6, 60], ["heaven_spirit", 4, 6, 60]], "crystals": 30, "isle": true, "backdrop": "heaven", "sky_h": 0.2, "tint": Color(0.956, 0.892, 0.82)},
+	{"path": "res://features/world/heaven5.tscn", "title": "천사의 훈련장", "w": 52, "h": 40, "seed": 1105, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven4.tscn", "spawn": "east", "label": "◀ 빛의 분수 정원", "at": 19},
+			{"side": "east", "to": "res://features/world/heaven6.tscn", "spawn": "west", "label": "천계의 성문 ▶", "at": 19},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 30, "spawns": [["holy_crusader", 6, 6, 60], ["holy_blade", 5, 6, 60], ["heaven_knight", 3, 6, 60]], "crystals": 28, "isle": true, "backdrop": "heaven", "sky_h": 0.28, "tint": Color(0.938, 0.865, 0.804)},
+	{"path": "res://features/world/heaven6.tscn", "title": "천계의 성문", "w": 64, "h": 30, "seed": 1106, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven5.tscn", "spawn": "east", "label": "◀ 천사의 훈련장", "at": 14},
+			{"side": "east", "to": "res://features/world/heaven7.tscn", "spawn": "west", "label": "금빛 도서관 ▶", "at": 14, "lock": "heaven_guard", "lock_title": "10장 중간 보스 천계의 문지기"},
+		], "clearings": 4, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0, "spawns": [["holy_halberd", 5, 6, 60], ["sword_archon", 4, 6, 60]], "crystals": 26, "isle": true, "backdrop": "heaven", "sky_h": 0.36, "tint": Color(0.921, 0.838, 0.788), "bosses": [["heaven_guard", Vector2i(50, 15)]]},
+	{"path": "res://features/world/heaven7.tscn", "title": "금빛 도서관", "w": 54, "h": 40, "seed": 1107, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/tower.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven6.tscn", "spawn": "east", "label": "◀ 천계의 성문", "at": 19},
+			{"side": "east", "to": "res://features/world/heaven8.tscn", "spawn": "west", "label": "타락한 성소 ▶", "at": 19},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0, "spawns": [["sword_archon", 5, 6, 60], ["planetar", 4, 6, 60], ["marble_gargoyle", 3, 6, 60]], "crystals": 24, "isle": true, "backdrop": "heaven", "sky_h": 0.45, "tint": Color(0.901, 0.807, 0.77)},
+	{"path": "res://features/world/heaven8.tscn", "title": "타락한 성소", "w": 54, "h": 40, "seed": 1108, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/hell_deep.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven7.tscn", "spawn": "east", "label": "◀ 금빛 도서관", "at": 19},
+			{"side": "east", "to": "res://features/world/heaven9.tscn", "spawn": "west", "label": "검은 깃털 숲 ▶", "at": 19},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0, "spawns": [["mad_priest", 6, 6, 60], ["fallen_deva", 4, 6, 60]], "crystals": 20, "isle": true, "backdrop": "heaven", "sky_h": 0.55, "tint": Color(0.879, 0.773, 0.75)},
+	{"path": "res://features/world/heaven9.tscn", "title": "검은 깃털 숲", "w": 56, "h": 38, "seed": 1109, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/hell_deep.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven8.tscn", "spawn": "east", "label": "◀ 타락한 성소", "at": 18},
+			{"side": "east", "to": "res://features/world/heaven10.tscn", "spawn": "west", "label": "무너진 천상 다리 ▶", "at": 18, "lock": "knight_captain", "lock_title": "10장 중간 보스 성광 기사단장"},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0, "spawns": [["fallen_deva", 6, 6, 60], ["fallen_knight", 4, 6, 60]], "crystals": 18, "isle": true, "backdrop": "heaven", "sky_h": 0.64, "tint": Color(0.859, 0.742, 0.732), "bosses": [["knight_captain", Vector2i(44, 18)]]},
+	{"path": "res://features/world/heaven10.tscn", "title": "무너진 천상 다리", "w": 60, "h": 34, "seed": 1110, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/hell_deep.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven9.tscn", "spawn": "east", "label": "◀ 검은 깃털 숲", "at": 16},
+			{"side": "east", "to": "res://features/world/heaven11.tscn", "spawn": "west", "label": "피로 물든 성가대석 ▶", "at": 16},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0, "spawns": [["fallen_planetar", 5, 6, 60], ["judgement_eye", 5, 6, 60]], "crystals": 16, "isle": true, "backdrop": "heaven", "sky_h": 0.74, "tint": Color(0.837, 0.708, 0.712), "fog": Color(0.45, 0.12, 0.16)},
+	{"path": "res://features/world/heaven11.tscn", "title": "피로 물든 성가대석", "w": 54, "h": 40, "seed": 1111, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/hell_deep.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven10.tscn", "spawn": "east", "label": "◀ 무너진 천상 다리", "at": 19},
+			{"side": "east", "to": "res://features/world/heaven12.tscn", "spawn": "west", "label": "대천사의 옥좌 ▶", "at": 19, "lock": "heaven_king", "lock_title": "10장 중간 보스 천계의 왕"},
+		], "clearings": 3, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0, "spawns": [["mad_priest", 5, 6, 60], ["fallen_deva", 5, 6, 60], ["fallen_knight", 4, 6, 60]], "crystals": 14, "isle": true, "backdrop": "heaven", "sky_h": 0.86, "tint": Color(0.811, 0.668, 0.688), "fog": Color(0.45, 0.12, 0.16), "bosses": [["heaven_king", Vector2i(42, 19)]]},
+	{"path": "res://features/world/heaven12.tscn", "title": "대천사의 옥좌", "w": 40, "h": 32, "seed": 1112, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/hell_deep.ogg", "border": "none", "gaps": [
+			{"side": "west", "to": "res://features/world/heaven11.tscn", "spawn": "east", "label": "◀ 피로 물든 성가대석", "at": 15},
+		], "clearings": 1, "ponds": 0, "rivers": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0, "spawns": [["fallen_planetar", 4, 6, 60], ["fallen_deva", 4, 6, 60]], "crystals": 12, "isle": true, "backdrop": "heaven", "sky_h": 1.0, "tint": Color(0.78, 0.62, 0.66), "fog": Color(0.45, 0.12, 0.16), "bosses": [["archangel", Vector2i(26, 16)]]},
 	# ── 4부 9장: 굶주린 별 ──
 	{"path": "res://features/world/star_gate.tscn", "title": "부서진 별의 신전", "w": 40, "h": 30, "seed": 1001, "ground": CAVE_GROUND, "music": "res://assets/ninja/music/shore.ogg", "border": "rock", "gaps": [
 			{"side": "west", "to": "res://features/world/root6.tscn", "spawn": "east", "label": "◀ 검은 씨앗의 방", "at": 14},
@@ -498,6 +546,7 @@ const TOWN_MAPS: Array[Dictionary] = [
 		"gaps": [
 			{"side": "west", "to": "res://features/world/star_gate.tscn", "spawn": "north", "label": "◀ 부서진 별의 신전"},
 			{"side": "east", "to": "res://features/world/star1.tscn", "spawn": "west", "label": "별똥별 낙하지 ▶"},
+			{"side": "north", "to": "res://features/world/heaven1.tscn", "spawn": "south", "label": "하늘의 갈라진 틈 ▲", "lock": "star_lich", "lock_title": "9장 최종 보스 별을 삼킨 사령왕"},
 		],
 		"ponds": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 0, "crystals": 36,  # 별 위 황무지: 나무·풀·색 돌 없이 광석만
 		"layout": "isles", "props": "camp", "village": true, "spawns": [],
@@ -575,6 +624,23 @@ const TOWN_MAPS: Array[Dictionary] = [
 			["견습생", "villagers/v18_forge", Vector2i(-10, 5), ["레몬 마을 사냥꾼의 아들(딸)이라고요? 소문 들었어요!"]],
 		],
 		"critters": [],
+	},
+	{
+		"path": "res://features/world/heaven_town.tscn", "title": "빛의 정원 마을", "w": 40, "h": 32, "seed": 69, "wobble": 0.0,
+		"backdrop": "heaven", "sky_h": 0.05, "ground": SNOW_GROUND, "music": "res://assets/ninja/music/town2.ogg", "border": "none", "isle": true,
+		"house_set": "res://assets/towns/sky.png", "roads": {"h": [0, 40], "v": [0, 0], "plaza": 3.6}, "torii": false, "tint": Color(1.0, 0.97, 0.88),
+		"gaps": [
+			{"side": "west", "to": "res://features/world/heaven2.tscn", "spawn": "east", "label": "◀ 구름 계단"},
+			{"side": "east", "to": "res://features/world/heaven3.tscn", "spawn": "west", "label": "백금 회랑 ▶"},
+		],
+		"ponds": 0, "trees": 0, "big_trees": 0, "rocks": 0, "bushes": 0, "flowers": 70, "crystals": 10,
+		"layout": "isles", "village": true, "spawns": [],
+		"villagers": [
+			["빛의 수호자", "villagers/v04_sky", Vector2i(-3, -3), ["천계에 인간이 오다니… 별의 굶주림을 멈춘 자로구나.", "대천사님이 변하셨다. 하얀 날개가 검게 물들고, 별을 깨워 땅을 쓸어버리려 하셨지.", "옥좌로 가는 성문은 문지기가 지킨다. 문지기도 대천사님의 명령만 따를 뿐이야."]],
+			["어린 천사", "villagers/v27_sky", Vector2i(10, 4), ["대천사님은 원래 땅의 사람들을 제일 아끼셨어요.", "그런데 어느 날부터 '땅은 썩었다'고만 하세요…"]],
+			["천계 기록관", "villagers/v10_sky", Vector2i(-11, 5), ["옛 기록엔 이렇게 쓰여 있다. '검은 씨앗은 하늘에서 떨어졌다.'", "씨앗을 처음 만든 것도… 어쩌면 천계였을지 모른다."]],
+		],
+		"critters": [["cat", Vector2i(4, 7)]],
 	},
 	{
 		"path": SKY_TOWN, "title": "구름 마을", "w": 40, "h": 32, "seed": 65, "wobble": 0.0,
@@ -766,15 +832,16 @@ func _finish_map(m: Dictionary) -> void:
 		var bd := CanvasLayer.new()
 		bd.name = "Backdrop"
 		bd.set_script(load("res://features/world/backdrop_layer.gd"))
-		bd.set(&"mode", {"sky": 0, "sea": 1, "space": 2}.get(m["backdrop"], 0))
+		bd.set(&"mode", {"sky": 0, "sea": 1, "space": 2, "heaven": 3}.get(m["backdrop"], 0))
 		bd.set(&"height", float(m.get("sky_h", 0.0)))
 		_add(world, bd)
 		world.set_meta(&"map_size", Vector2i(W, H))
-		if m["backdrop"] == "space" and not m.get("village", false) and m.get("spawns", []).size() > 0:
+		if m["backdrop"] in ["space", "heaven"] and not m.get("village", false) and m.get("spawns", []).size() > 0 and not (m["backdrop"] == "heaven" and float(m.get("sky_h", 0.0)) < 0.2):
 			var ss := Node2D.new()  # 굶주린 별의 습격: 갑자기 떨어지는 운석·서 있으면 노림 운석
 			ss.name = "StarStrike"
 			ss.set_script(load("res://features/world/star_strike.gd"))
-			ss.set(&"menace", float(m.get("sky_h", 0.0)))
+			ss.set(&"menace", float(m.get("sky_h", 0.0)) * (0.9 if m["backdrop"] == "heaven" else 1.0))
+			ss.set(&"heaven", m["backdrop"] == "heaven")
 			_add(world, ss)
 	if m.has("snow_level"):  # 설산: 오를수록 매서운 눈보라(마을은 잔잔)
 		var sf := Node2D.new()
@@ -1073,7 +1140,7 @@ func _paint_ground(ground: TileMapLayer) -> void:
 		for x in W:
 			var c := Vector2i(x, y)
 			var fsrc: int = ground_set.get("src", FLOOR)
-			if wet.has(c) and cfg.get("backdrop", "") in ["sky", "space"]:
+			if wet.has(c) and cfg.get("backdrop", "") in ["sky", "space", "heaven"]:
 				continue
 			if wet.has(c) and overlay:
 				ground.set_cell(c, fsrc, ground_set["base"])
@@ -1086,7 +1153,7 @@ func _paint_ground(ground: TileMapLayer) -> void:
 				ground.set_cell(c, fsrc, details[rng.randi() % details.size()])
 			else:
 				ground.set_cell(c, fsrc, ground_set["base"])
-	if cfg.get("backdrop", "") == "space":  # 별 섬: 가장자리에 바위 절벽·빛 테두리(허공과 딱 잘려 보이지 않게)
+	if cfg.get("backdrop", "") in ["space", "heaven"]:  # 별 섬·천계 구름섬: 가장자리에 바위 절벽·빛 테두리(허공과 딱 잘려 보이지 않게)
 		var mask := PackedByteArray()
 		mask.resize(W * H)
 		for y in H:
@@ -1100,6 +1167,9 @@ func _paint_ground(ground: TileMapLayer) -> void:
 		var menace := float(cfg.get("sky_h", 0.0))
 		rim.set(&"rock", Color(0.52, 0.40, 0.70).lerp(Color(0.42, 0.16, 0.22), menace))
 		rim.set(&"glow", Color(0.88, 0.72, 1.0).lerp(Color(1.0, 0.34, 0.3), menace))
+		if cfg["backdrop"] == "heaven":  # 천계: 흰 대리석 절벽 + 금빛 테두리
+			rim.set(&"rock", Color(0.92, 0.88, 0.80).lerp(Color(0.55, 0.48, 0.42), menace))
+			rim.set(&"glow", Color(1.0, 0.86, 0.45))
 		_add(world, rim)
 		world.move_child(rim, ground.get_index())
 

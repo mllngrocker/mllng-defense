@@ -76,6 +76,14 @@ const DATA: Dictionary[StringName, Array] = {
 	&"mist_blade": ["안개를 가르는 검", 5, 112, 0.24, "사도의 가면이 깨지며 남은 푸른 검", true],
 	&"meteor_maul": ["운석 망치", 5, 600, 0.12, "운석 골렘의 몸에서 떼어 낸 별빛 망치", true],
 	&"star_eye_staff": ["별눈 지팡이", 5, 700, 0.20, "잠든 별의 눈동자를 박은 지팡이", true],
+	&"eater_fang": ["포식자의 송곳니", 5, 780, 0.26, "별을 갉아먹던 이빨. 베인 자리가 공허로 물든다", true],
+	&"void_staff": ["공허의 지팡이", 5, 860, 0.18, "공허의 마도사가 빔을 쏘던 지팡이", true],
+	&"gate_lance": ["성문 수호창", 5, 1000, 0.18, "천계의 문지기가 천 년 동안 쥐고 있던 금빛 창", true],
+	&"saint_sword": ["백은의 성검", 5, 1050, 0.24, "검성이 검기 파동을 날리던 하얀 검", true],
+	&"captain_axe": ["기사단장의 성부", 5, 1150, 0.12, "섬광처럼 내리찍던 기사단장의 도끼", true],
+	&"king_bow": ["천계 왕의 활", 5, 1200, 0.20, "천계의 왕이 하늘 끝까지 쏘던 금빛 활", true],
+	&"archangel_staff": ["대천사의 홀", 6, 1500, 0.26, "하늘을 내려앉히던 대천사의 하얀 홀. 이제 빛을 지킨다", true],
+	&"lich_blade": ["사령왕의 별검", 6, 1100, 0.22, "별을 삼킨 사령왕을 쓰러뜨린 자만이 쥘 수 있는 금빛 마검", true],
 }
 ## 무기 종류: 공격 느낌이 달라진다. [이름, 효과 설명, {배율}]
 ## speed 공격 속도 · dmg 평타 피해 · area 칼 판정 크기 · range 발사체 거리 · knock 밀쳐내기 · skill 스킬 피해
@@ -97,7 +105,7 @@ const KIND_OF := {
 	&"gardener_scythe": "spear", &"harpoon": "spear", &"frost_trident": "spear", &"gold_spear": "spear", &"holy_lance": "spear", &"jade_glaive": "spear",
 	&"longbow": "bow", &"bow": "bow", &"storm_bow": "bow", &"slingshot": "bow",
 	&"fairy_wand": "staff", &"tome": "staff", &"wand": "staff", &"amber_staff": "staff", &"ruby_staff": "staff", &"sun_scepter": "staff",
-	&"red_fan": "fan", &"violet_fan": "fan", &"meteor_maul": "blunt", &"star_eye_staff": "staff",
+	&"red_fan": "fan", &"violet_fan": "fan", &"meteor_maul": "blunt", &"star_eye_staff": "staff", &"eater_fang": "dagger", &"void_staff": "staff", &"gate_lance": "spear", &"saint_sword": "sword", &"captain_axe": "blunt", &"king_bow": "bow", &"archangel_staff": "staff",
 	&"blood_fang": "dagger", &"doom_axe": "blunt", &"crimson_lance": "spear", &"eclipse_bow": "bow", &"abyss_staff": "staff",
 }
 
@@ -131,6 +139,14 @@ const TEX_PATH: Dictionary[StringName, String] = {
 	&"storm_bow": "res://assets/vendor/ravenmore/weapons/longbow.png",
 	&"meteor_maul": "res://assets/vendor/star/meteor_maul.png",
 	&"star_eye_staff": "res://assets/vendor/star/star_eye_staff.png",
+	&"eater_fang": "res://assets/vendor/star/eater_fang.png",
+	&"void_staff": "res://assets/vendor/star/void_staff.png",
+	&"lich_blade": "res://assets/vendor/star/lich_blade.png",
+	&"gate_lance": "res://assets/vendor/star/gate_lance.png",
+	&"saint_sword": "res://assets/vendor/star/saint_sword.png",
+	&"captain_axe": "res://assets/vendor/star/captain_axe.png",
+	&"king_bow": "res://assets/vendor/star/king_bow.png",
+	&"archangel_staff": "res://assets/vendor/star/archangel_staff.png",
 	&"chaos_sword": "res://assets/vendor/mythic/chaos_sword.png",
 	&"blood_fang": "res://assets/vendor/mythic/blood_fang.png",
 	&"doom_axe": "res://assets/vendor/mythic/doom_axe.png",

@@ -124,9 +124,16 @@ func flash(color: Color, duration := 0.12) -> void:
 const ELEMENT_SFX: Array[StringName] = [&"skill_fire", &"skill_water", &"skill_wind", &"skill_earth", &"skill_light", &"skill_dark"]
 
 
+var _last_hitstop := -10000
+
+
 func hitstop(duration: float) -> void:
 	if not hitstop_enabled:
 		return
+	var now := Time.get_ticks_msec()
+	if now - _last_hitstop < 450:  # 탄막·운석비에 연달아 맞을 때 계속 멈추면 끊겨 보인다
+		return
+	_last_hitstop = now
 	Engine.time_scale = 0.05
 	await get_tree().create_timer(duration, true, false, true).timeout
 	Engine.time_scale = SLOWMO if _slowmo else 1.0

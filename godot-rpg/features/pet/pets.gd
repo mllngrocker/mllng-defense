@@ -21,6 +21,14 @@ const DATA: Dictionary[StringName, Array] = {
 	&"gold_dragon": ["황금 아기 용", "res://assets/ninja/actor/dragon_y.png", 2.0, {"atk": 0.60, "hp": 0.30}, "고대 거인의 혼 첫 처치"],
 	&"meteor_ember": ["운석 불씨", "res://assets/ninja/actor/flam2.png", 2.1, {"atk": 0.62, "crit": 0.04}, "운석 골렘 첫 처치"],
 	&"star_heartling": ["별빛 하트", "res://assets/ninja/actor/heart_green.png", 2.3, {"atk": 0.70, "hp": 0.35}, "굶주린 별의 심장 첫 처치"],
+	&"void_dragon": ["아기 공허룡", "res://assets/ninja/actor/void_dragon.png", 2.5, {"atk": 0.78, "crit": 0.08}, "별을 먹는 자 첫 처치"],
+	&"void_lantern": ["공허 등불", "res://assets/ninja/actor/void_lantern.png", 2.7, {"atk": 0.85, "gold": 0.30}, "공허의 마도사 첫 처치"],
+	&"angel_spirit": ["꼬마 천사 정령", "res://assets/ninja/actor/angel_spirit.png", 3.0, {"atk": 0.92, "hp": 0.40, "gold": 0.20}, "천계의 문지기 첫 처치"],
+	&"feather_spirit": ["깃털 정령", "res://assets/ninja/actor/feather_spirit.png", 2.9, {"atk": 0.9, "crit": 0.1}, "백은의 검성 첫 처치"],
+	&"halo_lantern": ["후광 등불", "res://assets/ninja/actor/halo_lantern.png", 3.1, {"atk": 0.95, "gold": 0.35}, "성광 기사단장 첫 처치"],
+	&"gold_owl": ["금빛 부엉이", "res://assets/ninja/actor/gold_owl.png", 3.3, {"atk": 1.05, "crit": 0.12}, "천계의 왕 첫 처치"],
+	&"white_dragon": ["백룡", "res://assets/ninja/actor/white_dragon.png", 3.8, {"atk": 1.3, "hp": 0.6, "crit": 0.12}, "타락한 대천사 첫 처치"],
+	&"lich_skull": ["왕관 해골", "res://assets/ninja/actor/lich_skull.png", 3.2, {"atk": 1.0, "hp": 0.45, "crit": 0.10}, "별을 삼킨 사령왕 첫 처치"],
 	&"axolot": ["우파", "res://assets/ninja/actor/axolot.png", 0.5, {"hp": 0.06}, "펫 소환 ★3"],
 	&"butterfly": ["나풀이", "res://assets/ninja/actor/butterfly.png", 0.45, {"gold": 0.08}, "펫 소환 ★3"],
 	&"rat": ["찍찍이", "res://assets/ninja/actor/rat.png", 0.45, {"crit": 0.03}, "펫 소환 ★3"],
@@ -78,6 +86,14 @@ const BOSS_REWARDS := {
 	"mist_apostle": [&"mist_wisp", &"mist_blade"],
 	"meteor_golem": [&"meteor_ember", &"meteor_maul"],
 	"star_heart": [&"star_heartling", &"star_eye_staff"],
+	"star_eater": [&"void_dragon", &"eater_fang"],
+	"void_mage": [&"void_lantern", &"void_staff"],
+	"star_lich": [&"lich_skull", &"lich_blade"],
+	"heaven_guard": [&"angel_spirit", &"gate_lance"],
+	"sword_saint": [&"feather_spirit", &"saint_sword"],
+	"knight_captain": [&"halo_lantern", &"captain_axe"],
+	"heaven_king": [&"gold_owl", &"king_bow"],
+	"archangel": [&"white_dragon", &"archangel_staff"],
 }
 const BONUS_NAMES := {"atk": "공격력", "hp": "체력", "crit": "치명타", "gold": "골드 획득"}
 
@@ -100,6 +116,16 @@ static func power_of(id: StringName) -> float:
 
 static func bonus_of(id: StringName) -> Dictionary:
 	return DATA[id][3]
+
+
+## 펫 급(공격 배율로): 1 평범 · 2 든든 · 3 강함 · 4 전설. 급이 높을수록 크고, 빛나고, 빨리 문다
+static func tier(id: StringName) -> int:
+	var p := power_of(id)
+	return 1 if p < 0.6 else (2 if p < 1.0 else (3 if p < 1.8 else 4))
+
+
+static func tier_color(id: StringName) -> Color:
+	return [Color("bfe8a8"), Color("6fb8ff"), Color("b57cff"), Color("ff5a3c")][tier(id) - 1]
 
 
 static func source_of(id: StringName) -> String:

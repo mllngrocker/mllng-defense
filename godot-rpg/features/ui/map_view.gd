@@ -97,7 +97,19 @@ const SPACE_REGIONS: Array[Dictionary] = [
 	{"id": "star10", "name": "굶주림의 균열", "pos": Vector2(0.56, 0.63), "color": Color("d8577c"), "info": "9장 · 추천 Lv.172~176", "mobs": "굶주린 마귀 · 별빛 용인", "boss": "", "boss_name": "", "lock": "star_eater", "lock_name": "별을 먹는 자"},
 	{"id": "star11", "name": "붉게 고동치는 길", "pos": Vector2(0.55, 0.47), "color": Color("de4b66"), "info": "9장 중간 보스 · 추천 Lv.175~179", "mobs": "굶주린 마귀 · 별뿔 짐승", "boss": "void_mage", "boss_name": "공허의 마도사", "lock": "star_eater", "lock_name": "별을 먹는 자"},
 	{"id": "star12", "name": "별을 삼킨 왕좌", "pos": Vector2(0.494, 0.55), "color": Color("e63e50"), "info": "9장 마지막 · 최종 보스 · 추천 Lv.177~181", "mobs": "별뿔 짐승 · 굶주린 마귀", "boss": "star_lich", "boss_name": "별을 삼킨 사령왕", "lock": "void_mage", "lock_name": "공허의 마도사"},
-	{"id": "heaven", "name": "천계", "pos": Vector2(0.814, 0.26), "color": Color("fff3c4"), "info": "10장 · 준비 중", "mobs": "???", "boss": "", "boss_name": "", "lock": "star_lich", "lock_name": "별을 삼킨 사령왕", "soon": true},
+	{"id": "heaven1", "name": "갈라진 하늘 틈", "pos": Vector2(0.68, 0.4), "color": Color("fff3c4"), "info": "10장 · 추천 Lv.180~183", "mobs": "꼬마 천사 · 천상의 도깨비불 · 결의의 천사", "boss": "", "boss_name": "", "lock": "star_lich", "lock_name": "별을 삼킨 사령왕"},
+	{"id": "heaven2", "name": "구름 계단", "pos": Vector2(0.71, 0.27), "color": Color("fff0b8"), "info": "10장 · 추천 Lv.181~184", "mobs": "꼬마 천사 · 결의의 천사 · 성광 정령", "boss": "", "boss_name": "", "lock": "star_lich", "lock_name": "별을 삼킨 사령왕"},
+	{"id": "heaven_town", "name": "빛의 정원 마을", "pos": Vector2(0.765, 0.36), "color": Color("ffffff"), "info": "천계 마을 · 몬스터 없음", "mobs": "빛의 수호자 · 어린 천사 · 천계 기록관", "boss": "", "boss_name": "", "lock": "star_lich", "lock_name": "별을 삼킨 사령왕"},
+	{"id": "heaven3", "name": "백금 회랑", "pos": Vector2(0.8, 0.3), "color": Color("ffeaa8"), "info": "10장 중간 보스 · 추천 Lv.183~186", "mobs": "결의의 천사 · 천계 창병", "boss": "sword_saint", "boss_name": "백은의 검성", "lock": "star_lich", "lock_name": "별을 삼킨 사령왕"},
+	{"id": "heaven4", "name": "빛의 분수 정원", "pos": Vector2(0.75, 0.15), "color": Color("ffe398"), "info": "10장 · 추천 Lv.185~188", "mobs": "꼬마 천사 · 성전사 · 성광 정령", "boss": "", "boss_name": "", "lock": "sword_saint", "lock_name": "백은의 검성"},
+	{"id": "heaven5", "name": "천사의 훈련장", "pos": Vector2(0.84, 0.4), "color": Color("ffd987"), "info": "10장 · 추천 Lv.186~189", "mobs": "성전사 · 천계 성검사", "boss": "", "boss_name": "", "lock": "sword_saint", "lock_name": "백은의 검성"},
+	{"id": "heaven6", "name": "천계의 성문", "pos": Vector2(0.88, 0.27), "color": Color("ffcf78"), "info": "10장 중간 보스 · 추천 Lv.188~191", "mobs": "천계 창병 · 검의 천사장", "boss": "heaven_guard", "boss_name": "천계의 문지기", "lock": "sword_saint", "lock_name": "백은의 검성"},
+	{"id": "heaven7", "name": "금빛 도서관", "pos": Vector2(0.92, 0.4), "color": Color("f6b56c"), "info": "10장 · 추천 Lv.190~193", "mobs": "검의 천사장 · 빛의 천사장 · 대리석 가고일", "boss": "", "boss_name": "", "lock": "heaven_guard", "lock_name": "천계의 문지기"},
+	{"id": "heaven8", "name": "타락한 성소", "pos": Vector2(0.95, 0.3), "color": Color("ec9a64"), "info": "10장 · 추천 Lv.191~194", "mobs": "광신 사제 · 타락한 천사", "boss": "", "boss_name": "", "lock": "heaven_guard", "lock_name": "천계의 문지기"},
+	{"id": "heaven9", "name": "검은 깃털 숲", "pos": Vector2(0.98, 0.42), "color": Color("e17f5c"), "info": "10장 중간 보스 · 추천 Lv.193~196", "mobs": "타락한 천사 · 타락한 성기사", "boss": "knight_captain", "boss_name": "성광 기사단장", "lock": "heaven_guard", "lock_name": "천계의 문지기"},
+	{"id": "heaven10", "name": "무너진 천상 다리", "pos": Vector2(0.98, 0.18), "color": Color("d66554"), "info": "10장 · 추천 Lv.195~198", "mobs": "타락한 천사장 · 심판의 눈", "boss": "", "boss_name": "", "lock": "knight_captain", "lock_name": "성광 기사단장"},
+	{"id": "heaven11", "name": "피로 물든 성가대석", "pos": Vector2(0.93, 0.1), "color": Color("cb4b4c"), "info": "10장 중간 보스 · 추천 Lv.197~200", "mobs": "광신 사제 · 타락한 천사 · 타락한 성기사", "boss": "heaven_king", "boss_name": "천계의 왕", "lock": "knight_captain", "lock_name": "성광 기사단장"},
+	{"id": "heaven12", "name": "대천사의 옥좌", "pos": Vector2(0.97, 0.05), "color": Color("c03044"), "info": "10장 마지막 · 최종 보스 · 추천 Lv.198~200", "mobs": "타락한 천사장 · 타락한 천사", "boss": "archangel", "boss_name": "타락한 대천사", "lock": "heaven_king", "lock_name": "천계의 왕"},
 ]
 const SPACE_ROUTES := []  # 별 지도는 그림에 길이 그려져 있어서 점선 없음
 const SPACE_MAP := preload("res://assets/ui/space_map_art.png")
@@ -123,10 +135,10 @@ func _art() -> Texture2D:
 	return SPACE_MAP if space else WORLD_MAP
 
 
-## 월드 지도 그림 오른쪽 위 "별 지도 / 대륙 지도" 바꾸기 버튼
+## 월드 지도 그림 왼쪽 아래 "별 지도 / 대륙 지도" 바꾸기 버튼
 func _swap_rect() -> Rect2:
 	var dst := _world_dst(_body_rect())
-	return Rect2(Vector2(dst.end.x - 112, dst.position.y + 6), Vector2(106, 32))
+	return Rect2(Vector2(dst.position.x + 6, dst.end.y - 38), Vector2(106, 32))  # 왼쪽 아래(오른쪽 위는 천계 지점들)
 
 
 func _ready() -> void:
@@ -140,7 +152,7 @@ func _ready() -> void:
 		_build_texture()
 		if world.has_method(&"map_id"):
 			var id := String(world.call(&"map_id"))
-			space = id.begins_with("star") and id != "star_gate"  # 별 위에 있으면 처음부터 별 지도
+			space = (id.begins_with("star") and id != "star_gate") or id.begins_with("heaven")  # 별 위에 있으면 처음부터 별 지도
 	get_tree().paused = true
 	Game.sfx(&"pickup", -6.0, 0.0)
 

@@ -11,11 +11,11 @@ const MAPS := ["village", "world", "hill", "forest", "desert", "desert2", "deser
 	"sky1", "sky2", "sky3", "sky4", "sky5", "sky6",
 	"root1", "root2", "root3", "root4", "root5", "root6", "garden1", "garden2", "garden3", "garden4", "garden5", "garden6",
 	"mist1", "mist2", "mist3", "mist4", "mist5", "mist6",
-	"star_gate", "star1", "star2", "star3", "star4", "star5", "star6", "star7", "star8", "star9", "star10", "star11", "star12",
-	"desert_town", "snow_town", "temple_town", "lava_town", "sky_town", "root_town", "mist_town", "star_town"]
+	"star_gate", "heaven1", "heaven2", "heaven3", "heaven4", "heaven5", "heaven6", "heaven7", "heaven8", "heaven9", "heaven10", "heaven11", "heaven12", "star1", "star2", "star3", "star4", "star5", "star6", "star7", "star8", "star9", "star10", "star11", "star12",
+	"desert_town", "snow_town", "temple_town", "lava_town", "sky_town", "root_town", "mist_town", "star_town", "heaven_town"]
 const BOSS_MAPS := {"forest": "KingSlime", "desert3": "CyclopeKing", "crystalcave": "SpiderQueen", "snow6": "YetiKing",
-	"temple6": "Kraken", "lava6": "FlameDragon", "hell6": "DemonLord", "sky6": "StormKing", "root4": "RootWorm", "root6": "GiantSoul", "garden6": "BlackGardener", "mist6": "MistApostle", "star3": "MeteorGolem", "star6": "StarHeart", "star9": "StarEater", "star11": "VoidMage", "star12": "StarLich"}
-const PEACEFUL := ["village", "shore", "snowgate", "desert_town", "snow_town", "temple_town", "lava_town", "sky_town", "root_town", "mist_town", "star_town", "star_gate"]
+	"temple6": "Kraken", "lava6": "FlameDragon", "hell6": "DemonLord", "sky6": "StormKing", "root4": "RootWorm", "root6": "GiantSoul", "garden6": "BlackGardener", "mist6": "MistApostle", "star3": "MeteorGolem", "star6": "StarHeart", "star9": "StarEater", "star11": "VoidMage", "star12": "StarLich", "heaven3": "SwordSaint", "heaven6": "HeavenGuard", "heaven9": "KnightCaptain", "heaven11": "HeavenKing", "heaven12": "Archangel"}
+const PEACEFUL := ["village", "shore", "snowgate", "desert_town", "snow_town", "temple_town", "lava_town", "sky_town", "root_town", "mist_town", "star_town", "star_gate", "heaven_town"]
 
 var fails := 0
 

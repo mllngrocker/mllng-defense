@@ -394,1973 +394,1974 @@ size = Vector2(480, 42)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y8j53"]
 size = Vector2(42, 352)
 
-[node name="World" type="Node2D" unique_id=614337933]
+[node name="World" type="Node2D" unique_id=520617257]
 script = ExtResource("1_autw3")
 map_title = "시련의 투기장"
 
-[node name="HUD" parent="." unique_id=1434729980 instance=ExtResource("2_50njp")]
+[node name="HUD" parent="." unique_id=10564062 instance=ExtResource("2_50njp")]
 
-[node name="Ground" type="TileMapLayer" parent="." unique_id=940275727]
+[node name="Ground" type="TileMapLayer" parent="." unique_id=265833357]
 tile_map_data = PackedByteArray("AAAAAAAABQAAAAUAAAABAAAABQADAAUAAAACAAAABQAAAAUAAAADAAAABQAAAAUAAAAEAAAABQAAAAUAAAAFAAAABQAAAAUAAAAGAAAABQAAAAUAAAAHAAAABQAAAAUAAAAIAAAABQAAAAUAAAAJAAAABQADAAUAAAAKAAAABQAAAAUAAAALAAAABQADAAUAAAAMAAAABQAAAAUAAAANAAAABQAAAAUAAAAOAAAABQAAAAUAAAAPAAAABQAAAAUAAAAQAAAABQAAAAUAAAARAAAABQAAAAUAAAASAAAABQAAAAUAAAATAAAABQAAAAUAAAAUAAAABQAAAAUAAAAVAAAABQAAAAUAAAAWAAAABQAAAAUAAAAXAAAABQAAAAUAAAAYAAAABQAAAAUAAAAZAAAABQAEAAUAAAAaAAAABQAAAAUAAAAbAAAABQAAAAUAAAAcAAAABQAAAAUAAAAdAAAABQAAAAUAAAAAAAEABQAAAAUAAAABAAEABQAAAAUAAAACAAEABQAAAAUAAAADAAEABQAAAAUAAAAEAAEABQAAAAUAAAAFAAEABQAAAAUAAAAGAAEABQAAAAUAAAAHAAEABQAAAAUAAAAIAAEABQAAAAUAAAAJAAEABQAAAAUAAAAKAAEABQAAAAUAAAALAAEABQAAAAUAAAAMAAEABQAAAAUAAAANAAEABQADAAUAAAAOAAEABQAEAAUAAAAPAAEABQAAAAUAAAAQAAEABQAAAAUAAAARAAEABQAAAAUAAAASAAEABQAAAAUAAAATAAEABQAEAAUAAAAUAAEABQAAAAUAAAAVAAEABQAAAAUAAAAWAAEABQABAAUAAAAXAAEABQAAAAUAAAAYAAEABQABAAUAAAAZAAEABQAAAAUAAAAaAAEABQADAAUAAAAbAAEABQAEAAUAAAAcAAEABQAAAAUAAAAdAAEABQAAAAUAAAAAAAIABQADAAUAAAABAAIABQAAAAUAAAACAAIABQADAAUAAAADAAIABQAAAAUAAAAEAAIABQADAAUAAAAFAAIABQAAAAUAAAAGAAIABQAAAAUAAAAHAAIABQAAAAUAAAAIAAIABQAAAAUAAAAJAAIABQAAAAUAAAAKAAIABQAAAAUAAAALAAIABQAAAAUAAAAMAAIABQAAAAUAAAANAAIABQAAAAUAAAAOAAIABQAAAAUAAAAPAAIABQAAAAUAAAAQAAIABQAAAAUAAAARAAIABQAAAAUAAAASAAIABQAAAAUAAAATAAIABQAAAAUAAAAUAAIABQAAAAUAAAAVAAIABQACAAUAAAAWAAIABQAAAAUAAAAXAAIABQAAAAUAAAAYAAIABQAAAAUAAAAZAAIABQAAAAUAAAAaAAIABQACAAUAAAAbAAIABQADAAUAAAAcAAIABQAAAAUAAAAdAAIABQAAAAUAAAAAAAMABQAAAAUAAAABAAMABQAAAAUAAAACAAMABQAAAAUAAAADAAMABQAAAAUAAAAEAAMABQADAAUAAAAFAAMABQAAAAUAAAAGAAMABQADAAUAAAAHAAMABQAAAAUAAAAIAAMABQACAAUAAAAJAAMABQADAAUAAAAKAAMABQAAAAUAAAALAAMABQAAAAUAAAAMAAMABQAAAAUAAAANAAMABQAAAAUAAAAOAAMABQAAAAUAAAAPAAMABQAAAAUAAAAQAAMABQAAAAUAAAARAAMABQAAAAUAAAASAAMABQAAAAUAAAATAAMABQAAAAUAAAAUAAMABQAAAAUAAAAVAAMABQAAAAUAAAAWAAMABQAAAAUAAAAXAAMABQAAAAUAAAAYAAMABQAAAAUAAAAZAAMABQACAAUAAAAaAAMABQAEAAUAAAAbAAMABQAAAAUAAAAcAAMABQAAAAUAAAAdAAMABQAAAAUAAAAAAAQABQABAAUAAAABAAQABQAAAAUAAAACAAQABQAAAAUAAAADAAQABQABAAUAAAAEAAQABQAAAAUAAAAFAAQABQAAAAUAAAAGAAQABQAAAAUAAAAHAAQABQAAAAUAAAAIAAQABQAAAAUAAAAJAAQABQAAAAUAAAAKAAQABQAAAAUAAAALAAQABQAAAAUAAAAMAAQABQAAAAUAAAANAAQABQAAAAUAAAAOAAQABQAAAAUAAAAPAAQABQAAAAUAAAAQAAQABQAAAAUAAAARAAQABQAAAAUAAAASAAQABQAAAAUAAAATAAQABQAAAAUAAAAUAAQABQAAAAUAAAAVAAQABQAAAAUAAAAWAAQABQABAAUAAAAXAAQABQAAAAUAAAAYAAQABQAAAAUAAAAZAAQABQAAAAUAAAAaAAQABQAAAAUAAAAbAAQABQAAAAUAAAAcAAQABQAAAAUAAAAdAAQABQAAAAUAAAAAAAUABQAAAAUAAAABAAUABQAAAAUAAAACAAUABQAAAAUAAAADAAUABQACAAUAAAAEAAUABQAAAAUAAAAFAAUABQAAAAUAAAAGAAUABQAAAAUAAAAHAAUABQAAAAUAAAAIAAUABQACAAUAAAAJAAUABQAAAAUAAAAKAAUABQAAAAUAAAALAAUABQAAAAUAAAAMAAUABQAAAAUAAAANAAUABQAAAAUAAAAOAAUABQABAAUAAAAPAAUABQAAAAUAAAAQAAUABQAAAAUAAAARAAUABQAAAAUAAAASAAUABQAAAAUAAAATAAUABQAAAAUAAAAUAAUABQAAAAUAAAAVAAUABQAAAAUAAAAWAAUABQAAAAUAAAAXAAUABQAAAAUAAAAYAAUABQAAAAUAAAAZAAUABQAAAAUAAAAaAAUABQAAAAUAAAAbAAUABQAAAAUAAAAcAAUABQADAAUAAAAdAAUABQAAAAUAAAAAAAYABQAAAAUAAAABAAYABQAAAAUAAAACAAYABQAAAAUAAAADAAYABQAEAAUAAAAEAAYABQAEAAUAAAAFAAYABQAAAAUAAAAGAAYABQAAAAUAAAAHAAYABQAAAAUAAAAIAAYABQAAAAUAAAAJAAYABQAAAAUAAAAKAAYABQAAAAUAAAALAAYABQAAAAUAAAAMAAYABQABAAUAAAANAAYABQAAAAUAAAAOAAYABQAAAAUAAAAPAAYABQAAAAUAAAAQAAYABQACAAUAAAARAAYABQAAAAUAAAASAAYABQAAAAUAAAATAAYABQAAAAUAAAAUAAYABQAAAAUAAAAVAAYABQAAAAUAAAAWAAYABQAAAAUAAAAXAAYABQAAAAUAAAAYAAYABQAAAAUAAAAZAAYABQAAAAUAAAAaAAYABQAAAAUAAAAbAAYABQABAAUAAAAcAAYABQAAAAUAAAAdAAYABQAAAAUAAAAAAAcABQAAAAUAAAABAAcABQAAAAUAAAACAAcABQAAAAUAAAADAAcABQAAAAUAAAAEAAcABQAAAAUAAAAFAAcABQAAAAUAAAAGAAcABQAAAAUAAAAHAAcABQAAAAUAAAAIAAcABQAAAAUAAAAJAAcABQAAAAUAAAAKAAcABQAAAAUAAAALAAcABQAAAAUAAAAMAAcABQABAAUAAAANAAcABQAEAAUAAAAOAAcABQAAAAUAAAAPAAcABQAAAAUAAAAQAAcABQAAAAUAAAARAAcABQAAAAUAAAASAAcABQAAAAUAAAATAAcABQAAAAUAAAAUAAcABQAAAAUAAAAVAAcABQAAAAUAAAAWAAcABQAAAAUAAAAXAAcABQAAAAUAAAAYAAcABQAAAAUAAAAZAAcABQAAAAUAAAAaAAcABQAAAAUAAAAbAAcABQAAAAUAAAAcAAcABQAAAAUAAAAdAAcABQAAAAUAAAAAAAgABQAAAAUAAAABAAgABQAAAAUAAAACAAgABQAAAAUAAAADAAgABQAAAAUAAAAEAAgABQAAAAUAAAAFAAgABQAAAAUAAAAGAAgABQAAAAUAAAAHAAgABQAAAAUAAAAIAAgABQAAAAUAAAAJAAgABQAAAAUAAAAKAAgABQAAAAUAAAALAAgABQAAAAAAAAAMAAgABQABAAAAAAANAAgABQACAAAAAAAOAAgABQAAAAUAAAAPAAgABQAAAAUAAAAQAAgABQAAAAUAAAARAAgABQAAAAUAAAASAAgABQAAAAUAAAATAAgABQAAAAUAAAAUAAgABQAAAAUAAAAVAAgABQAEAAUAAAAWAAgABQADAAUAAAAXAAgABQAAAAUAAAAYAAgABQAAAAUAAAAZAAgABQAAAAUAAAAaAAgABQAAAAUAAAAbAAgABQAAAAUAAAAcAAgABQAAAAUAAAAdAAgABQAAAAUAAAAAAAkABQAAAAUAAAABAAkABQAAAAUAAAACAAkABQAAAAUAAAADAAkABQAAAAUAAAAEAAkABQAEAAUAAAAFAAkABQAEAAUAAAAGAAkABQAAAAUAAAAHAAkABQAAAAUAAAAIAAkABQAAAAUAAAAJAAkABQAAAAUAAAAKAAkABQAAAAAAAAALAAkABQAGAAIAAAAMAAkABQABAAEAAAANAAkABQAFAAIAAAAOAAkABQABAAAAAAAPAAkABQABAAAAAAAQAAkABQABAAAAAAARAAkABQACAAAAAAASAAkABQAAAAUAAAATAAkABQAAAAUAAAAUAAkABQAAAAUAAAAVAAkABQAAAAUAAAAWAAkABQAAAAUAAAAXAAkABQAAAAUAAAAYAAkABQAAAAUAAAAZAAkABQAAAAUAAAAaAAkABQAAAAUAAAAbAAkABQAAAAUAAAAcAAkABQAAAAUAAAAdAAkABQAAAAUAAAAAAAoABQAAAAUAAAABAAoABQAAAAUAAAACAAoABQAAAAUAAAADAAoABQAAAAUAAAAEAAoABQACAAUAAAAFAAoABQAAAAUAAAAGAAoABQAAAAUAAAAHAAoABQAAAAUAAAAIAAoABQAAAAUAAAAJAAoABQAAAAUAAAAKAAoABQAAAAEAAAALAAoABQABAAEAAAAMAAoABQABAAEAAAANAAoABQABAAEAAAAOAAoABQABAAEAAAAPAAoABQABAAEAAAAQAAoABQABAAEAAAARAAoABQAFAAIAAAASAAoABQACAAAAAAATAAoABQAAAAUAAAAUAAoABQAEAAUAAAAVAAoABQAAAAUAAAAWAAoABQAAAAUAAAAXAAoABQAAAAUAAAAYAAoABQAAAAUAAAAZAAoABQAAAAUAAAAaAAoABQAAAAUAAAAbAAoABQABAAUAAAAcAAoABQAAAAUAAAAdAAoABQAAAAUAAAAAAAsABQAAAAUAAAABAAsABQAAAAUAAAACAAsABQAAAAUAAAADAAsABQAAAAUAAAAEAAsABQAAAAUAAAAFAAsABQAAAAUAAAAGAAsABQAAAAUAAAAHAAsABQAAAAUAAAAIAAsABQABAAUAAAAJAAsABQAAAAUAAAAKAAsABQAAAAIAAAALAAsABQAGAAEAAAAMAAsABQABAAEAAAANAAsABQABAAEAAAAOAAsABQABAAEAAAAPAAsABQABAAEAAAAQAAsABQABAAEAAAARAAsABQABAAEAAAASAAsABQAFAAIAAAATAAsABQACAAAAAAAUAAsABQAEAAUAAAAVAAsABQAAAAUAAAAWAAsABQAAAAUAAAAXAAsABQAAAAUAAAAYAAsABQAAAAUAAAAZAAsABQAAAAUAAAAaAAsABQACAAUAAAAbAAsABQAAAAUAAAAcAAsABQAAAAUAAAAdAAsABQAAAAUAAAAAAAwABQAAAAUAAAABAAwABQAAAAUAAAACAAwABQAAAAUAAAADAAwABQAEAAUAAAAEAAwABQAAAAUAAAAFAAwABQAAAAUAAAAGAAwABQACAAUAAAAHAAwABQAAAAUAAAAIAAwABQAAAAUAAAAJAAwABQABAAUAAAAKAAwABQAAAAUAAAALAAwABQAAAAIAAAAMAAwABQABAAIAAAANAAwABQAGAAEAAAAOAAwABQABAAEAAAAPAAwABQABAAEAAAAQAAwABQABAAEAAAARAAwABQABAAEAAAASAAwABQABAAEAAAATAAwABQACAAEAAAAUAAwABQAAAAUAAAAVAAwABQAAAAUAAAAWAAwABQAAAAUAAAAXAAwABQAAAAUAAAAYAAwABQAAAAUAAAAZAAwABQADAAUAAAAaAAwABQAAAAUAAAAbAAwABQAAAAUAAAAcAAwABQAAAAUAAAAdAAwABQAAAAUAAAAAAA0ABQAAAAUAAAABAA0ABQAAAAUAAAACAA0ABQAAAAUAAAADAA0ABQAAAAUAAAAEAA0ABQAAAAUAAAAFAA0ABQAAAAUAAAAGAA0ABQAAAAUAAAAHAA0ABQAAAAUAAAAIAA0ABQAAAAUAAAAJAA0ABQAAAAUAAAAKAA0ABQAAAAUAAAALAA0ABQAAAAUAAAAMAA0ABQAAAAUAAAANAA0ABQAAAAIAAAAOAA0ABQAGAAEAAAAPAA0ABQABAAEAAAAQAA0ABQABAAEAAAARAA0ABQABAAEAAAASAA0ABQAFAAEAAAATAA0ABQACAAIAAAAUAA0ABQAAAAUAAAAVAA0ABQAAAAUAAAAWAA0ABQAAAAUAAAAXAA0ABQAAAAUAAAAYAA0ABQAAAAUAAAAZAA0ABQAAAAUAAAAaAA0ABQAAAAUAAAAbAA0ABQAAAAUAAAAcAA0ABQAAAAUAAAAdAA0ABQAAAAUAAAAAAA4ABQAAAAUAAAABAA4ABQAEAAUAAAACAA4ABQAAAAUAAAADAA4ABQAAAAUAAAAEAA4ABQAAAAUAAAAFAA4ABQAAAAUAAAAGAA4ABQAAAAUAAAAHAA4ABQAAAAUAAAAIAA4ABQACAAUAAAAJAA4ABQAAAAUAAAAKAA4ABQAAAAUAAAALAA4ABQAAAAUAAAAMAA4ABQAAAAUAAAANAA4ABQAAAAUAAAAOAA4ABQAAAAIAAAAPAA4ABQAGAAEAAAAQAA4ABQABAAEAAAARAA4ABQAFAAEAAAASAA4ABQACAAIAAAATAA4ABQAAAAUAAAAUAA4ABQACAAUAAAAVAA4ABQAAAAUAAAAWAA4ABQAAAAUAAAAXAA4ABQAAAAUAAAAYAA4ABQAAAAUAAAAZAA4ABQAAAAUAAAAaAA4ABQABAAUAAAAbAA4ABQAAAAUAAAAcAA4ABQAAAAUAAAAdAA4ABQAAAAUAAAAAAA8ABQAAAAUAAAABAA8ABQAAAAUAAAACAA8ABQAEAAUAAAADAA8ABQAAAAUAAAAEAA8ABQAAAAUAAAAFAA8ABQAEAAUAAAAGAA8ABQAAAAUAAAAHAA8ABQAEAAUAAAAIAA8ABQAAAAUAAAAJAA8ABQAAAAUAAAAKAA8ABQAAAAUAAAALAA8ABQAAAAUAAAAMAA8ABQABAAUAAAANAA8ABQADAAUAAAAOAA8ABQAAAAUAAAAPAA8ABQAAAAIAAAAQAA8ABQABAAIAAAARAA8ABQACAAIAAAASAA8ABQAAAAUAAAATAA8ABQAAAAUAAAAUAA8ABQACAAUAAAAVAA8ABQAAAAUAAAAWAA8ABQAAAAUAAAAXAA8ABQACAAUAAAAYAA8ABQAAAAUAAAAZAA8ABQAAAAUAAAAaAA8ABQAAAAUAAAAbAA8ABQAAAAUAAAAcAA8ABQABAAUAAAAdAA8ABQAAAAUAAAAAABAABQAAAAUAAAABABAABQAAAAUAAAACABAABQAAAAUAAAADABAABQAAAAUAAAAEABAABQAAAAUAAAAFABAABQAAAAUAAAAGABAABQAAAAUAAAAHABAABQAAAAUAAAAIABAABQAAAAUAAAAJABAABQAAAAUAAAAKABAABQAAAAUAAAALABAABQAAAAUAAAAMABAABQAAAAUAAAANABAABQAAAAUAAAAOABAABQAAAAUAAAAPABAABQAAAAUAAAAQABAABQAAAAUAAAARABAABQAAAAUAAAASABAABQAAAAUAAAATABAABQAAAAUAAAAUABAABQABAAUAAAAVABAABQAAAAUAAAAWABAABQAAAAUAAAAXABAABQAAAAUAAAAYABAABQAAAAUAAAAZABAABQAAAAUAAAAaABAABQAAAAUAAAAbABAABQAAAAUAAAAcABAABQAAAAUAAAAdABAABQAAAAUAAAAAABEABQAAAAUAAAABABEABQAAAAUAAAACABEABQAAAAUAAAADABEABQAAAAUAAAAEABEABQAAAAUAAAAFABEABQAAAAUAAAAGABEABQAAAAUAAAAHABEABQAAAAUAAAAIABEABQAAAAUAAAAJABEABQADAAUAAAAKABEABQAAAAUAAAALABEABQAAAAUAAAAMABEABQAAAAUAAAANABEABQAAAAUAAAAOABEABQAAAAUAAAAPABEABQAAAAUAAAAQABEABQAAAAUAAAARABEABQACAAUAAAASABEABQAAAAUAAAATABEABQAAAAUAAAAUABEABQAAAAUAAAAVABEABQAAAAUAAAAWABEABQABAAUAAAAXABEABQAAAAUAAAAYABEABQAAAAUAAAAZABEABQAAAAUAAAAaABEABQAAAAUAAAAbABEABQAAAAUAAAAcABEABQAAAAUAAAAdABEABQAAAAUAAAAAABIABQAAAAUAAAABABIABQAAAAUAAAACABIABQAAAAUAAAADABIABQADAAUAAAAEABIABQAAAAUAAAAFABIABQAAAAUAAAAGABIABQAAAAUAAAAHABIABQADAAUAAAAIABIABQAAAAUAAAAJABIABQAAAAUAAAAKABIABQAAAAUAAAALABIABQAAAAUAAAAMABIABQAAAAUAAAANABIABQAAAAUAAAAOABIABQAAAAUAAAAPABIABQAAAAUAAAAQABIABQAAAAUAAAARABIABQAAAAUAAAASABIABQAAAAUAAAATABIABQAAAAUAAAAUABIABQAAAAUAAAAVABIABQADAAUAAAAWABIABQAAAAUAAAAXABIABQAEAAUAAAAYABIABQAAAAUAAAAZABIABQAAAAUAAAAaABIABQAAAAUAAAAbABIABQAAAAUAAAAcABIABQAAAAUAAAAdABIABQAAAAUAAAAAABMABQAAAAUAAAABABMABQAAAAUAAAACABMABQADAAUAAAADABMABQAAAAUAAAAEABMABQAAAAUAAAAFABMABQAAAAUAAAAGABMABQAEAAUAAAAHABMABQAAAAUAAAAIABMABQAAAAUAAAAJABMABQAEAAUAAAAKABMABQAAAAUAAAALABMABQACAAUAAAAMABMABQAAAAUAAAANABMABQAAAAUAAAAOABMABQAAAAUAAAAPABMABQAAAAUAAAAQABMABQAAAAUAAAARABMABQAAAAUAAAASABMABQAAAAUAAAATABMABQAAAAUAAAAUABMABQAAAAUAAAAVABMABQAAAAUAAAAWABMABQAAAAUAAAAXABMABQAAAAUAAAAYABMABQADAAUAAAAZABMABQAAAAUAAAAaABMABQAAAAUAAAAbABMABQADAAUAAAAcABMABQAAAAUAAAAdABMABQAEAAUAAAAAABQABQAAAAUAAAABABQABQAAAAUAAAACABQABQAAAAUAAAADABQABQAAAAUAAAAEABQABQAAAAUAAAAFABQABQAAAAUAAAAGABQABQAAAAUAAAAHABQABQAAAAUAAAAIABQABQAAAAUAAAAJABQABQAAAAUAAAAKABQABQAAAAUAAAALABQABQAAAAUAAAAMABQABQAAAAUAAAANABQABQAAAAUAAAAOABQABQACAAUAAAAPABQABQAAAAUAAAAQABQABQAAAAUAAAARABQABQAAAAUAAAASABQABQAAAAUAAAATABQABQAAAAUAAAAUABQABQAAAAUAAAAVABQABQAAAAUAAAAWABQABQAAAAUAAAAXABQABQAAAAUAAAAYABQABQAAAAUAAAAZABQABQAEAAUAAAAaABQABQAEAAUAAAAbABQABQAAAAUAAAAcABQABQAAAAUAAAAdABQABQAAAAUAAAAAABUABQAEAAUAAAABABUABQAAAAUAAAACABUABQAAAAUAAAADABUABQAAAAUAAAAEABUABQAAAAUAAAAFABUABQAAAAUAAAAGABUABQAAAAUAAAAHABUABQAAAAUAAAAIABUABQAAAAUAAAAJABUABQAAAAUAAAAKABUABQAAAAUAAAALABUABQAAAAUAAAAMABUABQADAAUAAAANABUABQACAAUAAAAOABUABQAAAAUAAAAPABUABQAAAAUAAAAQABUABQAAAAUAAAARABUABQAAAAUAAAASABUABQAAAAUAAAATABUABQADAAUAAAAUABUABQAAAAUAAAAVABUABQAAAAUAAAAWABUABQAAAAUAAAAXABUABQACAAUAAAAYABUABQAAAAUAAAAZABUABQAAAAUAAAAaABUABQAAAAUAAAAbABUABQAEAAUAAAAcABUABQAAAAUAAAAdABUABQAAAAUAAAA=")
 tile_set = SubResource("TileSet_kpwf8")
 
-[node name="Entities" type="Node2D" parent="." unique_id=2061145425]
+[node name="Entities" type="Node2D" parent="." unique_id=501161613]
 y_sort_enabled = true
 
-[node name="Rock1" type="Node2D" parent="Entities" unique_id=1936060253]
+[node name="Rock1" type="Node2D" parent="Entities" unique_id=398887750]
 position = Vector2(-10, 12)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock1" unique_id=2042636613]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock1" unique_id=1095393597]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock2" type="Node2D" parent="Entities" unique_id=874626010]
+[node name="Rock2" type="Node2D" parent="Entities" unique_id=741061943]
 position = Vector2(-12, 335)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock2" unique_id=1984765315]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock2" unique_id=1321053184]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock3" type="Node2D" parent="Entities" unique_id=400645703]
+[node name="Rock3" type="Node2D" parent="Entities" unique_id=1103961211]
 position = Vector2(-5, 39)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock3" unique_id=917930835]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock3" unique_id=1424160783]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock4" type="Node2D" parent="Entities" unique_id=177503729]
+[node name="Rock4" type="Node2D" parent="Entities" unique_id=1412287075]
 position = Vector2(-6, 359)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock4" unique_id=755757163]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock4" unique_id=1746297185]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock5" type="Node2D" parent="Entities" unique_id=1619427940]
+[node name="Rock5" type="Node2D" parent="Entities" unique_id=2145888537]
 position = Vector2(8, 13)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock5" unique_id=1745239231]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock5" unique_id=1462720302]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock6" type="Node2D" parent="Entities" unique_id=1989888748]
+[node name="Rock6" type="Node2D" parent="Entities" unique_id=1405285169]
 position = Vector2(7, 337)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock6" unique_id=1764368979]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock6" unique_id=1068035624]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock7" type="Node2D" parent="Entities" unique_id=1896065231]
+[node name="Rock7" type="Node2D" parent="Entities" unique_id=1450180174]
 position = Vector2(8, 39)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock7" unique_id=62422758]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock7" unique_id=762318530]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock8" type="Node2D" parent="Entities" unique_id=869281614]
+[node name="Rock8" type="Node2D" parent="Entities" unique_id=1990810801]
 position = Vector2(10, 359)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock8" unique_id=1727243930]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock8" unique_id=495816399]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock9" type="Node2D" parent="Entities" unique_id=1805874689]
+[node name="Rock9" type="Node2D" parent="Entities" unique_id=20640350]
 position = Vector2(31, 13)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock9" unique_id=1114225173]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock9" unique_id=1905250882]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock10" type="Node2D" parent="Entities" unique_id=1730145030]
+[node name="Rock10" type="Node2D" parent="Entities" unique_id=163343864]
 position = Vector2(31, 335)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock10" unique_id=1543570836]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock10" unique_id=1927381207]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock11" type="Node2D" parent="Entities" unique_id=743970492]
+[node name="Rock11" type="Node2D" parent="Entities" unique_id=935549037]
 position = Vector2(30, 39)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock11" unique_id=584555174]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock11" unique_id=418876752]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock12" type="Node2D" parent="Entities" unique_id=1512976959]
+[node name="Rock12" type="Node2D" parent="Entities" unique_id=444136051]
 position = Vector2(27, 361)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock12" unique_id=527841690]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock12" unique_id=2085324083]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock13" type="Node2D" parent="Entities" unique_id=1376748613]
+[node name="Rock13" type="Node2D" parent="Entities" unique_id=608735177]
 position = Vector2(44, 16)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock13" unique_id=136975272]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock13" unique_id=849501710]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock14" type="Node2D" parent="Entities" unique_id=1706591060]
+[node name="Rock14" type="Node2D" parent="Entities" unique_id=937560168]
 position = Vector2(45, 335)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock14" unique_id=1181417812]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock14" unique_id=1221453205]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock15" type="Node2D" parent="Entities" unique_id=916861146]
+[node name="Rock15" type="Node2D" parent="Entities" unique_id=2070757543]
 position = Vector2(49, 36)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock15" unique_id=1589588200]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock15" unique_id=2118525801]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock16" type="Node2D" parent="Entities" unique_id=75409388]
+[node name="Rock16" type="Node2D" parent="Entities" unique_id=1781486767]
 position = Vector2(44, 357)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock16" unique_id=1296480982]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock16" unique_id=273647523]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock17" type="Node2D" parent="Entities" unique_id=1751849622]
+[node name="Rock17" type="Node2D" parent="Entities" unique_id=1544517368]
 position = Vector2(63, 16)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock17" unique_id=48844803]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock17" unique_id=1643712030]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock18" type="Node2D" parent="Entities" unique_id=708568481]
+[node name="Rock18" type="Node2D" parent="Entities" unique_id=299038764]
 position = Vector2(62, 332)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock18" unique_id=1652920992]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock18" unique_id=1781733073]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock19" type="Node2D" parent="Entities" unique_id=1543110647]
+[node name="Rock19" type="Node2D" parent="Entities" unique_id=357891186]
 position = Vector2(67, 36)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock19" unique_id=1232750189]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock19" unique_id=1064556741]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock20" type="Node2D" parent="Entities" unique_id=1274851462]
+[node name="Rock20" type="Node2D" parent="Entities" unique_id=1668508582]
 position = Vector2(62, 359)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock20" unique_id=844877478]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock20" unique_id=1713051055]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock21" type="Node2D" parent="Entities" unique_id=303820228]
+[node name="Rock21" type="Node2D" parent="Entities" unique_id=871889027]
 position = Vector2(79, 14)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock21" unique_id=337201203]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock21" unique_id=632907501]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock22" type="Node2D" parent="Entities" unique_id=755802109]
+[node name="Rock22" type="Node2D" parent="Entities" unique_id=52176560]
 position = Vector2(83, 333)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock22" unique_id=1559993168]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock22" unique_id=1183268784]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock23" type="Node2D" parent="Entities" unique_id=1950600163]
+[node name="Rock23" type="Node2D" parent="Entities" unique_id=1923369991]
 position = Vector2(78, 37)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock23" unique_id=1111695190]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock23" unique_id=1036849672]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock24" type="Node2D" parent="Entities" unique_id=1865022355]
+[node name="Rock24" type="Node2D" parent="Entities" unique_id=973405858]
 position = Vector2(86, 357)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock24" unique_id=1342215419]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock24" unique_id=119626551]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock25" type="Node2D" parent="Entities" unique_id=1840722926]
+[node name="Rock25" type="Node2D" parent="Entities" unique_id=1184097072]
 position = Vector2(104, 13)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock25" unique_id=414766258]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock25" unique_id=1217391532]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock26" type="Node2D" parent="Entities" unique_id=997255062]
+[node name="Rock26" type="Node2D" parent="Entities" unique_id=1678998281]
 position = Vector2(103, 336)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock26" unique_id=1417754943]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock26" unique_id=617645334]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock27" type="Node2D" parent="Entities" unique_id=1900919030]
+[node name="Rock27" type="Node2D" parent="Entities" unique_id=385235619]
 position = Vector2(96, 40)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock27" unique_id=216687037]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock27" unique_id=1384932938]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock28" type="Node2D" parent="Entities" unique_id=914421154]
+[node name="Rock28" type="Node2D" parent="Entities" unique_id=944743770]
 position = Vector2(104, 361)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock28" unique_id=257955779]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock28" unique_id=579623588]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock29" type="Node2D" parent="Entities" unique_id=1283990890]
+[node name="Rock29" type="Node2D" parent="Entities" unique_id=706997275]
 position = Vector2(115, 16)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock29" unique_id=694214612]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock29" unique_id=976467065]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock30" type="Node2D" parent="Entities" unique_id=447514824]
+[node name="Rock30" type="Node2D" parent="Entities" unique_id=63755388]
 position = Vector2(120, 332)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock30" unique_id=69232270]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock30" unique_id=2130906171]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock31" type="Node2D" parent="Entities" unique_id=54560087]
+[node name="Rock31" type="Node2D" parent="Entities" unique_id=125579446]
 position = Vector2(115, 37)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock31" unique_id=1779323728]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock31" unique_id=599632071]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock32" type="Node2D" parent="Entities" unique_id=1355751049]
+[node name="Rock32" type="Node2D" parent="Entities" unique_id=1347959218]
 position = Vector2(116, 357)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock32" unique_id=495192355]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock32" unique_id=703873663]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock33" type="Node2D" parent="Entities" unique_id=1566055818]
+[node name="Rock33" type="Node2D" parent="Entities" unique_id=1440133298]
 position = Vector2(134, 13)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock33" unique_id=601893618]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock33" unique_id=1265574543]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock34" type="Node2D" parent="Entities" unique_id=476497949]
+[node name="Rock34" type="Node2D" parent="Entities" unique_id=2013296734]
 position = Vector2(137, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock34" unique_id=1397121074]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock34" unique_id=1791767094]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock35" type="Node2D" parent="Entities" unique_id=1311495387]
+[node name="Rock35" type="Node2D" parent="Entities" unique_id=710411561]
 position = Vector2(133, 40)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock35" unique_id=1903086802]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock35" unique_id=1507807360]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock36" type="Node2D" parent="Entities" unique_id=844135410]
+[node name="Rock36" type="Node2D" parent="Entities" unique_id=777426957]
 position = Vector2(132, 357)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock36" unique_id=1165947056]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock36" unique_id=1500915497]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock37" type="Node2D" parent="Entities" unique_id=2030440134]
+[node name="Rock37" type="Node2D" parent="Entities" unique_id=1895865333]
 position = Vector2(152, 12)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock37" unique_id=287644270]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock37" unique_id=79826496]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock38" type="Node2D" parent="Entities" unique_id=1820402616]
+[node name="Rock38" type="Node2D" parent="Entities" unique_id=1384998942]
 position = Vector2(157, 335)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock38" unique_id=1453954532]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock38" unique_id=1396625345]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock39" type="Node2D" parent="Entities" unique_id=2132138239]
+[node name="Rock39" type="Node2D" parent="Entities" unique_id=1504762801]
 position = Vector2(150, 40)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock39" unique_id=1102561844]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock39" unique_id=1156749124]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock40" type="Node2D" parent="Entities" unique_id=1038295419]
+[node name="Rock40" type="Node2D" parent="Entities" unique_id=219181511]
 position = Vector2(158, 358)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock40" unique_id=1490979343]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock40" unique_id=1985792846]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock41" type="Node2D" parent="Entities" unique_id=1411678175]
+[node name="Rock41" type="Node2D" parent="Entities" unique_id=1579384322]
 position = Vector2(172, 17)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock41" unique_id=1067602666]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock41" unique_id=1421451724]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock42" type="Node2D" parent="Entities" unique_id=345532948]
+[node name="Rock42" type="Node2D" parent="Entities" unique_id=768840052]
 position = Vector2(174, 331)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock42" unique_id=733793313]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock42" unique_id=504463244]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock43" type="Node2D" parent="Entities" unique_id=347713286]
+[node name="Rock43" type="Node2D" parent="Entities" unique_id=1080598894]
 position = Vector2(176, 40)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock43" unique_id=1706795681]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock43" unique_id=1326807222]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock44" type="Node2D" parent="Entities" unique_id=2001177379]
+[node name="Rock44" type="Node2D" parent="Entities" unique_id=383893414]
 position = Vector2(176, 356)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock44" unique_id=1232079850]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock44" unique_id=1311318734]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock45" type="Node2D" parent="Entities" unique_id=1153977122]
+[node name="Rock45" type="Node2D" parent="Entities" unique_id=1829963438]
 position = Vector2(194, 13)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock45" unique_id=521484634]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock45" unique_id=1499351776]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock46" type="Node2D" parent="Entities" unique_id=547359766]
+[node name="Rock46" type="Node2D" parent="Entities" unique_id=2045988811]
 position = Vector2(187, 337)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock46" unique_id=968570573]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock46" unique_id=433357678]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock47" type="Node2D" parent="Entities" unique_id=1063834290]
+[node name="Rock47" type="Node2D" parent="Entities" unique_id=681280206]
 position = Vector2(187, 38)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock47" unique_id=645944321]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock47" unique_id=720629402]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock48" type="Node2D" parent="Entities" unique_id=504709659]
+[node name="Rock48" type="Node2D" parent="Entities" unique_id=377932086]
 position = Vector2(188, 356)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock48" unique_id=1801136662]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock48" unique_id=1710988651]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock49" type="Node2D" parent="Entities" unique_id=1955153118]
+[node name="Rock49" type="Node2D" parent="Entities" unique_id=1607920154]
 position = Vector2(205, 11)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock49" unique_id=1192153793]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock49" unique_id=1631632871]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock50" type="Node2D" parent="Entities" unique_id=145283908]
+[node name="Rock50" type="Node2D" parent="Entities" unique_id=1835696126]
 position = Vector2(211, 333)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock50" unique_id=1906250701]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock50" unique_id=1204884365]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock51" type="Node2D" parent="Entities" unique_id=382953096]
+[node name="Rock51" type="Node2D" parent="Entities" unique_id=187665056]
 position = Vector2(210, 40)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock51" unique_id=819274578]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock51" unique_id=1632521391]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock52" type="Node2D" parent="Entities" unique_id=793154659]
+[node name="Rock52" type="Node2D" parent="Entities" unique_id=545143118]
 position = Vector2(205, 356)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock52" unique_id=912093336]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock52" unique_id=905159528]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock53" type="Node2D" parent="Entities" unique_id=519697977]
+[node name="Rock53" type="Node2D" parent="Entities" unique_id=343214392]
 position = Vector2(223, 15)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock53" unique_id=1425338562]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock53" unique_id=1779114758]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock54" type="Node2D" parent="Entities" unique_id=1308050226]
+[node name="Rock54" type="Node2D" parent="Entities" unique_id=552761636]
 position = Vector2(229, 336)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock54" unique_id=84700491]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock54" unique_id=801534529]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock55" type="Node2D" parent="Entities" unique_id=907851246]
+[node name="Rock55" type="Node2D" parent="Entities" unique_id=1465237430]
 position = Vector2(222, 37)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock55" unique_id=864590565]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock55" unique_id=1827370594]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock56" type="Node2D" parent="Entities" unique_id=1351360598]
+[node name="Rock56" type="Node2D" parent="Entities" unique_id=1992947233]
 position = Vector2(230, 359)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock56" unique_id=1571723302]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock56" unique_id=2116023424]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock57" type="Node2D" parent="Entities" unique_id=911660676]
+[node name="Rock57" type="Node2D" parent="Entities" unique_id=1568634129]
 position = Vector2(246, 17)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock57" unique_id=405175980]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock57" unique_id=1827759051]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock58" type="Node2D" parent="Entities" unique_id=1712998294]
+[node name="Rock58" type="Node2D" parent="Entities" unique_id=247763033]
 position = Vector2(242, 335)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock58" unique_id=1225546777]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock58" unique_id=871586051]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock59" type="Node2D" parent="Entities" unique_id=1853402857]
+[node name="Rock59" type="Node2D" parent="Entities" unique_id=1246861907]
 position = Vector2(246, 37)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock59" unique_id=1082047674]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock59" unique_id=195013056]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock60" type="Node2D" parent="Entities" unique_id=1398284711]
+[node name="Rock60" type="Node2D" parent="Entities" unique_id=1374529905]
 position = Vector2(245, 356)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock60" unique_id=1842653735]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock60" unique_id=1265351483]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock61" type="Node2D" parent="Entities" unique_id=755530104]
+[node name="Rock61" type="Node2D" parent="Entities" unique_id=963061550]
 position = Vector2(265, 13)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock61" unique_id=1421182151]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock61" unique_id=1363042204]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock62" type="Node2D" parent="Entities" unique_id=1506961915]
+[node name="Rock62" type="Node2D" parent="Entities" unique_id=1801830669]
 position = Vector2(265, 333)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock62" unique_id=1326915960]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock62" unique_id=508429259]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock63" type="Node2D" parent="Entities" unique_id=1506493180]
+[node name="Rock63" type="Node2D" parent="Entities" unique_id=408917780]
 position = Vector2(261, 41)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock63" unique_id=426295882]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock63" unique_id=1426568547]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock64" type="Node2D" parent="Entities" unique_id=341995946]
+[node name="Rock64" type="Node2D" parent="Entities" unique_id=369554924]
 position = Vector2(258, 357)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock64" unique_id=1088485929]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock64" unique_id=1074029468]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock65" type="Node2D" parent="Entities" unique_id=1432620300]
+[node name="Rock65" type="Node2D" parent="Entities" unique_id=1212961147]
 position = Vector2(281, 16)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock65" unique_id=1852171923]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock65" unique_id=1039230388]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock66" type="Node2D" parent="Entities" unique_id=635479048]
+[node name="Rock66" type="Node2D" parent="Entities" unique_id=1654568689]
 position = Vector2(283, 335)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock66" unique_id=1294789429]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock66" unique_id=1699900779]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock67" type="Node2D" parent="Entities" unique_id=1075463650]
+[node name="Rock67" type="Node2D" parent="Entities" unique_id=1349827489]
 position = Vector2(283, 40)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock67" unique_id=1503518315]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock67" unique_id=150544440]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock68" type="Node2D" parent="Entities" unique_id=258141531]
+[node name="Rock68" type="Node2D" parent="Entities" unique_id=2014784497]
 position = Vector2(277, 358)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock68" unique_id=1388972463]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock68" unique_id=855025537]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock69" type="Node2D" parent="Entities" unique_id=656848838]
+[node name="Rock69" type="Node2D" parent="Entities" unique_id=1203571179]
 position = Vector2(300, 15)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock69" unique_id=2064521765]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock69" unique_id=111311011]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock70" type="Node2D" parent="Entities" unique_id=107405460]
+[node name="Rock70" type="Node2D" parent="Entities" unique_id=1339716893]
 position = Vector2(299, 332)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock70" unique_id=48522696]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock70" unique_id=1080419527]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock71" type="Node2D" parent="Entities" unique_id=944051701]
+[node name="Rock71" type="Node2D" parent="Entities" unique_id=1508769624]
 position = Vector2(301, 38)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock71" unique_id=296185287]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock71" unique_id=1171082565]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock72" type="Node2D" parent="Entities" unique_id=1893634562]
+[node name="Rock72" type="Node2D" parent="Entities" unique_id=1649246765]
 position = Vector2(299, 358)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock72" unique_id=1292636992]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock72" unique_id=76156663]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock73" type="Node2D" parent="Entities" unique_id=369719897]
+[node name="Rock73" type="Node2D" parent="Entities" unique_id=1231642345]
 position = Vector2(313, 16)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock73" unique_id=1594293744]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock73" unique_id=662624892]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock74" type="Node2D" parent="Entities" unique_id=2056704003]
+[node name="Rock74" type="Node2D" parent="Entities" unique_id=1921880312]
 position = Vector2(319, 332)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock74" unique_id=1648241499]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock74" unique_id=1401667964]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock75" type="Node2D" parent="Entities" unique_id=1604140840]
+[node name="Rock75" type="Node2D" parent="Entities" unique_id=9395358]
 position = Vector2(318, 41)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock75" unique_id=1817604978]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock75" unique_id=419261943]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock76" type="Node2D" parent="Entities" unique_id=1870391100]
+[node name="Rock76" type="Node2D" parent="Entities" unique_id=940727539]
 position = Vector2(316, 358)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock76" unique_id=943328732]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock76" unique_id=25685574]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock77" type="Node2D" parent="Entities" unique_id=1953573809]
+[node name="Rock77" type="Node2D" parent="Entities" unique_id=1107236272]
 position = Vector2(331, 12)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock77" unique_id=325228241]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock77" unique_id=2056162380]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock78" type="Node2D" parent="Entities" unique_id=164449697]
+[node name="Rock78" type="Node2D" parent="Entities" unique_id=1159963031]
 position = Vector2(337, 332)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock78" unique_id=970322826]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock78" unique_id=1949662844]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock79" type="Node2D" parent="Entities" unique_id=1833369161]
+[node name="Rock79" type="Node2D" parent="Entities" unique_id=1327056602]
 position = Vector2(332, 40)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock79" unique_id=19726472]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock79" unique_id=1093713433]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock80" type="Node2D" parent="Entities" unique_id=867719370]
+[node name="Rock80" type="Node2D" parent="Entities" unique_id=1901517588]
 position = Vector2(332, 358)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock80" unique_id=1640411266]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock80" unique_id=1026369377]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock81" type="Node2D" parent="Entities" unique_id=733244508]
+[node name="Rock81" type="Node2D" parent="Entities" unique_id=642790833]
 position = Vector2(353, 14)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock81" unique_id=2058506929]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock81" unique_id=1753526169]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock82" type="Node2D" parent="Entities" unique_id=1117952546]
+[node name="Rock82" type="Node2D" parent="Entities" unique_id=1348355674]
 position = Vector2(348, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock82" unique_id=180285031]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock82" unique_id=42231792]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock83" type="Node2D" parent="Entities" unique_id=1578421757]
+[node name="Rock83" type="Node2D" parent="Entities" unique_id=1995479897]
 position = Vector2(354, 41)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock83" unique_id=2139924043]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock83" unique_id=802047030]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock84" type="Node2D" parent="Entities" unique_id=1139188371]
+[node name="Rock84" type="Node2D" parent="Entities" unique_id=691790641]
 position = Vector2(350, 360)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock84" unique_id=1473558874]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock84" unique_id=723972879]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock85" type="Node2D" parent="Entities" unique_id=1445366362]
+[node name="Rock85" type="Node2D" parent="Entities" unique_id=1016759246]
 position = Vector2(372, 14)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock85" unique_id=130413745]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock85" unique_id=1018526844]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock86" type="Node2D" parent="Entities" unique_id=1796540648]
+[node name="Rock86" type="Node2D" parent="Entities" unique_id=120053970]
 position = Vector2(371, 336)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock86" unique_id=1750951000]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock86" unique_id=861303859]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock87" type="Node2D" parent="Entities" unique_id=1142423758]
+[node name="Rock87" type="Node2D" parent="Entities" unique_id=1180579829]
 position = Vector2(370, 41)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock87" unique_id=1481785490]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock87" unique_id=1843359757]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock88" type="Node2D" parent="Entities" unique_id=1607224768]
+[node name="Rock88" type="Node2D" parent="Entities" unique_id=1661085445]
 position = Vector2(367, 359)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock88" unique_id=1299147176]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock88" unique_id=70017613]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock89" type="Node2D" parent="Entities" unique_id=1197788621]
+[node name="Rock89" type="Node2D" parent="Entities" unique_id=1719582251]
 position = Vector2(391, 15)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock89" unique_id=714939047]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock89" unique_id=969172791]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock90" type="Node2D" parent="Entities" unique_id=322585897]
+[node name="Rock90" type="Node2D" parent="Entities" unique_id=1217531259]
 position = Vector2(385, 335)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock90" unique_id=1294351930]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock90" unique_id=575579029]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock91" type="Node2D" parent="Entities" unique_id=798385783]
+[node name="Rock91" type="Node2D" parent="Entities" unique_id=1245572822]
 position = Vector2(385, 36)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock91" unique_id=1775964368]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock91" unique_id=1648799472]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock92" type="Node2D" parent="Entities" unique_id=1735729976]
+[node name="Rock92" type="Node2D" parent="Entities" unique_id=282764499]
 position = Vector2(387, 361)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock92" unique_id=920326491]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock92" unique_id=1425660649]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock93" type="Node2D" parent="Entities" unique_id=1584823361]
+[node name="Rock93" type="Node2D" parent="Entities" unique_id=485073632]
 position = Vector2(407, 17)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock93" unique_id=898980382]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock93" unique_id=1668094508]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock94" type="Node2D" parent="Entities" unique_id=1200805952]
+[node name="Rock94" type="Node2D" parent="Entities" unique_id=402346623]
 position = Vector2(403, 334)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock94" unique_id=1326880017]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock94" unique_id=127660868]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock95" type="Node2D" parent="Entities" unique_id=2068753367]
+[node name="Rock95" type="Node2D" parent="Entities" unique_id=20665211]
 position = Vector2(408, 37)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock95" unique_id=1305843476]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock95" unique_id=1324959865]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock96" type="Node2D" parent="Entities" unique_id=334347789]
+[node name="Rock96" type="Node2D" parent="Entities" unique_id=1332290124]
 position = Vector2(405, 360)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock96" unique_id=19694017]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock96" unique_id=1340322422]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock97" type="Node2D" parent="Entities" unique_id=486134543]
+[node name="Rock97" type="Node2D" parent="Entities" unique_id=1224952095]
 position = Vector2(425, 16)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock97" unique_id=1235319475]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock97" unique_id=631710268]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock98" type="Node2D" parent="Entities" unique_id=1130972900]
+[node name="Rock98" type="Node2D" parent="Entities" unique_id=1090291792]
 position = Vector2(424, 337)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock98" unique_id=922106911]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock98" unique_id=1561507999]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock99" type="Node2D" parent="Entities" unique_id=1788594506]
+[node name="Rock99" type="Node2D" parent="Entities" unique_id=457054208]
 position = Vector2(425, 41)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock99" unique_id=93212973]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock99" unique_id=2093758626]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock100" type="Node2D" parent="Entities" unique_id=1489306566]
+[node name="Rock100" type="Node2D" parent="Entities" unique_id=1657832421]
 position = Vector2(421, 358)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock100" unique_id=1350451838]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock100" unique_id=550501645]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock101" type="Node2D" parent="Entities" unique_id=814086791]
+[node name="Rock101" type="Node2D" parent="Entities" unique_id=1870033058]
 position = Vector2(440, 12)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock101" unique_id=1235702625]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock101" unique_id=571138432]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock102" type="Node2D" parent="Entities" unique_id=611293383]
+[node name="Rock102" type="Node2D" parent="Entities" unique_id=1244048968]
 position = Vector2(443, 337)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock102" unique_id=391488228]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock102" unique_id=418636595]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock103" type="Node2D" parent="Entities" unique_id=622250944]
+[node name="Rock103" type="Node2D" parent="Entities" unique_id=293418281]
 position = Vector2(440, 41)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock103" unique_id=1952302566]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock103" unique_id=2118389142]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock104" type="Node2D" parent="Entities" unique_id=1449176289]
+[node name="Rock104" type="Node2D" parent="Entities" unique_id=2060128097]
 position = Vector2(441, 356)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock104" unique_id=1127533793]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock104" unique_id=1666773726]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock105" type="Node2D" parent="Entities" unique_id=383388713]
+[node name="Rock105" type="Node2D" parent="Entities" unique_id=1672688667]
 position = Vector2(457, 14)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock105" unique_id=1420127779]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock105" unique_id=1775748872]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock106" type="Node2D" parent="Entities" unique_id=184305561]
+[node name="Rock106" type="Node2D" parent="Entities" unique_id=1163052688]
 position = Vector2(462, 332)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock106" unique_id=425661732]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock106" unique_id=51870200]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock107" type="Node2D" parent="Entities" unique_id=1243800320]
+[node name="Rock107" type="Node2D" parent="Entities" unique_id=107334673]
 position = Vector2(459, 36)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock107" unique_id=1723103681]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock107" unique_id=125088873]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock108" type="Node2D" parent="Entities" unique_id=1843811873]
+[node name="Rock108" type="Node2D" parent="Entities" unique_id=1177057293]
 position = Vector2(458, 357)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock108" unique_id=493242303]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock108" unique_id=1561994297]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock109" type="Node2D" parent="Entities" unique_id=1978258405]
+[node name="Rock109" type="Node2D" parent="Entities" unique_id=1362786740]
 position = Vector2(482, 17)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock109" unique_id=603500144]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock109" unique_id=1223639319]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock110" type="Node2D" parent="Entities" unique_id=908654511]
+[node name="Rock110" type="Node2D" parent="Entities" unique_id=1581179858]
 position = Vector2(475, 333)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock110" unique_id=942408949]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock110" unique_id=1535610412]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock111" type="Node2D" parent="Entities" unique_id=1531076168]
+[node name="Rock111" type="Node2D" parent="Entities" unique_id=162772672]
 position = Vector2(476, 37)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock111" unique_id=1782324427]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock111" unique_id=1644812284]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock112" type="Node2D" parent="Entities" unique_id=323767023]
+[node name="Rock112" type="Node2D" parent="Entities" unique_id=1666278492]
 position = Vector2(477, 356)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock112" unique_id=112510847]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock112" unique_id=289708885]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock113" type="Node2D" parent="Entities" unique_id=551189993]
+[node name="Rock113" type="Node2D" parent="Entities" unique_id=522327672]
 position = Vector2(17, 30)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock113" unique_id=182652328]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock113" unique_id=20582005]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock114" type="Node2D" parent="Entities" unique_id=727312166]
+[node name="Rock114" type="Node2D" parent="Entities" unique_id=1958521770]
 position = Vector2(464, 32)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock114" unique_id=715020295]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock114" unique_id=1717362561]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock115" type="Node2D" parent="Entities" unique_id=76629552]
+[node name="Rock115" type="Node2D" parent="Entities" unique_id=1166193709]
 position = Vector2(40, 33)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock115" unique_id=1782366641]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock115" unique_id=1791326097]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock116" type="Node2D" parent="Entities" unique_id=1562648365]
+[node name="Rock116" type="Node2D" parent="Entities" unique_id=703653635]
 position = Vector2(443, 32)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock116" unique_id=901030666]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock116" unique_id=1073873831]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock117" type="Node2D" parent="Entities" unique_id=423446504]
+[node name="Rock117" type="Node2D" parent="Entities" unique_id=227515534]
 position = Vector2(18, 50)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock117" unique_id=1967221831]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock117" unique_id=1917515757]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock118" type="Node2D" parent="Entities" unique_id=80274231]
+[node name="Rock118" type="Node2D" parent="Entities" unique_id=1953607827]
 position = Vector2(462, 51)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock118" unique_id=2106007996]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock118" unique_id=1167693693]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock119" type="Node2D" parent="Entities" unique_id=102459755]
+[node name="Rock119" type="Node2D" parent="Entities" unique_id=1317809126]
 position = Vector2(35, 47)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock119" unique_id=654239989]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock119" unique_id=443030238]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock120" type="Node2D" parent="Entities" unique_id=674338154]
+[node name="Rock120" type="Node2D" parent="Entities" unique_id=1437033521]
 position = Vector2(442, 49)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock120" unique_id=2046814120]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock120" unique_id=830012700]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock121" type="Node2D" parent="Entities" unique_id=424476256]
+[node name="Rock121" type="Node2D" parent="Entities" unique_id=228260036]
 position = Vector2(12, 68)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock121" unique_id=1215215131]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock121" unique_id=1333869594]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock122" type="Node2D" parent="Entities" unique_id=2078591012]
+[node name="Rock122" type="Node2D" parent="Entities" unique_id=441865675]
 position = Vector2(466, 65)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock122" unique_id=706299570]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock122" unique_id=1083393327]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock123" type="Node2D" parent="Entities" unique_id=1355786755]
+[node name="Rock123" type="Node2D" parent="Entities" unique_id=1338587176]
 position = Vector2(36, 68)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock123" unique_id=633745620]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock123" unique_id=1315661583]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock124" type="Node2D" parent="Entities" unique_id=1981780328]
+[node name="Rock124" type="Node2D" parent="Entities" unique_id=49401630]
 position = Vector2(444, 70)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock124" unique_id=2117983374]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock124" unique_id=1897179470]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock125" type="Node2D" parent="Entities" unique_id=794735425]
+[node name="Rock125" type="Node2D" parent="Entities" unique_id=165735812]
 position = Vector2(15, 86)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock125" unique_id=819176979]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock125" unique_id=263485258]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock126" type="Node2D" parent="Entities" unique_id=1507375572]
+[node name="Rock126" type="Node2D" parent="Entities" unique_id=155982811]
 position = Vector2(469, 89)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock126" unique_id=548577471]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock126" unique_id=945620073]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock127" type="Node2D" parent="Entities" unique_id=794643374]
+[node name="Rock127" type="Node2D" parent="Entities" unique_id=1996521002]
 position = Vector2(42, 86)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock127" unique_id=1197574988]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock127" unique_id=2135818736]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock128" type="Node2D" parent="Entities" unique_id=151511160]
+[node name="Rock128" type="Node2D" parent="Entities" unique_id=248775768]
 position = Vector2(443, 88)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock128" unique_id=393150592]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock128" unique_id=2089108502]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock129" type="Node2D" parent="Entities" unique_id=1888457660]
+[node name="Rock129" type="Node2D" parent="Entities" unique_id=924071840]
 position = Vector2(16, 106)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock129" unique_id=1730326912]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock129" unique_id=1999314716]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock130" type="Node2D" parent="Entities" unique_id=252239744]
+[node name="Rock130" type="Node2D" parent="Entities" unique_id=1121108689]
 position = Vector2(467, 107)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock130" unique_id=604213837]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock130" unique_id=621715326]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock131" type="Node2D" parent="Entities" unique_id=193365160]
+[node name="Rock131" type="Node2D" parent="Entities" unique_id=2120567979]
 position = Vector2(35, 106)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock131" unique_id=1345452156]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock131" unique_id=436595014]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock132" type="Node2D" parent="Entities" unique_id=1338569995]
+[node name="Rock132" type="Node2D" parent="Entities" unique_id=494090919]
 position = Vector2(445, 104)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock132" unique_id=395686089]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock132" unique_id=153452694]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock133" type="Node2D" parent="Entities" unique_id=602151623]
+[node name="Rock133" type="Node2D" parent="Entities" unique_id=978684417]
 position = Vector2(15, 119)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock133" unique_id=689812225]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock133" unique_id=440076381]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock134" type="Node2D" parent="Entities" unique_id=1352000446]
+[node name="Rock134" type="Node2D" parent="Entities" unique_id=1993614237]
 position = Vector2(463, 123)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock134" unique_id=1402636849]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock134" unique_id=1854697335]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock135" type="Node2D" parent="Entities" unique_id=292552130]
+[node name="Rock135" type="Node2D" parent="Entities" unique_id=349608643]
 position = Vector2(39, 123)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock135" unique_id=801904207]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock135" unique_id=423839807]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock136" type="Node2D" parent="Entities" unique_id=397300024]
+[node name="Rock136" type="Node2D" parent="Entities" unique_id=1136872076]
 position = Vector2(438, 125)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock136" unique_id=1358648738]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock136" unique_id=134133880]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock137" type="Node2D" parent="Entities" unique_id=1698288565]
+[node name="Rock137" type="Node2D" parent="Entities" unique_id=941006958]
 position = Vector2(15, 141)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock137" unique_id=1463400943]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock137" unique_id=377563748]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock138" type="Node2D" parent="Entities" unique_id=346846318]
+[node name="Rock138" type="Node2D" parent="Entities" unique_id=1829306117]
 position = Vector2(464, 142)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock138" unique_id=297126275]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock138" unique_id=191070830]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock139" type="Node2D" parent="Entities" unique_id=1587201164]
+[node name="Rock139" type="Node2D" parent="Entities" unique_id=1446100887]
 position = Vector2(40, 143)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock139" unique_id=1122034056]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock139" unique_id=387272727]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock140" type="Node2D" parent="Entities" unique_id=1695886955]
+[node name="Rock140" type="Node2D" parent="Entities" unique_id=1113136658]
 position = Vector2(441, 140)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock140" unique_id=77876627]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock140" unique_id=503904315]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock141" type="Node2D" parent="Entities" unique_id=1469851218]
+[node name="Rock141" type="Node2D" parent="Entities" unique_id=1105347361]
 position = Vector2(12, 158)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock141" unique_id=1994118871]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock141" unique_id=336878780]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock142" type="Node2D" parent="Entities" unique_id=133189586]
+[node name="Rock142" type="Node2D" parent="Entities" unique_id=918408180]
 position = Vector2(469, 158)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock142" unique_id=1200500544]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock142" unique_id=287274742]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock143" type="Node2D" parent="Entities" unique_id=319200382]
+[node name="Rock143" type="Node2D" parent="Entities" unique_id=1057877151]
 position = Vector2(39, 157)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock143" unique_id=657164554]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock143" unique_id=1210658793]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock144" type="Node2D" parent="Entities" unique_id=1100562520]
+[node name="Rock144" type="Node2D" parent="Entities" unique_id=1579102075]
 position = Vector2(442, 159)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock144" unique_id=603855500]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock144" unique_id=1242529931]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock145" type="Node2D" parent="Entities" unique_id=1003278217]
+[node name="Rock145" type="Node2D" parent="Entities" unique_id=401308741]
 position = Vector2(15, 179)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock145" unique_id=143819899]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock145" unique_id=2094971056]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock146" type="Node2D" parent="Entities" unique_id=2067591807]
+[node name="Rock146" type="Node2D" parent="Entities" unique_id=1166045551]
 position = Vector2(462, 177)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock146" unique_id=1183143398]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock146" unique_id=241238527]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock147" type="Node2D" parent="Entities" unique_id=574667611]
+[node name="Rock147" type="Node2D" parent="Entities" unique_id=503167559]
 position = Vector2(41, 177)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock147" unique_id=1237742325]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock147" unique_id=1240520722]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock148" type="Node2D" parent="Entities" unique_id=120227143]
+[node name="Rock148" type="Node2D" parent="Entities" unique_id=727336855]
 position = Vector2(439, 176)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock148" unique_id=1540288090]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock148" unique_id=1522112428]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock149" type="Node2D" parent="Entities" unique_id=1131765124]
+[node name="Rock149" type="Node2D" parent="Entities" unique_id=875950003]
 position = Vector2(18, 193)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock149" unique_id=854341192]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock149" unique_id=268387965]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock150" type="Node2D" parent="Entities" unique_id=952787526]
+[node name="Rock150" type="Node2D" parent="Entities" unique_id=557833838]
 position = Vector2(463, 197)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock150" unique_id=1777784386]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock150" unique_id=2080704101]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock151" type="Node2D" parent="Entities" unique_id=921961106]
+[node name="Rock151" type="Node2D" parent="Entities" unique_id=1488935653]
 position = Vector2(40, 196)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock151" unique_id=1858741004]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock151" unique_id=2048812915]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock152" type="Node2D" parent="Entities" unique_id=187810078]
+[node name="Rock152" type="Node2D" parent="Entities" unique_id=1333909639]
 position = Vector2(439, 197)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock152" unique_id=267581279]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock152" unique_id=554971350]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock153" type="Node2D" parent="Entities" unique_id=2147344578]
+[node name="Rock153" type="Node2D" parent="Entities" unique_id=1676356132]
 position = Vector2(18, 214)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock153" unique_id=564174926]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock153" unique_id=1777781844]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock154" type="Node2D" parent="Entities" unique_id=1972903903]
+[node name="Rock154" type="Node2D" parent="Entities" unique_id=1806412618]
 position = Vector2(467, 215)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock154" unique_id=1773720572]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock154" unique_id=1315919573]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock155" type="Node2D" parent="Entities" unique_id=205883619]
+[node name="Rock155" type="Node2D" parent="Entities" unique_id=1850257134]
 position = Vector2(40, 211)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock155" unique_id=19976488]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock155" unique_id=2055822426]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock156" type="Node2D" parent="Entities" unique_id=490609876]
+[node name="Rock156" type="Node2D" parent="Entities" unique_id=964552321]
 position = Vector2(440, 209)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock156" unique_id=229631308]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock156" unique_id=1416821996]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock157" type="Node2D" parent="Entities" unique_id=375964389]
+[node name="Rock157" type="Node2D" parent="Entities" unique_id=2001789217]
 position = Vector2(11, 230)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock157" unique_id=791907645]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock157" unique_id=2053886939]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock158" type="Node2D" parent="Entities" unique_id=146225163]
+[node name="Rock158" type="Node2D" parent="Entities" unique_id=1521912041]
 position = Vector2(469, 229)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock158" unique_id=186010153]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock158" unique_id=825432209]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock159" type="Node2D" parent="Entities" unique_id=1000076199]
+[node name="Rock159" type="Node2D" parent="Entities" unique_id=876952477]
 position = Vector2(39, 228)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock159" unique_id=342662844]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock159" unique_id=591885432]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock160" type="Node2D" parent="Entities" unique_id=1165215317]
+[node name="Rock160" type="Node2D" parent="Entities" unique_id=1958244532]
 position = Vector2(442, 230)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock160" unique_id=1919952744]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock160" unique_id=130808924]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock161" type="Node2D" parent="Entities" unique_id=1775867524]
+[node name="Rock161" type="Node2D" parent="Entities" unique_id=1874671719]
 position = Vector2(14, 245)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock161" unique_id=2130160835]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock161" unique_id=1384541719]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock162" type="Node2D" parent="Entities" unique_id=1934065510]
+[node name="Rock162" type="Node2D" parent="Entities" unique_id=1121439284]
 position = Vector2(467, 247)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock162" unique_id=340166102]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock162" unique_id=373666962]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock163" type="Node2D" parent="Entities" unique_id=988038700]
+[node name="Rock163" type="Node2D" parent="Entities" unique_id=205381743]
 position = Vector2(36, 247)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock163" unique_id=1193605576]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock163" unique_id=60008530]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock164" type="Node2D" parent="Entities" unique_id=1766758843]
+[node name="Rock164" type="Node2D" parent="Entities" unique_id=1221001834]
 position = Vector2(443, 245)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock164" unique_id=655346499]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock164" unique_id=1868284117]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock165" type="Node2D" parent="Entities" unique_id=1278208860]
+[node name="Rock165" type="Node2D" parent="Entities" unique_id=1187334847]
 position = Vector2(17, 266)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock165" unique_id=1139969905]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock165" unique_id=596389099]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock166" type="Node2D" parent="Entities" unique_id=251403224]
+[node name="Rock166" type="Node2D" parent="Entities" unique_id=1438002716]
 position = Vector2(466, 266)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock166" unique_id=1034818992]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock166" unique_id=2073032269]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock167" type="Node2D" parent="Entities" unique_id=1612392817]
+[node name="Rock167" type="Node2D" parent="Entities" unique_id=1185728050]
 position = Vector2(38, 267)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock167" unique_id=1682070174]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock167" unique_id=2087907618]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock168" type="Node2D" parent="Entities" unique_id=1278994402]
+[node name="Rock168" type="Node2D" parent="Entities" unique_id=1221443757]
 position = Vector2(441, 266)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock168" unique_id=1406300931]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock168" unique_id=1228020348]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock169" type="Node2D" parent="Entities" unique_id=695851229]
+[node name="Rock169" type="Node2D" parent="Entities" unique_id=871411768]
 position = Vector2(13, 287)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock169" unique_id=1554249572]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock169" unique_id=639677254]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock170" type="Node2D" parent="Entities" unique_id=2145523445]
+[node name="Rock170" type="Node2D" parent="Entities" unique_id=778040095]
 position = Vector2(468, 281)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock170" unique_id=31238737]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock170" unique_id=695296044]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock171" type="Node2D" parent="Entities" unique_id=1426270189]
+[node name="Rock171" type="Node2D" parent="Entities" unique_id=1846489049]
 position = Vector2(38, 282)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock171" unique_id=243035284]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock171" unique_id=1960354055]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock172" type="Node2D" parent="Entities" unique_id=1455432844]
+[node name="Rock172" type="Node2D" parent="Entities" unique_id=252172993]
 position = Vector2(441, 285)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock172" unique_id=811068664]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock172" unique_id=1870979807]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock173" type="Node2D" parent="Entities" unique_id=1778187091]
+[node name="Rock173" type="Node2D" parent="Entities" unique_id=702150816]
 position = Vector2(12, 303)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock173" unique_id=8043540]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock173" unique_id=646089577]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock174" type="Node2D" parent="Entities" unique_id=2105052163]
+[node name="Rock174" type="Node2D" parent="Entities" unique_id=44099558]
 position = Vector2(468, 303)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock174" unique_id=1803302778]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock174" unique_id=1636484484]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock175" type="Node2D" parent="Entities" unique_id=1272594067]
+[node name="Rock175" type="Node2D" parent="Entities" unique_id=158355225]
 position = Vector2(39, 299)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock175" unique_id=1373595231]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock175" unique_id=786447307]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Rock176" type="Node2D" parent="Entities" unique_id=655567395]
+[node name="Rock176" type="Node2D" parent="Entities" unique_id=1319441707]
 position = Vector2(441, 300)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock176" unique_id=1840130659]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock176" unique_id=704306901]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Crystal177" type="Node2D" parent="Entities" unique_id=1391568003]
+[node name="Crystal177" type="Node2D" parent="Entities" unique_id=28798318]
 position = Vector2(152, 238)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal177" unique_id=643319133]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal177" unique_id=254408596]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(32, 224, 16, 16)
 
-[node name="Crystal178" type="Node2D" parent="Entities" unique_id=1849518289]
+[node name="Crystal178" type="Node2D" parent="Entities" unique_id=235090968]
 position = Vector2(346, 190)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal178" unique_id=1251658579]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal178" unique_id=691024584]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal179" type="Node2D" parent="Entities" unique_id=1595372056]
+[node name="Crystal179" type="Node2D" parent="Entities" unique_id=1626766276]
 position = Vector2(186, 238)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal179" unique_id=1680509379]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal179" unique_id=115350936]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal180" type="Node2D" parent="Entities" unique_id=483190096]
+[node name="Crystal180" type="Node2D" parent="Entities" unique_id=988094701]
 position = Vector2(186, 126)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal180" unique_id=537655141]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal180" unique_id=754283324]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal181" type="Node2D" parent="Entities" unique_id=1468869432]
+[node name="Crystal181" type="Node2D" parent="Entities" unique_id=94858129]
 position = Vector2(393, 174)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal181" unique_id=1533511675]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal181" unique_id=266279645]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal182" type="Node2D" parent="Entities" unique_id=2115867610]
+[node name="Crystal182" type="Node2D" parent="Entities" unique_id=1177701155]
 position = Vector2(101, 238)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal182" unique_id=804802948]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal182" unique_id=2062286392]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal183" type="Node2D" parent="Entities" unique_id=1405914162]
+[node name="Crystal183" type="Node2D" parent="Entities" unique_id=811259398]
 position = Vector2(393, 254)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal183" unique_id=750685602]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal183" unique_id=1619891278]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal184" type="Node2D" parent="Entities" unique_id=466601407]
+[node name="Crystal184" type="Node2D" parent="Entities" unique_id=25556445]
 position = Vector2(102, 94)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal184" unique_id=1017215422]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal184" unique_id=1911529969]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(16, 224, 16, 16)
 
-[node name="Crystal185" type="Node2D" parent="Entities" unique_id=35014782]
+[node name="Crystal185" type="Node2D" parent="Entities" unique_id=1612918343]
 position = Vector2(311, 94)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal185" unique_id=1543215865]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal185" unique_id=1476715460]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Crystal186" type="Node2D" parent="Entities" unique_id=604295445]
+[node name="Crystal186" type="Node2D" parent="Entities" unique_id=1302504305]
 position = Vector2(218, 270)
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Crystal186" unique_id=4046964]
+[node name="Sprite" type="Sprite2D" parent="Entities/Crystal186" unique_id=1958328985]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-8, -14)
 region_enabled = true
 region_rect = Rect2(48, 224, 16, 16)
 
-[node name="Rock187" type="StaticBody2D" parent="Entities" unique_id=1711924505]
+[node name="Rock187" type="StaticBody2D" parent="Entities" unique_id=772585389]
 position = Vector2(224, 94)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock187" unique_id=1008589775]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock187" unique_id=495358091]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Rock187" unique_id=146866995]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Rock187" unique_id=740453926]
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_b0mq3")
 
-[node name="Rock188" type="StaticBody2D" parent="Entities" unique_id=624239711]
+[node name="Rock188" type="StaticBody2D" parent="Entities" unique_id=2128220222]
 position = Vector2(352, 110)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock188" unique_id=1927862898]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock188" unique_id=1169208171]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(256, 128, 32, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Rock188" unique_id=1886811868]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Rock188" unique_id=1834993490]
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_b0mq3")
 
-[node name="Rock189" type="StaticBody2D" parent="Entities" unique_id=504671720]
+[node name="Rock189" type="StaticBody2D" parent="Entities" unique_id=778070704]
 position = Vector2(128, 142)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock189" unique_id=1423668017]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock189" unique_id=470557902]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(208, 128, 32, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Rock189" unique_id=1485665031]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Rock189" unique_id=546115676]
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_b0mq3")
 
-[node name="Rock190" type="StaticBody2D" parent="Entities" unique_id=1592475159]
+[node name="Rock190" type="StaticBody2D" parent="Entities" unique_id=2003379523]
 position = Vector2(352, 238)
 collision_mask = 0
 
-[node name="Sprite" type="Sprite2D" parent="Entities/Rock190" unique_id=1143653391]
+[node name="Sprite" type="Sprite2D" parent="Entities/Rock190" unique_id=323368411]
 texture = ExtResource("11_o8ak3")
 centered = false
 offset = Vector2(-16, -30)
 region_enabled = true
 region_rect = Rect2(256, 128, 32, 32)
 
-[node name="Shape" type="CollisionShape2D" parent="Entities/Rock190" unique_id=1696509536]
+[node name="Shape" type="CollisionShape2D" parent="Entities/Rock190" unique_id=531101721]
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_b0mq3")
 
-[node name="Player" parent="Entities" unique_id=950809990 instance=ExtResource("12_jfamt")]
+[node name="Player" parent="Entities" unique_id=878249414 instance=ExtResource("12_jfamt")]
 unique_name_in_owner = true
 position = Vector2(272, 232)
+character_override = null
 
-[node name="Spawns" type="Node2D" parent="." unique_id=1274187633]
+[node name="Spawns" type="Node2D" parent="." unique_id=757864544]
 
-[node name="west" type="Marker2D" parent="Spawns" unique_id=1315947625]
+[node name="west" type="Marker2D" parent="Spawns" unique_id=1848279923]
 position = Vector2(96, 192)
 
-[node name="east" type="Marker2D" parent="Spawns" unique_id=517669021]
+[node name="east" type="Marker2D" parent="Spawns" unique_id=2077960852]
 position = Vector2(384, 192)
 
-[node name="Border" type="StaticBody2D" parent="." unique_id=8336626]
+[node name="Border" type="StaticBody2D" parent="." unique_id=1464367012]
 collision_mask = 0
 
-[node name="@CollisionShape2D@3338" type="CollisionShape2D" parent="Border" unique_id=924375242]
+[node name="@CollisionShape2D@4107" type="CollisionShape2D" parent="Border" unique_id=968129619]
 position = Vector2(240, 331)
 shape = SubResource("RectangleShape2D_pnne7")
 
-[node name="@CollisionShape2D@3339" type="CollisionShape2D" parent="Border" unique_id=1132549290]
+[node name="@CollisionShape2D@4108" type="CollisionShape2D" parent="Border" unique_id=1187361973]
 position = Vector2(240, 21)
 shape = SubResource("RectangleShape2D_pnne7")
 
-[node name="@CollisionShape2D@3340" type="CollisionShape2D" parent="Border" unique_id=1102366745]
+[node name="@CollisionShape2D@4109" type="CollisionShape2D" parent="Border" unique_id=1799371957]
 position = Vector2(21, 176)
 shape = SubResource("RectangleShape2D_y8j53")
 
-[node name="@CollisionShape2D@3341" type="CollisionShape2D" parent="Border" unique_id=292440171]
+[node name="@CollisionShape2D@4110" type="CollisionShape2D" parent="Border" unique_id=604854649]
 position = Vector2(459, 176)
 shape = SubResource("RectangleShape2D_y8j53")
 
-[node name="Gloom" type="CanvasModulate" parent="." unique_id=1822460169]
+[node name="Gloom" type="CanvasModulate" parent="." unique_id=1951477889]
 color = Color(0.86, 0.8, 1, 1)
 
-[node name="Music" type="AudioStreamPlayer" parent="." unique_id=595715274]
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=190742380]
 stream = ExtResource("13_f06oy")
 volume_db = -10.0

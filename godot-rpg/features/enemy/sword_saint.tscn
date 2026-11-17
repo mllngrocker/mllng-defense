@@ -1,0 +1,44 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://features/enemy/enemy.tscn" id="1_base"]
+[ext_resource type="Texture2D" path="res://assets/vendor/heaven/sword_saint.png" id="2_tex"]
+[ext_resource type="Script" path="res://features/enemy/boss.gd" id="3_boss"]
+[ext_resource type="PackedScene" path="res://features/enemy/resolute_angel.tscn" id="4_minion"]
+
+[sub_resource type="RectangleShape2D" id="big_shape"]
+size = Vector2(44, 24)
+
+[node name="SwordSaint" instance=ExtResource("1_base")]
+script = ExtResource("3_boss")
+boss_name = "백은의 검성"
+slam_radius = 110.0
+slam_damage = 880
+summon = ExtResource("4_minion")
+kind = 3
+max_hp = 760000
+speed = 30.0
+damage = 560
+chase_range = 170.0
+anim_fps = 8.0
+side_frames = 8
+attack_frames = 7
+gold_reward = 650000
+gem_chance = 1.0
+gem_reward = 30000
+drop_chance = 1.0
+hard = true
+aura_scale = 1.6
+
+[node name="Shadow" parent="." index="0"]
+scale = Vector2(4.0, 4.0)
+
+[node name="Sprite" parent="." index="1"]
+texture = ExtResource("2_tex")
+offset = Vector2(0, -30)
+scale = Vector2(2.0, 2.0)
+hframes = 15
+vframes = 1
+
+[node name="Body" parent="." index="2"]
+position = Vector2(0, -9)
+shape = SubResource("big_shape")
