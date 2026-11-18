@@ -136,6 +136,7 @@ func _refresh() -> void:
 	else:
 		_ok.label = "%s와 함께 떠나기" % Save.character(pick).display_name
 	_ok.queue_redraw()
+	_preview.queue_redraw()  # 고른 동료의 이름·스킬·능력치로 다시(안 그러면 처음 그린 시로 글자가 남는다)
 	_layout()
 	queue_redraw()
 

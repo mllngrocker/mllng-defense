@@ -1,7 +1,7 @@
 class_name Gacha
 extends RefCounted
 ## 뽑기 규칙: 등급 확률(★5 1% · ★4 9% · ★3 90%), 10회 뽑기는 ★4 이상 1개 확정,
-## ★5가 100번 안 나오면 100번째에 확정(천장). 같은 캐릭터면 별 +1, 별이 다 찼으면 골드로 바꿔 준다.
+## ★5가 100번 안 나오면 100번째에 확정(천장). 같은 캐릭터면 별 +1, 7성을 채운 캐릭터는 더 안 나온다(그 등급이 모두 7성이면 골드).
 ## 무기 뽑기(pull_weapons)도 확률·확정·천장 규칙은 같고 천장은 따로 센다(Save.pity_w). 같은 무기면 재련 +1.
 
 const COST_ONE := 300
@@ -13,6 +13,8 @@ const RATE_4 := 0.09
 const MYTHIC_SHARE := 0.05
 const PITY_5 := 100
 const MAXED_GOLD: Dictionary[int, int] = {3: 300, 4: 800, 5: 2000, 6: 8000}
+## 처음 시작 안내(PullGuide)의 첫 소환: 다음 한 번은 ★4 이상
+static var force_4_once := false
 
 
 static func pool(rarity: int) -> Array[StringName]:
@@ -28,12 +30,17 @@ static func pull(count: int, rng: RandomNumberGenerator) -> Array[Dictionary]:
 	var results: Array[Dictionary] = []
 	var got_4 := false
 	for i in count:
-		var force_4 := count >= 10 and i == count - 1 and not got_4
+		var force_4 := (count >= 10 and i == count - 1 and not got_4) or force_4_once
+		force_4_once = false
 		var rarity := _roll_rarity(rng, force_4)
 		if rarity >= 4:
 			got_4 = true
 		Save.pity = 0 if rarity == 5 else Save.pity + 1
 		var ids := pool(rarity)
+		# 7성(끝까지 승급)을 다 채운 캐릭터는 더 안 나온다. 그 등급이 모두 7성이면 그때만 골드로
+		var open := ids.filter(func(c: StringName) -> bool: return not (Save.is_owned(c) and Save.rank_of(c) >= Save.MAX_RANK))
+		if not open.is_empty():
+			ids.assign(open)
 		var id := ids[rng.randi() % ids.size()]
 		var result := Save.grant_character(id)
 		var gold := 0

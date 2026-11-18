@@ -37,6 +37,59 @@ var stats_bar: DrawBox
 var skill_box: DrawBox
 var aura_rect: TextureRect
 var skin_dot: DrawBox
+## 6성부터: 캐릭터 뒤 커다란 빛 고리(천천히 돌고, 바깥에 별 모양 가시). 7성은 붉은 왕관처럼 가시가 길다
+func _paint_halo(ci: Control, c: Vector2, rank: int) -> void:
+	var col := _aura_color(rank, 0.0)
+	var r := 120.0 + 4.0 * sin(t * 2.0)
+	ci.draw_circle(c, r + 18.0, Color(col, 0.08))
+	ci.draw_arc(c, r, 0, TAU, 48, Color(col, 0.55), 5.0)
+	ci.draw_arc(c, r - 10.0, 0, TAU, 48, Color(col.lightened(0.5), 0.35), 2.0)
+	var n := 12 if rank >= 7 else 8
+	for k in n:
+		var a := t * (0.35 if rank >= 7 else 0.2) + k * TAU / n
+		var d := Vector2.from_angle(a)
+		var long := (34.0 if rank >= 7 else 20.0) * (1.0 if k % 2 == 0 else 0.55)
+		var tip := c + d * (r + long)
+		var side := d.orthogonal() * 6.0
+		ci.draw_colored_polygon(PackedVector2Array([c + d * (r - 2.0) + side, tip, c + d * (r - 2.0) - side]), Color(col.lightened(0.25), 0.7))
+	for k in 3:  # 고리를 따라 도는 빛 알갱이
+		var a := -t * 1.2 + k * TAU / 3.0
+		var q := c + Vector2.from_angle(a) * r
+		ci.draw_circle(q, 7.0, Color(col, 0.3))
+		Gt.sparkle(ci, q, 9.0, Color(1, 1, 1, 0.9))
+
+
+## 6성부터: 발밑에 도는 마법진(바깥 고리 + 육망성 + 룬 점), 7성은 두 겹이 반대로 돈다
+func _paint_magic_circle(ci: Control, c: Vector2, rank: int) -> void:
+	var col := _aura_color(rank, 0.3)
+	ci.draw_set_transform(c, 0.0, Vector2(1.0, 0.3))
+	for layer in (2 if rank >= 7 else 1):
+		var r := 150.0 - layer * 46.0
+		var rot := t * (0.4 if layer == 0 else -0.6)
+		ci.draw_arc(Vector2.ZERO, r, 0, TAU, 40, Color(col, 0.75), 4.0)
+		ci.draw_arc(Vector2.ZERO, r - 12.0, 0, TAU, 40, Color(col, 0.45), 2.0)
+		for tri in 2:  # 육망성
+			var pts := PackedVector2Array()
+			for k in 4:
+				pts.append(Vector2.from_angle(rot + tri * PI / 3.0 + k * TAU / 3.0) * (r - 14.0))
+			ci.draw_polyline(pts, Color(col.lightened(0.3), 0.6), 2.5)
+		for k in 16:  # 룬 점
+			var q := Vector2.from_angle(rot * 1.5 + k * TAU / 16.0) * (r - 6.0)
+			ci.draw_rect(Rect2(q - Vector2(3, 3), Vector2(6, 6)), Color(col.lightened(0.5), 0.8))
+	ci.draw_set_transform(Vector2.ZERO)
+
+
+## 7성: 캐릭터 둘레로 떠오르는 붉은 불티
+func _paint_flame_wall(ci: Control, c: Vector2, w: float) -> void:
+	for k in 14:  # 불티
+		var seed := float(k) * 7.31
+		var life := 220.0
+		var y := c.y - fmod(t * (60.0 + fmod(seed * 13.0, 40.0)) + seed * 30.0, life)
+		var x := c.x + sin(seed) * w * 0.4 + sin(t * 2.0 + seed) * 12.0
+		var a := 1.0 - (c.y - y) / life
+		ci.draw_circle(Vector2(x, y), 2.5, Color(1.0, 0.7, 0.3, a))
+
+
 ## 별 등급 → 아우라 색: 별 색과 같다(Gt.STAR_BY_RARITY). 아우라는 5성부터(5성 보라 · 6성 파랑 · 7성 빨강)
 const AURA_COLORS := Gt.STAR_BY_RARITY
 const AURA_FROM := 5
@@ -76,7 +129,8 @@ func _ready() -> void:
 	if Save.persist and not Save.settings.has("nick"):
 		_open_intro.call_deferred(not Save.fresh)  # 처음: 이름 → 동료 고르기(예전 세이브는 이름만)
 	elif Save.settings.has("nick"):
-		Attendance.try_show.call_deferred(self)  # 하루 한 번 출석 달력
+		if not NewbieGift.try_show(self):  # 첫 7일 선물(닫으면 출석 달력으로 이어짐)
+			Attendance.try_show.call_deferred(self)  # 하루 한 번 출석 달력
 
 
 func _process(delta: float) -> void:
@@ -93,11 +147,14 @@ func _process(delta: float) -> void:
 		bg_box.queue_redraw()
 	bg_fx.queue_redraw()  # 떠다니는 빛(가벼움)
 	if avatar_page.visible:
-		backdrop.queue_redraw()  # 햇살이 천천히 돈다
+		if _frame % 2 == 0:
+			backdrop.queue_redraw()  # 햇살·빛 고리·마법진(30번/초면 충분)
 		_update_aura()
 		if _frame % 4 == 0:
-			for c: Control in cards.values():
-				c.queue_redraw()  # 4·5성 카드 빛이 숨 쉬듯
+			for id: StringName in cards:
+				# 빛이 움직이는 카드(4성 이상 아우라·6·7성 테두리·고르는 중인 카드)만 다시 그린다
+				if Save.character(id).rarity >= 4 or (Save.is_owned(id) and Save.rank_of(id) >= 6):
+					cards[id].queue_redraw()
 
 
 # ── 화면 만들기 ──
@@ -407,7 +464,11 @@ func _open_intro(rename := false) -> void:
 	intro.rename_only = rename
 	intro.finished.connect(func() -> void:
 		viewing = Save.selected
-		_refresh_all())
+		_refresh_all()
+		if not rename and not Save.settings.get("tut_pull", false):  # 처음 시작: 환영 선물 → 첫 소환 안내
+			var guide := PullGuide.new()
+			guide.menu = self
+			add_child(guide))
 	add_child(intro)
 
 
@@ -519,8 +580,14 @@ func _paint_backdrop(ci: Control) -> void:
 	if rank >= AURA_FROM:
 		col = col.lerp(_aura_color(rank, 0.0), 0.45)
 	Gt.burst(ci, Vector2(w * 0.5, h * 0.42), h * (0.75 + 0.05 * maxi(rank - 4, 0)), col, t * (1.0 + 0.4 * maxi(rank - 4, 0)))
+	if rank >= 6:
+		_paint_halo(ci, Vector2(w * 0.5, h * 0.3), rank)
+	if rank >= 7:
+		_paint_flame_wall(ci, Vector2(w * 0.5, h - 44), w)
 	# 발밑 풀밭 섬 + 별 등급 빛 고리
 	Gt.island(ci, Vector2(w * 0.5, h - 30), 360, 56)
+	if rank >= 6:
+		_paint_magic_circle(ci, Vector2(w * 0.5, h - 44), rank)
 	if rank >= AURA_FROM:
 		_paint_aura_ground(ci, Vector2(w * 0.5, h - 44), rank)
 

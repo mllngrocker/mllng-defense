@@ -16,6 +16,7 @@ var sprite: Sprite2D
 var near := false
 var big := false  # 사람 모양 큰 그림(말풍선을 더 위에)
 var line_i := 0
+var _say := PackedStringArray()  # 이 사람의 대사 + 지금 소문(보스를 잡을 때마다 바뀜, News)
 var talk_t := 0.0
 var _t := 0.0
 
@@ -59,6 +60,7 @@ func _process(delta: float) -> void:
 	var was := near
 	near = p != null and p.global_position.distance_to(global_position) < TALK_RANGE
 	if near and not was:
+		_refresh_say()
 		# 이 사람에게 말 거는 메인 퀘스트면 바로 대화창을 연다(이야기 장면이 있으면 그것, 없으면 이 사람의 대사)
 		var q := Quests.current()
 		if not q.is_empty() and q["type"] == "talk" and q["target"] == display_name:
@@ -69,9 +71,9 @@ func _process(delta: float) -> void:
 		var col := (3 if v.x > 0.0 else 2) if absf(v.x) > absf(v.y) else (0 if v.y > 0.0 else 1)
 		sprite.frame = col
 		talk_t += delta
-		if talk_t > LINE_TIME and lines.size() > 1:
+		if talk_t > LINE_TIME and _say.size() > 1:
 			talk_t = 0.0
-			line_i = (line_i + 1) % lines.size()
+			line_i = (line_i + 1) % _say.size()
 	else:
 		sprite.frame = 0
 		# 가만히 있을 때 숨 쉬듯 살짝 움직인다
@@ -86,14 +88,24 @@ func _process(delta: float) -> void:
 		queue_redraw()
 
 
+func _refresh_say() -> void:
+	_say = lines.duplicate()
+	if lines.is_empty():
+		return
+	var news := News.latest(display_name)
+	if news != "":
+		_say.append(news)
+
+
 ## 대화창으로 이야기한다(공격 버튼을 가까이서 누르거나, 말 거는 퀘스트의 대상일 때)
 func talk() -> void:
 	var q := Quests.current()
 	if not q.is_empty() and q["type"] == "talk" and q["target"] == display_name:
 		if StoryBox.play(self, "quest_" + String(q["title"])):
 			return
+	_refresh_say()
 	var talk_lines: Array = []
-	for l in lines:
+	for l in _say:
 		talk_lines.append([display_name, l])
 	StoryBox.show_lines(self, talk_lines)
 	Quests.track("talk", display_name)
@@ -103,10 +115,10 @@ func _draw() -> void:
 	draw_set_transform(Vector2(0, -36 if big else -26), 0.0, Vector2.ONE * 0.5)
 	var q := Quests.current()
 	var wanted: bool = not q.is_empty() and q["type"] == "talk" and q["target"] == display_name and not Quests.main_done()
-	if sick and not (near and not lines.is_empty()):
+	if sick and not (near and not _say.is_empty()):
 		_draw_sick()
-	if near and not lines.is_empty():
-		_bubble(lines[line_i])
+	if near and not _say.is_empty():
+		_bubble(_say[line_i % _say.size()])
 	elif wanted:
 		# 퀘스트 대상: 통통 튀는 노란 "!"
 		var bob := sin(_t * 5.0) * 4.0

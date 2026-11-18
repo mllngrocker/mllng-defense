@@ -53,6 +53,10 @@ var atk_t := -1.0  # 공격 동작 진행(초), -1이면 공격 중 아님
 var atk_cd := 0.0
 var _atk_hit := false
 var bar_t := 0.0  # 맞은 뒤 잠깐 체력바를 보여 준다
+## 강함 표시: 내 용사와 비교한 강함(0 초록 쉬움 · 1 노랑 비슷 · 2 빨강 위험). 가까이 오면 머리 위에 작은 표시
+var _danger := -1
+var _danger_on := false
+var _danger_t := 0.0
 ## 보스면 true(Boss가 바꾼다): 체력바는 HUD 위쪽에 크게, 다시 나타나는 데 오래 걸린다
 var is_boss := false
 
@@ -89,6 +93,9 @@ func _physics_process(delta: float) -> void:
 		bar_t -= delta
 		if bar_t <= 0.0:
 			queue_redraw()
+	_danger_t -= delta
+	if _danger_t <= 0.0 and not is_boss:
+		_update_danger()
 	if not is_boss and target and global_position.distance_squared_to(target.global_position) > 620.0 * 620.0 \
 			and knockback == Vector2.ZERO:
 		chasing = false
@@ -326,7 +333,42 @@ func _die() -> void:
 	queue_free()
 
 
+## 1초에 한 번: 용사가 몇 대 맞으면 쓰러지는지 · 몇 대 때려야 잡는지로 강함을 정한다. 바뀔 때만 다시 그린다
+func _update_danger() -> void:
+	_danger_t = 1.0
+	var p := get_tree().get_first_node_in_group(&"player") as Player
+	if p == null:
+		return
+	var on := hp > 0 and global_position.distance_squared_to(p.global_position) < 170.0 * 170.0
+	var hits_to_die := p.max_hp / maxf(1.0, damage)
+	var hits_to_kill := max_hp / maxf(1.0, p.atk)
+	var d := 2 if (hits_to_die < 4.0 or hits_to_kill > 14.0) else (1 if (hits_to_die < 8.0 or hits_to_kill > 6.0) else 0)
+	if d != _danger or on != _danger_on:
+		_danger = d
+		_danger_on = on
+		queue_redraw()
+
+
+const DANGER_COLORS: Array[Color] = [Color("63c74d"), Color("feae34"), Color("e43b44")]
+
+
+func _draw_danger() -> void:
+	var top := Vector2(0, sprite.offset.y * sprite.scale.y - 20.0)
+	var c: Color = DANGER_COLORS[_danger]
+	if _danger == 2:  # 위험: 빨간 삼각 경고 + 느낌표
+		draw_colored_polygon(PackedVector2Array([top + Vector2(0, -8), top + Vector2(7.5, 5), top + Vector2(-7.5, 5)]), Color("181425"))
+		draw_colored_polygon(PackedVector2Array([top + Vector2(0, -5.5), top + Vector2(5.5, 3.5), top + Vector2(-5.5, 3.5)]), c)
+		draw_line(top + Vector2(0, -3), top + Vector2(0, 0.5), Color.WHITE, 1.5)
+		draw_rect(Rect2(top + Vector2(-0.75, 1.5), Vector2(1.5, 1.5)), Color.WHITE)
+	else:
+		draw_circle(top, 4.5, Color("181425"))
+		draw_circle(top, 3.2, c)
+		draw_circle(top + Vector2(-1, -1), 1.1, Color(1, 1, 1, 0.6))
+
+
 func _draw() -> void:
+	if _danger_on and _danger >= 0 and hp > 0 and not is_boss:
+		_draw_danger()
 	if bar_t <= 0.0 or hp <= 0:
 		return
 	var top := Vector2(-BAR_WIDTH / 2.0, sprite.offset.y * sprite.scale.y - 12.0)

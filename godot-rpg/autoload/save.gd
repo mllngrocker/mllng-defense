@@ -705,7 +705,9 @@ func hp_of(id: StringName, level := -1) -> int:
 
 ## 다음 레벨까지 필요한 경험치(몬스터 경험치 = 그 몬스터 골드 보상과 같다). 레벨마다 그 지역 몬스터 약 150마리
 func exp_need(level: int) -> int:
-	return roundi((30 + level * 12 + level * level * 1.6) * 6.0)  # 레벨업 더 느리게(예전 ×2.4)
+	# Lv.100까지는 수월하게: Lv.1~20 약 1/7 · Lv.40 1/4 · Lv.60 0.44 · Lv.80 0.68배, Lv.100부터 원래대로
+	var ramp := 0.12 + 0.88 * pow(clampf(level / 100.0, 0.0, 1.0), 2.0)
+	return maxi(20, roundi((30 + level * 12 + level * level * 1.6) * 6.0 * ramp))
 
 
 ## 레벨은 계정 공통: 가진 캐릭터는 모두 같은 레벨·경험치(가장 높은 캐릭터 기준, 또는 from 캐릭터 기준).

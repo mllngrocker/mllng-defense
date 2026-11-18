@@ -11,4 +11,8 @@ func _ready() -> void:
 		Save.settings["nick"] = "곰돌이"
 		intro.step = 1
 		intro.pick = &"kemo3"
+		intro.pick = &"kemo1"  # 처음엔 시로를 그렸다가
 		intro.call_deferred(&"_refresh")
+		get_tree().create_timer(1.0).timeout.connect(func() -> void:  # 카라로 바꿔도 글자가 따라 바뀌는지
+			intro.pick = &"kemo3"
+			intro._refresh())
